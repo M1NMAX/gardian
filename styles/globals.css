@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* ICON   */
+  .icon-sm {
+    @apply w-6 h-6;
+  }
+  .icon-md {
+    @apply w-7 h-7;
+  }
+  .icon-lg {
+    @apply w-8 h-8;
+  }
+  .icon-xl {
+    @apply w-10 h-10;
+  }
+}

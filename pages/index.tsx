@@ -1,12 +1,19 @@
 import type { NextPage } from 'next'
-import Link from 'next/link'
+import Head from 'next/head'
+import Header from '../components/Header'
 
 const Home: NextPage = () => {
   return (
-    <div className='text-red-500 uppercase text-center font-bold'>
-      <h1>hELLO</h1>
-      <a href="/api/auth/login">Login</a>
-    </div>
+    <>
+      <Head>
+        <title>Gardian</title>
+      </Head>
+      <Header />
+      <div className='text-red-500 uppercase text-center font-bold'>
+        <h1>hELLO</h1>
+        <a href="/api/auth/login">Login</a>
+      </div>
+    </>
   )
 }
 
