@@ -1,20 +1,13 @@
 import React, { FC } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
-import Image from 'next/image';
-import logoSrc from '../../public/logo192.png';
 import ThemeBtn from '../ThemeBtn';
-import { ChevronDoubleLeftIcon, CogIcon, CollectionIcon, PlusIcon, SearchIcon, SelectorIcon } from '@heroicons/react/outline';
+import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
 import SidebarBtn from '../SidebarBtn';
 import SidebarIconBtn from '../SidebarIconBtn';
-
+import SidebarCollection from '../SidebarCollection';
+import SidebarUserOptions from '../SidebarUserOptions';
 
 
 const Sidebar: FC = () => {
-    const { user, error, isLoading } = useUser();
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
-
     return (
         <div className={`w-3/4 sm:w-56 transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
@@ -22,20 +15,9 @@ const Sidebar: FC = () => {
             <div className="flex flex-col  p-1 space-y-1">
 
                 <div className='flex justify-between '>
-                    <button className='flex items-center space-x-2 grow truncate rounded-sm hover:bg-gray-300'>
-                        <div className="relative w-6 h-6 ">
-                            <Image src={user?.picture || logoSrc} layout='fill' objectFit='contain'
-                                className='rounded-full' />
-                        </div>
-                        <div className='flex items-center font-medium '>
-                            {user?.nickname}
-                            <SelectorIcon className='icon-xs' />
-                        </div>
-                    </button>
+                    <SidebarUserOptions />
                     <SidebarIconBtn icon={<ChevronDoubleLeftIcon />} />
                 </div>
-
-                <SidebarBtn icon={<CogIcon />} text="Settings" />
 
                 <SidebarBtn icon={<SearchIcon />} text="Quick search" />
 
@@ -44,8 +26,13 @@ const Sidebar: FC = () => {
                     <SidebarIconBtn icon={<PlusIcon />} />
                 </div>
 
-                <div className='h-1/2 w-full bg-red-500'>
-                    jf
+                <div className='flex flex-col h-1/2 w-full overflow-y-auto'>
+                    <SidebarCollection name='js' id='js' />
+                    <SidebarCollection name='js2' id='js2' />
+                    <SidebarCollection name='js3' id='js3' />
+                    <SidebarCollection name='js4' id='js4' />
+                    <SidebarCollection name='js5' id='js5' />
+
                 </div>
 
                 <div className='absolute bottom-1'>
@@ -56,5 +43,7 @@ const Sidebar: FC = () => {
         </div>
     )
 }
+
+
 
 export default Sidebar
