@@ -9,10 +9,10 @@ import SidebarUserOptions from '../SidebarUserOptions';
 
 const Sidebar: FC = () => {
     return (
-        <div className={`w-3/4 sm:w-56 transition-all 
+        <div className={`w-3/4 sm:w-60 transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
-            <div className="flex flex-col  p-1 space-y-1">
+            <div className="flex flex-col px-1 py-2  space-y-1">
 
                 <div className='flex justify-between '>
                     <SidebarUserOptions />

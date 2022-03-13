@@ -1,27 +1,20 @@
 import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
-import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 
-const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
+const Settings: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
     return (
         <>
             <Head>
-                <title>Collections</title>
+                <title>Account Settings</title>
             </Head>
-            <Sidebar />
-            <main className='has-sidebar-width ml-60'>
-            {user?.picture}
-            {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
-                <a href="/api/auth/logout">Logout</a>
-
-            </main>
+            <main>Settings {user?.name}</main>
         </>
     )
 }
 
-export default Collections
+export default Settings
 
 export const getServerSideProps = withPageAuthRequired({
     async getServerSideProps(ctx) {

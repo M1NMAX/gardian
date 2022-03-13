@@ -12,18 +12,17 @@ const SidebarUserOptions: FC = ({ }) => {
     if (error) return <div>{error.message}</div>;
 
     return (
-        <Menu as="div" className="relative inline-block text-left ">
-            <div>
-                <Menu.Button className='flex items-center space-x-2 grow truncate rounded-sm hover:bg-gray-300'>
-                    <div className="relative w-6 h-6 ">
-                        <Image src={user?.picture || logoSrc} layout='fill' objectFit='contain' className='rounded-full' />
-                    </div>
-                    <div className='flex items-center font-medium '>
-                        {user?.nickname}
-                        <SelectorIcon className='icon-xs' />
-                    </div>
-                </Menu.Button>
-            </div>
+        <Menu >
+            <Menu.Button className='flex items-center space-x-2 grow p-0.5 truncate rounded-sm hover:bg-gray-300'>
+                <div className="relative w-6 h-6 ">
+                    <Image src={user?.picture || logoSrc} layout='fill' objectFit='contain' className='rounded-full' />
+                </div>
+                <div className='flex items-center font-medium  '>
+                    {user?.nickname}
+                    <SelectorIcon className='icon-xs' />
+                </div>
+            </Menu.Button>
+
             <Transition
                 as={Fragment}
                 enter="transition ease-out duration-100"
@@ -56,7 +55,7 @@ const SidebarUserOptions: FC = ({ }) => {
                             <hr className='bg-gray-500 dark:bg-gray-700' />
                             <Menu.Item as='li'>
                                 {({ active }) => (
-                                    <a href="/Settings"
+                                    <a href="/settings"
                                         className={`${active && 'bg-yellow-400'} flex items-center space-x-1 px-1.5 rounded-sm`}>
                                         <CogIcon className='icon-md' />
                                         <span>

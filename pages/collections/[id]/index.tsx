@@ -17,7 +17,7 @@ const Collection: NextPage<InferGetServerSidePropsType<typeof getServerSideProps
                 </title>
             </Head>
             <Sidebar />
-            <main className='has-sidebar-width ml-56'>
+            <main className='has-sidebar-width ml-60'>
 
                 Collection {id}
             </main>

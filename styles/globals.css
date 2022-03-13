@@ -23,8 +23,9 @@
   .icon-xl {
     @apply w-10 h-10;
   }
+  
 
   .has-sidebar-width {
-    width: calc(100vw - theme('spacing.56'));
+    width: calc(100vw - theme('spacing.60'));
   }
 }
