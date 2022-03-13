@@ -8,6 +8,9 @@
 
 @layer components {
   /* ICON   */
+  .icon-xs {
+    @apply w-5 h-5;
+  }
   .icon-sm {
     @apply w-6 h-6;
   }
@@ -19,5 +22,9 @@
   }
   .icon-xl {
     @apply w-10 h-10;
+  }
+
+  .has-sidebar-width {
+    width: calc(100vw - theme('spacing.56'));
   }
 }

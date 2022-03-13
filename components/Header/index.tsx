@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import Logo from '../Logo';
 import ThemeBtn from '../ThemeBtn';
-import { UserIcon } from '@heroicons/react/outline';
 
 const Header: FC = () => {
     return (
@@ -11,7 +10,7 @@ const Header: FC = () => {
                 <Logo />
                 <div className='flex items-center space-x-2'>
                     <ThemeBtn />
-                    <UserIcon className='icon-md' />
+                    <a  href='/api/auth/login' className='font-medium rounded px-2 hover:bg-gray-300'>Log in</a>
                 </div>
             </div>
         </div>

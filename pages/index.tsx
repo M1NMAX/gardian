@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       <Header />
       <div className='text-red-500 uppercase text-center font-bold'>
         <h1>hELLO</h1>
-        <a href="/api/auth/login">Login</a>
+       
       </div>
     </>
   )
