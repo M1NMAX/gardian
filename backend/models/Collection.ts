@@ -1,12 +1,7 @@
 import { Schema, model, models } from 'mongoose';
+import { CollectionInterface } from '../interfaces';
 
-interface Collection {
-    name: string;
-    updatedAt?: Date;
-    createdAt?: Date;
-}
-
-const CollectionSchema = new Schema<Collection>({
+const CollectionSchema = new Schema<CollectionInterface>({
     name: {
         type: String,
         required: true,
@@ -24,4 +19,4 @@ const CollectionSchema = new Schema<Collection>({
 
     }
 })
-export default models.Collection || model<Collection>('Collection', CollectionSchema);
+export default models.Collection || model<CollectionInterface>('Collection', CollectionSchema);
