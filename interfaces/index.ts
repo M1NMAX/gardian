@@ -1,4 +1,5 @@
 export interface CollectionInterface {
+    _id?: number,
     name: string;
     owner_id: string,
     updatedAt?: Date;

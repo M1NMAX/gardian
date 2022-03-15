@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer components {
   /* ICON   */
@@ -23,9 +20,12 @@
   .icon-xl {
     @apply w-10 h-10;
   }
-  
 
   .has-sidebar-width {
     width: calc(100vw - theme('spacing.60'));
+  }
+
+  .sidebarCollections-height {
+    height: calc(100vh - theme('spacing.40'));
   }
 }

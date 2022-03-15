@@ -1,15 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../backend/database/dbConnect';
 import Collection from '../../../backend/models/Collection';
-import { CollectionInterface } from '../../../backend/interfaces';
+import { Response } from '../../../types';
 
 dbConnect();
 
-type Response = {
-    success: boolean,
-    data?: CollectionInterface,
-}
-
+//TODO:input validation
 export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
     const { query: { id }, method } = req;
 
@@ -17,10 +13,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
         case 'GET':
             try {
                 const collection = await Collection.findById(id);
-                if (!collection) return res.status(400).json({ success: false });
-                res.status(200).json({ success: true, data: collection });
+                if (!collection) return res.status(400).json({ isSuccess: false });
+                res.status(200).json({ isSuccess: true, data: collection });
             } catch (error) {
-                res.status(400).json({ success: false });
+                res.status(400).json({ isSuccess: false });
             }
             break;
         case 'PUT':
@@ -33,25 +29,25 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
                     new: true,
                     runValidators: true,
                 });
-                if (!collection) return res.status(400).json({ success: false });
-                res.status(200).json({ success: true, data: collection });
+                if (!collection) return res.status(400).json({ isSuccess: false });
+                res.status(200).json({ isSuccess: true, data: collection });
 
             } catch (error) {
-                res.status(400).json({ success: false });
+                res.status(400).json({ isSuccess: false });
             }
             break;
         case 'DELETE':
             try {
                 const deletedCollection = await Collection.deleteOne({ _id: id });
-                if (!deletedCollection) return res.status(400).json({ success: false });
-                res.status(200).json({ success: true });
+                if (!deletedCollection) return res.status(400).json({ isSuccess: false });
+                res.status(200).json({ isSuccess: true });
 
             } catch (error) {
-                res.status(400).json({ success: false });
+                res.status(400).json({ isSuccess: false });
             }
             break;
         default:
-            res.status(400).json({ success: false });
+            res.status(400).json({ isSuccess: false });
             break;
     }
 }

@@ -1,5 +1,5 @@
 import { Schema, model, models } from 'mongoose';
-import { CollectionInterface } from '../interfaces';
+import { CollectionInterface } from '../../interfaces';
 
 const CollectionSchema = new Schema<CollectionInterface>({
     name: {

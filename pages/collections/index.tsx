@@ -4,16 +4,12 @@ import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { CollectionInterface } from '../../backend/interfaces'
-
-
-async function fetchCollection(): Promise<CollectionInterface[]> {
-    const res = await fetch('api/collections');
-    return res.json().then(response => response.data);
-}
+import { getUserCollections, createCollection } from '../../fetch/collections';
+import { Response } from '../../types';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
-    const { data, error, isError, isLoading } = useQuery<CollectionInterface[], Error>('collections', fetchCollection);
+
+    const { data: response, error, isError, isLoading } = useQuery<Response, Error>('collections', getUserCollections);
 
     if (isLoading) {
         return <span>Loading...</span>
@@ -23,7 +19,13 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
         return <span>Error: {error.message}</span>
     }
 
-    console.log(typeof data)
+    console.log(typeof response?.data)
+
+    const handleClick = async () => {
+        const res = await createCollection();
+        console.log(res);
+
+    }
     return (
         <>
             <Head>
@@ -33,12 +35,11 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
             <main className='has-sidebar-width ml-60'>
                 {user?.nickname}
                 <ul>
-                    {data?.map((collection, idx: number) => (
-                        <li key={idx}>{collection.name}</li>
+                    {response?.data?.map((collection, idx: number) => (
+                        <li key={idx}>{collection.name} {collection._id}</li>
                     ))}
                 </ul>
-
-
+                <button onClick={handleClick} >create</button>
             </main>
         </>
     )
