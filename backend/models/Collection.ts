@@ -8,6 +8,10 @@ const CollectionSchema = new Schema<CollectionInterface>({
         trim: true,
         maxlength: [40, 'The cannot be more than 40 characters']
     },
+    owner_id: {
+        type: String,
+        required: true,
+    },
     updatedAt: {
         type: Date,
         default: Date.now,

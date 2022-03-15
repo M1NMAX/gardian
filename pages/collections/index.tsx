@@ -13,7 +13,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
             <Sidebar />
             <main className='has-sidebar-width ml-60'>
             {user?.picture}
-            {/* <pre>{JSON.stringify(user, null, 2)}</pre> */}
+            <pre>{JSON.stringify(user, null, 2)}</pre>
                 <a href="/api/auth/logout">Logout</a>
 
             </main>
