@@ -1,8 +1,9 @@
-import { FC, useState } from "react"
+import React, { FC, useState } from "react"
 import Modal from "../Modal";
 import { CheckIcon } from "@heroicons/react/outline";
 import { RadioGroup } from "@headlessui/react";
 import { ModalCreateCollectionProps } from "../../interfaces";
+import { createCollection } from "../../fetch/collections";
 
 const kindsOfCollections = [
     {
@@ -37,11 +38,25 @@ const ModalCreateCollection: FC<ModalCreateCollectionProps> =
     ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 
         const [name, setName] = useState("");
-        const [selected, setSelected] = useState(kindsOfCollections[0].variant)
+        const [selectedVariant, setSelectedVariant] = useState(kindsOfCollections[0].variant)
+        console.log(selectedVariant)
+
+        const handleSubmit = async (e: React.SyntheticEvent) => {
+            e.preventDefault();
+            try {
+                const response = await createCollection(name, selectedVariant);
+                positiveFeedback("Collection created successfully");
+                console.log(response)
+            } catch (error) {
+                negativeFeedback();
+            }
+
+        }
 
         return (
             <Modal title="New Collection" open={open} onHide={handleClose}>
-                <form>
+                <form onSubmit={handleSubmit}>
+
                     <label className="block">
                         <span className="w-full">Name</span>
                         <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
@@ -50,13 +65,13 @@ const ModalCreateCollection: FC<ModalCreateCollectionProps> =
                     </label>
 
                     <div className="w-full mt-2">
-                        <RadioGroup value={selected} onChange={setSelected}>
+                        <RadioGroup value={selectedVariant} onChange={setSelectedVariant}>
                             <RadioGroup.Label>Type of collection</RadioGroup.Label>
                             <div className="space-y-1">
                                 {kindsOfCollections.map((kind) => (
                                     <RadioGroup.Option
                                         key={kind.name}
-                                        value={kind}
+                                        value={kind.variant}
                                         className={({ active, checked }) =>
                                             `${active
                                                 ? 'ring ring-offset-2 ring-offset-green-300 ring-white ring-opacity-60'

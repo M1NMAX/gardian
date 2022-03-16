@@ -12,10 +12,13 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: String,
         required: true,
     },
+    variant: {
+        type: String,
+        required: true,
+    },
     updatedAt: {
         type: Date,
         default: Date.now,
-
     },
     createdAt: {
         type: Date,

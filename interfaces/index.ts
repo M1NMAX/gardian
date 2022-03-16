@@ -2,6 +2,7 @@ export interface CollectionInterface {
     _id?: number,
     name: string;
     owner_id: string,
+    variant: string, 
     updatedAt?: Date;
     createdAt?: Date;
 }

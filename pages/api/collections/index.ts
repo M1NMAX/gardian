@@ -24,9 +24,9 @@ export default withApiAuthRequired(
                 break;
             case 'POST':
                 try {
-
                     const data = {
                         name: req.body.name,
+                        variant: req.body.variant,
                         owner_id: user?.sub
                     }
                     const collection = await Collection.create(data);

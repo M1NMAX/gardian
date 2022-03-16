@@ -25,10 +25,10 @@
   }
 
   .btn-primary {
-    @apply p-1 font-semibold text-gray-900 bg-green-400 hover:bg-green-500;
+    @apply p-1 font-semibold text-gray-900 bg-primary hover:bg-primary-dark;
   }
   .btn-secondary {
-    @apply hover:bg-gray-300;
+    @apply hover:bg-gray-300 dark:hover:bg-gray-600;
   }
 
   .has-sidebar-width {
@@ -57,7 +57,7 @@
   }
 
   .modal-positive-btn {
-    @apply text-lg rounded-md px-4 py-1 bg-green-400 hover:bg-green-500 
+    @apply text-lg rounded-md px-4 py-1 bg-primary hover:bg-primary-dark 
     dark:text-black font-medium disabled:hover:bg-yellow-300 
     disabled:cursor-no-drop;
   }
