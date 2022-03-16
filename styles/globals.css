@@ -25,7 +25,7 @@
   }
 
   .btn-primary {
-    @apply p-1 font-semibold text-gray-900 bg-yellow-300 hover:bg-amber-300;
+    @apply p-1 font-semibold text-gray-900 bg-green-400 hover:bg-green-500;
   }
   .btn-secondary {
     @apply hover:bg-gray-300;
@@ -42,5 +42,23 @@
 
   .sidebarCollections-height {
     height: calc(100vh - theme('spacing.40'));
+  }
+
+  /* Modal */
+
+  .modal-input {
+    @apply w-full  h-10 cursor-default rounded  border-2 border-black bg-gray-50 dark:bg-gray-700 
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white 
+    invalid:border-red-500 valid:border-green-500;
+  }
+  .modal-neutral-btn {
+    @apply text-lg rounded-md px-4 py-1 bg-gray-100  hover:bg-gray-200  dark:bg-gray-700 
+    dark:hover:bg-gray-600 font-medium;
+  }
+
+  .modal-positive-btn {
+    @apply text-lg rounded-md px-4 py-1 bg-green-400 hover:bg-green-500 
+    dark:text-black font-medium disabled:hover:bg-yellow-300 
+    disabled:cursor-no-drop;
   }
 }

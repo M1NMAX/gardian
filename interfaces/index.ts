@@ -12,3 +12,10 @@ export interface DocumentInterface {
     updatedAt?: Date;
     createdAt?: Date;
 }
+
+export interface ModalCreateCollectionProps {
+    open: boolean,
+    handleClose: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void,
+    positiveFeedback: (value: string) => void,
+    negativeFeedback: () => void,
+}

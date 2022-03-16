@@ -1,37 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getUserCollections, createCollection } from '../../fetch/collections';
+import { getUserCollections } from '../../fetch/collections';
 import Collection from '../../components/Collection';
 import { CollectionInterface } from '../../interfaces';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import IconBtn from '../../components/IconBtn';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
+import toast, { Toaster } from 'react-hot-toast';
+import ModalCreateCollection from '../../components/ModalCreateCollection';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
 
     const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-    const { data, error, isError, isLoading } =
-        useQuery<CollectionInterface[], Error>('collections', getUserCollections);
+    //TODO: Add loading and error
+    const { data } = useQuery<CollectionInterface[], Error>('collections', getUserCollections);
 
-    if (isLoading) {
-        return <span>Loading...</span>
-    }
+    //Modal: create collection
+    const [open, setOpen] = useState(false);
+    const closeModal = () => (setOpen(false));
+    const openModal = () => (setOpen(true));
 
-    if (isError) {
-        return <span>Error: {error.message}</span>
-    }
-
-
-    const handleClick = async () => {
-        const res = await createCollection();
-        console.log(res);
-    }
+    const positiveFeedback = (msg: string) => toast.success(msg);
+    const negativeFeedback = () => toast.success("Something went wrong, try later");
 
     return (
         <>
@@ -46,7 +42,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                         {!sidebar && <IconBtn icon={<MenuAlt2Icon />} onClick={() => setSidebar(true)} />}
                         <h1 className='font-semibold text-xl'>Collections </h1>
                     </div>
-                    <button onClick={handleClick} className='btn btn-primary'>New</button>
+                    <button onClick={openModal} className='btn btn-primary'>New</button>
                 </div>
 
                 <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
@@ -58,6 +54,9 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
 
                 </div>
             </main>
+            <Toaster />
+            {open && <ModalCreateCollection open={open} handleClose={closeModal}
+                positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
         </>
     )
 }
