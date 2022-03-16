@@ -8,7 +8,7 @@ interface IconBtnProps {
 
 const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, onClick }) => {
     return (
-        <button onClick={onClick} className='flex rounded hover:bg-gray-300'>
+        <button onClick={onClick} className='btn btn-secondary'>
             <span className='icon-md'>
                 {icon}
             </span>

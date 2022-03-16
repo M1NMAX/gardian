@@ -1,12 +1,11 @@
 import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
-import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
 import { getUserCollections, createCollection } from '../../fetch/collections';
-import dbConnect from '../../backend/database/dbConnect';
-import Collection from '../../backend/models/Collection';
+import Collection from '../../components/Collection';
 import { CollectionInterface } from '../../interfaces';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -41,19 +40,23 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
             </Head>
             <Sidebar />
             <main className={`${sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'} main-content`}>
-                <div className='flex justify-between'>
-                    {!sidebar &&
-                        <IconBtn icon={<MenuAlt2Icon />} onClick={() => setSidebar(true)} />}
-                    <h1>Collections </h1>
-                    <button>New</button>
+                <div className='flex justify-between items-center'>
+
+                    <div className='flex items-center space-x-2'>
+                        {!sidebar && <IconBtn icon={<MenuAlt2Icon />} onClick={() => setSidebar(true)} />}
+                        <h1 className='font-semibold text-xl'>Collections </h1>
+                    </div>
+                    <button onClick={handleClick} className='btn btn-primary'>New</button>
                 </div>
-                {user?.nickname}
-                <ul>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
+                overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
                     {data?.map((collection, idx: number) => (
-                        <li key={idx}>{collection.name} {collection._id}</li>
+                        <Collection key={idx} collection={collection} />
                     ))}
-                </ul>
-                <button onClick={handleClick} >create</button>
+
+
+                </div>
             </main>
         </>
     )
@@ -61,14 +64,4 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
 
 export default Collections
 
-export const getServerSideProps = withPageAuthRequired({
-    async getServerSideProps(ctx) {
-        dbConnect();
-        const session = getSession(ctx.req, ctx.res);
-        const collections = await Collection.find({ owner_id: session?.user?.sub }).sort({ createdAt: -1 });
-
-
-
-        return { props: { customProp: 'bar' } };
-    }
-});
+export const getServerSideProps = withPageAuthRequired();

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
   /* ICON   */
   .icon-xs {
@@ -21,13 +20,24 @@
     @apply w-10 h-10;
   }
 
+  .btn {
+    @apply flex items-center rounded;
+  }
+
+  .btn-primary {
+    @apply p-1 font-semibold text-gray-900 bg-yellow-300 hover:bg-amber-300;
+  }
+  .btn-secondary {
+    @apply hover:bg-gray-300;
+  }
+
   .has-sidebar-width {
     width: calc(100vw - theme('spacing.60'));
   }
 
   .main-content {
     @apply transition-all duration-200 ease-linear 
-      flex flex-col h-screen  dark:bg-gray-900 dark:text-white -z-10;
+      flex flex-col h-screen p-2 space-y-2 dark:bg-gray-900 dark:text-white -z-10;
   }
 
   .sidebarCollections-height {
