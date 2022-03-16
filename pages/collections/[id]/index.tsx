@@ -13,7 +13,7 @@ const Collection: NextPage<InferGetServerSidePropsType<typeof getServerSideProps
         <>
             <Head>
                 <title>
-                    {id}
+                    Collection |{id}
                 </title>
             </Head>
             <Sidebar />

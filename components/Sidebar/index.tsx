@@ -8,9 +8,17 @@ import SidebarUserOptions from '../SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
+import { CollectionInterface } from '../../interfaces';
+import { getUserCollections } from '../../fetch/collections';
+import { useQuery } from 'react-query';
 
 
 const Sidebar: FC = () => {
+
+    const { data, error, isError, isLoading } =
+        useQuery<CollectionInterface[], Error>('collections', getUserCollections);
+
+
 
     const { width } = useWindowDimensions();
     const [sidebar, setSidebar] = useRecoilState(sidebarState)
@@ -42,15 +50,14 @@ const Sidebar: FC = () => {
 
                 <div className='flex flex-col sidebarCollections-height w-full overflow-y-auto 
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
-                    <SidebarCollection name='js' id='js' />
-                    <SidebarCollection name='js2' id='js2' />
-                    <SidebarCollection name='js3' id='js3' />
-                    <SidebarCollection name='js4' id='js4' />
-                    <SidebarCollection name='js5' id='js5' />
+                    {data?.map((collection, idx: number) => (
+                        <SidebarCollection key={idx} name={collection.name} id={collection._id} />
+                    ))}
+                    {isLoading && <span>Loading...</span>}
+                    {isError && <span>Error: {error.message}</span>}
                 </div>
 
                 <div className='absolute bottom-1'>
-
                     <ThemeBtn />
                 </div>
             </div>

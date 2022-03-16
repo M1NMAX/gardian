@@ -5,7 +5,7 @@ import { ChevronRightIcon, DotsHorizontalIcon, PlusIcon } from '@heroicons/react
 
 interface SidebarCollectionProps {
   name: string,
-  id?: string,
+  id?: number,
 }
 
 const SidebarCollection: FC<SidebarCollectionProps> = ({ name, id }) => {
