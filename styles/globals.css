@@ -25,6 +25,11 @@
     width: calc(100vw - theme('spacing.60'));
   }
 
+  .main-content {
+    @apply transition-all duration-200 ease-linear 
+      flex flex-col h-screen  dark:bg-gray-900 dark:text-white -z-10;
+  }
+
   .sidebarCollections-height {
     height: calc(100vh - theme('spacing.40'));
   }

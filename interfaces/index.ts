@@ -6,6 +6,7 @@ export interface CollectionInterface {
     createdAt?: Date;
 }
 
+
 export interface DocumentInterface {
     name: string;
     updatedAt?: Date;

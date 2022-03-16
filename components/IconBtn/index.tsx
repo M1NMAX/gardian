@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
 
-interface SidebarIconBtnProps {
+interface IconBtnProps {
     icon: JSX.Element,
     tooltipText?: string,
+    onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-const SidebarIconBtn: FC<SidebarIconBtnProps> = ({ icon, tooltipText }) => {
+const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, onClick }) => {
     return (
-        <button className='flex rounded hover:bg-gray-300'>
+        <button onClick={onClick} className='flex rounded hover:bg-gray-300'>
             <span className='icon-md'>
                 {icon}
             </span>
@@ -18,4 +19,4 @@ const SidebarIconBtn: FC<SidebarIconBtnProps> = ({ icon, tooltipText }) => {
     )
 }
 
-export default SidebarIconBtn
+export default IconBtn
