@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
 import SidebarBtn from '../SidebarBtn';
@@ -11,6 +11,8 @@ import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { CollectionInterface } from '../../interfaces';
 import { getUserCollections } from '../../fetch/collections';
 import { useQuery } from 'react-query';
+import { toast, Toaster } from 'react-hot-toast';
+import ModalCreateCollection from '../ModalCreateCollection';
 
 
 const Sidebar: FC = () => {
@@ -29,6 +31,15 @@ const Sidebar: FC = () => {
     }, [width])
 
 
+    //Modal: create collection
+    const [open, setOpen] = useState(false);
+    const closeModal = () => (setOpen(false));
+    const openModal = () => (setOpen(true));
+
+    const positiveFeedback = (msg: string) => toast.success(msg);
+    const negativeFeedback = () => toast.success("Something went wrong, try later");
+
+
 
     return (
         <div className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
@@ -45,7 +56,7 @@ const Sidebar: FC = () => {
 
                 <div className='flex justify-between items-center'>
                     <SidebarBtn icon={<CollectionIcon />} text="Collections" />
-                    <IconBtn icon={<PlusIcon />} />
+                    <IconBtn icon={<PlusIcon />} onClick={openModal} />
                 </div>
 
                 <div className='flex flex-col sidebarCollections-height w-full overflow-y-auto 
@@ -61,6 +72,9 @@ const Sidebar: FC = () => {
                     <ThemeBtn />
                 </div>
             </div>
+            <Toaster />
+            {open && <ModalCreateCollection open={open} handleClose={closeModal}
+                positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
         </div>
     )
 }

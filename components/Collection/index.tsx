@@ -16,8 +16,9 @@ const Collecion: FC<CollectionProps> = ({ collection }) => {
                 </a>
             </Link>
             <span className='text-sm font-light'>
-                Last modification:
-                 {collection.updatedAt}
+                Last modification: {collection.updatedAt ?
+                    new Date(collection.updatedAt).toLocaleString() :
+                    'Loading'}
             </span>
         </div>
     )

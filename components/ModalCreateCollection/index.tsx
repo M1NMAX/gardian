@@ -44,9 +44,9 @@ const ModalCreateCollection: FC<ModalCreateCollectionProps> =
         const handleSubmit = async (e: React.SyntheticEvent) => {
             e.preventDefault();
             try {
-                const response = await createCollection(name, selectedVariant);
+                await createCollection(name, selectedVariant);
                 positiveFeedback("Collection created successfully");
-                console.log(response)
+                handleClose(false);
             } catch (error) {
                 negativeFeedback();
             }
