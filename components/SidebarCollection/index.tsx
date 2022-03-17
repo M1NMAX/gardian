@@ -10,7 +10,7 @@ interface SidebarCollectionProps {
 
 const SidebarCollection: FC<SidebarCollectionProps> = ({ name, id }) => {
   return (
-    <div className='w-full px-1.5  flex justify-between items-center space-x-1 font-medium rounded-sm hover:bg-gray-200 group '>
+    <div className='w-full pl-1 pr-3 justify-between btn hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 font-medium  group '>
       <div className='flex items-center grow truncate'>
         <button>
           <ChevronRightIcon className='icon-xs' />

@@ -28,7 +28,7 @@
     @apply p-1 font-semibold text-gray-900 bg-primary hover:bg-primary-dark;
   }
   .btn-secondary {
-    @apply hover:bg-gray-300 dark:hover:bg-gray-600;
+    @apply p-1 hover:bg-gray-300 dark:hover:bg-gray-600;
   }
 
   .has-sidebar-width {

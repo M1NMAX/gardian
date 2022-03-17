@@ -14,6 +14,12 @@ export interface DocumentInterface {
     createdAt?: Date;
 }
 
+export interface SidebarBtnProps {
+    icon: JSX.Element,
+    text: string,
+}
+
+
 export interface ModalCreateCollectionProps {
     open: boolean,
     handleClose: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void,

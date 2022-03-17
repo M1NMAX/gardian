@@ -1,13 +1,9 @@
 import React, { FC } from 'react';
-
-interface SidebarBtnProps {
-    icon: JSX.Element,
-    text: string,
-}
+import { SidebarBtnProps } from '../../interfaces';
 
 const SidebarBtn: FC<SidebarBtnProps> = ({ icon, text }) => {
     return (
-        <button className='w-full flex space-x-1 font-medium rounded-sm hover:bg-gray-300'>
+        <button className='w-full space-x-1 btn btn-secondary'>
             <span className='icon-sm'>
                 {icon}
             </span>

@@ -13,7 +13,7 @@ const SidebarUserOptions: FC = ({ }) => {
 
     return (
         <Menu >
-            <Menu.Button className='flex items-center space-x-2 grow p-0.5 truncate rounded-sm hover:bg-gray-300'>
+            <Menu.Button className='space-x-2 btn btn-secondary grow truncate'>
                 <div className="relative w-6 h-6 ">
                     <Image src={user?.picture || logoSrc} layout='fill' objectFit='contain' className='rounded-full' />
                 </div>
@@ -51,29 +51,24 @@ const SidebarUserOptions: FC = ({ }) => {
                                     </div>
                                 </div>
                             </Menu.Item>
-
                             <hr className='bg-gray-500 dark:bg-gray-700' />
                             <Menu.Item as='li'>
-                                {({ active }) => (
-                                    <a href="/settings"
-                                        className={`${active && 'bg-yellow-400'} flex items-center space-x-1 px-1.5 rounded-sm`}>
-                                        <CogIcon className='icon-md' />
-                                        <span>
-                                            Settings
-                                        </span>
-                                    </a>
-                                )}
+                                <a href="/settings"
+                                    className='btn btn-secondary space-x-1'>
+                                    <CogIcon className='icon-md' />
+                                    <span>
+                                        Settings
+                                    </span>
+                                </a>
                             </Menu.Item>
                             <Menu.Item>
-                                {({ active }) => (
-                                    <a href="/api/auth/logout"
-                                        className={`${active && 'bg-yellow-400'} flex items-center space-x-1 px-1.5 rounded-sm`}>
-                                        <LogoutIcon className='icon-md' />
-                                        <span>
-                                            Log out
-                                        </span>
-                                    </a>
-                                )}
+                                <a href="/api/auth/logout"
+                                    className='btn btn-secondary space-x-1'>
+                                    <LogoutIcon className='icon-md' />
+                                    <span>
+                                        Log out
+                                    </span>
+                                </a>
                             </Menu.Item>
                         </div>
 
