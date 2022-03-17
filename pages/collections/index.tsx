@@ -5,7 +5,7 @@ import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
 import { getUserCollections } from '../../fetch/collections';
-import Collection from '../../components/Collection';
+import CollectionOverview from '../../components/CollectionOverview';
 import { CollectionInterface } from '../../interfaces';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -48,7 +48,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
                 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
                     {data?.map((collection, idx: number) => (
-                        <Collection key={idx} collection={collection} />
+                        <CollectionOverview key={idx} collection={collection} />
                     ))}
 
 
