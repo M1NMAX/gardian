@@ -1,11 +1,17 @@
 import React, { FC, useState } from 'react';
 import Modal from '../Modal';
 import { NewDocumentModalProps } from '../../interfaces';
-import { BellIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/outline';
-import IconBtn from '../IconBtn';
+import { BellIcon, CalendarIcon } from '@heroicons/react/outline';
+import { BadgeCheckIcon } from '@heroicons/react/solid';
+import DatePicker from "react-datepicker";
 
 const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
+    const [hasReminder, setHasReminder] = useState(false);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [conclusionDate, setConclusionDate] = useState(new Date());
+    console.log(conclusionDate)
+
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -15,7 +21,7 @@ const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
 
 
     return (
-        <Modal title="New ToDo" open={open} onHide={handleClose} >
+        <Modal title="New task" open={open} onHide={handleClose} >
             <form onSubmit={handleSubmit} className="space-y-2">
                 <label className="block">
                     <span className="w-full">Name</span>
@@ -23,17 +29,32 @@ const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
                         placeholder="ToDo name"
                         className='modal-input' />
                 </label>
-                <div className='flex items-center space-x-2'>
-                    <IconBtn icon={<CheckCircleIcon />}  />
-                    <IconBtn icon={<CalendarIcon />} />
-                    <IconBtn icon={<BellIcon />} />
+
+                <div className='flex items-start space-x-2'>
+                    <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setHasReminder(!hasReminder)}>
+                        <BellIcon className='icon-md' />
+                        {hasReminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
+                    </button>
+                    <button key={2} type="button" className='relative btn btn-secondary' onClick={() => setShowCalendar(true)}>
+                        <CalendarIcon className='icon-md' />
+                    </button>
+                    {showCalendar &&
+                    <div className={`'flex justify-center'`}>
+                        <DatePicker selected={conclusionDate}
+                            onChange={(date: Date) => { setConclusionDate(date), setShowCalendar(false) }}
+                            inline  dateFormat="yyyy-MM-dd" />
+                    </div>
+                }
                 </div>
+
+               
+
 
                 <div className="flex justify-end space-x-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel
                     </button>
-                    <button  className="modal-positive-btn">
+                    <button key={0} type='submit' className="modal-positive-btn">
                         Create
                     </button>
                 </div>
