@@ -29,9 +29,26 @@ export interface SidebarBtnProps {
 }
 
 
-export interface ModalCreateCollectionProps {
+export interface NewCollectionModalProps {
     open: boolean,
     handleClose: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void,
     positiveFeedback: (value: string) => void,
     negativeFeedback: () => void,
+}
+
+export interface NewEventModalProps {
+    open: boolean,
+    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
+    positiveFeedback: (value: string) => void,
+    negativeFeedback: () => void,
+}
+export interface NewDocumentModalProps {
+    open: boolean,
+    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
+}
+
+export interface DocumentStatusProps {
+    name: string,
+    isSaved: boolean,
+    error: string,
 }

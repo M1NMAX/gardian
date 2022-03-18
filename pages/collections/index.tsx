@@ -12,7 +12,7 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import IconBtn from '../../components/IconBtn';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
-import ModalCreateCollection from '../../components/ModalCreateCollection';
+import NewCollectionModal from '../../components/NewCollectionModal';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ user }) => {
 
@@ -55,7 +55,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 </div>
             </main>
             <Toaster />
-            {open && <ModalCreateCollection open={open} handleClose={closeModal}
+            {open && <NewCollectionModal open={open} handleClose={closeModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
         </>
     )

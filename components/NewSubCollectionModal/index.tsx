@@ -2,7 +2,7 @@ import React, { FC, useState } from "react"
 import Modal from "../Modal";
 import { CheckIcon } from "@heroicons/react/outline";
 import { RadioGroup } from "@headlessui/react";
-import { ModalCreateCollectionProps } from "../../interfaces";
+import { NewCollectionModalProps } from "../../interfaces";
 import { createCollection } from "../../fetch/collections";
 
 const kindsOfCollections = [
@@ -26,15 +26,10 @@ const kindsOfCollections = [
         description: 'Checklist of task',
         variant: 'todo',
 
-    },
-    {
-        name: 'Collection',
-        description: 'Collection of collection, each collection has it own type of item',
-        variant: 'collection',
     }
 ]
 
-const ModalCreateCollection: FC<ModalCreateCollectionProps> =
+const NewSubCollectionModal: FC<NewCollectionModalProps> =
     ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 
         const [name, setName] = useState("");
@@ -136,4 +131,4 @@ const ModalCreateCollection: FC<ModalCreateCollectionProps> =
         )
     };
 
-export default ModalCreateCollection;
+export default NewSubCollectionModal;

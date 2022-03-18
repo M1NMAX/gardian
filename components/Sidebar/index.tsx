@@ -12,7 +12,7 @@ import { CollectionInterface } from '../../interfaces';
 import { getUserCollections } from '../../fetch/collections';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
-import ModalCreateCollection from '../ModalCreateCollection';
+import NewCollectionModal from '../NewCollectionModal';
 
 
 const Sidebar: FC = () => {
@@ -73,7 +73,7 @@ const Sidebar: FC = () => {
                 </div>
             </div>
             <Toaster />
-            {open && <ModalCreateCollection open={open} handleClose={closeModal}
+            {open && <NewCollectionModal open={open} handleClose={closeModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
         </div>
     )
