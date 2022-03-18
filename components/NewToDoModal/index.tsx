@@ -1,42 +1,43 @@
 import React, { FC, useState } from 'react';
 import Modal from '../Modal';
-import { CheckIcon } from '@heroicons/react/outline';
 import { NewDocumentModalProps } from '../../interfaces';
+import { BellIcon, CalendarIcon, CheckCircleIcon } from '@heroicons/react/outline';
 import IconBtn from '../IconBtn';
-
 
 const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
-    const [saved, setSaved] = useState(false)
-    const [id, setId] = useState();
-    const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         if (name === "" || name == null) return
-
-        try {
-
-            setSaved(true)
-        } catch (error) {
-            setError("Error")
-        }
-
+        alert(name)
     }
 
 
     return (
-        <Modal title="New ToDo" size="size" open={open} onHide={handleClose} >
-            <div className='mt-2 h-100 space-y-1'>
-                <div className='flex space-x-1'>
-                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value); setSaved(false) }}
-                        placeholder="Name"
-                        className=' grow cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
-                            focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white ' />
-                    <IconBtn icon={<CheckIcon />} onClick={handleSubmit} />
+        <Modal title="New ToDo" open={open} onHide={handleClose} >
+            <form onSubmit={handleSubmit} className="space-y-2">
+                <label className="block">
+                    <span className="w-full">Name</span>
+                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
+                        placeholder="ToDo name"
+                        className='modal-input' />
+                </label>
+                <div className='flex items-center space-x-2'>
+                    <IconBtn icon={<CheckCircleIcon />}  />
+                    <IconBtn icon={<CalendarIcon />} />
+                    <IconBtn icon={<BellIcon />} />
                 </div>
 
-            </div>
+                <div className="flex justify-end space-x-2">
+                    <button onClick={handleClose} className="modal-neutral-btn">
+                        Cancel
+                    </button>
+                    <button  className="modal-positive-btn">
+                        Create
+                    </button>
+                </div>
+            </form>
         </Modal>
     )
 }

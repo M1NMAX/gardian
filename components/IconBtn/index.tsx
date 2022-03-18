@@ -7,7 +7,7 @@ interface IconBtnProps {
     onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, variant, onClick }) => {
+const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, variant = "secondary", onClick }) => {
     return (
         <button onClick={onClick} className={`btn btn-${variant}`}>
             <span className='icon-sm'>

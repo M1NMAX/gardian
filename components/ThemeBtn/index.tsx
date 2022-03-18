@@ -8,12 +8,11 @@ const ThemeBtn: FC = () => {
     const handleMode = () => setDarkTheme(!darkTheme);
     return (
         <button onClick={handleMode}
-            className='flex justify-center items-center  dark:text-white
-            rounded-md  hover:bg-green-400  dark:hover:bg-green-400' >
+            className='btn btn-secondary' >
             {darkTheme ? (
-                <SunIcon className='icon-lg icon-animation' />
+                <SunIcon className='icon-md' />
             ) : (
-                <MoonIcon className='icon-lg icon-animation' />
+                <MoonIcon className='icon-md' />
             )}
         </button>
     );
