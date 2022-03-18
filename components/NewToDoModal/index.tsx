@@ -3,13 +3,11 @@ import Modal from '../Modal';
 import { NewDocumentModalProps } from '../../interfaces';
 import { BellIcon, CalendarIcon } from '@heroicons/react/outline';
 import { BadgeCheckIcon } from '@heroicons/react/solid';
-import DatePicker from "react-datepicker";
 
 const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
     const [hasReminder, setHasReminder] = useState(false);
-    const [showCalendar, setShowCalendar] = useState(false);
-    const [conclusionDate, setConclusionDate] = useState(new Date());
+    const [conclusionDate, setConclusionDate] = useState("");
     console.log(conclusionDate)
 
 
@@ -30,24 +28,19 @@ const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
                         className='modal-input' />
                 </label>
 
-                <div className='flex items-start space-x-2'>
-                    <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setHasReminder(!hasReminder)}>
-                        <BellIcon className='icon-md' />
-                        {hasReminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
-                    </button>
-                    <button key={2} type="button" className='relative btn btn-secondary' onClick={() => setShowCalendar(true)}>
-                        <CalendarIcon className='icon-md' />
-                    </button>
-                    {showCalendar &&
-                    <div className={`'flex justify-center'`}>
-                        <DatePicker selected={conclusionDate}
-                            onChange={(date: Date) => { setConclusionDate(date), setShowCalendar(false) }}
-                            inline  dateFormat="yyyy-MM-dd" />
-                    </div>
-                }
-                </div>
+                <label className='block' >
+                    <span className='w-full'> Conclusion date </span>
+                    <input type='date' name='ConclusionDate' value={conclusionDate} onChange={(e) => setConclusionDate(e.target.value)} className='modal-input' />
+                </label>
+                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setHasReminder(!hasReminder)}>
+                    <BellIcon className='icon-md' />
+                    {hasReminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
+                </button>
 
-               
+
+
+
+
 
 
                 <div className="flex justify-end space-x-2">
