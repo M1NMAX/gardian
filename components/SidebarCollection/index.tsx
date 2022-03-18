@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import Link from 'next/link';
 import { ChevronRightIcon, DotsHorizontalIcon, PlusIcon } from '@heroicons/react/outline';
+import { useRouter } from 'next/router';
 
 
 interface SidebarCollectionProps {
@@ -9,8 +10,14 @@ interface SidebarCollectionProps {
 }
 
 const SidebarCollection: FC<SidebarCollectionProps> = ({ name, id }) => {
+  const router = useRouter();
+  const { id: urlId } = router.query;
+
+
+
   return (
-    <div className='w-full pl-1 pr-3 justify-between btn hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 font-medium  group '>
+    <div className={`${id === urlId && 'border-l-4 border-green-400 text-green-400 '} 
+      w-full pl-1 pr-3 justify-between btn hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 font-medium  group `}>
       <div className='flex items-center grow truncate'>
         <button>
           <ChevronRightIcon className='icon-xs' />
