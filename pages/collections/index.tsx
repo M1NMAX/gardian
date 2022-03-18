@@ -39,7 +39,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 <div className='flex justify-between items-center'>
 
                     <div className='flex items-center space-x-2'>
-                        {!sidebar && <IconBtn icon={<MenuAlt2Icon />} onClick={() => setSidebar(true)} />}
+                        {!sidebar && <IconBtn icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
                         <h1 className='font-semibold text-xl'>Collections </h1>
                     </div>
                     <button onClick={openModal} className='btn btn-primary'>New</button>

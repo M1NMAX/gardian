@@ -3,13 +3,14 @@ import React, { FC } from 'react';
 interface IconBtnProps {
     icon: JSX.Element,
     tooltipText?: string,
+    variant?: "primary" | "secondary",
     onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, onClick }) => {
+const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, variant, onClick }) => {
     return (
-        <button onClick={onClick} className='btn btn-secondary'>
-            <span className='icon-md'>
+        <button onClick={onClick} className={`btn btn-${variant}`}>
+            <span className='icon-sm'>
                 {icon}
             </span>
             <span>

@@ -75,7 +75,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       <div className='flex justify-between items-center'>
 
         <div className='flex items-center space-x-2'>
-          {!sidebar && <IconBtn icon={<MenuAlt2Icon />} onClick={() => setSidebar(true)} />}
+          {!sidebar && <IconBtn icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
           <h1 className='space-x-0.5 text-xl'>
             <span>
               <Link href='/collections'>
@@ -93,7 +93,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         <div className='flex items-center space-x-1'>
           <button onClick={handleNewClick}
             className='btn btn-primary'>New</button>
-          <button className='btn btn-primary'><PencilIcon className='icon-sm' /></button>
+          <IconBtn icon={<PencilIcon />} variant="primary" />
         </div>
       </div>
 

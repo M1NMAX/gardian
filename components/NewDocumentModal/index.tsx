@@ -34,7 +34,7 @@ const NewDocumentModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
                         placeholder="Name"
                         className=' grow cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
                             focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white ' />
-                    <IconBtn icon={<CheckIcon/>} onClick={handleSubmit}/>
+                    <IconBtn icon={<CheckIcon/>} variant="primary" onClick={handleSubmit}/>
                 </div>
 
             </div>

@@ -49,14 +49,14 @@ const Sidebar: FC = () => {
 
                 <div className='flex justify-between '>
                     <SidebarUserOptions />
-                    <IconBtn icon={<ChevronDoubleLeftIcon />} onClick={() => setSidebar(false)} />
+                    <IconBtn icon={<ChevronDoubleLeftIcon />} variant="secondary" onClick={() => setSidebar(false)} />
                 </div>
 
                 <SidebarBtn icon={<SearchIcon />} text="Quick search" />
 
                 <div className='flex justify-between items-center'>
                     <SidebarBtn icon={<CollectionIcon />} text="Collections" />
-                    <IconBtn icon={<PlusIcon />} onClick={openModal} />
+                    <IconBtn icon={<PlusIcon />} variant="secondary" onClick={openModal} />
                 </div>
 
                 <div className='flex flex-col sidebarCollections-height w-full overflow-y-auto 
