@@ -13,9 +13,12 @@ import { getUserCollections } from '../../fetch/collections';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
+import { useRouter } from 'next/router';
 
 
 const Sidebar: FC = () => {
+    const router = useRouter();
+    const { id } = router.query;
 
     const { data, error, isError, isLoading } =
         useQuery<CollectionInterface[], Error>('collections', getUserCollections);
@@ -55,7 +58,8 @@ const Sidebar: FC = () => {
                 <SidebarBtn icon={<SearchIcon />} text="Quick search" />
 
                 <div className='flex justify-between items-center'>
-                    <SidebarBtn icon={<CollectionIcon />} text="Collections" />
+                    <SidebarBtn icon={<CollectionIcon />} text="Collections"
+                        onClick={() => router.push('/collections')} />
                     <IconBtn icon={<PlusIcon />} variant="secondary" onClick={openModal} />
                 </div>
 
