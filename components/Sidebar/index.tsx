@@ -59,7 +59,7 @@ const Sidebar: FC = () => {
                     <IconBtn icon={<PlusIcon />} variant="secondary" onClick={openModal} />
                 </div>
 
-                <div className='flex flex-col sidebarCollections-height w-full overflow-y-auto 
+                <div className='flex flex-col space-y-1 sidebarCollections-height w-full overflow-y-auto 
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
                     {data?.map((collection, idx: number) => (
                         <SidebarCollection key={idx} name={collection.name} id={collection._id} />

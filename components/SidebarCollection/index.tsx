@@ -16,25 +16,18 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ name, id }) => {
 
 
   return (
-    <div className={`${id === urlId && 'border-l-4 border-green-400 text-green-400 '} 
-      w-full pl-1 pr-3 justify-between btn hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 font-medium  group `}>
-      <div className='flex items-center grow truncate'>
-        <button>
-          <ChevronRightIcon className='icon-xs' />
-        </button>
+    <div className='pl-1 pr-3'>
+      <div className={`${id === urlId && 'border-l-4 border-green-400 text-green-400 '} 
+        flex items-center justify-between w-full  px-1.5 py-1
+       hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 
+        font-semibold  rounded-sm group `}>
+
         <Link href={`/collections/${id}`}>
-          <a className='grow'>
-            <span>
-              {name}
-            </span>
+          <a className='grow truncate'>
+            {name}
           </a>
         </Link>
-      </div>
-      <div className='invisible group-hover:visible flex items-center space-x-1 w-fit '>
-        <button>
-          <PlusIcon className='icon-xs' />
-        </button>
-        <button>
+        <button className='md:invisible md:group-hover:visible btn btn-secodary'>
           <DotsHorizontalIcon className='icon-xs' />
         </button>
       </div>
