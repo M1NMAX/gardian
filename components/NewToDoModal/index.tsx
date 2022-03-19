@@ -1,20 +1,34 @@
 import React, { FC, useState } from 'react';
 import Modal from '../Modal';
-import { NewDocumentModalProps } from '../../interfaces';
-import { BellIcon, CalendarIcon } from '@heroicons/react/outline';
+import { NewTodoModalProps } from '../../interfaces';
+import { BellIcon } from '@heroicons/react/outline';
 import { BadgeCheckIcon } from '@heroicons/react/solid';
+import { useRouter } from 'next/router';
+import { createTask } from '../../fetch/todos';
 
-const NewToDoModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
+const NewToDoModal: FC<NewTodoModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+
+    const router = useRouter();
+    const { id } = router.query;
     const [name, setName] = useState("");
     const [hasReminder, setHasReminder] = useState(false);
     const [conclusionDate, setConclusionDate] = useState("");
-    console.log(conclusionDate)
 
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (name === "" || name == null) return
-        alert(name)
+        if (name === "" || name == null) return;
+        if (id === "" || id == null) return;
+        try {
+
+            await createTask(id.toString(), name, hasReminder, conclusionDate);
+            positiveFeedback("Task created successfully");
+            handleClose();
+
+        } catch (error) {
+            negativeFeedback();
+        }
+
     }
 
 

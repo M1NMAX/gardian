@@ -112,10 +112,12 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
 
       {newDocumentModal && <NewDocumentModal open={newDocumentModal} handleClose={closeNewDocumentModal} />}
 
-      {newToDoModal && <NewToDoModal open={newToDoModal} handleClose={closeNewToDoModal} />}
-
-      {newSubCollectionModal && <NewSubCollectionModal open={newSubCollectionModal} handleClose={closeNewSubCollectionModal}
+      {newToDoModal && <NewToDoModal open={newToDoModal} handleClose={closeNewToDoModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
+
+      {newSubCollectionModal && <NewSubCollectionModal open={newSubCollectionModal}
+        handleClose={closeNewSubCollectionModal} positiveFeedback={positiveFeedback}
+        negativeFeedback={negativeFeedback} />}
 
     </>
   )
