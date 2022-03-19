@@ -11,6 +11,8 @@ import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewToDoModal from '../NewToDoModal';
 import NewSubCollectionModal from '../NewSubCollectionModal';
+import Documents from '../Documents';
+import Todos from '../Todos';
 
 
 const Collection: FC<CollectionProps> = ({ collection }) => {
@@ -23,7 +25,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
 
   let handleNewClick = (): void => { };
   let handleEditClick = () => null;
-  let ContentComponent = () => null;
+  let ItemsComponent = (): JSX.Element => (<> </>);
 
   // New Simple Item Modal
   const [newSimpleItemModal, setSimpleItemModal] = useState(false);
@@ -61,9 +63,11 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       break;
     case 'document':
       handleNewClick = openNewDocumentModal;
+      ItemsComponent = Documents;
       break;
     case 'todo':
       handleNewClick = openNewToDoModal;
+      ItemsComponent = Todos;
       break;
     case 'collection':
       handleNewClick = openNewSubCollectionModal;
@@ -97,11 +101,8 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         </div>
       </div>
 
-      <div className='flex space-x-2'>
-        <span>
-          {collection.variant}
-        </span>
-        <span>{collection.owner_id}</span>
+      <div className='h-full'>
+        <ItemsComponent />
       </div>
       <Toaster />
 
