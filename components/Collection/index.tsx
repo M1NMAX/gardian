@@ -11,8 +11,11 @@ import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewToDoModal from '../NewToDoModal';
 import NewSubCollectionModal from '../NewSubCollectionModal';
+import SimpleItems from '../SimpleItems';
+import Events from '../Events';
 import Documents from '../Documents';
 import Todos from '../Todos';
+import SubCollections from '../SubCollections';
 
 
 const Collection: FC<CollectionProps> = ({ collection }) => {
@@ -57,9 +60,11 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   switch (collection.variant) {
     case 'simple':
       handleNewClick = openNewSimpleItemModal;
+      ItemsComponent = SimpleItems;
       break;
     case 'event':
       handleNewClick = openNewEventModal;
+      ItemsComponent = Events;
       break;
     case 'document':
       handleNewClick = openNewDocumentModal;
@@ -71,6 +76,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       break;
     case 'collection':
       handleNewClick = openNewSubCollectionModal;
+      ItemsComponent = SubCollections;
       break;
   }
 
