@@ -14,6 +14,7 @@ import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
 import { useRouter } from 'next/router';
+import Logo from '../Logo';
 
 
 const Sidebar: FC = () => {
@@ -66,13 +67,15 @@ const Sidebar: FC = () => {
                 <div className='flex flex-col space-y-1 sidebarCollections-height w-full overflow-y-auto 
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
                     {data?.map((collection, idx: number) => (
-                        <SidebarCollection key={idx} name={collection.name} id={collection._id} />
+                        <SidebarCollection key={idx} id={collection._id} name={collection.name}
+                            variant={collection.variant} />
                     ))}
                     {isLoading && <span>Loading...</span>}
                     {isError && <span>Error: {error.message}</span>}
                 </div>
 
-                <div className='absolute bottom-1'>
+                <div className='absolute bottom-1 w-full px-2 flex justify-between items-center '>
+                    <Logo />
                     <ThemeBtn />
                 </div>
             </div>

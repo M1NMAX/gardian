@@ -12,7 +12,7 @@ const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeed
     const [name, setName] = useState("");
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
-    const [note, setNote] = useState("");
+    const [description, setDescription] = useState("");
 
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -21,12 +21,10 @@ const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeed
             || date === "" || date == null || time === "" || time == null) return
 
         try {
-
-
             setName("");
             setDate("");
             setTime("");
-            setNote("")
+            setDescription("")
             handleClose();
             positiveFeedback("Event created successfully")
         } catch (error) {
@@ -63,8 +61,8 @@ const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeed
                 </div>
 
                 <label className="flex flex-col w-full mt-1">
-                    <p className='text-sm'> Note about the event ({note.length}/200)</p>
-                    <textarea name='miniNote' value={note} onChange={(e) => setNote(e.target.value)}
+                    <p className='text-sm'> Description ({description.length}/200)</p>
+                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
                         className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
                 </label>
