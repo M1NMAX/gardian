@@ -8,6 +8,19 @@ export interface CollectionInterface {
     createdAt?: Date;
 }
 
+export interface EventInterface {
+    _id?: number,
+    userId: string,
+    collectionId: Types.ObjectId,
+    name: string,
+    date: string,
+    time?: string,
+    reminder?:boolean,
+    description?: string,
+    updatedAt?:Date,
+    createdAt?:Date,
+}
+
 export interface TodoInterface {
     _id?: number,
     name: string;

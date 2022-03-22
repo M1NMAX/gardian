@@ -27,7 +27,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
 
 
   let handleNewClick = (): void => { };
-  let handleEditClick = () => null;
+  let handleEditClick = (): void => { };
   let ItemsComponent = (): JSX.Element => (<> </>);
 
   // New Simple Item Modal
