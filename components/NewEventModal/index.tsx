@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
 import { NewEventModalProps } from '../../interfaces';
 import Modal from '../Modal';
+import { createEvent } from '../../fetch/events';
+import { BadgeCheckIcon, BellIcon } from '@heroicons/react/outline';
 
 
 const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
@@ -13,18 +15,16 @@ const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeed
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [description, setDescription] = useState("");
+    const [reminder, setReminder] = useState(false);
 
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (id === "" || id == null || name === "" || name == null
-            || date === "" || date == null || time === "" || time == null) return
+        if (id === "" || id == null) return;
+        if (name === "" || name == null || date === "" || date == null) return;
 
         try {
-            setName("");
-            setDate("");
-            setTime("");
-            setDescription("")
+            await createEvent(id.toString(), name, date, time, description, reminder);
             handleClose();
             positiveFeedback("Event created successfully")
         } catch (error) {
@@ -66,6 +66,11 @@ const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeed
                         rows={4} maxLength={200}
                         className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
                 </label>
+
+                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setReminder(!reminder)}>
+                    <BellIcon className='icon-md' />
+                    {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
+                </button>
 
 
                 <div className="flex justify-end space-x-2 mt-2">
