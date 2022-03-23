@@ -54,11 +54,15 @@ export interface SidebarBtnProps {
 }
 
 
-export interface NewCollectionModalProps {
+interface ModalProps {
     open: boolean,
-    handleClose: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void,
+    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
     positiveFeedback: (value: string) => void,
     negativeFeedback: () => void,
+}
+export interface NewCollectionModalProps extends ModalProps {
+    isSub: boolean,
+    collectionId: string | null,
 }
 
 export interface NewEventModalProps {

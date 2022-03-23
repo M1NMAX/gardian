@@ -55,8 +55,9 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 </div>
             </main>
             <Toaster />
-            {open && <NewCollectionModal open={open} handleClose={closeModal}
-                positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
+            {open && <NewCollectionModal open={open} isSub={false} collectionId={null}
+                handleClose={closeModal} positiveFeedback={positiveFeedback}
+                negativeFeedback={negativeFeedback} />}
         </>
     )
 }

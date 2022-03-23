@@ -20,6 +20,10 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: Boolean,
         required: true
     },
+    collectionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Collection'
+    },
     updatedAt: {
         type: Date,
         default: Date.now,

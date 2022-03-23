@@ -10,7 +10,7 @@ import NewSimpleItemModal from '../NewSimpleItemModal';
 import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewToDoModal from '../NewToDoModal';
-import NewSubCollectionModal from '../NewSubCollectionModal';
+import NewCollectionModal from '../NewCollectionModal';
 import SimpleItems from '../SimpleItems';
 import Events from '../Events';
 import Documents from '../Documents';
@@ -51,9 +51,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   const openNewToDoModal = () => (setNewToDoModal(true));
 
   // New SubCollection Modal
-  const [newSubCollectionModal, setNewSubCollectionModal] = useState(false);
-  const closeNewSubCollectionModal = () => (setNewSubCollectionModal(false));
-  const openNewSubCollectionModal = () => (setNewSubCollectionModal(true));
+  const [newCollectionModal, setSubCollectionModal] = useState(false);
+  const closeNewCollectionModal = () => (setSubCollectionModal(false));
+  const openNewCollectionModal = () => (setSubCollectionModal(true));
 
 
 
@@ -75,7 +75,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       ItemsComponent = Todos;
       break;
     case 'collection':
-      handleNewClick = openNewSubCollectionModal;
+      handleNewClick = openNewCollectionModal;
       ItemsComponent = SubCollections;
       break;
   }
@@ -122,8 +122,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       {newToDoModal && <NewToDoModal open={newToDoModal} handleClose={closeNewToDoModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
-      {newSubCollectionModal && <NewSubCollectionModal open={newSubCollectionModal}
-        handleClose={closeNewSubCollectionModal} positiveFeedback={positiveFeedback}
+      {newCollectionModal && collection._id && <NewCollectionModal open={newCollectionModal}
+        isSub={true} collectionId={collection._id?.toString()}
+        handleClose={closeNewCollectionModal} positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
 
     </>

@@ -8,11 +8,11 @@ export async function getUserCollections(): Promise<CollectionInterface[]> {
     return res.json().then(response => response.data);
 }
 
-export async function createCollection(name: string, variant: string, isSub: boolean): Promise<CollectionInterface> {
+export async function createCollection(name: string, variant: string, isSub: boolean, collectionId: string | null): Promise<CollectionInterface> {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, variant, isSub })
+        body: JSON.stringify({ name, variant, isSub, collectionId })
     };
     const res = await fetch(apiBaseUrl + '/collections', requestOptions);
     return res.json().then(response => response.data);

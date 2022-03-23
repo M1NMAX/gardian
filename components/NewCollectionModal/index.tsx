@@ -35,18 +35,16 @@ const kindsOfCollections = [
 ]
 
 const NewCollectionModal: FC<NewCollectionModalProps> =
-    ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+    ({ open, isSub, collectionId, handleClose, positiveFeedback, negativeFeedback }) => {
 
         const [name, setName] = useState("");
         const [selectedVariant, setSelectedVariant] = useState(kindsOfCollections[0].variant)
-        console.log(selectedVariant)
-
         const handleSubmit = async (e: React.SyntheticEvent) => {
             e.preventDefault();
             try {
-                await createCollection(name, selectedVariant, false);
+                await createCollection(name, selectedVariant, isSub, collectionId);
                 positiveFeedback("Collection created successfully");
-                handleClose(false);
+                handleClose();
             } catch (error) {
                 negativeFeedback();
             }

@@ -12,6 +12,10 @@ const DocumentSchema = new Schema<DocumentInterface>({
         type: String,
         required: true,
     },
+    collectionId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Collection'
+    },
     content: {
         type: String,
         required: true,
