@@ -9,7 +9,7 @@ import IconBtn from '../IconBtn';
 import NewSimpleItemModal from '../NewSimpleItemModal';
 import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
-import NewToDoModal from '../NewToDoModal';
+import NewTodoModal from '../NewTodoModal';
 import NewCollectionModal from '../NewCollectionModal';
 import SimpleItems from '../SimpleItems';
 import Events from '../Events';
@@ -46,9 +46,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   const openNewDocumentModal = () => (setNewDocumentModal(true));
 
   // New ToDo Modal
-  const [newToDoModal, setNewToDoModal] = useState(false);
-  const closeNewToDoModal = () => (setNewToDoModal(false));
-  const openNewToDoModal = () => (setNewToDoModal(true));
+  const [newTodoModal, setNewTodoModal] = useState(false);
+  const closeNewTodoModal = () => (setNewTodoModal(false));
+  const openNewTodoModal = () => (setNewTodoModal(true));
 
   // New SubCollection Modal
   const [newCollectionModal, setSubCollectionModal] = useState(false);
@@ -71,7 +71,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       ItemsComponent = Documents;
       break;
     case 'todo':
-      handleNewClick = openNewToDoModal;
+      handleNewClick = openNewTodoModal;
       ItemsComponent = Todos;
       break;
     case 'collection':
@@ -112,14 +112,16 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       </div>
       <Toaster />
 
-      {newSimpleItemModal && <NewSimpleItemModal open={newSimpleItemModal} handleClose={closeNewSimpleItemModal} />}
+      {newSimpleItemModal && <NewSimpleItemModal open={newSimpleItemModal} handleClose={closeNewSimpleItemModal}
+        positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
       {newEventModal && <NewEventModal open={newEventModal} handleClose={closeNewEventModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
-      {newDocumentModal && <NewDocumentModal open={newDocumentModal} handleClose={closeNewDocumentModal} />}
+      {newDocumentModal && <NewDocumentModal open={newDocumentModal} handleClose={closeNewDocumentModal}
+        positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
-      {newToDoModal && <NewToDoModal open={newToDoModal} handleClose={closeNewToDoModal}
+      {newTodoModal && <NewTodoModal open={newTodoModal} handleClose={closeNewTodoModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
       {newCollectionModal && collection._id && <NewCollectionModal open={newCollectionModal}
