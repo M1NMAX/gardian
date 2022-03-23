@@ -54,7 +54,7 @@ export interface SidebarBtnProps {
 }
 
 
-interface ModalProps {
+export interface ModalProps {
     open: boolean,
     handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
     positiveFeedback: (value: string) => void,
@@ -63,24 +63,6 @@ interface ModalProps {
 export interface NewCollectionModalProps extends ModalProps {
     isSub: boolean,
     collectionId: string | null,
-}
-
-export interface NewEventModalProps {
-    open: boolean,
-    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
-    positiveFeedback: (value: string) => void,
-    negativeFeedback: () => void,
-}
-export interface NewDocumentModalProps {
-    open: boolean,
-    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
-}
-
-export interface NewTodoModalProps {
-    open: boolean,
-    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
-    positiveFeedback: (value: string) => void,
-    negativeFeedback: () => void,
 }
 
 export interface DocumentStatusProps {

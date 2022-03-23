@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react';
 import Modal from '../Modal';
-import { NewTodoModalProps } from '../../interfaces';
+import { ModalProps } from '../../interfaces';
 import { BellIcon } from '@heroicons/react/outline';
 import { BadgeCheckIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import { createTask } from '../../fetch/todos';
 
-const NewToDoModal: FC<NewTodoModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+const NewToDoModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 
     const router = useRouter();
     const { id } = router.query;

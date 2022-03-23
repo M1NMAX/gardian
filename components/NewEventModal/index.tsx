@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
-import { NewEventModalProps } from '../../interfaces';
 import Modal from '../Modal';
+import { ModalProps } from '../../interfaces';
 import { createEvent } from '../../fetch/events';
 import { BadgeCheckIcon, BellIcon } from '@heroicons/react/outline';
 
 
-const NewEventModal: FC<NewEventModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+const NewEventModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 
     const router = useRouter();
     const { id } = router.query;

@@ -2,11 +2,11 @@ import React, { FC, useState } from 'react';
 import Modal from '../Modal';
 import { CheckIcon } from '@heroicons/react/outline';
 import DocumentStatus from '../DocumentStatus';
-import { NewDocumentModalProps } from '../../interfaces';
+import { ModalProps } from '../../interfaces';
 import IconBtn from '../IconBtn';
 
 
-const NewDocumentModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
+const NewDocumentModal: FC<ModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
     const [saved, setSaved] = useState(false)
     const [id, setId] = useState();
@@ -34,7 +34,7 @@ const NewDocumentModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
                         placeholder="Name"
                         className=' grow cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
                             focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white ' />
-                    <IconBtn icon={<CheckIcon/>} variant="primary" onClick={handleSubmit}/>
+                    <IconBtn icon={<CheckIcon />} variant="primary" onClick={handleSubmit} />
                 </div>
 
             </div>

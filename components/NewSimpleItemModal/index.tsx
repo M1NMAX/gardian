@@ -1,7 +1,7 @@
 import React, { FC, Fragment, useState } from 'react';
 import Modal from '../Modal';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
-import { NewDocumentModalProps } from '../../interfaces';
+import { ModalProps } from '../../interfaces';
 import { Combobox, Transition } from '@headlessui/react';
 
 
@@ -13,7 +13,7 @@ const possibleStatus = [
     { id: 5, name: 'Started' },
 ]
 
-const NewSimpleItemModal: FC<NewDocumentModalProps> = ({ open, handleClose }) => {
+const NewSimpleItemModal: FC<ModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
 
 
