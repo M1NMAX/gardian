@@ -16,7 +16,7 @@ export default withApiAuthRequired(
         switch (method) {
             case 'GET':
                 try {
-                    const collections = await Collection.find({ owner_id: user?.sub }).sort({ createdAt: -1 });
+                    const collections = await Collection.find({ userId: user?.sub }).sort({ createdAt: -1 });
                     res.status(200).json({ isSuccess: true, data: collections });
                 } catch (error) {
                     res.status(400).json({ isSuccess: false });
@@ -24,12 +24,7 @@ export default withApiAuthRequired(
                 break;
             case 'POST':
                 try {
-                    const data = {
-                        name: req.body.name,
-                        variant: req.body.variant,
-                        owner_id: user?.sub
-                    }
-                    const collection = await Collection.create(data);
+                    const collection = await Collection.create({ ...req.body, userId: user?.sub });
                     res.status(201).json({ isSuccess: true, data: collection });
                 } catch (error) {
                     res.status(400).json({ isSuccess: false });

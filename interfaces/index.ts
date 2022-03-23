@@ -1,45 +1,43 @@
-import { Types } from 'mongoose'
-export interface CollectionInterface {
+import { Types } from 'mongoose';
+
+//Schemas
+interface basicSchema {
     _id?: number,
-    name: string;
-    owner_id: string,
+    name: string,
+    userId: string,
+    collectionId: Types.ObjectId | null,
+    createdAt?: Date,
+    updatedAt?: Date,
+}
+export interface CollectionInterface extends basicSchema {
     variant: string,
-    updatedAt?: Date;
-    createdAt?: Date;
+    isSub: boolean,
 }
 
-export interface EventInterface {
-    _id?: number,
-    userId: string,
-    collectionId: Types.ObjectId,
-    name: string,
+export interface EventInterface extends basicSchema {
     date: string,
     time?: string,
-    reminder?:boolean,
+    reminder?: boolean,
     description?: string,
-    updatedAt?:Date,
-    createdAt?:Date,
 }
 
-export interface TodoInterface {
-    _id?: number,
-    name: string;
-    userId: string,
+
+export interface DocumentInterface extends basicSchema {
+    content: string
+}
+
+export interface SubCollectionInterface extends basicSchema {
+    variant: string,
     collectionId: Types.ObjectId,
+}
+
+export interface TodoInterface extends basicSchema {
     isConcluded?: boolean,
     conclusionDate?: string,
     reminder?: boolean,
-    updatedAt?: Date;
-    createdAt?: Date;
 }
 
-
-export interface DocumentInterface {
-    name: string;
-    updatedAt?: Date;
-    createdAt?: Date;
-}
-
+//Components props
 export interface CollectionProps {
     collection: CollectionInterface,
 }

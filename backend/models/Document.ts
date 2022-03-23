@@ -1,7 +1,7 @@
-import { Schema, model, models } from 'mongoose';
-import { CollectionInterface } from '../../interfaces';
+import { Schema, model, models } from "mongoose";
+import { DocumentInterface } from "../../interfaces";
 
-const CollectionSchema = new Schema<CollectionInterface>({
+const DocumentSchema = new Schema<DocumentInterface>({
     name: {
         type: String,
         required: true,
@@ -12,13 +12,9 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: String,
         required: true,
     },
-    variant: {
+    content: {
         type: String,
         required: true,
-    },
-    isSub: {
-        type: Boolean,
-        required: true
     },
     updatedAt: {
         type: Date,
@@ -29,5 +25,7 @@ const CollectionSchema = new Schema<CollectionInterface>({
         default: Date.now,
 
     }
-})
-export default models.Collection || model<CollectionInterface>('Collection', CollectionSchema);
+
+});
+
+export default models.Document || model<DocumentInterface>('Document', DocumentSchema);

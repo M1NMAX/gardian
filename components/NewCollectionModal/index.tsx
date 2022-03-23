@@ -44,7 +44,7 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
         const handleSubmit = async (e: React.SyntheticEvent) => {
             e.preventDefault();
             try {
-                await createCollection(name, selectedVariant);
+                await createCollection(name, selectedVariant, false);
                 positiveFeedback("Collection created successfully");
                 handleClose(false);
             } catch (error) {
