@@ -13,7 +13,7 @@ const possibleStatus = [
     { id: 5, name: 'Started' },
 ]
 
-const NewSimpleItemModal: FC<ModalProps> = ({ open, handleClose }) => {
+const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose }) => {
     const [name, setName] = useState("");
 
 
@@ -130,4 +130,4 @@ const NewSimpleItemModal: FC<ModalProps> = ({ open, handleClose }) => {
     )
 }
 
-export default NewSimpleItemModal;
+export default NewCustomItemModal;

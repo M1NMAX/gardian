@@ -14,12 +14,6 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
   const router = useRouter();
   const { id: urlId } = router.query;
 
-  const handleVariantName = (variant: string): string => {
-    if (variant !== 'simple') return variant + 's';
-    return 'generic items';
-  }
-
-
 
   return (
     <div className='pl-1 pr-2.5'>
@@ -33,7 +27,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
             <span>
               {name}
             </span>
-            <span className='text-xs font-light'> {handleVariantName(variant)}</span>
+            <span className='text-xs font-light'> {variant}s</span>
           </a>
         </Link>
         <button className='md:invisible md:group-hover:visible btn btn-secodary'>

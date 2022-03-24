@@ -7,9 +7,9 @@ import { createCollection } from "../../fetch/collections";
 
 const kindsOfCollections = [
     {
-        name: 'Simple',
-        description: 'Collection of generic items that can be group by status',
-        variant: 'simple',
+        name: 'Custom',
+        description: 'Collection of custom items that can be group by status, and can have new property on-the-fly',
+        variant: 'custom',
     },
     {
         name: 'Events',

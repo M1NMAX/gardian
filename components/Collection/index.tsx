@@ -6,12 +6,12 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { CollectionProps } from '../../interfaces';
 import IconBtn from '../IconBtn';
-import NewSimpleItemModal from '../NewSimpleItemModal';
+import NewCustomItemModal from '../NewCustomItemModal';
 import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewTodoModal from '../NewTodoModal';
 import NewCollectionModal from '../NewCollectionModal';
-import SimpleItems from '../SimpleItems';
+import Customs from '../Customs';
 import Events from '../Events';
 import Documents from '../Documents';
 import Todos from '../Todos';
@@ -31,9 +31,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   let ItemsComponent = (): JSX.Element => (<> </>);
 
   // New Simple Item Modal
-  const [newSimpleItemModal, setSimpleItemModal] = useState(false);
-  const closeNewSimpleItemModal = () => (setSimpleItemModal(false));
-  const openNewSimpleItemModal = () => (setSimpleItemModal(true));
+  const [newCustomItemModal, setNewCustomItemModal] = useState(false);
+  const closeNewCustomItemModal = () => (setNewCustomItemModal(false));
+  const openNewCustomItemModal = () => (setNewCustomItemModal(true));
 
   // New Event Modal
   const [newEventModal, setNewEventModal] = useState(false);
@@ -58,9 +58,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
 
 
   switch (collection.variant) {
-    case 'simple':
-      handleNewClick = openNewSimpleItemModal;
-      ItemsComponent = SimpleItems;
+    case 'custom':
+      handleNewClick = openNewCustomItemModal;
+      ItemsComponent = Customs;
       break;
     case 'event':
       handleNewClick = openNewEventModal;
@@ -112,7 +112,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       </div>
       <Toaster />
 
-      {newSimpleItemModal && <NewSimpleItemModal open={newSimpleItemModal} handleClose={closeNewSimpleItemModal}
+      {newCustomItemModal && <NewCustomItemModal open={newCustomItemModal} handleClose={closeNewCustomItemModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
       {newEventModal && <NewEventModal open={newEventModal} handleClose={closeNewEventModal}

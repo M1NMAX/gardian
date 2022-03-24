@@ -4,11 +4,6 @@ import { CollectionOverviewProps } from '../../interfaces';
 
 
 const Collecion: FC<CollectionOverviewProps> = ({ collection }) => {
-
-    const handleVariantName = (variant: string): string => {
-        if (variant !== 'simple') return variant + 's';
-        return 'generic items';
-    }
     return (
         <div className='flex flex-col p-2  text-xl shadow-md border
             rounded-sm bg-white dark:bg-gray-900'>
@@ -19,7 +14,7 @@ const Collecion: FC<CollectionOverviewProps> = ({ collection }) => {
             </Link>
             <span className='w-fit px-1 font-medium text-xs uppercase
             rounded border bg-gray-200  dark:bg-gray-700'>
-                {handleVariantName(collection.variant)}
+                {collection.variant}s
             </span>
             <span className='text-xs font-light italic'>
                 {collection.updatedAt ?
