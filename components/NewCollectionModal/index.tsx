@@ -66,7 +66,7 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
                         <RadioGroup value={selectedVariant} onChange={setSelectedVariant}>
                             <RadioGroup.Label>Type of collection</RadioGroup.Label>
                             <div className="space-y-1">
-                                {kindsOfCollections.map((kind) => (
+                                {kindsOfCollections.slice(0, isSub ? 4 : 5).map((kind) => (
                                     <RadioGroup.Option
                                         key={kind.name}
                                         value={kind.variant}
