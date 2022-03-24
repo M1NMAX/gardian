@@ -19,7 +19,7 @@ const Collecion: FC<CollectionOverviewProps> = ({ collection }) => {
             </Link>
             <span className='w-fit px-1 font-medium text-xs uppercase
             rounded border bg-gray-200  dark:bg-gray-700'>
-                {handleVariantName(collection.variant)} {collection.isSub?'yes': 'no'}
+                {handleVariantName(collection.variant)}
             </span>
             <span className='text-xs font-light italic'>
                 {collection.updatedAt ?
