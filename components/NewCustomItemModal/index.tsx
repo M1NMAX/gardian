@@ -3,6 +3,8 @@ import Modal from '../Modal';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
 import { ModalProps } from '../../interfaces';
 import { Combobox, Transition } from '@headlessui/react';
+import { createCustomItem } from '../../fetch/customItems';
+import { useRouter } from 'next/router';
 
 
 const possibleStatus = [
@@ -13,11 +15,13 @@ const possibleStatus = [
     { id: 5, name: 'Started' },
 ]
 
-const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose }) => {
+const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+    const router = useRouter();
+    const { id: collectionId } = router.query;
+
     const [name, setName] = useState("");
-
-
-    const [selectedStatus, setSelectedStatus] = useState(possibleStatus[0])
+    const [selectedStatus, setSelectedStatus] = useState(possibleStatus[0]);
+    const [extraProperties, setExtraProperties] = useState<{ name: string, value: string }[]>([])
     const [query, setQuery] = useState('')
 
     const filteredStatus =
@@ -32,8 +36,21 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose }) => {
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (name === "" || name == null) return
-        alert(name + selectedStatus.name);
+        if (collectionId === "" || collectionId == null) return;
+        if (name === "" || name == null) return;
+
+        console.log(typeof extraProperties)
+
+        try {
+
+            const result = await createCustomItem(collectionId.toString(), name, selectedStatus.name);
+            positiveFeedback("Custom Item created successfully");
+            handleClose()
+            console.log(result)
+
+        } catch (error) {
+            negativeFeedback()
+        }
     }
 
 
