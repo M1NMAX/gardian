@@ -21,7 +21,7 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
 
     const [name, setName] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(possibleStatus[0]);
-    const [extraProperties, setExtraProperties] = useState<{ name: string, value: string }[]>([])
+    const [extraProperties, setExtraProperties] = useState<{ name: string, value: string }[]>([{ name: "classfication", value: "ndn" }])
     const [query, setQuery] = useState('')
 
     const filteredStatus =
@@ -42,12 +42,9 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
         console.log(typeof extraProperties)
 
         try {
-
-            const result = await createCustomItem(collectionId.toString(), name, selectedStatus.name);
+            await createCustomItem(collectionId.toString(), name, selectedStatus.name, extraProperties);
             positiveFeedback("Custom Item created successfully");
-            handleClose()
-            console.log(result)
-
+            handleClose();
         } catch (error) {
             negativeFeedback()
         }

@@ -11,7 +11,7 @@ function Documents() {
     const response = await res.json();
     return response.data;
   });
-  console.log(data)
+
 
 
   return (

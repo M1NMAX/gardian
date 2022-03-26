@@ -16,7 +16,7 @@ export interface CollectionInterface extends basicSchema {
 
 export interface CustomItemInterface extends basicSchema {
     status: string,
-    extraProperties?: { name: string, value: string }[],
+    extraProperties?: { _id?: number, name: string, value: string }[],
 }
 
 export interface EventInterface extends basicSchema {
