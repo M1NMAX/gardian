@@ -14,6 +14,11 @@ export interface CollectionInterface extends basicSchema {
     isSub: boolean,
 }
 
+export interface CustomItemInterface extends basicSchema {
+    status: string,
+    extraProperties?: { name: string, value: string }[],
+}
+
 export interface EventInterface extends basicSchema {
     date: string,
     time?: string,
