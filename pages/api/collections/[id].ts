@@ -21,14 +21,12 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
             break;
         case 'PUT':
             try {
-                const data = {
-                    name: req.body.name,
-                    updatedAt: Date.now()
-                }
-                const collection = await Collection.findByIdAndUpdate(id, data, {
-                    new: true,
-                    runValidators: true,
-                });
+                const collection = await Collection.findByIdAndUpdate(id,
+                    { ...req.body, updatedAt: Date.now() },
+                    {
+                        new: true,
+                        runValidators: true,
+                    });
                 if (!collection) return res.status(400).json({ isSuccess: false });
                 res.status(200).json({ isSuccess: true, data: collection });
 

@@ -9,14 +9,29 @@ interface basicSchema {
     createdAt?: Date,
     updatedAt?: Date,
 }
+
+export interface PropertyInCollectionInterface {
+    _id?: number,
+    name: string,
+    type: string,
+    values: string[]
+}
+
+export interface PropertyInItemInterface {
+    _id?: number,
+    name: string,
+    value: string,
+}
+
 export interface CollectionInterface extends basicSchema {
     variant: string,
     isSub: boolean,
+    properties?: PropertyInCollectionInterface[],
 }
 
 export interface CustomItemInterface extends basicSchema {
     status: string,
-    extraProperties?: { _id?: number, name: string, value: string }[],
+    properties?: PropertyInItemInterface[],
 }
 
 export interface EventInterface extends basicSchema {
@@ -51,16 +66,6 @@ export interface CollectionOverviewProps {
     collection: CollectionInterface,
 }
 
-export interface PropertyInCollectionInterface {
-    name: string,
-    type: string,
-    values: string[]
-}
-
-export interface PropertyInItemInterface {
-    name: string,
-    value: string,
-}
 
 export interface SidebarBtnProps {
     icon: JSX.Element,

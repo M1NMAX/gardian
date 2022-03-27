@@ -20,7 +20,7 @@ const CustomItemSchema = new Schema<CustomItemInterface>({
         type: String,
         required: true,
     },
-    extraProperties: [
+    properties: [
         {
             name: {
                 type: String,

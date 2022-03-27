@@ -24,6 +24,23 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: Schema.Types.ObjectId,
         ref: 'Collection'
     },
+    properties: [
+        {
+            name: {
+                type: String,
+                required: true,
+            },
+            type: {
+                type: String,
+                required: true,
+            },
+
+            values: {
+                type: String,
+                required: true,
+            }
+        }
+    ],
     updatedAt: {
         type: Date,
         default: Date.now,
