@@ -3,6 +3,7 @@ import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
+import { updateCollection } from '../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../interfaces'
 import CollectionProperties from '../CollectionProperties';
 import Modal from '../Modal';
@@ -15,7 +16,7 @@ const propertiesTypes = [
 
 
 
-const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose }) => {
+const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
     const router = useRouter();
     const { id: collectionId } = router.query;
 
@@ -28,6 +29,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose }) => {
         const response = await res.json();
         return response.data;
     });
+    console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -40,11 +42,25 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose }) => {
         console.log(properties)
     }
 
+    const handleSubmit = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        if (collectionId === "" || collectionId == null) return;
+        if (name === "" || name == null) return;
+
+        try {
+            const result = await updateCollection(collectionId.toString(), name, properties)
+            positiveFeedback("Custom Item created successfully");
+            handleClose();
+        } catch (error) {
+            negativeFeedback()
+        }
+    }
+
 
 
     return (
         <Modal title="Edit Collection" open={open} onHide={handleClose} >
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label className="block">
                     <span className="w-full">Name</span>
                     <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
@@ -71,7 +87,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose }) => {
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel
                     </button>
-                    <button className="modal-positive-btn">
+                    <button type="submit" className="modal-positive-btn">
                         Update
                     </button>
                 </div>

@@ -1,4 +1,4 @@
-import { CollectionInterface } from "../../interfaces";
+import { CollectionInterface, PropertyInCollectionInterface } from "../../interfaces";
 import { CollectionUpdateData } from "../../types";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -24,11 +24,11 @@ export async function getCollection(id: number): Promise<CollectionInterface> {
 }
 
 
-export async function updateCollection(id: number, data: CollectionUpdateData): Promise<boolean> {
+export async function updateCollection(id: string, name: string, properties: PropertyInCollectionInterface[]): Promise<boolean> {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ name, properties })
     };
     const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
     return res.json().then(response => response.isSuccess);

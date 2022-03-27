@@ -35,10 +35,10 @@ const CollectionSchema = new Schema<CollectionInterface>({
                 required: true,
             },
 
-            values: {
+            values: [{
                 type: String,
                 required: true,
-            }
+            }]
         }
     ],
     updatedAt: {
