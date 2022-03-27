@@ -129,7 +129,6 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
                         </div>
                     </Combobox>
                 </div>
-
                 <div className="flex justify-end space-x-2 mt-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel

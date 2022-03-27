@@ -51,6 +51,16 @@ export interface CollectionOverviewProps {
     collection: CollectionInterface,
 }
 
+export interface PropertyInCollectionInterface {
+    name: string,
+    type: string,
+    values: string[]
+}
+
+export interface PropertyInItemInterface {
+    name: string,
+    value: string,
+}
 
 export interface SidebarBtnProps {
     icon: JSX.Element,

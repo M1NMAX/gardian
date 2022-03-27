@@ -16,6 +16,7 @@ import Events from '../Events';
 import Documents from '../Documents';
 import Todos from '../Todos';
 import SubCollections from '../SubCollections';
+import EditCustomCollectionModal from '../EditCustomCollectionModal';
 
 
 const Collection: FC<CollectionProps> = ({ collection }) => {
@@ -30,10 +31,15 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   let handleEditClick = (): void => { };
   let ItemsComponent = (): JSX.Element => (<> </>);
 
-  // New Simple Item Modal
+  // New Custom Item Modal
   const [newCustomItemModal, setNewCustomItemModal] = useState(false);
   const closeNewCustomItemModal = () => (setNewCustomItemModal(false));
   const openNewCustomItemModal = () => (setNewCustomItemModal(true));
+
+  // Edit Custom Collection Modal
+  const [editCustomCollectionModal, setEditCustomCollectionModal] = useState(false);
+  const closeEditCustomCollectionModal = () => (setEditCustomCollectionModal(false));
+  const openEditCustomCollectionModal = () => (setEditCustomCollectionModal(true));
 
   // New Event Modal
   const [newEventModal, setNewEventModal] = useState(false);
@@ -60,6 +66,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   switch (collection.variant) {
     case 'custom':
       handleNewClick = openNewCustomItemModal;
+      handleEditClick = openEditCustomCollectionModal;
       ItemsComponent = Customs;
       break;
     case 'event':
@@ -103,7 +110,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         <div className='flex items-center space-x-1'>
           <button onClick={handleNewClick}
             className='btn btn-primary'>New</button>
-          <IconBtn icon={<PencilIcon />} variant="primary" />
+          <IconBtn icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
         </div>
       </div>
 
@@ -114,6 +121,10 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
 
       {newCustomItemModal && <NewCustomItemModal open={newCustomItemModal} handleClose={closeNewCustomItemModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
+
+      {editCustomCollectionModal && <EditCustomCollectionModal open={editCustomCollectionModal}
+        handleClose={closeEditCustomCollectionModal} positiveFeedback={positiveFeedback}
+        negativeFeedback={negativeFeedback} />}
 
       {newEventModal && <NewEventModal open={newEventModal} handleClose={closeNewEventModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}

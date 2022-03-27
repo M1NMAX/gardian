@@ -19,7 +19,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
     const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
     //TODO: Add loading and error
-    const { data } = useQuery<CollectionInterface[], Error>('collections', getUserCollections);
+    const { data, isLoading } = useQuery<CollectionInterface[], Error>('collections', getUserCollections);
 
     //Modal: create collection
     const [open, setOpen] = useState(false);
@@ -50,6 +50,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                     {data?.map((collection, idx: number) => (
                         <CollectionOverview key={idx} collection={collection} />
                     ))}
+                    {isLoading && 'Loading'}
 
 
                 </div>
