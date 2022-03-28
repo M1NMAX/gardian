@@ -1,6 +1,8 @@
-import { MenuAlt1Icon, SelectorIcon, TagIcon } from '@heroicons/react/outline'
+import { PencilIcon } from '@heroicons/react/outline'
 import React, { FC } from 'react'
 import { PropertyInCollectionInterface } from '../../interfaces'
+import Badge from '../Badge'
+import IconBtn from '../IconBtn'
 
 
 interface CollectionPropertiesProps {
@@ -8,45 +10,42 @@ interface CollectionPropertiesProps {
 }
 const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => {
 
-    const handleIcon = (t: string): JSX.Element => {
-        let propertyIcon: JSX.Element;
-
-        switch (t) {
-            case 'Select':
-                propertyIcon = <SelectorIcon />
-                break;
-            case 'Text':
-                propertyIcon = <MenuAlt1Icon />
-                break;
-            default:
-                propertyIcon = <TagIcon />
-                break
-        }
-        return propertyIcon;
-
-    }
-
-
     return (
         <>
             <p className="w-full">Properties: </p>
             <div className='px-1'>
-                {properties.map((property, idx) => (
-                    <div key={idx} className="cursor-pointer flex items-center space-y-1 space-x-2
-                         rounded-md hover:bg-gray-300 dark:hover:bg-gray-600" >
-                        <span className='flex items-center icon-xs'>
-                            {handleIcon(property.type)}
-                        </span>
-                        <span>
-                            {property.name}
-                        </span>
-                        {property.type === "Select" && (
-                            <span className='italic'>
-                                {property.values.toString()}
-                            </span>
-                        )}
-                    </div>
-                ))}
+                <table className="table-auto w-full">
+                    <thead>
+                        <tr className='border-b'>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {properties.map((property, idx) => (
+                            <tr key={idx} className="border-b" >
+                                <td>
+
+                                    <Badge text={property.type} variant="primary" />
+                                </td>
+                                <td>
+
+                                    <Badge text={property.name} variant="primary" />
+                                </td>
+                                <td className='flex space-x-2'>
+
+                                    {property.type === "select" && (
+                                        <span className='italic flex items-center space-x-1.5'>
+                                            {property.values.map((value) => (<Badge text={value} variant='secondary' />))}
+                                        </span>
+                                    )}
+                                    <IconBtn icon={<PencilIcon />} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </>
     )

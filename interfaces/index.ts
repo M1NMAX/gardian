@@ -26,7 +26,7 @@ export interface PropertyInItemInterface {
 export interface CollectionInterface extends basicSchema {
     variant: string,
     isSub: boolean,
-    properties?: PropertyInCollectionInterface[],
+    properties: PropertyInCollectionInterface[],
 }
 
 export interface CustomItemInterface extends basicSchema {

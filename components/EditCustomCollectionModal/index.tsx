@@ -10,8 +10,8 @@ import Modal from '../Modal';
 
 
 const propertiesTypes = [
-    { name: 'Text' },
-    { name: 'Select' },
+    { name: 'text' },
+    { name: 'telect' },
 ]
 
 
@@ -21,7 +21,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
     const { id: collectionId } = router.query;
 
     const [name, setName] = useState("")
-    const [properties, setProperties] = useState<PropertyInCollectionInterface[]>([{ name: "b", type: "Select", values: ["A", "B"] }])
+    const [properties, setProperties] = useState<PropertyInCollectionInterface[]>([])
 
 
     const { data } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
@@ -34,6 +34,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
     useEffect(() => {
         if (data) {
             setName(data.name)
+            setProperties(data.properties)
         }
     }, [collectionId, data])
 
@@ -48,7 +49,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
         if (name === "" || name == null) return;
 
         try {
-            const result = await updateCollection(collectionId.toString(), name, properties)
+            await updateCollection(collectionId.toString(), name, properties)
             positiveFeedback("Custom Item created successfully");
             handleClose();
         } catch (error) {
@@ -122,8 +123,11 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
                 <span className="w-full">Property type</span>
                 <Listbox value={selectedPropertyType} onChange={setSelectedPropertyType}>
                     <div className="relative mt-1">
-                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
-                            <span className="block truncate">{selectedPropertyType}</span>
+                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left dark:text-black 
+                        bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 
+                            focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 
+                            focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
+                            <span className="block truncate first-letter:uppercase">{selectedPropertyType}</span>
                             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                 <SelectorIcon className="icon-sm text-gray-500 dark:text-gray-200" aria-hidden="true" />
                             </span>
@@ -137,7 +141,7 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
                                 {propertiesTypes.map((type, idx) =>
                                     <Listbox.Option key={idx} className={({
                                         active
-                                    }) => `cursor-default select-none relative py-2 pl-10 pr-4 ${active ? 'text-white bg-primary-bright' : 'dark:text-white'}`} value={type.name}>
+                                    }) => `cursor-default select-none relative py-2 pl-10 pr-4 dark:text-white ${active ? ' bg-primary-bright' : ''}`} value={type.name}>
                                         {({
                                             selected
                                         }) => <>
@@ -159,7 +163,7 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
                     Cancel
                 </button>
                 <button key={1} type="button" onClick={handleAdd} className="modal-positive-btn">
-                    Create
+                    Add
                 </button>
             </div>
 
