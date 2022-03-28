@@ -16,10 +16,6 @@ const CustomItemSchema = new Schema<CustomItemInterface>({
         type: Schema.Types.ObjectId,
         ref: 'Collection'
     },
-    status: {
-        type: String,
-        required: true,
-    },
     properties: [
         {
             name: {

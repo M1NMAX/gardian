@@ -30,7 +30,6 @@ export interface CollectionInterface extends basicSchema {
 }
 
 export interface CustomItemInterface extends basicSchema {
-    status: string,
     properties?: PropertyInItemInterface[],
 }
 
