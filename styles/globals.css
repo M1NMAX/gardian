@@ -45,10 +45,16 @@
   }
 
   /* Modal */
+  .input-with-label {
+    @apply block md:flex md:items-center md:space-x-2;
+  }
+  .input-label {
+    @apply w-full md:text-right md:w-24 md:text-lg ;
+  }
 
   .modal-input {
     @apply w-full  h-10 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
-    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary ;
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
   }
   .modal-neutral-btn {
     @apply text-lg rounded-md px-4 py-1 bg-gray-100  hover:bg-gray-200  dark:bg-gray-700 

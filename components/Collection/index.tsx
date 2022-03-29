@@ -11,7 +11,7 @@ import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewTodoModal from '../NewTodoModal';
 import NewCollectionModal from '../NewCollectionModal';
-import Customs from '../Customs';
+import CustomItems from '../CustomItems';
 import Events from '../Events';
 import Documents from '../Documents';
 import Todos from '../Todos';
@@ -67,7 +67,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
     case 'custom':
       handleNewClick = openNewCustomItemModal;
       handleEditClick = openEditCustomCollectionModal;
-      ItemsComponent = Customs;
+      ItemsComponent = CustomItems;
       break;
     case 'event':
       handleNewClick = openNewEventModal;
