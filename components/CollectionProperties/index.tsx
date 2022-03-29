@@ -12,7 +12,7 @@ const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => 
 
     return (
         <>
-            <p className="w-full">Properties: </p>
+            <p className="w-full">Properties </p>
             <div className='px-1'>
                 <table className="table-auto w-full">
                     <thead>

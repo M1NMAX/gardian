@@ -34,8 +34,6 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
     }, [collectionId, data])
 
 
-
-
     const getValueByKey = (id?: string): string => (
         itemProperties.filter(property => (
             property._id?.toString() === id
@@ -94,7 +92,7 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
                                     onChange={(e) => { setValueByKey(e.target.value, property._id?.toString()) }}
                                     className='modal-input'>
                                     {property.values.map((value, idx) => (
-                                        <option key={idx} value={value}> {value}</option>))}
+                                        <option key={idx} value={value}>{value}</option>))}
                                 </select>
                             }
 

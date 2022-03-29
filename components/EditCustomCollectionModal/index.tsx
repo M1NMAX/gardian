@@ -11,7 +11,7 @@ import Modal from '../Modal';
 
 const propertiesTypes = [
     { name: 'text' },
-    { name: 'telect' },
+    { name: 'select' },
 ]
 
 
@@ -29,7 +29,6 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
         const response = await res.json();
         return response.data;
     });
-    console.log(data)
 
     useEffect(() => {
         if (data) {
@@ -40,7 +39,6 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
 
     const addProperty = (property: PropertyInCollectionInterface): void => {
         setProperties([...properties, property]);
-        console.log(properties)
     }
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -77,7 +75,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
                     (
                         <>
                             <Popover.Button className="btn btn-secondary">Add Properties</Popover.Button>
-                            <Popover.Panel className="absolute bottom-6 z-10 p-2 shadow-lg  bg-white dark:bg-gray-900 rounded border ">
+                            <Popover.Panel className="absolute bottom-6 z-10 w-72 p-2 shadow-lg  bg-white dark:bg-gray-900 rounded border ">
                                 <AddPropertyPopoverContent onAdd={addProperty} handleClose={close} />
                             </Popover.Panel>
                         </>
@@ -106,11 +104,13 @@ interface AddPropertyInterface {
 
 
 const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClose }) => {
-    const [name, setName] = useState("")
+    const [name, setName] = useState("");
     const [selectedPropertyType, setSelectedPropertyType] = useState(propertiesTypes[0].name);
+    const [values, setValues] = useState("");
 
     const handleAdd = () => {
-        onAdd({ name, type: selectedPropertyType, values: ["a", "m"] })
+        const v = selectedPropertyType === "select" ? values.split("@") : [];
+        onAdd({ name, type: selectedPropertyType, values: v })
         handleClose()
     }
 
@@ -158,6 +158,13 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
                     </div>
                 </Listbox>
             </div>
+            <label className={`${selectedPropertyType === "select" ? 'visible' : 'invisible h-0'} transition-all `}>
+                <span className='w-full'> Values</span>
+                <input type="text" name="values" value={values} onChange={(e) => { setValues(e.target.value) }}
+                    placeholder="Property values"
+                    className='modal-input' />
+                <p className='text-xs italic' >use @ to separate the values </p>
+            </label>
             <div className="flex justify-end space-x-2 mt-2">
                 <button className="modal-neutral-btn">
                     Cancel
