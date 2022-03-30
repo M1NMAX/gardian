@@ -1,3 +1,4 @@
+import { AnnotationIcon, ClockIcon, MenuAlt4Icon, SelectorIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
@@ -77,18 +78,31 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
         <Modal title="" open={open} onHide={handleClose} size="size">
             <form onSubmit={handleSubmit}>
                 <div className='space-y-2'>
-                    <label className='input-with-label'>
-                        <span className='input-label'> Name</span>
-                        <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
-                            className='modal-input' />
-                    </label>
+                    <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
+                        className='modal-head-input' />
 
 
 
+                    <span className='input-with-label'>
+                        <span className='property-label'>
+                            <ClockIcon className='icon-sm' />
+                            <span>
+                                Created
+                            </span>
+                        </span>
+                        <span className='property-readOnly'>
+                            {item?.updatedAt ? new Date(item.updatedAt).toLocaleString() :
+                                'Loading'
+                            }
+                        </span>
+                    </span>
                     {collectionProperties.map((property) => (
                         <label key={property._id} className="input-with-label">
-                            <span className='input-label'>
-                                {property.name}
+                            <span className='property-label'>
+                                {property.type === "text" ? <AnnotationIcon className='icon-sm' /> : <SelectorIcon className='icon-xs' />}
+                                <span className='first-letter:uppercase'>
+                                    {property.name}
+                                </span>
                             </span>
 
 

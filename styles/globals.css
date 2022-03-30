@@ -45,15 +45,27 @@
   }
 
   /* Modal */
+  .property-label {
+    @apply flex items-center space-x-1 w-full p-1 md:text-right md:w-32 md:text-lg 
+    rounded border-b-2 border-secondary-dark   bg-gray-100 dark:bg-gray-800;
+  }
+  .property-readOnly{
+    @apply flex items-center w-full h-10 px-2  cursor-default rounded   bg-gray-50 dark:bg-gray-800 
+  }
+
   .input-with-label {
     @apply block md:flex md:items-center md:space-x-2;
   }
   .input-label {
-    @apply w-full md:text-right md:w-24 md:text-lg ;
+    @apply w-full md:text-right md:w-24 md:text-lg;
   }
 
   .modal-input {
     @apply w-full  h-10 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
+  }
+  .modal-head-input {
+    @apply w-full text-3xl  font-bold rounded border-0 bg-gray-50 dark:bg-gray-800
     focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
   }
   .modal-neutral-btn {
