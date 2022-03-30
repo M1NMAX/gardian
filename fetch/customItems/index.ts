@@ -11,3 +11,13 @@ export async function createCustomItem(collectionId: string, name: string, prope
     const res = await fetch(apiBaseUrl + '/customItems', requestOptions);
     return res.json().then(response => response.data);
 }
+
+export async function updateCustomItem(id: string, name: string, properties: PropertyInItemInterface[]): Promise<boolean> {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, properties })
+    };
+    const res = await fetch(apiBaseUrl + '/customItems/' + id, requestOptions);
+    return res.json().then(response => response.isSuccess);
+}

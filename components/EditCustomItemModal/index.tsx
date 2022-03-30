@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { CustomItemInterface, ModalProps, PropertyInItemInterface } from '../../interfaces'
+import { updateCustomItem } from '../../fetch/customItems'
+import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../interfaces'
 import Modal from '../Modal'
 
 interface EditCustomItemProps extends ModalProps {
@@ -8,47 +10,72 @@ interface EditCustomItemProps extends ModalProps {
 }
 
 const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, positiveFeedback, negativeFeedback, itemId }) => {
-
+    const router = useRouter();
+    const { id: collectionId } = router.query;
     const [name, setName] = useState("");
-    const [properties, setProperties] = useState<PropertyInItemInterface[]>([]);
+    const [itemProperties, setItemProperties] = useState<PropertyInItemInterface[]>([]);
+    const [collectionProperties, setCollectionProperties] = useState<PropertyInCollectionInterface[]>([]);
 
 
 
-    const { data } = useQuery<CustomItemInterface>('item', async (): Promise<CustomItemInterface> => {
+    const { data: item } = useQuery<CustomItemInterface>('item', async (): Promise<CustomItemInterface> => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/customItems/' + itemId);
         const response = await res.json();
         return response.data;
     });
-    console.log(data)
+
+    const { data: collection } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
+        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + collectionId);
+        const response = await res.json();
+        return response.data;
+    });
 
     useEffect(() => {
-        if (data) {
-            setName(data.name);
-            if (data.properties)
-                setProperties(data.properties);
-        }
+        if (!collection || !item || !collection.properties || !item.properties) return;
+        setName(item.name);
+        setCollectionProperties(collection.properties);
+        setItemProperties(item.properties);
+    }, [itemId, item, collection]);
 
-    }, [itemId, data]);
-
-    const getValueByKey = (id?: string): string => (
-        properties.filter(property => (
+    const getValueById = (id?: string): string => {
+        const result = itemProperties.filter(property => (
             property._id?.toString() === id
-        ))[0].value
+        ))[0];
+        if (!result) return "";
+        return result.value
+    }
+
+    const setValueById = (value: string, id?: string): void => {
+        setItemProperties(itemProperties.map(property =>
+            property._id?.toString() === id ?
+                { ...property, value } : property))
+    }
+
+
+    const isFill = (value: string): boolean => (
+        value === "" || value == null
     )
 
 
 
-    const setValueByKey = (value: string, id?: string): void => {
-        setProperties(properties.map(property =>
-            property._id?.toString() === id ?
-                { ...property, value } : property))
+    const handleSubmit = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        if (!itemId || isFill(name)) return;
+
+        try {
+            await updateCustomItem(itemId, name, itemProperties);
+            handleClose();
+            positiveFeedback("Item updated successfully");
+        } catch (error) {
+            negativeFeedback()
+        }
     }
 
 
 
     return (
         <Modal title="" open={open} onHide={handleClose} size="size">
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className='space-y-2'>
                     <label className='input-with-label'>
                         <span className='input-label'> Name</span>
@@ -56,15 +83,31 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
                             className='modal-input' />
                     </label>
 
-                    {properties.map((property) => (
+
+
+                    {collectionProperties.map((property) => (
                         <label key={property._id} className="input-with-label">
                             <span className='input-label'>
                                 {property.name}
                             </span>
-                            <input type="text" name={property.name}
-                                value={getValueByKey(property._id?.toString())}
-                                onChange={(e) => setValueByKey(e.target.value, property._id?.toString())}
-                                className='modal-input' />
+
+
+                            {property.type === "text" ?
+                                <input type="text" name={property.name}
+                                    value={getValueById(property._id?.toString())}
+                                    onChange={(e) => setValueById(e.target.value, property._id?.toString())}
+                                    className='modal-input' />
+                                :
+                                <select value={getValueById(property._id?.toString())}
+                                    onChange={(e) => { setValueById(e.target.value, property._id?.toString()) }}
+                                    className='modal-input'>
+                                    <option selected>Please select a option</option>
+                                    {property.values.map((value, idx) => (
+                                        <option key={idx} value={value}>{value}</option>))}
+                                </select>
+
+                            }
+
                         </label>
                     ))}
                 </div>
