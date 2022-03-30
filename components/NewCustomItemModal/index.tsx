@@ -91,6 +91,7 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
                                 <select value={getValueByKey(property._id?.toString())}
                                     onChange={(e) => { setValueByKey(e.target.value, property._id?.toString()) }}
                                     className='modal-input'>
+                                    <option selected>Select one option</option>
                                     {property.values.map((value, idx) => (
                                         <option key={idx} value={value}>{value}</option>))}
                                 </select>

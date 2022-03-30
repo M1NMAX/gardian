@@ -38,6 +38,12 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
         setItemProperties(item.properties);
     }, [itemId, item, collection]);
 
+    const getFirstValueById = (id?: string): string => (
+        collectionProperties.filter(property => (
+            property._id?.toString() === id
+        ))[0].values[0]
+    )
+
     const getValueById = (id?: string): string => {
         const result = itemProperties.filter(property => (
             property._id?.toString() === id
@@ -112,7 +118,8 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
                                     onChange={(e) => setValueById(e.target.value, property._id?.toString())}
                                     className='modal-input' />
                                 :
-                                <select value={getValueById(property._id?.toString())}
+                                <select defaultValue={getFirstValueById(property._id?.toString())}
+                                    value={getValueById(property._id?.toString())}
                                     onChange={(e) => { setValueById(e.target.value, property._id?.toString()) }}
                                     className='modal-input'>
                                     <option selected>Please select a option</option>

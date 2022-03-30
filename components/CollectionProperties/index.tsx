@@ -37,7 +37,9 @@ const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => 
 
                                     {property.type === "select" && (
                                         <span className='italic flex items-center space-x-1.5'>
-                                            {property.values.map((value) => (<Badge text={value} variant='secondary' />))}
+                                            {property.values.map((value, idx) => (
+                                                <Badge key={idx} text={value} variant='secondary' />
+                                            ))}
                                         </span>
                                     )}
                                     <IconBtn icon={<PencilIcon />} />
