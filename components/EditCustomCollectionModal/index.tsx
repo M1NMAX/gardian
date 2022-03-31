@@ -1,10 +1,11 @@
 import { Listbox, Popover, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
+import { CheckIcon, CollectionIcon, SelectorIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
 import { updateCollection } from '../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../interfaces'
+import Badge from '../Badge';
 import CollectionProperties from '../CollectionProperties';
 import Modal from '../Modal';
 
@@ -14,6 +15,14 @@ const propertiesTypes = [
     { name: 'select' },
 ]
 
+const BadgeWithIcon = () => {
+    return (
+        <span className='flex space-x-1'>
+            <CollectionIcon className='icon-sm' />
+            <span>Collection</span>
+        </span>
+    )
+}
 
 
 const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
@@ -58,17 +67,15 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
 
 
     return (
-        <Modal title="Edit Collection" open={open} onHide={handleClose} >
+        <Modal title={<BadgeWithIcon />} open={open} onHide={handleClose} size="size">
             <form onSubmit={handleSubmit}>
-                <label className="block">
-                    <span className="w-full">Name</span>
-                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
-                        placeholder="Item name"
-                        className='modal-input' />
-                </label>
-                <div>
-                    <CollectionProperties properties={properties} />
-                </div>
+
+                <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
+                    placeholder="Item name"
+                    className='modal-head-input' />
+
+
+                <CollectionProperties properties={properties} />
 
                 <Popover className="relative">
                     {({ open, close }) =>

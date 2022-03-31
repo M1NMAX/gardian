@@ -48,9 +48,10 @@ const Item: FC<ItemProps> = ({ item }) => {
                 <span>
                     {item.name}
                 </span>
-                <span className='space-x-1'>
+                <span className='flex space-x-1'>
                     {item.properties?.map((property, idx) =>
-                        <Badge key={idx} text={property.value} variant="primary" />)
+                        <Badge key={idx} text={property.value} variant="primary" 
+                        rounded='lg' textSize='xs' uppercase />)
                     }
                 </span>
             </div>

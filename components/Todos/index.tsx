@@ -46,7 +46,7 @@ const Task: FC<TaskProps> = ({ task }) => {
             <span>
                 <input type="checkbox"
                     name='taskStatus' checked={taskStatus} onChange={handleCheck}
-                    className='appearance-none  rounded bg-gray-200 dark:bg-gray-700 checked:bg-primary' />
+                    className='appearance-none  rounded bg-gray-200 dark:bg-gray-700 checked:bg-primary dark:checked:bg-primary-bright' />
             </span>
             <span className='flex flex-col grow'>
                 <span className='flex items-center grow'>
