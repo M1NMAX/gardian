@@ -1,9 +1,10 @@
-import { AnnotationIcon, ClockIcon, MenuAlt4Icon, SelectorIcon } from '@heroicons/react/outline'
+import { AdjustmentsIcon, AnnotationIcon, ClockIcon, MenuAlt4Icon, SelectorIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { updateCustomItem } from '../../fetch/customItems'
 import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../interfaces'
+import Label from '../Label'
 import Modal from '../Modal'
 
 interface EditCustomItemProps extends ModalProps {
@@ -81,14 +82,12 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
 
 
     return (
-        <Modal title="" open={open} onHide={handleClose} size="size">
+        <Modal title={<Label icon={<AdjustmentsIcon />} text="Custom item" />} open={open} onHide={handleClose} size="size">
             <form onSubmit={handleSubmit}>
                 <div className='space-y-2'>
                     <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
+                        placeholder="Item name"
                         className='modal-head-input' />
-
-
-
                     <span className='input-with-label'>
                         <span className='property-label'>
                             <ClockIcon className='icon-sm' />

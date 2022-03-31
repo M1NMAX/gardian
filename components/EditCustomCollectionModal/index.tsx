@@ -5,9 +5,9 @@ import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
 import { updateCollection } from '../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../interfaces'
-import Badge from '../Badge';
 import CollectionProperties from '../CollectionProperties';
 import Modal from '../Modal';
+import Label from '../Label';
 
 
 const propertiesTypes = [
@@ -15,14 +15,7 @@ const propertiesTypes = [
     { name: 'select' },
 ]
 
-const BadgeWithIcon = () => {
-    return (
-        <span className='flex space-x-1'>
-            <CollectionIcon className='icon-sm' />
-            <span>Collection</span>
-        </span>
-    )
-}
+
 
 
 const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
@@ -67,7 +60,7 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
 
 
     return (
-        <Modal title={<BadgeWithIcon />} open={open} onHide={handleClose} size="size">
+        <Modal title={<Label icon={<CollectionIcon />} text="Collection" />} open={open} onHide={handleClose} size="size">
             <form onSubmit={handleSubmit}>
 
                 <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}

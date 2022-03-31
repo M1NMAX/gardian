@@ -8,28 +8,28 @@ import { createCollection } from "../../fetch/collections";
 const kindsOfCollections = [
     {
         name: 'Custom',
-        description: 'Collection of custom items that can be group by status, and can have new property on-the-fly',
+        description: 'Collection of items with custom properties and can be group by it.',
         variant: 'custom',
     },
     {
         name: 'Events',
-        description: 'Collection of events ',
+        description: 'Collection of events.',
         variant: 'event',
     },
     {
         name: 'Documents',
-        description: 'Collection of related documents',
+        description: 'Collection of related documents.',
         variant: 'document',
     },
     {
         name: 'ToDo',
-        description: 'Checklist of task',
+        description: 'Checklist of task.',
         variant: 'todo',
 
     },
     {
         name: 'Collection',
-        description: 'Collection of collection, each collection has it own type of item',
+        description: 'Collection of collection, each collection has it own type of item.',
         variant: 'collection',
     }
 ]
@@ -72,7 +72,7 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
                                         value={kind.variant}
                                         className={({ active, checked }) =>
                                             `${active
-                                                ? 'ring ring-offset-2 ring-offset-green-300 ring-white ring-opacity-60'
+                                                ? ''
                                                 : ''
                                             }
                                                 ${checked ? 'bg-primary bg-opacity-75 text-white' : 'bg-white'
