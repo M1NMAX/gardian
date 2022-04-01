@@ -32,6 +32,19 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
                 res.status(400).json({ isSuccess: false });
             }
             break;
+        case 'PATCH':
+            try {
+                const customItem = await CustomItem.findByIdAndUpdate(id, { name: req.body.name, $currentDate: { updatedAt: true } }, {
+                    new: true,
+                    runValidators: true,
+                });
+                if (!customItem) return res.status(400).json({ isSuccess: false });
+                res.status(200).json({ isSuccess: true, data: customItem });
+
+            } catch (error) {
+                res.status(400).json({ isSuccess: false });
+            }
+            break;
         case 'DELETE':
             try {
                 const deletedCustomItem = await CustomItem.deleteOne({ _id: id });

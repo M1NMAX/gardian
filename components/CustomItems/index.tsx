@@ -7,7 +7,8 @@ import Badge from '../Badge';
 import GenericMenu from '../GenericMenu';
 import EditCustomItemModal from '../EditCustomItemModal';
 import DeleteModal from '../DeleteModal';
-import { deleteCustomItem } from '../../fetch/customItems';
+import { deleteCustomItem, renameCustomItem } from '../../fetch/customItems';
+import RenameModal from '../RenameModal';
 
 const Customs = () => {
     const router = useRouter();
@@ -44,14 +45,24 @@ const Item: FC<ItemProps> = ({ item }) => {
     const positiveFeedback = (msg: string) => toast.success(msg);
     const negativeFeedback = () => toast.success("Something went wrong, try later");
 
-    const handleOnClickRename = () => {
-        console.log("Rename")
+
+    //Rename Item fuction
+    const handleRenameItem = (name: string): void => {
+        if (!item._id) return;
+        try {
+            renameCustomItem(item._id.toString(), name);
+            closeRenameItemModal()
+            positiveFeedback("Item renamed successfully")
+        } catch (error) {
+            negativeFeedback()
+        }
     }
 
+    //Delete item fuction
     const handleDeleteItem = () => {
         if (!item._id) return;
         try {
-            const res = deleteCustomItem(item._id.toString());
+            deleteCustomItem(item._id.toString());
             closeDeleteItemModal()
             positiveFeedback("Item deleted successfully")
         } catch (error) {
@@ -84,10 +95,14 @@ const Item: FC<ItemProps> = ({ item }) => {
                 </span>
             </button>
 
-            <GenericMenu onClickRename={handleOnClickRename} onClickDelete={openDeleteItemModal} />
+            <GenericMenu onClickRename={openRenameItemModal} onClickDelete={openDeleteItemModal} />
             {/* {editItemModal && <EditCustomItemModal open={editItemModal} handleClose={closeEditItemModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback}
                 itemId={item._id?.toString()} />} */}
+
+
+            {renameItemModal && <RenameModal open={renameItemModal} handleClose={closeRenameItemModal}
+                name={item.name} onRename={handleRenameItem} />}
 
             {deleteItemModal && <DeleteModal open={deleteItemModal} handleClose={closeDeleteItemModal}
                 name={item.name} onDelete={handleDeleteItem} />}

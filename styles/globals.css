@@ -61,7 +61,7 @@
   }
 
   .modal-input {
-    @apply w-full  h-10 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
+    @apply w-full  h-10 px-2 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
     focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
   }
   .modal-head-input {
