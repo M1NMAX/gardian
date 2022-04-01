@@ -21,3 +21,8 @@ export async function updateCustomItem(id: string, name: string, properties: Pro
     const res = await fetch(apiBaseUrl + '/customItems/' + id, requestOptions);
     return res.json().then(response => response.isSuccess);
 }
+
+export async function deleteCustomItem(id: string): Promise<boolean> {
+    const res = await fetch(apiBaseUrl + '/customItems/' + id, { method: 'DELETE' });
+    return res.json().then(response => response.isSuccess);
+}
