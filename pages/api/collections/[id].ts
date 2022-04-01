@@ -34,6 +34,19 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
                 res.status(400).json({ isSuccess: false });
             }
             break;
+        case 'PATCH':
+            try {
+                const collection = await Collection.findByIdAndUpdate(id, { name: req.body.name, $currentDate: { updatedAt: true } }, {
+                    new: true,
+                    runValidators: true,
+                });
+                if (!collection) return res.status(400).json({ isSuccess: false });
+                res.status(200).json({ isSuccess: true, data: collection });
+
+            } catch (error) {
+                res.status(400).json({ isSuccess: false });
+            }
+            break;
         case 'DELETE':
             try {
                 const deletedCollection = await Collection.deleteOne({ _id: id });

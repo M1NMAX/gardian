@@ -34,7 +34,19 @@ export async function updateCollection(id: string, name: string, properties: Pro
     return res.json().then(response => response.isSuccess);
 }
 
-export async function deleteCollection(id: number): Promise<boolean> {
-    const res = await fetch(`api/collections/${id}`, { method: 'DELETE' });
+
+export async function renameCollection(id: string, name: string): Promise<boolean> {
+    const requestOptions = {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+    };
+    const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
+    return res.json().then(response => response.isSuccess);
+
+}
+
+export async function deleteCollection(id: string): Promise<boolean> {
+    const res = await fetch(apiBaseUrl + '/collections/' + id, { method: 'DELETE' });
     return res.json().then(response => response.isSuccess);
 }
