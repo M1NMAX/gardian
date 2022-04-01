@@ -1,4 +1,4 @@
-import { BadgeCheckIcon, BellIcon, CheckCircleIcon } from '@heroicons/react/outline'
+import { BadgeCheckIcon, BellIcon, CheckIcon } from '@heroicons/react/outline'
 import React, { FC, useState } from 'react'
 import { ModalProps, TodoInterface } from '../../interfaces'
 import Modal from '../Modal'
@@ -11,28 +11,33 @@ interface EditTodoModalProps extends ModalProps {
 
 const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positiveFeedback, negativeFeedback }) => {
     const [name, setName] = useState(todo.name);
+    const [isConcluded, setIsConcluded] = useState(todo.isConcluded)
     const [conclusionDate, setConclusionDate] = useState(todo.conclusionDate);
     const [reminder, setReminder] = useState(todo.reminder);
 
     return (
-        <Modal title={<Label icon={<CheckCircleIcon />} text="Todo" />} open={open} onHide={handleClose} size="size" >
-            <>
-                <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
-                    placeholder="Todo name"
-                    className='modal-head-input' />
+        <Modal title={<Label icon={<CheckIcon />} text="Todo" />} open={open} onHide={handleClose} >
+            <form className='space-y-2'>
+                <div className='flex items-center space-x-2'>
 
+                    <input type="checkbox"
+                        name='taskStatus' checked={isConcluded} onChange={(e) => setIsConcluded(e.target.checked)}
+                        className='checkbox-input' />
+                    <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
+                        placeholder="Todo name"
+                        className='modal-input' />
+                </div>
 
-                <label className='input-with-label' >
-                    <span className='input-label'> Conclusion </span>
+                <div className='flex items-center space-x-2'>
+
+                    <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setReminder(!reminder)}>
+                        <BellIcon className='icon-md' />
+                        {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
+                    </button>
                     <input type='date' name='ConclusionDate' value={conclusionDate}
                         onChange={(e) => setConclusionDate(e.target.value)}
                         className='modal-input' />
-                </label>
-
-                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setReminder(!reminder)}>
-                    <BellIcon className='icon-md' />
-                    {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
-                </button>
+                </div>
 
                 <div className="flex justify-end space-x-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
@@ -43,7 +48,7 @@ const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positi
                     </button>
                 </div>
 
-            </>
+            </form>
         </Modal>
     )
 }

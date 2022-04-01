@@ -17,7 +17,7 @@ const Todos = () => {
         return response.data;
     });
     return (
-        <div>Todos
+        <div>Todos Description
             <div className='flex flex-col space-y-2'>
                 {data?.map((todo, idx) => (
                     <Todo key={idx} todo={todo} />
@@ -55,30 +55,15 @@ const Todo: FC<TaskProps> = ({ todo }) => {
 
     return (
 
-        <div className='flex justify-between items-start space-x-2 px-2 py-1 rounded-sm border group'>
-            <span>
-                <input type="checkbox"
-                    name='taskStatus' checked={taskStatus} onChange={handleCheck}
-                    className='appearance-none  rounded bg-gray-200 dark:bg-gray-700 checked:bg-primary dark:checked:bg-primary-bright' />
-            </span>
+        <div className='flex justify-between items-center space-x-2 px-2 py-1 rounded-md border group'>
+
+            <input type="checkbox" name='status'
+                checked={taskStatus} onChange={handleCheck}
+                className='checkbox-input' />
+
             <button onClick={openEditTodoModal}
-                className='flex flex-col grow'>
-                <span className='flex items-center grow'>
-                    {todo.name}
-                </span>
-                <span className='flex space-x-2'>
-                    {todo.reminder && <span className='flex items-center text-xs'>
-                        <BellIcon className='icon-xs' /> tomorrow
-                    </span>}
-                    {todo.conclusionDate != '' && <span className='flex items-center space-x-0.5 text-xs'>
-                        <CalendarIcon className='icon-xs' />
-                        <span>
-                            {todo.conclusionDate && new Date(todo.conclusionDate).toDateString()}
-                        </span>
-                    </span>}
-
-                </span>
-
+                className='grow text-left p-0'>
+                {todo.name}
             </button>
             <div className='md:invisible md:group-hover:visible '>
                 <GenericMenu onClickRename={() => console.log("hh")} onClickDelete={() => console.log("hh")} />
