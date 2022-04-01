@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import Link from 'next/link';
 import { DotsVerticalIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
+import GenericMenu from '../GenericMenu';
 
 
 interface SidebarCollectionProps {
@@ -30,9 +31,10 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
             <span className='text-xs font-light'> {variant}s</span>
           </a>
         </Link>
-        <button className='md:invisible md:group-hover:visible btn btn-secodary'>
-          <DotsVerticalIcon className='icon-xs' />
-        </button>
+
+        <div className='md:invisible md:group-hover:visible '>
+          <GenericMenu onClickRename={() => { console.log("mfm") }} onClickDelete={() => { console.log("mfm") }} />
+        </div>
       </div>
     </div>
   )
