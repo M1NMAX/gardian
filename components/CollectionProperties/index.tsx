@@ -25,45 +25,63 @@ const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => 
     }
 
     return (
-
-        <div className='space-y-1 mt-2'>
-
-            {properties.map((property, idx) => (
-                <div className='flex'>
-                    <span className='property-label'>
-                        {handlePropertyIcon(property.type)}
-                        <span>
-                            {property.name}
+        <>
+            <div className='flex flex-row mt-2'>
+                {properties.map((property, idx) => (
+                    property.type === "text" &&
+                    <div className='flex mr-1'>
+                        <span className='property-label'>
+                            {handlePropertyIcon(property.type)}
+                            <span>
+                                {property.name}
+                            </span>
                         </span>
-                    </span>
-
-                    <Popover key={idx} className="relative">
-                        {({ open, close }) =>
-                        (
-                            <>
-                                <Popover.Button className="btn btn-secondary w-full">
+                    </div>))}
 
 
-                                    {property.type === "select" && (
-                                        <span className='italic flex items-center space-x-1.5'>
-                                            {property.values.map((value, idx) => (
-                                                <Badge key={idx} text={value} variant='secondary' />
-                                            ))}
-                                        </span>
-                                    )}
-                                </Popover.Button>
-                                <Popover.Panel className="absolute top-2 z-10 w-max p-2 shadow-lg  bg-white dark:bg-gray-900 rounded border ">
-                                    <EditPorpertyForm property={property} />
-                                </Popover.Panel>
-                            </>
-                        )}
-
-                    </Popover>
-                </div>
-            ))}
+            </div>
 
 
-        </div>
+            <div className='space-y-1 mt-2'>
+
+                {properties.map((property, idx) => (
+                    property.type === "select" &&
+                    <div className='flex'>
+                        <span className='property-label'>
+                            {handlePropertyIcon(property.type)}
+                            <span>
+                                {property.name}
+                            </span>
+                        </span>
+
+                        <Popover key={idx} className="relative">
+                            {({ open, close }) =>
+                            (
+                                <>
+                                    <Popover.Button className="btn btn-secondary w-full">
+
+
+                                        {property.type === "select" && (
+                                            <span className='italic flex items-center space-x-1.5'>
+                                                {property.values.map((value, idx) => (
+                                                    <Badge key={idx} text={value} variant='secondary' />
+                                                ))}
+                                            </span>
+                                        )}
+                                    </Popover.Button>
+                                    <Popover.Panel className="absolute top-2 z-10 w-max p-2 shadow-lg  bg-white dark:bg-gray-900 rounded border ">
+                                        <EditPorpertyForm property={property} />
+                                    </Popover.Panel>
+                                </>
+                            )}
+
+                        </Popover>
+                    </div>
+                ))}
+
+
+            </div>
+        </>
     )
 }
 

@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
 import SidebarBtn from '../SidebarBtn';
-import IconBtn from '../IconBtn';
+import ActionIcon from '../ActionIcon';
 import SidebarCollection from '../SidebarCollection';
 import SidebarUserOptions from '../SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -53,7 +53,7 @@ const Sidebar: FC = () => {
 
                 <div className='flex justify-between '>
                     <SidebarUserOptions />
-                    <IconBtn icon={<ChevronDoubleLeftIcon />} variant="secondary" onClick={() => setSidebar(false)} />
+                    <ActionIcon icon={<ChevronDoubleLeftIcon />} variant="secondary" onClick={() => setSidebar(false)} />
                 </div>
 
                 <SidebarBtn icon={<SearchIcon />} text="Quick search" />
@@ -61,7 +61,7 @@ const Sidebar: FC = () => {
                 <div className='flex justify-between items-center'>
                     <SidebarBtn icon={<CollectionIcon />} text="Collections"
                         onClick={() => router.push('/collections')} />
-                    <IconBtn icon={<PlusIcon />} variant="secondary" onClick={openModal} />
+                    <ActionIcon icon={<PlusIcon />} variant="secondary" onClick={openModal} />
                 </div>
 
                 <div className='flex flex-col space-y-1 sidebarCollections-height w-full overflow-y-auto 

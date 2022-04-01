@@ -9,7 +9,7 @@ import CollectionOverview from '../../components/CollectionOverview';
 import { CollectionInterface } from '../../interfaces';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import IconBtn from '../../components/IconBtn';
+import ActionIcon from '../../components/ActionIcon';
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../../components/NewCollectionModal';
@@ -39,7 +39,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                 <div className='flex justify-between items-center'>
 
                     <div className='flex items-center space-x-2'>
-                        {!sidebar && <IconBtn icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
+                        {!sidebar && <ActionIcon icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
                         <h1 className='font-semibold text-xl'>Collections </h1>
                     </div>
                     <button onClick={openModal} className='btn btn-primary'>New</button>

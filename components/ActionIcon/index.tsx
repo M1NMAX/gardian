@@ -1,23 +1,19 @@
 import React, { FC } from 'react';
 
-interface IconBtnProps {
+interface ActionIconProps {
     icon: JSX.Element,
-    tooltipText?: string,
     variant?: "primary" | "secondary",
     onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
 }
 
-const IconBtn: FC<IconBtnProps> = ({ icon, tooltipText, variant = "secondary", onClick }) => {
+const ActionIcon: FC<ActionIconProps> = ({ icon, variant = "secondary", onClick }) => {
     return (
         <button onClick={onClick} className={`btn btn-${variant}`}>
             <span className='icon-sm'>
                 {icon}
             </span>
-            <span>
-                {tooltipText}
-            </span>
         </button>
     )
 }
 
-export default IconBtn
+export default ActionIcon

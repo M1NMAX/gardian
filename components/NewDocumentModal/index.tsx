@@ -3,7 +3,7 @@ import Modal from '../Modal';
 import { CheckIcon } from '@heroicons/react/outline';
 import DocumentStatus from '../DocumentStatus';
 import { ModalProps } from '../../interfaces';
-import IconBtn from '../IconBtn';
+import ActionIcon from '../ActionIcon';
 import { createDocument } from '../../fetch/documents';
 import { useRouter } from 'next/router';
 
@@ -44,7 +44,7 @@ const NewDocumentModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback,
                         placeholder="Name"
                         className=' grow cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
                             focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white ' />
-                    <IconBtn icon={<CheckIcon />} variant="primary" onClick={handleSubmit} />
+                    <ActionIcon icon={<CheckIcon />} variant="primary" onClick={handleSubmit} />
                 </div>
                 <div className=" flex flex-col">
                     <textarea name='content' value={content} onChange={(e) => setContent(e.target.value)}

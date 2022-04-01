@@ -5,7 +5,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { CollectionProps } from '../../interfaces';
-import IconBtn from '../IconBtn';
+import ActionIcon from '../ActionIcon';
 import NewCustomItemModal from '../NewCustomItemModal';
 import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
@@ -92,7 +92,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       <div className='flex justify-between items-center'>
 
         <div className='flex items-center space-x-2'>
-          {!sidebar && <IconBtn icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
+          {!sidebar && <ActionIcon icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
           <h1 className='space-x-0.5 text-xl'>
             <span>
               <Link href='/collections'>
@@ -110,7 +110,7 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         <div className='flex items-center space-x-1'>
           <button onClick={handleNewClick}
             className='btn btn-primary'>New</button>
-          <IconBtn icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
+          <ActionIcon icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
         </div>
       </div>
 
