@@ -1,11 +1,10 @@
 import React, { FC, Fragment, useEffect, useState } from 'react'
-import { BellIcon, CalendarIcon, ChevronUpIcon, DocumentTextIcon, DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import { BellIcon, CalendarIcon, ChevronUpIcon, DocumentTextIcon, DotsVerticalIcon, TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query';
 import { TodoInterface } from '../../interfaces';
 import EditTodoModal from '../EditTodoModal';
 import toast from 'react-hot-toast';
-import GenericMenu from '../GenericMenu';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import ActionIcon from '../ActionIcon';
 import { updateTodoIsConcluded } from '../../fetch/todos';
@@ -42,7 +41,6 @@ const Todo: FC<TaskProps> = ({ todo }) => {
         setTaskStatus(todo.isConcluded)
     }, [todo])
 
-    console.log(todo)
 
 
     const handleCheck = async () => {

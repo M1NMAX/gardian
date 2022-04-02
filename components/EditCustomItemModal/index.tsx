@@ -1,4 +1,4 @@
-import { AdjustmentsIcon, AnnotationIcon, ClockIcon, MenuAlt4Icon, SelectorIcon } from '@heroicons/react/outline'
+import { AdjustmentsIcon, AnnotationIcon, ClockIcon, SelectorIcon } from '@heroicons/react/outline'
 import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'

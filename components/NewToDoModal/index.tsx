@@ -1,8 +1,6 @@
 import React, { FC, useState } from 'react';
 import Modal from '../Modal';
 import { ModalProps } from '../../interfaces';
-import { BellIcon } from '@heroicons/react/outline';
-import { BadgeCheckIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 import { createTodo } from '../../fetch/todos';
 
