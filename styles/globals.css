@@ -46,7 +46,7 @@
 
   /* Genaral input  */
   .checkbox-input {
-    @apply w-5 h-5 appearance-none  rounded-full bg-gray-200 dark:bg-gray-700 
+    @apply w-7 h-7 appearance-none  rounded bg-gray-200 dark:bg-gray-700 
     checked:bg-primary dark:checked:bg-primary-bright;
   }
 
