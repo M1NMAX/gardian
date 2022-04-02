@@ -13,14 +13,7 @@ export default withApiAuthRequired(
         const { method } = req;
         if (method === 'POST') {
             try {
-                const data = {
-                    name: req.body.name,
-                    userId: user?.sub,
-                    collectionId: req.body.collectionId,
-                    reminder: req.body.reminder,
-                    conclusionDate: req.body.conclusionDate,
-                }
-                const todo = await Todo.create(data);
+                const todo = await Todo.create({ ...req.body, userId: user?.sub });
                 res.status(201).json({ isSuccess: true, data: todo });
             } catch (error) {
                 res.status(400).json({ isSuccess: false })

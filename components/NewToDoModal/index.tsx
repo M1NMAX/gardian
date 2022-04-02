@@ -4,14 +4,13 @@ import { ModalProps } from '../../interfaces';
 import { BellIcon } from '@heroicons/react/outline';
 import { BadgeCheckIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
-import { createTask } from '../../fetch/todos';
+import { createTodo } from '../../fetch/todos';
 
 const NewToDoModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 
     const router = useRouter();
     const { id } = router.query;
     const [name, setName] = useState("");
-    const [hasReminder, setHasReminder] = useState(false);
     const [conclusionDate, setConclusionDate] = useState("");
 
 
@@ -21,7 +20,7 @@ const NewToDoModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, neg
         if (id === "" || id == null) return;
         try {
 
-            await createTask(id.toString(), name, hasReminder, conclusionDate);
+            await createTodo(id.toString(), name, conclusionDate);
             positiveFeedback("Task created successfully");
             handleClose();
 
@@ -46,17 +45,6 @@ const NewToDoModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, neg
                     <span className='w-full'> Conclusion date </span>
                     <input type='date' name='ConclusionDate' value={conclusionDate} onChange={(e) => setConclusionDate(e.target.value)} className='modal-input' />
                 </label>
-                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setHasReminder(!hasReminder)}>
-                    <BellIcon className='icon-md' />
-                    {hasReminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
-                </button>
-
-
-
-
-
-
-
                 <div className="flex justify-end space-x-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel

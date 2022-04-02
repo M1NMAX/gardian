@@ -23,11 +23,20 @@ export default withApiAuthRequired(
                 break;
             case 'PUT':
                 try {
-                    const data = {
-                        name: req.body.name,
-                        updatedAt: Date.now()
-                    }
-                    const todo = await Todo.findByIdAndUpdate(id, data, {
+                    const todo = await Todo.findByIdAndUpdate(id, { ...req.body, $currentDate: { updatedAt: true } }, {
+                        new: true,
+                        runValidators: true,
+                    });
+                    if (!todo) return res.status(400).json({ isSuccess: false });
+                    res.status(200).json({ isSuccess: true, data: todo });
+
+                } catch (error) {
+                    res.status(400).json({ isSuccess: false });
+                }
+                break;
+            case 'PATCH':
+                try {
+                    const todo = await Todo.findByIdAndUpdate(id, { isConcluded: req.body.isConcluded, $currentDate: { updatedAt: true } }, {
                         new: true,
                         runValidators: true,
                     });

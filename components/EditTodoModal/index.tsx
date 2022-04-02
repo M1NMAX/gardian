@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react'
 import { ModalProps, TodoInterface } from '../../interfaces'
 import Modal from '../Modal'
 import Label from '../Label'
+import { updateTodo } from '../../fetch/todos'
 
 
 interface EditTodoModalProps extends ModalProps {
@@ -11,15 +12,32 @@ interface EditTodoModalProps extends ModalProps {
 
 const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positiveFeedback, negativeFeedback }) => {
     const [name, setName] = useState(todo.name);
-    const [isConcluded, setIsConcluded] = useState(todo.isConcluded)
-    const [conclusionDate, setConclusionDate] = useState(todo.conclusionDate);
-    const [reminder, setReminder] = useState(todo.reminder);
-    const [reminderDate, setReminderDate] = useState("")
-    const [description, setDescription] = useState("")
+    const [isConcluded, setIsConcluded] = useState(todo.isConcluded);
+    const [conclusionDate, setConclusionDate] = useState(todo.conclusionDate || "");
+    const [reminderDate, setReminderDate] = useState(todo.reminderDate || "");
+    const [description, setDescription] = useState(todo.description || "");
+
+    const isFill = (value: string): boolean => (
+        value === "" || value == null
+    )
+
+    const handleSubmit = async (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        if (!todo._id || isFill(name)) return;
+        try {
+            await updateTodo(todo._id.toString(), name, isConcluded, conclusionDate, reminderDate, description);
+            positiveFeedback("Todo updated successfully");
+        } catch (error) {
+            negativeFeedback();
+        }
+
+
+
+    }
 
     return (
         <Modal title={<Label icon={<CheckIcon />} text="Todo" />} open={open} onHide={handleClose} >
-            <form className='space-y-2'>
+            <form onSubmit={handleSubmit} className='space-y-2'>
                 <div className='flex items-center space-x-2'>
                     <input type="checkbox"
                         name='taskStatus' checked={isConcluded} onChange={(e) => setIsConcluded(e.target.checked)}
@@ -30,9 +48,6 @@ const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positi
                         placeholder="Todo name"
                         className='modal-input' />
                 </div>
-
-
-
 
                 <div className='flex items-center space-x-2'>
                     <label>
@@ -50,7 +65,7 @@ const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positi
                 </div>
 
                 <label className="flex flex-col w-full mt-1">
-                    <span className='text-sm'> Description ({description.length}/200)</span>
+                    <span className='text-sm'> Description ({description != null && description.length}/200)</span>
                     <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
                         className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />

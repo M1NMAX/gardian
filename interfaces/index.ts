@@ -51,9 +51,10 @@ export interface SubCollectionInterface extends basicSchema {
 }
 
 export interface TodoInterface extends basicSchema {
-    isConcluded?: boolean,
+    isConcluded: boolean,
     conclusionDate?: string,
-    reminder?: boolean,
+    reminderDate?: string, 
+    description?: string,
 }
 
 //Components props

@@ -24,9 +24,12 @@ const TodoSchema = new Schema<TodoInterface>({
     conclusionDate: {
         type: String
     },
-    reminder: {
-        type: Boolean,
-        default: false,
+    reminderDate: {
+        type: String
+    },
+    description: {
+        type: String,
+        default: ""
     },
     updatedAt: {
         type: Date,
@@ -35,7 +38,6 @@ const TodoSchema = new Schema<TodoInterface>({
     createdAt: {
         type: Date,
         default: Date.now,
-
     }
 
 

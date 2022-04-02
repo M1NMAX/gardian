@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import GenericMenu from '../GenericMenu';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import ActionIcon from '../ActionIcon';
+import { updateTodoIsConcluded } from '../../fetch/todos';
 
 const Todos = () => {
     const router = useRouter();
@@ -41,9 +42,19 @@ const Todo: FC<TaskProps> = ({ todo }) => {
         setTaskStatus(todo.isConcluded)
     }, [todo])
 
-    const handleCheck = () => {
-        setTaskStatus(!taskStatus);
-        //TODO: call api
+    console.log(todo)
+
+
+    const handleCheck = async () => {
+        if (!todo._id) return;
+        try {
+            await updateTodoIsConcluded(todo._id?.toString(), !taskStatus)
+            setTaskStatus(!taskStatus);
+            positiveFeedback("Saved");
+        } catch (error) {
+            negativeFeedback()
+        }
+
     }
 
 
@@ -68,11 +79,11 @@ const Todo: FC<TaskProps> = ({ todo }) => {
             <div className='grow'>
                 <button onClick={openEditTodoModal}
                     className='w-full text-left'>
-                    <span>
+                    <span className='text-lg'>
                         {todo.name}
                     </span>
                     <span className='flex space-x-2'>
-                        {todo.reminder && <span className='flex items-center text-xs'>
+                        {todo.reminderDate != "" && <span className='flex items-center text-xs'>
                             <BellIcon className='icon-xs' /> tomorrow
                         </span>}
                         {todo.conclusionDate != '' && <span className='flex items-center space-x-0.5 text-xs'>
@@ -83,25 +94,27 @@ const Todo: FC<TaskProps> = ({ todo }) => {
                         </span>}
                     </span>
                 </button>
-                <Disclosure>
-                    {({ open }) => (
-                        <>
-                            <Disclosure.Button className="flex justify-between space-x-0.5 w-fit p-1 text-sm font-medium text-left
+
+                {todo.description != "" &&
+                    <Disclosure>
+                        {({ open }) => (
+                            <>
+                                <Disclosure.Button className="flex justify-between space-x-0.5 w-fit p-1 text-sm font-medium text-left
                               btn btn-secondary focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                                <DocumentTextIcon className='icon-xs' />
-                                <span>Description</span>
-                                <ChevronUpIcon
-                                    className={`${open ? 'transform rotate-180' : ''
-                                        } icon-xs`}
-                                />
-                            </Disclosure.Button>
-                            <Disclosure.Panel className="text-sm dark:text-white">
-                                If you're unhappy with your purchase for any reason, email us
-                                within 90 days and we'll refund you in full, no questions asked.
-                            </Disclosure.Panel>
-                        </>
-                    )}
-                </Disclosure>
+                                    <DocumentTextIcon className='icon-xs' />
+                                    <span>Description</span>
+                                    <ChevronUpIcon
+                                        className={`${open ? 'transform rotate-180' : ''
+                                            } icon-xs`}
+                                    />
+                                </Disclosure.Button>
+                                <Disclosure.Panel className="text-sm dark:text-white">
+                                    {todo.description}
+                                </Disclosure.Panel>
+                            </>
+                        )}
+                    </Disclosure>
+                }
 
 
             </div>
@@ -120,15 +133,6 @@ const Todo: FC<TaskProps> = ({ todo }) => {
                         leaveTo="transform opacity-0 scale-95"
                     >
                         <Menu.Items as="ul" className="absolute  z-10 -right-2 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900">
-                            <Menu.Item as="li">
-                                <button
-                                    className='w-full space-x-1 btn btn-secondary'>
-                                    <PencilIcon className='icon-sm' />
-                                    <span>
-                                        Rename
-                                    </span>
-                                </button>
-                            </Menu.Item>
                             <Menu.Item>
                                 <button
                                     className='w-full space-x-1 btn btn-secondary'>
