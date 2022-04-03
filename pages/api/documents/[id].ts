@@ -23,11 +23,20 @@ export default withApiAuthRequired(
                 break;
             case 'PUT':
                 try {
-                    const data = {
-                        name: req.body.name,
-                        updatedAt: Date.now()
-                    }
-                    const document = await Document.findByIdAndUpdate(id, data, {
+                    const document = await Document.findByIdAndUpdate(id, { ...req.body, $currentDate: { updatedAt: true } }, {
+                        new: true,
+                        runValidators: true,
+                    });
+                    if (!document) return res.status(400).json({ isSuccess: false });
+                    res.status(200).json({ isSuccess: true, data: document });
+
+                } catch (error) {
+                    res.status(400).json({ isSuccess: false });
+                }
+                break;
+            case 'PATCH':
+                try {
+                    const document = await Document.findByIdAndUpdate(id, { name: req.body.name, $currentDate: { updatedAt: true } }, {
                         new: true,
                         runValidators: true,
                     });
