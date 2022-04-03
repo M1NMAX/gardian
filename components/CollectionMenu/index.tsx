@@ -1,18 +1,18 @@
-import { Menu, Transition } from '@headlessui/react'
-import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline'
-import React, { FC, Fragment } from 'react'
-import ActionIcon from '../ActionIcon'
+import { Menu, Transition } from '@headlessui/react';
+import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import React, { FC, Fragment } from 'react';
 
 
-interface GenericMenuProps {
+interface CollectionMenuProps {
     onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void,
     onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void,
+    variant?: "primary" | "secondary",
 }
 
-const GenericMenu: FC<GenericMenuProps> = ({ onClickRename, onClickDelete }) => {
+const CollectionMenu: FC<CollectionMenuProps> = ({ variant = "secondary", onClickRename, onClickDelete }) => {
     return (
         <Menu as="div" className="relative" >
-            <Menu.Button className="btn btn-secondary">
+            <Menu.Button className={`btn btn-${variant}`}>
                 <DotsVerticalIcon className='icon-sm' />
             </Menu.Button>
             <Transition
@@ -47,4 +47,4 @@ const GenericMenu: FC<GenericMenuProps> = ({ onClickRename, onClickDelete }) => 
     )
 }
 
-export default GenericMenu
+export default CollectionMenu

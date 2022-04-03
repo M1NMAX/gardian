@@ -17,9 +17,16 @@ import Documents from '../Documents';
 import Todos from '../Todos';
 import SubCollections from '../SubCollections';
 import EditCustomCollectionModal from '../EditCustomCollectionModal';
+import CollectionMenu from '../CollectionMenu';
+import useModal from '../../hooks/useModal';
+import { deleteCollection, renameCollection } from '../../fetch/collections';
+import { useRouter } from 'next/router';
+import RenameModal from '../RenameModal';
+import DeleteModal from '../DeleteModal';
 
 
 const Collection: FC<CollectionProps> = ({ collection }) => {
+  const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
   //Feedback 
@@ -60,6 +67,38 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   const [newCollectionModal, setSubCollectionModal] = useState(false);
   const closeNewCollectionModal = () => (setSubCollectionModal(false));
   const openNewCollectionModal = () => (setSubCollectionModal(true));
+
+
+  //Rename Collection Modal
+  const { isOpen: renameModal, openModal: openRenameModal, closeModal: closeRenameModal } = useModal();
+  //Delete Collection Modal
+  const { isOpen: deleteModal, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
+
+  //Rename Collection fuction
+  const handleRenameCollection = (name: string): void => {
+    if (!collection._id) return;
+    try {
+      renameCollection(collection._id.toString(), name);
+      closeRenameModal();
+      positiveFeedback("Collection renamed successfully");
+    } catch (error) {
+      negativeFeedback()
+    }
+  }
+
+  //Rename Collection fuction
+  const handleDeleteCollection = () => {
+    if (!collection._id) return;
+    try {
+      deleteCollection(collection._id.toString());
+      closeDeleteModal();
+      positiveFeedback("Collection deleted successfully");
+      //Redirect user to collection overview 
+      router.push('/collections');
+    } catch (error) {
+      negativeFeedback();
+    }
+  }
 
 
 
@@ -111,6 +150,9 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
           <button onClick={handleNewClick}
             className='btn btn-primary'>New</button>
           <ActionIcon icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
+          <CollectionMenu variant="primary"
+            onClickRename={openRenameModal}
+            onClickDelete={openDeleteModal} />
         </div>
       </div>
 
@@ -140,6 +182,11 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         handleClose={closeNewCollectionModal} positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
 
+      {renameModal && <RenameModal open={renameModal} handleClose={closeRenameModal}
+        name={collection.name} onRename={handleRenameCollection} />}
+
+      {deleteModal && <DeleteModal open={deleteModal} handleClose={closeDeleteModal}
+        name={collection.name} onDelete={handleDeleteCollection} />}
     </>
   )
 }
