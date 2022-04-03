@@ -88,7 +88,6 @@ export interface NewCollectionModalProps extends ModalProps {
 }
 
 export interface DocumentStatusProps {
-    name: string,
     isSaved: boolean,
-    error: string,
+    isError: boolean,
 }

@@ -80,6 +80,13 @@ const Document: FC<DocumentProps> = ({ document }) => {
               <button
                 className='w-full space-x-1 btn btn-secondary'>
                 <TrashIcon className='icon-sm' />
+                <span> Rename </span>
+              </button>
+            </Menu.Item>
+            <Menu.Item>
+              <button
+                className='w-full space-x-1 btn btn-secondary'>
+                <TrashIcon className='icon-sm' />
                 <span> Delete </span>
               </button>
             </Menu.Item>
