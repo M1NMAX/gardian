@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { CustomItemInterface } from '../../interfaces';
 import Badge from '../Badge';
-import GenericMenu from '../GenericMenu';
+import CollectionMenu from '../CollectionMenu';
 import EditCustomItemModal from '../EditCustomItemModal';
 import DeleteModal from '../DeleteModal';
 import { deleteCustomItem, renameCustomItem } from '../../fetch/customItems';
@@ -95,7 +95,7 @@ const Item: FC<ItemProps> = ({ item }) => {
                 </span>
             </button>
 
-            <GenericMenu onClickRename={openRenameItemModal} onClickDelete={openDeleteItemModal} />
+            <CollectionMenu onClickRename={openRenameItemModal} onClickDelete={openDeleteItemModal} />
             {/* {editItemModal && <EditCustomItemModal open={editItemModal} handleClose={closeEditItemModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback}
                 itemId={item._id?.toString()} />} */}

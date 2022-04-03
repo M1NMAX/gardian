@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import GenericMenu from '../GenericMenu';
+import CollectionMenu from '../CollectionMenu';
 import toast from 'react-hot-toast';
 import { deleteCollection, renameCollection } from '../../fetch/collections';
 import RenameModal from '../RenameModal';
@@ -77,7 +77,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
         </Link>
 
         <div className='md:invisible md:group-hover:visible '>
-          <GenericMenu onClickRename={openRenameCollectionModal}
+          <CollectionMenu onClickRename={openRenameCollectionModal}
             onClickDelete={openDeleteCollectionModal} />
         </div>
       </div>

@@ -12,8 +12,8 @@ interface GenericMenuProps {
 const GenericMenu: FC<GenericMenuProps> = ({ onClickRename, onClickDelete }) => {
     return (
         <Menu as="div" className="relative" >
-            <Menu.Button>
-                <ActionIcon icon={<DotsVerticalIcon />} variant="secondary" />
+            <Menu.Button className="btn btn-secondary">
+                <DotsVerticalIcon className='icon-sm' />
             </Menu.Button>
             <Transition
                 as={Fragment}
