@@ -27,6 +27,7 @@ const EditTodoModal: FC<EditTodoModalProps> = ({ todo, open, handleClose, positi
         try {
             await updateTodo(todo._id.toString(), name, isConcluded, conclusionDate, reminderDate, description);
             positiveFeedback("Todo updated successfully");
+            handleClose();
         } catch (error) {
             negativeFeedback();
         }

@@ -7,7 +7,9 @@ import EditTodoModal from '../EditTodoModal';
 import toast from 'react-hot-toast';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import ActionIcon from '../ActionIcon';
-import { updateTodoIsConcluded } from '../../fetch/todos';
+import { deleteTodo, updateTodoIsConcluded } from '../../fetch/todos';
+import useModal from '../../hooks/useModal';
+import DeleteModal from '../DeleteModal';
 
 const Todos = () => {
     const router = useRouter();
@@ -60,9 +62,26 @@ const Todo: FC<TaskProps> = ({ todo }) => {
     const positiveFeedback = (msg: string) => toast.success(msg);
     const negativeFeedback = () => toast.success("Something went wrong, try later");
 
-    const [editTodoModal, setEditTodoModal] = useState(false);
-    const openEditTodoModal = () => setEditTodoModal(true);
-    const closeEditTodoModal = () => setEditTodoModal(false);
+    //Edit todo Modal
+    const { isOpen: editTodoModal, openModal: openEditTodoModal, closeModal: closeEditTodoModal } = useModal();
+
+    //Delete todo Modal
+    const { isOpen: deleteTodoModal,
+        openModal: openDeleteTodoModal,
+        closeModal: closeDeleteTodoModal } = useModal();
+
+    //Delete item fuction
+    const handleDeleteDelete = () => {
+        if (!todo._id) return;
+        try {
+            deleteTodo(todo._id.toString());
+            closeDeleteTodoModal();
+            positiveFeedback("Todo deleted successfully")
+        } catch (error) {
+            negativeFeedback()
+        }
+    }
+
 
     return (
 
@@ -132,7 +151,7 @@ const Todo: FC<TaskProps> = ({ todo }) => {
                     >
                         <Menu.Items as="ul" className="absolute  z-10 -right-2 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900">
                             <Menu.Item>
-                                <button
+                                <button onClick={openDeleteTodoModal}
                                     className='w-full space-x-1 btn btn-secondary'>
                                     <TrashIcon className='icon-sm' />
                                     <span> Delete </span>
@@ -147,6 +166,9 @@ const Todo: FC<TaskProps> = ({ todo }) => {
                 handleClose={closeEditTodoModal}
                 positiveFeedback={positiveFeedback}
                 negativeFeedback={negativeFeedback} />}
+
+            {deleteTodoModal && <DeleteModal open={deleteTodoModal} handleClose={closeDeleteTodoModal}
+                name={todo.name} onDelete={handleDeleteDelete} />}
         </div>
     );
 }
