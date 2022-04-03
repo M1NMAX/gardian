@@ -4,7 +4,7 @@ import { CheckIcon } from '@heroicons/react/outline';
 import DocumentStatus from '../DocumentStatus';
 import { ModalProps } from '../../interfaces';
 import ActionIcon from '../ActionIcon';
-import { createDocument } from '../../fetch/documents';
+import { createDocument, updateDocument } from '../../fetch/documents';
 import { useRouter } from 'next/router';
 
 
@@ -14,7 +14,7 @@ const NewDocumentModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback,
 
     const [name, setName] = useState("");
     const [content, setContent] = useState("");
-    const [id, setId] = useState<number>()
+    const [id, setId] = useState<string>()
     const [saved, setSaved] = useState(false)
     const [error, setError] = useState("");
 
@@ -22,14 +22,25 @@ const NewDocumentModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback,
         e.preventDefault();
         if (collectionId === "" || collectionId == null) return;
         if (name === "" || name == null || content === "" || content == null) return;
-        try {
-            const result = await createDocument(collectionId.toString(), name, content);
-            positiveFeedback("Document created successufully");
-            setId(result._id);
-            console.log(result);
-            setSaved(true)
-        } catch (error) {
-            setError("Error")
+
+        if (!id) {
+            try {
+                const document = await createDocument(collectionId.toString(), name, content);
+                positiveFeedback("Document created successfully");
+                setId(document._id?.toString());
+                setSaved(true)
+            } catch (error) {
+                setError("Error")
+            }
+        } else {
+            try {
+                await updateDocument(id, name, content);
+                positiveFeedback("Document saved successfully")
+                setSaved(true);
+            } catch (error) {
+                setError("Error")
+
+            }
         }
 
     }
