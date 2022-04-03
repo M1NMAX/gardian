@@ -1,12 +1,15 @@
 import { Menu, Transition } from '@headlessui/react';
-import { DotsHorizontalIcon, DotsVerticalIcon, TrashIcon } from '@heroicons/react/outline';
+import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
 import React, { FC, Fragment } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
+import { deleteDocument, renameDocument } from '../../fetch/documents';
 import useModal from '../../hooks/useModal';
 import { DocumentInterface } from '../../interfaces';
+import DeleteModal from '../DeleteModal';
 import EditDocumentModal from '../EditDocumentModal';
+import RenameModal from '../RenameModal';
 
 function Documents() {
   const router = useRouter();
@@ -46,6 +49,31 @@ const Document: FC<DocumentProps> = ({ document }) => {
   const deleteModal = useModal();
 
 
+  //Rename Collection fuction
+  const handleRenameDocument = (name: string): void => {
+    if (!document._id) return;
+    try {
+      renameDocument(document._id.toString(), name);
+      renameModal.closeModal();
+      positiveFeedback("Collection renamed successfully");
+    } catch (error) {
+      negativeFeedback()
+    }
+  }
+
+  //Rename Collection fuction
+  const handleDeleteDocument = () => {
+    if (!document._id) return;
+    try {
+      deleteDocument(document._id.toString());
+      deleteModal.closeModal();
+      positiveFeedback("Collection deleted successfully");
+    } catch (error) {
+      negativeFeedback();
+    }
+  }
+
+
   return (
     <div className="flex justify-between items-center space-x-2 px-2 py-1 rounded-md border group">
 
@@ -54,7 +82,6 @@ const Document: FC<DocumentProps> = ({ document }) => {
         onClick={editDocumentModal.openModal}
         className=" grow flex space-x-1">
         <span>
-
           {document.name}
         </span>
         <span>
@@ -77,14 +104,14 @@ const Document: FC<DocumentProps> = ({ document }) => {
         >
           <Menu.Items as="ul" className="absolute  z-10 -right-2 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900">
             <Menu.Item>
-              <button
+              <button onClick={renameModal.openModal}
                 className='w-full space-x-1 btn btn-secondary'>
-                <TrashIcon className='icon-sm' />
+                <PencilIcon className='icon-sm' />
                 <span> Rename </span>
               </button>
             </Menu.Item>
             <Menu.Item>
-              <button
+              <button onClick={deleteModal.openModal}
                 className='w-full space-x-1 btn btn-secondary'>
                 <TrashIcon className='icon-sm' />
                 <span> Delete </span>
@@ -100,6 +127,14 @@ const Document: FC<DocumentProps> = ({ document }) => {
         handleClose={editDocumentModal.closeModal}
         positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
+
+      {renameModal.isOpen && <RenameModal open={renameModal.isOpen}
+        handleClose={renameModal.closeModal}
+        name={document.name} onRename={handleRenameDocument} />}
+
+      {deleteModal && <DeleteModal open={deleteModal.isOpen}
+        handleClose={deleteModal.closeModal}
+        name={document.name} onDelete={handleDeleteDocument} />}
 
     </div>
   )

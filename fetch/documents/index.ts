@@ -34,7 +34,7 @@ export async function renameDocument(id: string, name: string): Promise<boolean>
     return res.json().then(response => response.isSuccess);
 }
 
-export async function deleteDecument(id: string): Promise<boolean> {
+export async function deleteDocument(id: string): Promise<boolean> {
     const res = await fetch(apiBaseUrl + '/documents/' + id, { method: 'DELETE' });
     return res.json().then(response => response.isSuccess);
 }
