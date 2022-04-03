@@ -24,6 +24,14 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: Schema.Types.ObjectId,
         ref: 'Collection'
     },
+    description: {
+        type: String,
+        default: ""
+    },
+    isDescriptionHidden: {
+        type: Boolean,
+        default: false,
+    },
     properties: [
         {
             name: {

@@ -1,5 +1,4 @@
 import { CollectionInterface, PropertyInCollectionInterface } from "../../interfaces";
-import { CollectionUpdateData } from "../../types";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -24,11 +23,21 @@ export async function getCollection(id: number): Promise<CollectionInterface> {
 }
 
 
-export async function updateCollection(id: string, name: string, properties: PropertyInCollectionInterface[]): Promise<boolean> {
+export async function updateCustomCollection(id: string, name: string, properties: PropertyInCollectionInterface[]): Promise<boolean> {
     const requestOptions = {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, properties })
+    };
+    const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
+    return res.json().then(response => response.isSuccess);
+}
+
+export async function updateCollection(id: string, name: string, description: string, isDescriptionHidden: boolean): Promise<boolean> {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, isDescriptionHidden })
     };
     const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
     return res.json().then(response => response.isSuccess);
@@ -43,7 +52,6 @@ export async function renameCollection(id: string, name: string): Promise<boolea
     };
     const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
     return res.json().then(response => response.isSuccess);
-
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {

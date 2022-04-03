@@ -23,6 +23,7 @@ import { deleteCollection, renameCollection } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
+import EditCollectionModal from '../EditCollectionModal';
 
 
 const Collection: FC<CollectionProps> = ({ collection }) => {
@@ -69,10 +70,23 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
   const openNewCollectionModal = () => (setSubCollectionModal(true));
 
 
+
+  //Edit Collection Modal
+  const {
+    isOpen: editCollectionModal,
+    openModal: openEditCollectionModal,
+    closeModal: closeEditCollectionModal } = useModal();
+
   //Rename Collection Modal
-  const { isOpen: renameModal, openModal: openRenameModal, closeModal: closeRenameModal } = useModal();
+  const {
+    isOpen: renameModal,
+    openModal: openRenameModal,
+    closeModal: closeRenameModal } = useModal();
   //Delete Collection Modal
-  const { isOpen: deleteModal, openModal: openDeleteModal, closeModal: closeDeleteModal } = useModal();
+  const {
+    isOpen: deleteModal,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal } = useModal();
 
   //Rename Collection fuction
   const handleRenameCollection = (name: string): void => {
@@ -110,18 +124,22 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       break;
     case 'event':
       handleNewClick = openNewEventModal;
+      handleEditClick = openEditCollectionModal;
       ItemsComponent = Events;
       break;
     case 'document':
       handleNewClick = openNewDocumentModal;
+      handleEditClick = openEditCollectionModal;
       ItemsComponent = Documents;
       break;
     case 'todo':
       handleNewClick = openNewTodoModal;
+      handleEditClick = openEditCollectionModal;
       ItemsComponent = Todos;
       break;
     case 'collection':
       handleNewClick = openNewCollectionModal;
+      handleEditClick = openEditCollectionModal;
       ItemsComponent = SubCollections;
       break;
   }
@@ -180,6 +198,10 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
       {newCollectionModal && collection._id && <NewCollectionModal open={newCollectionModal}
         isSub={true} collectionId={collection._id?.toString()}
         handleClose={closeNewCollectionModal} positiveFeedback={positiveFeedback}
+        negativeFeedback={negativeFeedback} />}
+
+      {editCollectionModal && <EditCollectionModal collection={collection} open={editCollectionModal}
+        handleClose={closeEditCollectionModal} positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
 
       {renameModal && <RenameModal open={renameModal} handleClose={closeRenameModal}

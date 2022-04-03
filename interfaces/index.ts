@@ -27,6 +27,8 @@ export interface CollectionInterface extends basicSchema {
     variant: string,
     isSub: boolean,
     properties: PropertyInCollectionInterface[],
+    description: string,
+    isDescriptionHidden: boolean,
 }
 
 export interface CustomItemInterface extends basicSchema {
@@ -53,7 +55,7 @@ export interface SubCollectionInterface extends basicSchema {
 export interface TodoInterface extends basicSchema {
     isConcluded: boolean,
     conclusionDate?: string,
-    reminderDate?: string, 
+    reminderDate?: string,
     description?: string,
 }
 

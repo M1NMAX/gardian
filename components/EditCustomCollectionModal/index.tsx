@@ -3,7 +3,7 @@ import { CheckIcon, CollectionIcon, SelectorIcon } from '@heroicons/react/outlin
 import { useRouter } from 'next/router'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
-import { updateCollection } from '../../fetch/collections';
+import { updateCustomCollection } from '../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../interfaces'
 import CollectionProperties from '../CollectionProperties';
 import Modal from '../Modal';
@@ -49,8 +49,8 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
         if (name === "" || name == null) return;
 
         try {
-            await updateCollection(collectionId.toString(), name, properties)
-            positiveFeedback("Custom Item created successfully");
+            await updateCustomCollection(collectionId.toString(), name, properties)
+            positiveFeedback("Collection updated successfully");
             handleClose();
         } catch (error) {
             negativeFeedback()
