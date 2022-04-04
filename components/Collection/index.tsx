@@ -1,10 +1,9 @@
 import { MenuAlt2Icon, PencilIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React, { FC, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { CollectionProps } from '../../interfaces';
+import { CollectionInterface } from '../../interfaces';
 import ActionIcon from '../ActionIcon';
 import NewCustomItemModal from '../NewCustomItemModal';
 import NewEventModal from '../NewEventModal';
@@ -26,7 +25,48 @@ import DeleteModal from '../DeleteModal';
 import EditCollectionModal from '../EditCollectionModal';
 
 
-const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
+
+interface HeaderProps {
+  children: JSX.Element
+  collection: CollectionInterface
+}
+
+interface TitleProps {
+  children: string
+}
+
+interface DescriptionProps {
+  children: string
+  hidden: boolean
+}
+
+interface BodyProps {
+  children?: JSX.Element
+  variant: string
+}
+interface CollectionProps {
+  children: JSX.Element[]
+}
+
+type CollectionComponent = FC<CollectionProps>
+  & { Header: FC<HeaderProps> }
+  & { Title: FC<TitleProps> }
+  & { Description: FC<DescriptionProps> }
+  & { Body: FC<BodyProps> }
+
+
+const Collection: CollectionComponent = ({ children }) => {
+  return (
+    <>
+      {children}
+      <Toaster />
+    </>
+  )
+}
+
+
+
+const Header: FC<HeaderProps> = ({ children, collection }) => {
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
@@ -34,10 +74,8 @@ const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error("Something went wrong, try later");
 
-
   let handleNewClick = (): void => { };
   let handleEditClick = (): void => { };
-  let ItemsComponent = (): JSX.Element => (<> </>);
 
   // New Custom Item Modal
   const [newCustomItemModal, setNewCustomItemModal] = useState(false);
@@ -68,8 +106,6 @@ const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
   const [newCollectionModal, setSubCollectionModal] = useState(false);
   const closeNewCollectionModal = () => (setSubCollectionModal(false));
   const openNewCollectionModal = () => (setSubCollectionModal(true));
-
-
 
   //Edit Collection Modal
   const {
@@ -114,88 +150,43 @@ const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
     }
   }
 
-
-
   switch (collection.variant) {
     case 'custom':
       handleNewClick = openNewCustomItemModal;
       handleEditClick = openEditCustomCollectionModal;
-      ItemsComponent = CustomItems;
       break;
     case 'event':
       handleNewClick = openNewEventModal;
       handleEditClick = openEditCollectionModal;
-      ItemsComponent = Events;
+
       break;
     case 'document':
       handleNewClick = openNewDocumentModal;
       handleEditClick = openEditCollectionModal;
-      ItemsComponent = Documents;
       break;
     case 'todo':
       handleNewClick = openNewTodoModal;
       handleEditClick = openEditCollectionModal;
-      ItemsComponent = Todos;
       break;
     case 'collection':
       handleNewClick = openNewCollectionModal;
       handleEditClick = openEditCollectionModal;
-      ItemsComponent = SubCollections;
       break;
   }
-
   return (
-    <>
-      <div className='flex justify-between items-center'>
-
-        <div className='flex items-center space-x-2'>
-          {!sidebar && <ActionIcon icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
-          <h1 className='space-x-0.5 text-xl'>
-            {isForSub ?
-              <>
-                <span>
-                  <Link href='/collections'>
-                    <a className='hover:text-primary-bright '>
-                      Collections
-                    </a>
-                  </Link>
-                </span>
-                <span>/fgnago/</span>
-                <span className='font-medium'>
-                  {collection.name}
-                </span>
-              </> :
-              <>
-                <span>
-                  <Link href='/collections'>
-                    <a className='hover:text-primary-bright '>
-                      Collections
-                    </a>
-                  </Link>
-                </span>
-                <span>/</span>
-                <span className='font-medium'>
-                  {collection.name}
-                </span>
-              </>}
-
-          </h1>
-        </div>
-        <div className='flex items-center space-x-1'>
-          <button onClick={handleNewClick}
-            className='btn btn-primary'>New</button>
-          <ActionIcon icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
-          <CollectionMenu variant="primary"
-            onClickRename={openRenameModal}
-            onClickDelete={openDeleteModal} />
-        </div>
+    <div className='flex justify-between items-center'>
+      <div className='flex items-center space-x-2'>
+        {!sidebar && <ActionIcon icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
+        {children}
       </div>
-
-      <div className='h-full'>
-        <ItemsComponent />
+      <div className='flex items-center space-x-1'>
+        <button onClick={handleNewClick}
+          className='btn btn-primary'>New</button>
+        <ActionIcon icon={<PencilIcon />} variant="primary" onClick={handleEditClick} />
+        <CollectionMenu variant="primary"
+          onClickRename={openRenameModal}
+          onClickDelete={openDeleteModal} />
       </div>
-      <Toaster />
-
       {newCustomItemModal && <NewCustomItemModal open={newCustomItemModal} handleClose={closeNewCustomItemModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
@@ -226,8 +217,55 @@ const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
 
       {deleteModal && <DeleteModal open={deleteModal} handleClose={closeDeleteModal}
         name={collection.name} onDelete={handleDeleteCollection} />}
-    </>
+    </div>
   )
 }
+
+const Title: FC<TitleProps> = ({ children }) => {
+  return (
+    <h2 className='font-semibold text-2xl'>
+      {children}
+    </h2>
+  )
+}
+
+const Description: FC<DescriptionProps> = ({ children, hidden }) => {
+  return (
+    <p className={`${hidden && 'hidden'}`}>
+      {children}
+    </p>
+  )
+}
+
+const Body: FC<BodyProps> = ({ variant }) => {
+  let ItemsComponent = (): JSX.Element => (<> </>);
+
+  switch (variant) {
+    case 'custom':
+      ItemsComponent = CustomItems;
+      break;
+    case 'event':
+      ItemsComponent = Events;
+      break;
+    case 'document':
+      ItemsComponent = Documents;
+      break;
+    case 'todo':
+      ItemsComponent = Todos;
+      break;
+    case 'collection':
+      ItemsComponent = SubCollections;
+      break;
+  }
+  return (
+    <ItemsComponent />
+  )
+}
+
+
+Collection.Header = Header;
+Collection.Title = Title;
+Collection.Description = Description;
+Collection.Body = Body;
 
 export default Collection

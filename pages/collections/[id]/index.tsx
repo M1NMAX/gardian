@@ -9,13 +9,14 @@ import { sidebarState } from '../../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { CollectionInterface } from '../../../interfaces';
 import Collection from '../../../components/Collection';
+import Link from 'next/link';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
     const router = useRouter();
     const { id } = router.query;
     const sidebar = useRecoilValue(sidebarState);
 
-    const { data, refetch } = useQuery<CollectionInterface>('collection', async (): Promise<CollectionInterface> => {
+    const { data: collection, refetch } = useQuery<CollectionInterface>('collection', async (): Promise<CollectionInterface> => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + id);
         const response = await res.json();
         return response.data;
@@ -27,12 +28,35 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
         <>
             <Head>
                 <title>
-                    {data ? data.name : 'Loading...'}
+                    {collection ? collection.name : 'Loading...'}
                 </title>
             </Head>
             <Sidebar />
             <main className={`${sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'} main-content`}>
-                {data ? <Collection collection={data} /> : 'Loading...'}
+                {collection &&
+                    <Collection>
+                        <Collection.Header collection={collection}>
+                            <h1>
+                                <span>
+                                    <Link href='/collections'>
+                                        <a className='hover:text-primary-bright '>
+                                            Collections
+                                        </a>
+                                    </Link>
+                                </span>
+                                <span>/</span>
+                                <span className='font-medium'>
+                                    {collection.name}
+                                </span></h1>
+                        </Collection.Header>
+                        <Collection.Title>
+                            {collection.name}
+                        </Collection.Title>
+                        <Collection.Description hidden={collection.isDescriptionHidden}>
+                            {collection.description}
+                        </Collection.Description>
+                        <Collection.Body variant={collection.variant} />
+                    </Collection>}
             </main>
 
         </>

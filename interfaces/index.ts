@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { FC } from 'react';
 
 //Schemas
 interface basicSchema {
@@ -60,10 +61,6 @@ export interface TodoInterface extends basicSchema {
 }
 
 //Components props
-export interface CollectionProps {
-    collection: CollectionInterface,
-    isForSub?: boolean,
-}
 
 export interface CollectionOverviewProps {
     collection: CollectionInterface,
