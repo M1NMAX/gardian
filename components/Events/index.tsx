@@ -4,9 +4,12 @@ import { useRouter } from 'next/router'
 import React, { FC, Fragment } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
+import { deleteEvent, renameEvent } from '../../fetch/events';
 import useModal from '../../hooks/useModal';
 import { EventInterface } from '../../interfaces';
+import DeleteModal from '../DeleteModal';
 import EditEventModal from '../EditEventModal';
+import RenameModal from '../RenameModal';
 
 const Events = () => {
     const router = useRouter();
@@ -46,6 +49,31 @@ const Event: FC<EventProps> = ({ event }) => {
     const editEventModal = useModal();
     const renameModal = useModal();
     const deleteModal = useModal();
+
+
+    //Rename Event fuction
+    const handleRenameEvent = (name: string): void => {
+        if (!event._id) return;
+        try {
+            renameEvent(event._id.toString(), name);
+            renameModal.closeModal();
+            positiveFeedback("Event renamed successfully");
+        } catch (error) {
+            negativeFeedback()
+        }
+    }
+
+    //Rename Event fuction
+    const handleDeleteEvent = () => {
+        if (!event._id) return;
+        try {
+            deleteEvent(event._id.toString());
+            deleteModal.closeModal();
+            positiveFeedback("Event deleted successfully");
+        } catch (error) {
+            negativeFeedback();
+        }
+    }
 
 
     return (
@@ -118,6 +146,14 @@ const Event: FC<EventProps> = ({ event }) => {
                 handleClose={editEventModal.closeModal}
                 positiveFeedback={positiveFeedback}
                 negativeFeedback={negativeFeedback} />}
+
+            {renameModal.isOpen && <RenameModal open={renameModal.isOpen}
+                handleClose={renameModal.closeModal}
+                name={event.name} onRename={handleRenameEvent} />}
+
+            {deleteModal && <DeleteModal open={deleteModal.isOpen}
+                handleClose={deleteModal.closeModal}
+                name={event.name} onDelete={handleDeleteEvent} />}
         </div>
     )
 
