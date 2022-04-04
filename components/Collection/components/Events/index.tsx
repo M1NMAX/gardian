@@ -4,12 +4,12 @@ import { useRouter } from 'next/router'
 import React, { FC, Fragment } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { deleteEvent, renameEvent } from '../../fetch/events';
-import useModal from '../../hooks/useModal';
-import { EventInterface } from '../../interfaces';
-import DeleteModal from '../DeleteModal';
-import EditEventModal from '../EditEventModal';
-import RenameModal from '../RenameModal';
+import { deleteEvent, renameEvent } from '../../../../fetch/events';
+import useModal from '../../../../hooks/useModal';
+import { EventInterface } from '../../../../interfaces';
+import DeleteModal from '../../../DeleteModal';
+import EditEventModal from '../../../EditEventModal';
+import RenameModal from '../../../RenameModal';
 
 const Events = () => {
     const router = useRouter();

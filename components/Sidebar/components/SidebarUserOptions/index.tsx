@@ -2,7 +2,7 @@ import React, { Fragment, FC } from 'react';
 import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
 import { CogIcon, LogoutIcon, SelectorIcon } from '@heroicons/react/outline';
-import logoSrc from '../../public/logo192.png';
+import logoSrc from '../../../../public/logo192.png';
 import { Menu, Transition } from '@headlessui/react'
 
 const SidebarUserOptions: FC = ({ }) => {

@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useQuery } from 'react-query';
-import { CollectionInterface } from '../../interfaces';
-import CollectionOverview from '../CollectionOverview';
+import { CollectionInterface } from '../../../../interfaces';
+import CollectionOverview from '../../../CollectionOverview';
 
 const SubCollections = () => {
     const router = useRouter();

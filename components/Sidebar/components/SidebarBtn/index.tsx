@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { SidebarBtnProps } from '../../interfaces';
+import { SidebarBtnProps } from '../../../../interfaces';
 
 const SidebarBtn: FC<SidebarBtnProps> = ({ icon, text, onClick }) => {
     return (

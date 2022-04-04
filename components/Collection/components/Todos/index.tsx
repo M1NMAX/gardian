@@ -2,14 +2,14 @@ import React, { FC, Fragment, useEffect, useState } from 'react'
 import { BellIcon, CalendarIcon, ChevronUpIcon, DocumentTextIcon, DotsVerticalIcon, TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query';
-import { TodoInterface } from '../../interfaces';
-import EditTodoModal from '../EditTodoModal';
+import { TodoInterface } from '../../../../interfaces';
+import EditTodoModal from '../../../EditTodoModal';
 import toast from 'react-hot-toast';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import ActionIcon from '../ActionIcon';
-import { deleteTodo, updateTodoIsConcluded } from '../../fetch/todos';
-import useModal from '../../hooks/useModal';
-import DeleteModal from '../DeleteModal';
+import ActionIcon from '../../../ActionIcon';
+import { deleteTodo, updateTodoIsConcluded } from '../../../../fetch/todos';
+import useModal from '../../../../hooks/useModal';
+import DeleteModal from '../../../DeleteModal';
 
 const Todos = () => {
     const router = useRouter();

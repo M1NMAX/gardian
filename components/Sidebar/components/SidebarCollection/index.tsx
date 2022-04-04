@@ -1,11 +1,11 @@
 import React, { FC, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import CollectionMenu from '../CollectionMenu';
+import CollectionMenu from '../../../CollectionMenu';
 import toast from 'react-hot-toast';
-import { deleteCollection, renameCollection } from '../../fetch/collections';
-import RenameModal from '../RenameModal';
-import DeleteModal from '../DeleteModal';
+import { deleteCollection, renameCollection } from '../../../../fetch/collections';
+import RenameModal from '../../../RenameModal';
+import DeleteModal from '../../../DeleteModal';
 
 
 interface SidebarCollectionProps {

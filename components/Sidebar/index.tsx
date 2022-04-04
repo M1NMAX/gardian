@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
-import SidebarBtn from '../SidebarBtn';
+import SidebarBtn from './components/SidebarBtn';
 import ActionIcon from '../ActionIcon';
-import SidebarCollection from '../SidebarCollection';
-import SidebarUserOptions from '../SidebarUserOptions';
+import SidebarCollection from './components/SidebarCollection';
+import SidebarUserOptions from './components/SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';

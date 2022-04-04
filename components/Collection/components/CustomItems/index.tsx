@@ -2,13 +2,13 @@ import { useRouter } from 'next/router'
 import React, { FC, Fragment, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { CustomItemInterface } from '../../interfaces';
-import Badge from '../Badge';
-import CollectionMenu from '../CollectionMenu';
-import EditCustomItemModal from '../EditCustomItemModal';
-import DeleteModal from '../DeleteModal';
-import { deleteCustomItem, renameCustomItem } from '../../fetch/customItems';
-import RenameModal from '../RenameModal';
+import { CustomItemInterface } from '../../../../interfaces';
+import Badge from '../../../Badge';
+import CollectionMenu from '../../../CollectionMenu';
+import EditCustomItemModal from '../../../EditCustomItemModal';
+import DeleteModal from '../../../DeleteModal';
+import { deleteCustomItem, renameCustomItem } from '../../../../fetch/customItems';
+import RenameModal from '../../../RenameModal';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 

@@ -4,12 +4,12 @@ import { useRouter } from 'next/router'
 import React, { FC, Fragment } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { deleteDocument, renameDocument } from '../../fetch/documents';
-import useModal from '../../hooks/useModal';
-import { DocumentInterface } from '../../interfaces';
-import DeleteModal from '../DeleteModal';
-import EditDocumentModal from '../EditDocumentModal';
-import RenameModal from '../RenameModal';
+import { deleteDocument, renameDocument } from '../../../../fetch/documents';
+import useModal from '../../../../hooks/useModal';
+import { DocumentInterface } from '../../../../interfaces';
+import DeleteModal from '../../../DeleteModal';
+import EditDocumentModal from '../../../EditDocumentModal';
+import RenameModal from '../../../RenameModal';
 
 function Documents() {
   const router = useRouter();
