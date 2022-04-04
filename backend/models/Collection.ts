@@ -24,6 +24,10 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: Schema.Types.ObjectId,
         ref: 'Collection'
     },
+    parentName:{
+        type:String,
+        default: ""
+    },
     description: {
         type: String,
         default: ""

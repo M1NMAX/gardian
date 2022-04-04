@@ -30,6 +30,7 @@ export interface CollectionInterface extends basicSchema {
     properties: PropertyInCollectionInterface[],
     description: string,
     isDescriptionHidden: boolean,
+    parentName: string,
 }
 
 export interface CustomItemInterface extends basicSchema {
@@ -46,11 +47,6 @@ export interface EventInterface extends basicSchema {
 
 export interface DocumentInterface extends basicSchema {
     content: string
-}
-
-export interface SubCollectionInterface extends basicSchema {
-    variant: string,
-    collectionId: Types.ObjectId,
 }
 
 export interface TodoInterface extends basicSchema {
@@ -84,6 +80,7 @@ export interface ModalProps {
 export interface NewCollectionModalProps extends ModalProps {
     isSub: boolean,
     collectionId: string | null,
+    parentName: string,
 }
 
 export interface DocumentStatusProps {

@@ -204,7 +204,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
       {newCollectionModal && collection._id && <NewCollectionModal open={newCollectionModal}
-        isSub={true} collectionId={collection._id?.toString()}
+        isSub parentName={collection.name} collectionId={collection._id?.toString()}
         handleClose={closeNewCollectionModal} positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
 

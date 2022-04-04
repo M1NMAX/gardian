@@ -3,12 +3,12 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router'
 import Head from 'next/head';
-import Sidebar from '../../../components/Sidebar';
+import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
-import { sidebarState } from '../../../atoms/sidebarAtom';
+import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { CollectionInterface } from '../../../interfaces';
-import Collection from '../../../components/Collection';
+import { CollectionInterface } from '../../interfaces';
+import Collection from '../../components/Collection';
 import Link from 'next/link';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
@@ -23,6 +23,8 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
     })
 
     useEffect(() => { refetch() }, [id])
+
+    // 624aba92bea5603fb6f1056b
 
     return (
         <>
@@ -44,6 +46,14 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                                         </a>
                                     </Link>
                                 </span>
+                                {collection.isSub && <span>
+                                    <Link
+                                        href={`/collections/${collection.collectionId}`}>
+                                        <a className='hover:text-primary-bright '>
+                                            /{collection.parentName}
+                                        </a>
+                                    </Link>
+                                </span>}
                                 <span>/</span>
                                 <span className='font-medium'>
                                     {collection.name}

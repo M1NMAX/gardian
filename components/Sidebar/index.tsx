@@ -80,7 +80,8 @@ const Sidebar: FC = () => {
                 </div>
             </div>
             <Toaster />
-            {open && <NewCollectionModal open={open} isSub={false} collectionId={null}
+            {open && <NewCollectionModal open={open} isSub={false}
+                parentName="" collectionId={null}
                 handleClose={closeModal} positiveFeedback={positiveFeedback}
                 negativeFeedback={negativeFeedback} />}
         </div>

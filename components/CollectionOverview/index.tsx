@@ -4,12 +4,11 @@ import { CollectionOverviewProps } from '../../interfaces';
 
 
 const Collecion: FC<CollectionOverviewProps> = ({ collection, isForSub = false }) => {
-    console.log(collection.collectionId)
     return (
         <div className='flex flex-col p-2  text-xl shadow-md border
             rounded-sm bg-white dark:bg-gray-900'>
             <Link
-                href={isForSub ? `/collections/${collection.collectionId}/${collection._id}/` : `/collections/${collection._id}`}>
+                href={`/collections/${collection._id}`}>
                 <a className='font-semibold text-lg'>
                     {collection.name}
                 </a>
