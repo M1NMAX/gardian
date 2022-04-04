@@ -18,12 +18,16 @@ const EventSchema = new Schema<EventInterface>({
     },
     date: {
         type: String,
+        default: "",
     },
     time: {
-        type: String
+        type: String,
+        default: "",
+
     },
     description: {
         type: String,
+        default: "",
     },
     reminder: {
         type: Boolean,

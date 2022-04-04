@@ -37,9 +37,9 @@ export interface CustomItemInterface extends basicSchema {
 
 export interface EventInterface extends basicSchema {
     date: string,
-    time?: string,
-    reminder?: boolean,
-    description?: string,
+    time: string,
+    reminder: boolean,
+    description: string,
 }
 
 
