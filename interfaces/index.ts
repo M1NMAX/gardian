@@ -62,10 +62,12 @@ export interface TodoInterface extends basicSchema {
 //Components props
 export interface CollectionProps {
     collection: CollectionInterface,
+    isForSub?: boolean,
 }
 
 export interface CollectionOverviewProps {
     collection: CollectionInterface,
+    isForSub?: boolean,
 }
 
 

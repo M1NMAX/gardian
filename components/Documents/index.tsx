@@ -132,7 +132,7 @@ const Document: FC<DocumentProps> = ({ document }) => {
         handleClose={renameModal.closeModal}
         name={document.name} onRename={handleRenameDocument} />}
 
-      {deleteModal && <DeleteModal open={deleteModal.isOpen}
+      {deleteModal.isOpen && <DeleteModal open={deleteModal.isOpen}
         handleClose={deleteModal.closeModal}
         name={document.name} onDelete={handleDeleteDocument} />}
 

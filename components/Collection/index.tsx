@@ -26,7 +26,7 @@ import DeleteModal from '../DeleteModal';
 import EditCollectionModal from '../EditCollectionModal';
 
 
-const Collection: FC<CollectionProps> = ({ collection }) => {
+const Collection: FC<CollectionProps> = ({ collection, isForSub = false }) => {
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
@@ -151,17 +151,34 @@ const Collection: FC<CollectionProps> = ({ collection }) => {
         <div className='flex items-center space-x-2'>
           {!sidebar && <ActionIcon icon={<MenuAlt2Icon />} variant="secondary" onClick={() => setSidebar(true)} />}
           <h1 className='space-x-0.5 text-xl'>
-            <span>
-              <Link href='/collections'>
-                <a className='hover:text-primary-bright '>
-                  Collections
-                </a>
-              </Link>
-            </span>
-            <span>/</span>
-            <span className='font-medium'>
-              {collection.name}
-            </span>
+            {isForSub ?
+              <>
+                <span>
+                  <Link href='/collections'>
+                    <a className='hover:text-primary-bright '>
+                      Collections
+                    </a>
+                  </Link>
+                </span>
+                <span>/fgnago/</span>
+                <span className='font-medium'>
+                  {collection.name}
+                </span>
+              </> :
+              <>
+                <span>
+                  <Link href='/collections'>
+                    <a className='hover:text-primary-bright '>
+                      Collections
+                    </a>
+                  </Link>
+                </span>
+                <span>/</span>
+                <span className='font-medium'>
+                  {collection.name}
+                </span>
+              </>}
+
           </h1>
         </div>
         <div className='flex items-center space-x-1'>
