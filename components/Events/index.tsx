@@ -1,8 +1,12 @@
-import { BellIcon, CalendarIcon, ClockIcon } from '@heroicons/react/outline';
+import { Menu, Transition } from '@headlessui/react';
+import { BellIcon, CalendarIcon, ClockIcon, DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { FC, Fragment } from 'react'
+import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
+import useModal from '../../hooks/useModal';
 import { EventInterface } from '../../interfaces';
+import EditEventModal from '../EditEventModal';
 
 const Events = () => {
     const router = useRouter();
@@ -21,37 +25,102 @@ const Events = () => {
                         dark:scrollbar-thumb-gray-600 overflow-y-scroll'>
 
                 {data?.map((event, idx) => (
-                    <div key={idx} className='flex flex-col space-y-1 px-2 py-1 
-                    rounded-sm border bg-white dark:bg-gray-900'>
-                        <div className='w-full truncate'>
-                            {event.name}
-                        </div>
-                        <span className='flex items-center space-x-0.5 text-sm'>
-                            <CalendarIcon className='icon-xs' />
-                            <span>
-                                {event.date && new Date(event.date).toDateString()}
-                            </span>
-                        </span>
-                        <div className='flex space-x-1'>
+                    <Event key={idx} event={event} />
 
-                            {event.time != '' &&
-                                <span className='flex items-center space-x-0.5 text-sm' >
-                                    <ClockIcon className='icon-xs' />
-                                    <span>
-                                        {event.time}
-                                    </span>
-                                </span>}
-                            {event.reminder && <span className='flex items-center text-xs'>
-                                <BellIcon className='icon-xs' />
-                            </span>}
-
-                        </div>
-                    </div>
                 ))}
 
             </div>
         </div >
     )
+}
+
+interface EventProps {
+    event: EventInterface
+}
+
+const Event: FC<EventProps> = ({ event }) => {
+
+    const positiveFeedback = (msg: string) => toast.success(msg);
+    const negativeFeedback = () => toast.success("Something went wrong, try later");
+
+    const editEventModal = useModal();
+    const renameModal = useModal();
+    const deleteModal = useModal();
+
+
+    return (
+        <div className='flex justify-between items-start space-x-2 px-2 py-1 rounded-md border bg-white dark:bg-gray-900 group'>
+
+
+            <button onClick={editEventModal.openModal}
+                className='grow flex flex-col space-y-1 px-2 py-1'>
+                <div className='w-full truncate'>
+                    {event.name}
+                </div>
+                <span className='flex items-center space-x-0.5 text-sm'>
+                    <CalendarIcon className='icon-xs' />
+                    <span>
+                        {event.date && new Date(event.date).toDateString()}
+                    </span>
+                </span>
+                <div className='flex space-x-1'>
+
+                    {event.time != '' &&
+                        <span className='flex items-center space-x-0.5 text-sm' >
+                            <ClockIcon className='icon-xs' />
+                            <span>
+                                {event.time}
+                            </span>
+                        </span>}
+                    {event.reminder && <span className='flex items-center text-xs'>
+                        <BellIcon className='icon-xs' />
+                    </span>}
+
+                </div>
+            </button>
+            <Menu as="div" className="relative md:invisible md:group-hover:visible" >
+                <Menu.Button className="btn btn-secondary">
+                    <DotsVerticalIcon className='icon-sm' />
+                </Menu.Button>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                >
+                    <Menu.Items as="ul" className="absolute  z-10 -right-2 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900">
+                        <Menu.Item>
+                            <button onClick={renameModal.openModal}
+                                className='w-full space-x-1 btn btn-secondary'>
+                                <PencilIcon className='icon-sm' />
+                                <span> Rename </span>
+                            </button>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <button onClick={deleteModal.openModal}
+                                className='w-full space-x-1 btn btn-secondary'>
+                                <TrashIcon className='icon-sm' />
+                                <span> Delete </span>
+                            </button>
+                        </Menu.Item>
+                    </Menu.Items>
+                </Transition>
+            </Menu>
+
+
+
+            {editEventModal.isOpen && <EditEventModal
+                event={event}
+                open={editEventModal.isOpen}
+                handleClose={editEventModal.closeModal}
+                positiveFeedback={positiveFeedback}
+                negativeFeedback={negativeFeedback} />}
+        </div>
+    )
+
 }
 
 export default Events

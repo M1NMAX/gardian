@@ -27,7 +27,20 @@ export default withApiAuthRequired(
                         name: req.body.name,
                         updatedAt: Date.now()
                     }
-                    const event = await Event.findByIdAndUpdate(id, data, {
+                    const event = await Event.findByIdAndUpdate(id, { ...req.body, $currentDate: { updatedAt: true } }, {
+                        new: true,
+                        runValidators: true,
+                    });
+                    if (!event) return res.status(400).json({ isSuccess: false });
+                    res.status(200).json({ isSuccess: true, data: event });
+
+                } catch (error) {
+                    res.status(400).json({ isSuccess: false });
+                }
+                break;
+            case 'PATCH':
+                try {
+                    const event = await Event.findByIdAndUpdate(id, { name: req.body.name, $currentDate: { updatedAt: true } }, {
                         new: true,
                         runValidators: true,
                     });
