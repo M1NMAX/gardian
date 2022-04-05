@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { deleteCollection, renameCollection } from '../../../../fetch/collections';
 import RenameModal from '../../../RenameModal';
 import DeleteModal from '../../../DeleteModal';
+import useModal from '../../../../hooks/useModal';
 
 
 interface SidebarCollectionProps {
@@ -23,12 +24,16 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
   const negativeFeedback = () => toast.success("Something went wrong, try later");
 
 
+  const renameCollectionModal = useModal();
+  const deleteCollectionModal = useModal();
+
+
   //Rename Collection fuction
   const handleRenameCollection = (name: string): void => {
     if (!id) return;
     try {
       renameCollection(id.toString(), name);
-      closeRenameCollectionModal();
+      renameCollectionModal.closeModal();
       positiveFeedback("Collection renamed successfully");
     } catch (error) {
       negativeFeedback()
@@ -40,25 +45,12 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
     if (!id) return;
     try {
       deleteCollection(id.toString());
-      closeDeleteCollectionModal();
+      deleteCollectionModal.closeModal();
       positiveFeedback("Collection deleted successfully");
-      //Redirect user to collection overview page if user delete current url collection
-      if (id.toString() === urlId) router.push('/collections');
     } catch (error) {
       negativeFeedback();
     }
   }
-
-  //Delete Item Modal
-  const [deleteCollectionModal, setDeleteCollectionModal] = useState(false);
-  const openDeleteCollectionModal = () => setDeleteCollectionModal(true);
-  const closeDeleteCollectionModal = () => setDeleteCollectionModal(false);
-
-  //Rename Item Modal
-  const [renameCollectionModal, setRenameCollectionModal] = useState(false);
-  const openRenameCollectionModal = () => setRenameCollectionModal(true);
-  const closeRenameCollectionModal = () => setRenameCollectionModal(false);
-
 
   return (
     <div className='pl-1 pr-2.5'>
@@ -77,15 +69,17 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
         </Link>
 
         <div className='md:invisible md:group-hover:visible '>
-          <CollectionMenu onClickRename={openRenameCollectionModal}
-            onClickDelete={openDeleteCollectionModal} />
+          <CollectionMenu onClickRename={renameCollectionModal.openModal}
+            onClickDelete={deleteCollectionModal.openModal} />
         </div>
       </div>
 
-      {renameCollectionModal && <RenameModal open={renameCollectionModal} handleClose={closeRenameCollectionModal}
+      {renameCollectionModal.isOpen && <RenameModal open={renameCollectionModal.isOpen}
+        handleClose={renameCollectionModal.closeModal}
         name={name} onRename={handleRenameCollection} />}
 
-      {deleteCollectionModal && <DeleteModal open={deleteCollectionModal} handleClose={closeDeleteCollectionModal}
+      {deleteCollectionModal.isOpen && <DeleteModal open={deleteCollectionModal.isOpen}
+        handleClose={deleteCollectionModal.closeModal}
         name={name} onDelete={handleDeleteCollection} />}
     </div>
   )
