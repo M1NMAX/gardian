@@ -12,14 +12,14 @@ const SubCollections = () => {
         const response = await res.json();
         return response.data;
     });
-    
+
     return (
         <div>SubCollections
 
             <div className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
                 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
                 {data?.map((collection, idx: number) => (
-                    <CollectionOverview key={idx} collection={collection} isForSub />
+                    <CollectionOverview key={idx} collection={collection} />
                 ))}
 
 

@@ -60,7 +60,6 @@ export interface TodoInterface extends basicSchema {
 
 export interface CollectionOverviewProps {
     collection: CollectionInterface,
-    isForSub?: boolean,
 }
 
 
