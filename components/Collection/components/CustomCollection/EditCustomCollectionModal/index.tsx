@@ -53,25 +53,27 @@ const EditCustomCollectionModal: FC<EditCustomCollectionModalProps> = ({ collect
 
     return (
         <Modal title={<Label icon={<CollectionIcon />} text="Collection" />} open={open} onHide={handleClose} size="size">
-            <form onSubmit={handleSubmit}>
-
-                <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
-                    placeholder="Item name"
-                    className='modal-head-input' />
+            <form onSubmit={handleSubmit} className="modal-form">
+                <label>
+                    <span className='modal-input-label'>Name</span>
+                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
+                        placeholder="Item name"
+                        className='modal-head-input' />
+                </label>
 
                 <label className="flex flex-col w-full mt-1">
-                    <span className='text-sm'> Description </span>
-                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
+                    <span className='modal-input-label'> Description </span>
+                    <textarea name='description' value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
-                        className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
+                        className='modal-text-area' />
                 </label>
                 <label className='flex items-center space-x-1 w-fit'>
-                    <span className='text-sm'> Hide description</span>
                     <input type="checkbox"
                         name='taskStatus' checked={isDescriptionHidden}
                         onChange={(e) => setIsDescriptionHidden(e.target.checked)}
-                        className='w-6 h-6 appearance-none  rounded-sm bg-gray-200 dark:bg-gray-700 
-                        checked:bg-primary dark:checked:bg-primary-bright' />
+                        className='modal-checkbox' />
+                    <span className='modal-input-label'> Hide description in collection page</span>
                 </label>
 
 

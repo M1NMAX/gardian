@@ -74,7 +74,7 @@
     focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-bright;
   }
   .modal-checkbox {
-    @apply w-5 h-5 appearance-none rounded-sm bg-gray-200 dark:bg-gray-700 
+    @apply w-5 h-5 appearance-none rounded-sm bg-gray-100 dark:bg-gray-800 
     checked:bg-primary dark:checked:bg-primary-bright;
   }
   /* new version  */
