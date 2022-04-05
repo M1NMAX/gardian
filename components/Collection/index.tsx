@@ -187,12 +187,13 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           onClickRename={openRenameModal}
           onClickDelete={openDeleteModal} />
       </div>
-      {newCustomItemModal && <NewCustomItemModal open={newCustomItemModal} handleClose={closeNewCustomItemModal}
-        positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
+      {/* Modals  */}
 
-      {editCustomCollectionModal && <EditCustomCollectionModal open={editCustomCollectionModal}
-        handleClose={closeEditCustomCollectionModal} positiveFeedback={positiveFeedback}
-        negativeFeedback={negativeFeedback} />}
+      {newCustomItemModal && <NewCustomItemModal
+        collection={collection}
+        open={newCustomItemModal}
+        handleClose={closeNewCustomItemModal}
+        positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
 
       {newEventModal && <NewEventModal open={newEventModal} handleClose={closeNewEventModal}
         positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback} />}
@@ -206,6 +207,11 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
       {newCollectionModal && collection._id && <NewCollectionModal open={newCollectionModal}
         isSub parentName={collection.name} collectionId={collection._id?.toString()}
         handleClose={closeNewCollectionModal} positiveFeedback={positiveFeedback}
+        negativeFeedback={negativeFeedback} />}
+
+      {editCustomCollectionModal && <EditCustomCollectionModal collection={collection}
+        open={editCustomCollectionModal}
+        handleClose={closeEditCustomCollectionModal} positiveFeedback={positiveFeedback}
         negativeFeedback={negativeFeedback} />}
 
       {editCollectionModal && <EditCollectionModal collection={collection} open={editCollectionModal}

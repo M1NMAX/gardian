@@ -16,28 +16,20 @@ const propertiesTypes = [
 ]
 
 
+interface EditCustomCollectionModalProps extends ModalProps {
+    collection: CollectionInterface
+}
 
 
-const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+
+const EditCustomCollectionModal: FC<EditCustomCollectionModalProps> = ({ collection, open, handleClose, positiveFeedback, negativeFeedback }) => {
     const router = useRouter();
     const { id: collectionId } = router.query;
 
-    const [name, setName] = useState("")
-    const [properties, setProperties] = useState<PropertyInCollectionInterface[]>([])
-
-
-    const { data } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + collectionId);
-        const response = await res.json();
-        return response.data;
-    });
-
-    useEffect(() => {
-        if (data) {
-            setName(data.name)
-            setProperties(data.properties)
-        }
-    }, [collectionId, data])
+    const [name, setName] = useState(collection.name)
+    const [description, setDescription] = useState(collection.description);
+    const [isDescriptionHidden, setIsDescriptionHidden] = useState(collection.isDescriptionHidden);
+    const [properties, setProperties] = useState<PropertyInCollectionInterface[]>(collection.properties)
 
     const addProperty = (property: PropertyInCollectionInterface): void => {
         setProperties([...properties, property]);
@@ -66,6 +58,21 @@ const EditCustomCollectionModal: FC<ModalProps> = ({ open, handleClose, positive
                 <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
                     placeholder="Item name"
                     className='modal-head-input' />
+
+                <label className="flex flex-col w-full mt-1">
+                    <span className='text-sm'> Description </span>
+                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
+                        rows={4} maxLength={200}
+                        className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
+                </label>
+                <label className='flex items-center space-x-1 w-fit'>
+                    <span className='text-sm'> Hide description</span>
+                    <input type="checkbox"
+                        name='taskStatus' checked={isDescriptionHidden}
+                        onChange={(e) => setIsDescriptionHidden(e.target.checked)}
+                        className='w-6 h-6 appearance-none  rounded-sm bg-gray-200 dark:bg-gray-700 
+                        checked:bg-primary dark:checked:bg-primary-bright' />
+                </label>
 
 
                 <CollectionProperties properties={properties} />
@@ -115,7 +122,7 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
     }
 
     return (
-        <div className='flex flex-col space-y-2'>
+        <div className=' flex flex-col space-y-2'>
             <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
                 placeholder="Property name"
                 className='modal-input' />

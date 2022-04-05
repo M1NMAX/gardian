@@ -130,9 +130,9 @@ const Item: FC<ItemProps> = ({ item }) => {
                     </Menu.Items>
                 </Transition>
             </Menu>
-            {/* {editItemModal && <EditCustomItemModal open={editItemModal} handleClose={closeEditItemModal}
+            {editItemModal && <EditCustomItemModal open={editItemModal} handleClose={closeEditItemModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback}
-                itemId={item._id?.toString()} />} */}
+                itemId={item._id?.toString()} />} 
 
 
             {renameItemModal && <RenameModal open={renameItemModal} handleClose={closeRenameItemModal}

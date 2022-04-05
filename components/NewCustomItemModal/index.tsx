@@ -1,38 +1,24 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import Modal from '../Modal';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../interfaces';
 import { createCustomItem } from '../../fetch/customItems';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
+interface NewCustomItemModalProps extends ModalProps {
+    collection: CollectionInterface
+}
 
 
-const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+const NewCustomItemModal: FC<NewCustomItemModalProps> = ({ collection, open, handleClose, positiveFeedback, negativeFeedback }) => {
     const router = useRouter();
     const { id: collectionId } = router.query;
 
     const [name, setName] = useState("");
-    const [collectionProperties, setCollectionProperties] = useState<PropertyInCollectionInterface[]>([])
-    const [itemProperties, setItemProperties] = useState<PropertyInItemInterface[]>([])
-
-
-    const { data } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + collectionId);
-        const response = await res.json();
-        return response.data;
-    });
-
-    useEffect(() => {
-        if (data) {
-            setCollectionProperties(data.properties);
-            setItemProperties(data.properties.map<PropertyInItemInterface>((property => ({
-                _id: property._id,
-                name: property.name,
-                value: ""
-            }))));
-
-        }
-    }, [collectionId, data])
-
+    const [collectionProperties] = useState<PropertyInCollectionInterface[]>(collection.properties)
+    const [itemProperties, setItemProperties] = useState<PropertyInItemInterface[]>(collection.properties.map<PropertyInItemInterface>((property => ({
+        _id: property._id,
+        name: property.name,
+        value: ""
+    }))))
 
     const getValueByKey = (id?: string): string => (
         itemProperties.filter(property => (
@@ -40,14 +26,11 @@ const NewCustomItemModal: FC<ModalProps> = ({ open, handleClose, positiveFeedbac
         ))[0].value
     )
 
-
-
     const setValueByKey = (value: string, id?: string): void => {
         setItemProperties(itemProperties.map(property =>
             property._id?.toString() === id ?
                 { ...property, value } : property))
     }
-
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
