@@ -51,6 +51,34 @@
   }
 
   /* Modal */
+
+  /* new version  */
+  .modal-form {
+    @apply space-y-2;
+  }
+
+  .modal-input-label {
+    @apply text-sm;
+  }
+  .modal-head-input {
+    @apply w-full text-2xl px-2  font-semibold rounded border-0 bg-gray-100 dark:bg-gray-800
+    focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary;
+  }
+  .modal-input {
+    @apply w-full h-10 px-1 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
+    focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary;
+  }
+
+  .modal-text-area {
+    @apply w-full px-2 resize-none rounded  border-0 bg-gray-100 dark:bg-gray-800
+    focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-bright;
+  }
+  .modal-checkbox {
+    @apply w-5 h-5 appearance-none rounded-sm bg-gray-200 dark:bg-gray-700 
+    checked:bg-primary dark:checked:bg-primary-bright;
+  }
+  /* new version  */
+
   .property-label {
     @apply flex items-center space-x-1 w-full p-1 md:text-right md:w-32 md:text-lg 
     rounded border-b-2 border-secondary-dark   bg-gray-100 dark:bg-gray-800;
@@ -58,7 +86,6 @@
   .property-readOnly {
     @apply flex items-center w-full h-10 px-2  cursor-default rounded   bg-gray-50 dark:bg-gray-800;
   }
-
   .input-with-label {
     @apply block md:flex md:items-center md:space-x-2;
   }
@@ -66,14 +93,6 @@
     @apply w-full md:text-right md:w-24 md:text-lg;
   }
 
-  .modal-input {
-    @apply w-full  h-10 px-2 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
-    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
-  }
-  .modal-head-input {
-    @apply w-full text-3xl  font-bold rounded border-0 bg-gray-50 dark:bg-gray-800
-    focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-primary;
-  }
   .modal-neutral-btn {
     @apply text-lg rounded-md px-4 py-1 bg-gray-100  hover:bg-gray-200  dark:bg-gray-700 
     dark:hover:bg-gray-600 font-medium;
