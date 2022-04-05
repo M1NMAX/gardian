@@ -3,11 +3,11 @@ import { CheckIcon, CollectionIcon, SelectorIcon } from '@heroicons/react/outlin
 import { useRouter } from 'next/router'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import { useQuery } from 'react-query';
-import { updateCustomCollection } from '../../fetch/collections';
-import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../interfaces'
-import CollectionProperties from '../CollectionProperties';
-import Modal from '../Modal';
-import Label from '../Label';
+import { updateCustomCollection } from '../../../../../fetch/collections';
+import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../../../../interfaces'
+import CollectionProperties from '../Properties';
+import Modal from '../../../../Modal';
+import Label from '../../../../Label';
 
 
 const propertiesTypes = [

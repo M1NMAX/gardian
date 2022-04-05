@@ -1,14 +1,14 @@
 import { Popover } from '@headlessui/react'
 import { AnnotationIcon, ClockIcon, SelectorIcon, TrashIcon } from '@heroicons/react/outline'
 import React, { FC, useState } from 'react'
-import { PropertyInCollectionInterface } from '../../interfaces'
-import Badge from '../Badge'
+import { PropertyInCollectionInterface } from '../../../../../interfaces'
+import Badge from '../../../../Badge'
 
 
-interface CollectionPropertiesProps {
+interface PropertiesProps {
     properties: PropertyInCollectionInterface[]
 }
-const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => {
+const Properties: FC<PropertiesProps> = ({ properties }) => {
 
     const handlePropertyIcon = (propertyType: string): JSX.Element => {
         let result = <></>
@@ -85,7 +85,7 @@ const CollectionProperties: FC<CollectionPropertiesProps> = ({ properties }) => 
     )
 }
 
-export default CollectionProperties
+export default Properties
 
 interface EditPorpertyFormProp {
     property: PropertyInCollectionInterface,

@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import { CustomItemInterface } from '../../../../interfaces';
 import Badge from '../../../Badge';
 import CollectionMenu from '../../../CollectionMenu';
-import EditCustomItemModal from '../../../EditCustomItemModal';
+import EditCustomItemModal from './EditCustomItemModal';
 import DeleteModal from '../../../DeleteModal';
 import { deleteCustomItem, renameCustomItem } from '../../../../fetch/customItems';
 import RenameModal from '../../../RenameModal';

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
-import Modal from '../Modal';
-import { CollectionInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../interfaces';
-import { createCustomItem } from '../../fetch/customItems';
+import Modal from '../../../../Modal';
+import { CollectionInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../../../../interfaces';
+import { createCustomItem } from '../../../../../fetch/customItems';
 import { useRouter } from 'next/router';
 interface NewCustomItemModalProps extends ModalProps {
     collection: CollectionInterface

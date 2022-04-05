@@ -5,17 +5,17 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { CollectionInterface } from '../../interfaces';
 import ActionIcon from '../ActionIcon';
-import NewCustomItemModal from '../NewCustomItemModal';
+import NewCustomItemModal from './components/CustomCollection/NewCustomItemModal';
 import NewEventModal from '../NewEventModal';
 import NewDocumentModal from '../NewDocumentModal';
 import NewTodoModal from '../NewTodoModal';
 import NewCollectionModal from '../NewCollectionModal';
-import CustomItems from './components/CustomItems';
+import CustomCollection from './components/CustomCollection';
 import Events from './components/Events';
 import Documents from './components/Documents';
 import Todos from './components/Todos';
 import SubCollections from './components/SubCollections';
-import EditCustomCollectionModal from '../EditCustomCollectionModal';
+import EditCustomCollectionModal from './components/CustomCollection/EditCustomCollectionModal';
 import CollectionMenu from '../CollectionMenu';
 import useModal from '../../hooks/useModal';
 import { deleteCollection, renameCollection } from '../../fetch/collections';
@@ -248,7 +248,7 @@ const Body: FC<BodyProps> = ({ variant }) => {
 
   switch (variant) {
     case 'custom':
-      ItemsComponent = CustomItems;
+      ItemsComponent = CustomCollection;
       break;
     case 'event':
       ItemsComponent = Events;

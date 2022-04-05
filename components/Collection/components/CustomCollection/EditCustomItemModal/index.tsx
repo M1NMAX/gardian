@@ -2,10 +2,10 @@ import { AdjustmentsIcon, AnnotationIcon, ClockIcon, SelectorIcon } from '@heroi
 import { useRouter } from 'next/router'
 import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { updateCustomItem } from '../../fetch/customItems'
-import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../interfaces'
-import Label from '../Label'
-import Modal from '../Modal'
+import { updateCustomItem } from '../../../../../fetch/customItems'
+import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../../../../interfaces'
+import Label from '../../../../Label'
+import Modal from '../../../../Modal'
 
 interface EditCustomItemProps extends ModalProps {
     itemId?: string
