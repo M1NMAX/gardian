@@ -1,19 +1,14 @@
-import { Listbox, Popover, Transition } from '@headlessui/react';
-import { CheckIcon, CollectionIcon, SelectorIcon } from '@heroicons/react/outline';
+import { Popover } from '@headlessui/react';
+import { CollectionIcon, PlusIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
-import React, { FC, Fragment, useEffect, useState } from 'react'
-import { useQuery } from 'react-query';
+import React, { FC, useState } from 'react'
 import { updateCustomCollection } from '../../../../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../../../../interfaces'
-import CollectionProperties from '../Properties';
+import Properties from '../Properties';
 import Modal from '../../../../Modal';
 import Label from '../../../../Label';
 
 
-const propertiesTypes = [
-    { name: 'text' },
-    { name: 'select' },
-]
 
 
 interface EditCustomCollectionModalProps extends ModalProps {
@@ -76,14 +71,16 @@ const EditCustomCollectionModal: FC<EditCustomCollectionModalProps> = ({ collect
                     <span className='modal-input-label'> Hide description in collection page</span>
                 </label>
 
-
-                <CollectionProperties properties={properties} />
+                <Properties properties={properties} />
 
                 <Popover className="relative">
                     {({ open, close }) =>
                     (
                         <>
-                            <Popover.Button className="btn btn-secondary">Add Properties</Popover.Button>
+                            <Popover.Button className="btn btn-secondary">
+                                <PlusIcon className='icon-xs' />
+                                Add Properties
+                            </Popover.Button>
                             <Popover.Panel className="absolute bottom-6 z-10 w-72 p-2 shadow-lg  bg-white dark:bg-gray-900 rounded border ">
                                 <AddPropertyPopoverContent onAdd={addProperty} handleClose={close} />
                             </Popover.Panel>
@@ -106,15 +103,22 @@ const EditCustomCollectionModal: FC<EditCustomCollectionModalProps> = ({ collect
 
 export default EditCustomCollectionModal
 
+
 interface AddPropertyInterface {
     onAdd: (property: PropertyInCollectionInterface) => void,
     handleClose: () => void
 }
 
+const propertiesTypes = [
+    'text',
+    'select'
+]
+
+
 
 const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClose }) => {
     const [name, setName] = useState("");
-    const [selectedPropertyType, setSelectedPropertyType] = useState(propertiesTypes[0].name);
+    const [selectedPropertyType, setSelectedPropertyType] = useState(propertiesTypes[0]);
     const [values, setValues] = useState("");
 
     const handleAdd = () => {
@@ -125,57 +129,32 @@ const AddPropertyPopoverContent: FC<AddPropertyInterface> = ({ onAdd, handleClos
 
     return (
         <div className=' flex flex-col space-y-2'>
-            <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
-                placeholder="Property name"
-                className='modal-input' />
-            <div>
-                <span className="w-full">Property type</span>
-                <Listbox value={selectedPropertyType} onChange={setSelectedPropertyType}>
-                    <div className="relative mt-1">
-                        <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left dark:text-black 
-                        bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 
-                            focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 
-                            focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
-                            <span className="block truncate first-letter:uppercase">{selectedPropertyType}</span>
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                <SelectorIcon className="icon-sm text-gray-500 dark:text-gray-200" aria-hidden="true" />
-                            </span>
-                        </Listbox.Button>
-                        <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100" leaveTo="opacity-0">
-                            <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-gray-50 dark:bg-gray-700 
-                         rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                {propertiesTypes.map((type, idx) =>
-                                    <Listbox.Option key={idx} className={({
-                                        active
-                                    }) => `cursor-default select-none relative py-2 pl-10 pr-4 dark:text-white ${active ? ' bg-primary-bright' : ''}`} value={type.name}>
-                                        {({
-                                            selected
-                                        }) => <>
-                                                <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                                                    {type.name}
-                                                </span>
-                                                {selected ? <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                                    <CheckIcon className="w-5 h-5" aria-hidden="true" />
-                                                </span> : null}
-                                            </>}
-                                    </Listbox.Option>)}
-                            </Listbox.Options>
-                        </Transition>
-                    </div>
-                </Listbox>
-            </div>
+            <label>
+                <span className='modal-input-label'> Name </span>
+                <input type="text" name="name" value={name}
+                    onChange={(e) => { setName(e.target.value) }}
+                    placeholder="Property name"
+                    className='modal-input' />
+            </label>
+            <label>
+                <span className="modal-input-label">Property type</span>
+                <select
+                    value={selectedPropertyType}
+                    onChange={(e) => { setSelectedPropertyType(e.target.value) }}
+                    className='modal-input'>
+                    {propertiesTypes.map((type, idx) => (
+                        <option key={idx} value={type}>{type}</option>))}
+                </select>
+            </label>
             <label className={`${selectedPropertyType === "select" ? 'visible' : 'invisible h-0'} transition-all `}>
-                <span className='w-full'> Values</span>
+                <span className='modal-input-label'> Values</span>
                 <input type="text" name="values" value={values} onChange={(e) => { setValues(e.target.value) }}
                     placeholder="Property values"
                     className='modal-input' />
                 <p className='text-xs italic' >use @ to separate the values </p>
             </label>
             <div className="flex justify-end space-x-2 mt-2">
-                <button className="modal-neutral-btn">
+                <button onClick={handleClose} type='button' className="modal-neutral-btn">
                     Cancel
                 </button>
                 <button key={1} type="button" onClick={handleAdd} className="modal-positive-btn">

@@ -65,7 +65,7 @@
     focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary;
   }
   .modal-input {
-    @apply w-full h-10 px-1 cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
+    @apply w-full h-10 px-1 cursor-default rounded  border-0  bg-gray-100 dark:bg-gray-800 
     focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary;
   }
 
