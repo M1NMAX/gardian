@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import CollectionMenu from '../../../CollectionMenu';
@@ -7,15 +7,17 @@ import { deleteCollection, renameCollection } from '../../../../fetch/collection
 import RenameModal from '../../../RenameModal';
 import DeleteModal from '../../../DeleteModal';
 import useModal from '../../../../hooks/useModal';
+import { AdjustmentsIcon, CalendarIcon, CheckCircleIcon, CollectionIcon, DocumentIcon, ReplyIcon } from '@heroicons/react/outline';
 
 
 interface SidebarCollectionProps {
   name: string,
   variant: string
   id?: number,
+  isSub: boolean
 }
 
-const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) => {
+const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant, isSub }) => {
   const router = useRouter();
   const { id: urlId } = router.query;
 
@@ -52,19 +54,45 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant }) =>
     }
   }
 
+  const handleVariantIcon = (variant: string): JSX.Element => {
+    let result = <></>
+    switch (variant) {
+      case 'custom':
+        result = <AdjustmentsIcon className='icon-xs ' />
+        break;
+      case 'event':
+        result = <CalendarIcon className='icon-xs ' />
+        break;
+      case 'document':
+        result = <DocumentIcon className='icon-xs ' />
+        break;
+      case 'todo':
+        result = <CheckCircleIcon className='icon-xs ' />
+        break;
+      case 'collection':
+        result = <CollectionIcon className='icon-xs ' />
+        break;
+    }
+    return result;
+  }
+
+
   return (
-    <div className='pl-1 pr-2.5'>
-      <div className={`${id === urlId && 'border-l-4 border-green-400 text-green-400 '} 
-        flex items-center justify-between w-full  px-1.5 py-1
+    <div>
+
+      <div className={`${id === urlId && 'bg-green-400'} 
+        flex items-center justify-between w-full pl-2 pr-1  
        hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 
         font-semibold  rounded-sm group `}>
 
+
         <Link href={`/collections/${id}`}>
-          <a className='flex flex-col justify-center grow truncate'>
+          <a className='flex  items-center space-x-1 grow truncate'>
+            {isSub && <ReplyIcon className='icon-xs -rotate-180' />}
+            {handleVariantIcon(variant)}
             <span>
               {name}
             </span>
-            <span className='text-xs font-light'> {variant}s</span>
           </a>
         </Link>
 

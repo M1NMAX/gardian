@@ -56,7 +56,8 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                                 <span>/</span>
                                 <span className='font-medium'>
                                     {collection.name}
-                                </span></h1>
+                                </span>
+                            </h1>
                         </Collection.Header>
                         <Collection.Title variant={collection.variant}>
                             {collection.name}
