@@ -87,7 +87,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant, isSu
 
 
         <Link href={`/collections/${id}`}>
-          <a className='flex items-center space-x-1'>
+          <a className='flex items-center space-x-1 w-full'>
             <ReplyIcon className='icon-xs -rotate-180' />
             {handleVariantIcon(variant)}
             <span className='w-1/2 truncate'>

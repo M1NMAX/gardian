@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { FC, Fragment } from 'react'
+import React, { FC, Fragment, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { CollectionInterface, CustomItemInterface } from '../../../../interfaces';
@@ -11,11 +11,12 @@ import RenameModal from '../../../RenameModal';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import useModal from '../../../../hooks/useModal';
+import EmptyCollection from '../EmptyCollection';
 
 const Customs = () => {
     const router = useRouter();
     const { id: collectionId } = router.query;
-    const { data } = useQuery<CustomItemInterface[]>('customItems', async (): Promise<CustomItemInterface[]> => {
+    const { data, refetch } = useQuery<CustomItemInterface[]>('customItems', async (): Promise<CustomItemInterface[]> => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/customItems/collectionId/' + collectionId);
         const response = await res.json();
         return response.data;
@@ -26,9 +27,13 @@ const Customs = () => {
         const response = await res.json();
         return response.data;
     });
+    useEffect(() => { refetch() }, [collectionId])
 
     return (
         <div className='flex flex-col space-y-1'>
+            {data?.length === 0 &&
+                <EmptyCollection />
+            }
             {collection &&
                 data?.map((item, idx) => (
                     <Item key={idx} item={item} collection={collection} />

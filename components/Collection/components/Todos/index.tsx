@@ -10,22 +10,28 @@ import ActionIcon from '../../../ActionIcon';
 import { deleteTodo, updateTodoIsConcluded } from '../../../../fetch/todos';
 import useModal from '../../../../hooks/useModal';
 import DeleteModal from '../../../DeleteModal';
+import EmptyCollection from '../EmptyCollection';
 
 const Todos = () => {
     const router = useRouter();
     const { id: collectionId } = router.query;
 
-    const { data } = useQuery<TodoInterface[]>('items', async (): Promise<TodoInterface[]> => {
+    const { data, refetch } = useQuery<TodoInterface[]>('items', async (): Promise<TodoInterface[]> => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/todos/collectionId/' + collectionId);
         const response = await res.json();
         return response.data;
     });
+
+    useEffect(() => { refetch() }, [collectionId])
     return (
-            <div className='flex flex-col space-y-2'>
-                {data?.map((todo, idx) => (
-                    <Todo key={idx} todo={todo} />
-                ))}
-            </div>
+        <div className='flex flex-col space-y-2'>
+            {data?.length === 0 &&
+                <EmptyCollection />
+            }
+            {data?.map((todo, idx) => (
+                <Todo key={idx} todo={todo} />
+            ))}
+        </div>
     )
 }
 

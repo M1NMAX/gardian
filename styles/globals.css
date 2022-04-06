@@ -19,6 +19,9 @@
   .icon-xl {
     @apply w-10 h-10;
   }
+  .icon-3xl {
+    @apply w-14 h-14;
+  }
 
   .btn {
     @apply flex items-center rounded;

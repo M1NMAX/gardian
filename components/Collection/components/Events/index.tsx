@@ -1,7 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import { BellIcon, CalendarIcon, ClockIcon, DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router'
-import React, { FC, Fragment } from 'react'
+import React, { FC, Fragment, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { deleteEvent, renameEvent } from '../../../../fetch/events';
@@ -10,19 +10,26 @@ import { EventInterface } from '../../../../interfaces';
 import DeleteModal from '../../../DeleteModal';
 import EditEventModal from './EditEventModal';
 import RenameModal from '../../../RenameModal';
+import EmptyCollection from '../EmptyCollection';
 
 const Events = () => {
     const router = useRouter();
     const { id: collectionId } = router.query;
-    const { data } = useQuery<EventInterface[]>('events', async (): Promise<EventInterface[]> => {
+    const { data, refetch } = useQuery<EventInterface[]>('events', async (): Promise<EventInterface[]> => {
         const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/events/collectionId/' + collectionId);
         const response = await res.json();
         return response.data;
     });
+
+    useEffect(() => { refetch() }, [collectionId]);
+
     return (
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-2
                  scrollbar-thin scrollbar-thumb-gray-300 
                         dark:scrollbar-thumb-gray-600 overflow-y-scroll'>
+            {data?.length === 0 &&
+                <EmptyCollection />
+            }
 
             {data?.map((event, idx) => (
                 <Event key={idx} event={event} />
