@@ -68,7 +68,7 @@ const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, pos
                     <span className='modal-input-label' > Reminder</span>
                 </label>
 
-                <label>
+                <label className='flex flex-col w-full mt-1'>
                     <span className='modal-input-label'> Description ({description != null && description.length}/200)</span>
                     <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
