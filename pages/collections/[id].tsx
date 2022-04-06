@@ -24,7 +24,6 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
 
     useEffect(() => { refetch() }, [id])
 
-    // 624aba92bea5603fb6f1056b
 
     return (
         <>
@@ -59,7 +58,7 @@ const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProp
                                     {collection.name}
                                 </span></h1>
                         </Collection.Header>
-                        <Collection.Title>
+                        <Collection.Title variant={collection.variant}>
                             {collection.name}
                         </Collection.Title>
                         <Collection.Description hidden={collection.isDescriptionHidden}>

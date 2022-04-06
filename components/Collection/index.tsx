@@ -1,4 +1,4 @@
-import { MenuAlt2Icon, PencilIcon } from '@heroicons/react/outline';
+import { AdjustmentsIcon, CalendarIcon, CheckCircleIcon, CollectionIcon, DocumentIcon, MenuAlt2Icon, PencilIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
@@ -23,6 +23,7 @@ import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import EditCollectionModal from './components/EditCollectionModal';
+import Badge from '../Badge';
 
 
 
@@ -33,6 +34,7 @@ interface HeaderProps {
 
 interface TitleProps {
   children: string
+  variant: string
 }
 
 interface DescriptionProps {
@@ -227,10 +229,16 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   )
 }
 
-const Title: FC<TitleProps> = ({ children }) => {
+const Title: FC<TitleProps> = ({ children, variant }) => {
   return (
-    <h2 className='font-semibold text-2xl'>
-      {children}
+    <h2 className='flex items-center space-x-1 font-semibold text-2xl'>
+      <Badge text={variant.charAt(0)}
+        variant={'primary'}
+        textSize="sm"
+        rounded="sm" uppercase />
+      <span>
+        {children}
+      </span>
     </h2>
   )
 }
