@@ -56,14 +56,14 @@ const EditCustomCollectionModal: FC<EditCustomCollectionModalProps> = ({ collect
                         className='modal-head-input' />
                 </label>
 
-                <label className="flex flex-col w-full mt-1">
+                <label>
                     <span className='modal-input-label'> Description </span>
                     <textarea name='description' value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
                         className='modal-text-area' />
                 </label>
-                <label className='flex items-center space-x-1 w-fit'>
+                <label>
                     <input type="checkbox"
                         name='taskStatus' checked={isDescriptionHidden}
                         onChange={(e) => setIsDescriptionHidden(e.target.checked)}

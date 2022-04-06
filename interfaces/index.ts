@@ -34,7 +34,7 @@ export interface CollectionInterface extends basicSchema {
 }
 
 export interface CustomItemInterface extends basicSchema {
-    properties?: PropertyInItemInterface[],
+    properties: PropertyInItemInterface[],
 }
 
 export interface EventInterface extends basicSchema {

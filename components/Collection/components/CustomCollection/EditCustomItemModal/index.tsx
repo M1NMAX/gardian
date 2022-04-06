@@ -1,43 +1,19 @@
-import { AdjustmentsIcon, AnnotationIcon, ClockIcon, SelectorIcon } from '@heroicons/react/outline'
-import { useRouter } from 'next/router'
-import React, { FC, useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
+import { AdjustmentsIcon, AnnotationIcon, SelectorIcon } from '@heroicons/react/outline'
+import React, { FC, useState } from 'react'
 import { updateCustomItem } from '../../../../../fetch/customItems'
 import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../../../../interfaces'
 import Label from '../../../../Label'
 import Modal from '../../../../Modal'
 
 interface EditCustomItemProps extends ModalProps {
-    itemId?: string
+    collection: CollectionInterface
+    item: CustomItemInterface
 }
 
-const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, positiveFeedback, negativeFeedback, itemId }) => {
-    const router = useRouter();
-    const { id: collectionId } = router.query;
-    const [name, setName] = useState("");
-    const [itemProperties, setItemProperties] = useState<PropertyInItemInterface[]>([]);
-    const [collectionProperties, setCollectionProperties] = useState<PropertyInCollectionInterface[]>([]);
-
-
-
-    const { data: item } = useQuery<CustomItemInterface>('item', async (): Promise<CustomItemInterface> => {
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/customItems/' + itemId);
-        const response = await res.json();
-        return response.data;
-    });
-
-    const { data: collection } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
-        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + collectionId);
-        const response = await res.json();
-        return response.data;
-    });
-
-    useEffect(() => {
-        if (!collection || !item || !collection.properties || !item.properties) return;
-        setName(item.name);
-        setCollectionProperties(collection.properties);
-        setItemProperties(item.properties);
-    }, [itemId, item, collection]);
+const EditCustomItemModal: FC<EditCustomItemProps> = ({ collection, item, open, handleClose, positiveFeedback, negativeFeedback }) => {
+    const [name, setName] = useState(item.name);
+    const [itemProperties, setItemProperties] = useState<PropertyInItemInterface[]>(item.properties);
+    const [collectionProperties] = useState<PropertyInCollectionInterface[]>(collection.properties);
 
     const getFirstValueById = (id?: string): string => (
         collectionProperties.filter(property => (
@@ -64,14 +40,12 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
         value === "" || value == null
     )
 
-
-
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (!itemId || isFill(name)) return;
+        if (!item._id || isFill(name)) return;
 
         try {
-            await updateCustomItem(itemId, name, itemProperties);
+            await updateCustomItem(item._id.toString(), name, itemProperties);
             handleClose();
             positiveFeedback("Item updated successfully");
         } catch (error) {
@@ -83,55 +57,46 @@ const EditCustomItemModal: FC<EditCustomItemProps> = ({ open, handleClose, posit
 
     return (
         <Modal title={<Label icon={<AdjustmentsIcon />} text="Custom item" />} open={open} onHide={handleClose} size="size">
-            <form onSubmit={handleSubmit}>
-                <div className='space-y-2'>
+            <form onSubmit={handleSubmit} className="modal-form">
+
+                <label>
+                    <span className='modal-input-label'>Name</span>
                     <input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)}
                         placeholder="Item name"
                         className='modal-head-input' />
-                    <span className='input-with-label'>
-                        <span className='property-label'>
-                            <ClockIcon className='icon-sm' />
-                            <span>
-                                Created
-                            </span>
-                        </span>
-                        <span className='property-readOnly'>
-                            {item?.updatedAt ? new Date(item.updatedAt).toLocaleString() :
-                                'Loading'
-                            }
-                        </span>
-                    </span>
-                    {collectionProperties.map((property) => (
-                        <label key={property._id} className="input-with-label">
-                            <span className='property-label'>
-                                {property.type === "text" ? <AnnotationIcon className='icon-sm' /> : <SelectorIcon className='icon-xs' />}
-                                <span className='first-letter:uppercase'>
-                                    {property.name}
-                                </span>
-                            </span>
 
+                </label>
 
+                {collectionProperties.map((property) => (
+
+                    <label key={property._id} className="md:flex ">
+                        <span className='flex items-center space-x-1 w-28 text-right truncate'>
                             {property.type === "text" ?
-                                <input type="text" name={property.name}
-                                    value={getValueById(property._id?.toString())}
-                                    onChange={(e) => setValueById(e.target.value, property._id?.toString())}
-                                    className='modal-input' />
-                                :
-                                <select defaultValue={getFirstValueById(property._id?.toString())}
-                                    value={getValueById(property._id?.toString())}
-                                    onChange={(e) => { setValueById(e.target.value, property._id?.toString()) }}
-                                    className='modal-input'>
-                                    <option selected>Please select a option</option>
-                                    {property.values.map((value, idx) => (
-                                        <option key={idx} value={value}>{value}</option>))}
-                                </select>
+                                <AnnotationIcon className='icon-sm' />
+                                : <SelectorIcon className='icon-sm' />}
+                            <span className='first-letter:uppercase font-medium'>
+                                {property.name}
+                            </span>
+                        </span>
 
-                            }
 
-                        </label>
-                    ))}
-                </div>
-
+                        {property.type === "text" ?
+                            <input type="text" name={property.name}
+                                value={getValueById(property._id?.toString())}
+                                onChange={(e) => setValueById(e.target.value, property._id?.toString())}
+                                className='modal-input' />
+                            :
+                            <select defaultValue={getFirstValueById(property._id?.toString())}
+                                value={getValueById(property._id?.toString())}
+                                onChange={(e) => { setValueById(e.target.value, property._id?.toString()) }}
+                                className='modal-input'>
+                                <option selected>Please select a option</option>
+                                {property.values.map((value, idx) => (
+                                    <option key={idx} value={value}>{value}</option>))}
+                            </select>
+                        }
+                    </label>
+                ))}
 
                 <div className="flex justify-end space-x-2 mt-2">
                     <button onClick={handleClose} className="modal-neutral-btn">

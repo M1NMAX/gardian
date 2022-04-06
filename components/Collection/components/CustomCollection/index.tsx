@@ -1,16 +1,16 @@
 import { useRouter } from 'next/router'
-import React, { FC, Fragment, useState } from 'react'
+import React, { FC, Fragment } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { CustomItemInterface } from '../../../../interfaces';
+import { CollectionInterface, CustomItemInterface } from '../../../../interfaces';
 import Badge from '../../../Badge';
-import CollectionMenu from '../../../CollectionMenu';
 import EditCustomItemModal from './EditCustomItemModal';
 import DeleteModal from '../../../DeleteModal';
 import { deleteCustomItem, renameCustomItem } from '../../../../fetch/customItems';
 import RenameModal from '../../../RenameModal';
 import { Menu, Transition } from '@headlessui/react';
 import { DotsVerticalIcon, PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import useModal from '../../../../hooks/useModal';
 
 const Customs = () => {
     const router = useRouter();
@@ -20,13 +20,21 @@ const Customs = () => {
         const response = await res.json();
         return response.data;
     });
+
+    const { data: collection } = useQuery<CollectionInterface>('customCollection', async (): Promise<CollectionInterface> => {
+        const res = await fetch(process.env.NEXT_PUBLIC_API_URL + '/collections/' + collectionId);
+        const response = await res.json();
+        return response.data;
+    });
+
     return (
         <div>Customs
 
             <div className='flex flex-col space-y-1'>
-                {data?.map((item, idx) => (
-                    <Item key={idx} item={item} />
-                ))}
+                {collection &&
+                    data?.map((item, idx) => (
+                        <Item key={idx} item={item} collection={collection} />
+                    ))}
 
             </div>
         </div>
@@ -35,25 +43,26 @@ const Customs = () => {
 
 interface ItemProps {
     item: CustomItemInterface
+    collection: CollectionInterface
 }
 
 
-const Item: FC<ItemProps> = ({ item }) => {
-    const [editItemModal, setEditItemModal] = useState(false);
-    const openEditItemModal = () => setEditItemModal(true);
-    const closeEditItemModal = () => setEditItemModal(false);
-
+const Item: FC<ItemProps> = ({ item, collection }) => {
 
     const positiveFeedback = (msg: string) => toast.success(msg);
     const negativeFeedback = () => toast.success("Something went wrong, try later");
 
+
+    const editItemModal = useModal();
+    const renameItemModal = useModal();
+    const deleteItemModal = useModal();
 
     //Rename Item fuction
     const handleRenameItem = (name: string): void => {
         if (!item._id) return;
         try {
             renameCustomItem(item._id.toString(), name);
-            closeRenameItemModal()
+            renameItemModal.closeModal()
             positiveFeedback("Item renamed successfully")
         } catch (error) {
             negativeFeedback()
@@ -65,27 +74,17 @@ const Item: FC<ItemProps> = ({ item }) => {
         if (!item._id) return;
         try {
             deleteCustomItem(item._id.toString());
-            closeDeleteItemModal()
+            deleteItemModal.closeModal()
             positiveFeedback("Item deleted successfully")
         } catch (error) {
             negativeFeedback()
         }
     }
 
-    //Delete Item Modal
-    const [deleteItemModal, setDeleteItemModal] = useState(false);
-    const openDeleteItemModal = () => setDeleteItemModal(true);
-    const closeDeleteItemModal = () => setDeleteItemModal(false);
-
-    //Rename Item Modal
-    const [renameItemModal, setRenameItemModal] = useState(false);
-    const openRenameItemModal = () => setRenameItemModal(true);
-    const closeRenameItemModal = () => setRenameItemModal(false);
-
     return (
         <div className='flex justify-between items-center px-2 py-1 rounded-sm border'>
 
-            <button onClick={openEditItemModal} className="flex flex-col">
+            <button onClick={editItemModal.openModal} className="flex flex-col">
                 <span>
                     {item.name}
                 </span>
@@ -112,7 +111,7 @@ const Item: FC<ItemProps> = ({ item }) => {
                 >
                     <Menu.Items as="ul" className="absolute  z-10 -right-2 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900">
                         <Menu.Item as="li">
-                            <button onClick={openRenameItemModal}
+                            <button onClick={renameItemModal.openModal}
                                 className='w-full space-x-1 btn btn-secondary'>
                                 <PencilIcon className='icon-sm' />
                                 <span>
@@ -121,7 +120,7 @@ const Item: FC<ItemProps> = ({ item }) => {
                             </button>
                         </Menu.Item>
                         <Menu.Item>
-                            <button onClick={openDeleteItemModal}
+                            <button onClick={deleteItemModal.openModal}
                                 className='w-full space-x-1 btn btn-secondary'>
                                 <TrashIcon className='icon-sm' />
                                 <span> Delete </span>
@@ -130,15 +129,19 @@ const Item: FC<ItemProps> = ({ item }) => {
                     </Menu.Items>
                 </Transition>
             </Menu>
-            {editItemModal && <EditCustomItemModal open={editItemModal} handleClose={closeEditItemModal}
+            {editItemModal.isOpen && <EditCustomItemModal collection={collection}
+                item={item}
+                open={editItemModal.isOpen} handleClose={editItemModal.closeModal}
                 positiveFeedback={positiveFeedback} negativeFeedback={negativeFeedback}
-                itemId={item._id?.toString()} />} 
+            />}
 
 
-            {renameItemModal && <RenameModal open={renameItemModal} handleClose={closeRenameItemModal}
+            {renameItemModal.isOpen && <RenameModal open={renameItemModal.isOpen}
+                handleClose={renameItemModal.closeModal}
                 name={item.name} onRename={handleRenameItem} />}
 
-            {deleteItemModal && <DeleteModal open={deleteItemModal} handleClose={closeDeleteItemModal}
+            {deleteItemModal.isOpen && <DeleteModal open={deleteItemModal.isOpen}
+                handleClose={deleteItemModal.closeModal}
                 name={item.name} onDelete={handleDeleteItem} />}
         </div>
     );
