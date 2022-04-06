@@ -21,14 +21,11 @@ const Todos = () => {
         return response.data;
     });
     return (
-        <div>Todos Description
             <div className='flex flex-col space-y-2'>
                 {data?.map((todo, idx) => (
                     <Todo key={idx} todo={todo} />
                 ))}
             </div>
-
-        </div>
     )
 }
 

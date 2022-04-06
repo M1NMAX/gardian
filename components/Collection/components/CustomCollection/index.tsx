@@ -28,15 +28,12 @@ const Customs = () => {
     });
 
     return (
-        <div>Customs
+        <div className='flex flex-col space-y-1'>
+            {collection &&
+                data?.map((item, idx) => (
+                    <Item key={idx} item={item} collection={collection} />
+                ))}
 
-            <div className='flex flex-col space-y-1'>
-                {collection &&
-                    data?.map((item, idx) => (
-                        <Item key={idx} item={item} collection={collection} />
-                    ))}
-
-            </div>
         </div>
     )
 }

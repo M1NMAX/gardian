@@ -23,7 +23,6 @@ function Documents() {
 
 
   return (
-    <div>Documents
 
       <div className='flex flex-col space-y-1'>
         {data?.map((document, idx) => (
@@ -31,7 +30,6 @@ function Documents() {
         ))}
 
       </div>
-    </div>
   )
 }
 

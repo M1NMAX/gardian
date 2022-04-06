@@ -20,8 +20,6 @@ const Events = () => {
         return response.data;
     });
     return (
-        <div>Events
-
             <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-flow-row gap-2
                  scrollbar-thin scrollbar-thumb-gray-300 
                         dark:scrollbar-thumb-gray-600 overflow-y-scroll'>
@@ -32,7 +30,6 @@ const Events = () => {
                 ))}
 
             </div>
-        </div >
     )
 }
 
