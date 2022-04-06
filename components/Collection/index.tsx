@@ -23,7 +23,6 @@ import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import EditCollectionModal from './components/EditCollectionModal';
-import Badge from '../Badge';
 
 
 
@@ -230,12 +229,33 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
 }
 
 const Title: FC<TitleProps> = ({ children, variant }) => {
+
+  const handleVariantIcon = (variant: string): JSX.Element => {
+    let result = <></>
+    switch (variant) {
+      case 'custom':
+        result = <AdjustmentsIcon className='icon-md text-secondary' />
+        break;
+      case 'event':
+        result = <CalendarIcon className='icon-md text-secondary' />
+        break;
+      case 'document':
+        result = <DocumentIcon className='icon-md text-secondary' />
+        break;
+      case 'todo':
+        result = <CheckCircleIcon className='icon-md text-secondary' />
+        break;
+      case 'collection':
+        result = <CollectionIcon className='icon-md text-secondary' />
+        break;
+    }
+    return result;
+  }
+
+
   return (
     <h2 className='flex items-center space-x-1 font-semibold text-2xl'>
-      <Badge text={variant.charAt(0)}
-        variant={'primary'}
-        textSize="sm"
-        rounded="sm" uppercase />
+      {handleVariantIcon(variant)}
       <span>
         {children}
       </span>
