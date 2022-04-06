@@ -47,7 +47,7 @@ const Properties: FC<PropertiesProps> = ({ properties }) => {
                                             <span className='uppercase font-mono text-sm'>
                                                 Property type
                                             </span>
-                                            <span className='flex items-center space-x-1 rounded-sm bg-slate-300 dark:bg-slate-600 '>
+                                            <span className='flex items-center px-1 space-x-1 rounded-sm bg-slate-300 dark:bg-slate-600 '>
                                                 {handlePropertyIcon(property.type)}
                                                 <span className='first-letter:uppercase'>
                                                     {property.type}
