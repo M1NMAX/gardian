@@ -41,8 +41,7 @@ const EditDocumentModal: FC<EditDocumentModalProps> = ({ document, open, handleC
                 <div className='flex space-x-1'>
                     <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value); setIsSaved(false) }}
                         placeholder="Name"
-                        className=' grow cursor-default rounded  border border-black bg-gray-50 dark:bg-gray-700 
-                        focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white ' />
+                        className='modal-input' />
                     <ActionIcon icon={<CheckIcon />} variant="primary" onClick={handleSubmit} />
                 </div>
                 <label className=" flex flex-col">
@@ -50,7 +49,7 @@ const EditDocumentModal: FC<EditDocumentModalProps> = ({ document, open, handleC
                     <textarea name='content' value={content}
                         onChange={(e) => { setContent(e.target.value); setIsSaved(false) }}
                         rows={10}
-                        className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
+                        className='modal-text-area' />
                 </label>
                 <DocumentStatus isSaved={isSaved} isError={error} />
 

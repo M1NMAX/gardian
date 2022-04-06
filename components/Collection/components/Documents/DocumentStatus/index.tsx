@@ -10,7 +10,7 @@ const DocumentStatus: FC<DocumentStatusProps> = ({ isSaved, isError }) => {
                 <span className='flex items-center text-green-500 border rounded border-green-500 px-1'>
                     <BadgeCheckIcon className='icon-sm' />saved
                 </span> :
-                <span className='flex items-center text-yellow-500 border rounded border-yellow-500 px-1'>
+                <span className='flex items-center text-secondary border rounded border-secondary px-1'>
                     <ExclamationIcon className='icon-sm' />unsaved
                 </span>
             }
