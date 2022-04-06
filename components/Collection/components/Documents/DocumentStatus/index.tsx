@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { BadgeCheckIcon, ExclamationIcon, XCircleIcon } from '@heroicons/react/outline';
-import { DocumentStatusProps } from '../../interfaces';
+import { DocumentStatusProps } from '../../../../../interfaces';
 
 const DocumentStatus: FC<DocumentStatusProps> = ({ isSaved, isError }) => {
     return (

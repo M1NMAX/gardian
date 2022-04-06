@@ -6,9 +6,9 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { CollectionInterface } from '../../interfaces';
 import ActionIcon from '../ActionIcon';
 import NewCustomItemModal from './components/CustomCollection/NewCustomItemModal';
-import NewEventModal from '../NewEventModal';
-import NewDocumentModal from '../NewDocumentModal';
-import NewTodoModal from '../NewTodoModal';
+import NewEventModal from './components/Events/NewEventModal';
+import NewDocumentModal from './components/Documents/NewDocumentModal';
+import NewTodoModal from './components/Todos/NewTodoModal';
 import NewCollectionModal from '../NewCollectionModal';
 import CustomCollection from './components/CustomCollection';
 import Events from './components/Events';
@@ -22,7 +22,7 @@ import { deleteCollection, renameCollection } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
-import EditCollectionModal from '../EditCollectionModal';
+import EditCollectionModal from './components/EditCollectionModal';
 
 
 

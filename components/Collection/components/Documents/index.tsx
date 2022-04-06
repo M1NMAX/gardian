@@ -8,7 +8,7 @@ import { deleteDocument, renameDocument } from '../../../../fetch/documents';
 import useModal from '../../../../hooks/useModal';
 import { DocumentInterface } from '../../../../interfaces';
 import DeleteModal from '../../../DeleteModal';
-import EditDocumentModal from '../../../EditDocumentModal';
+import EditDocumentModal from './EditDocumentModal';
 import RenameModal from '../../../RenameModal';
 
 function Documents() {

@@ -1,49 +1,49 @@
-import { BadgeCheckIcon, BellIcon, CalendarIcon } from '@heroicons/react/outline'
-import React, { FC, useState } from 'react'
-import { updateEvent } from '../../fetch/events'
-import { EventInterface, ModalProps } from '../../interfaces'
-import Label from '../Label'
-import Modal from '../Modal'
+import { useRouter } from 'next/router';
+import React, { FC, useState } from 'react';
+import Modal from '../../../../Modal';
+import { ModalProps } from '../../../../../interfaces';
+import { createEvent } from '../../../../../fetch/events';
+import { BadgeCheckIcon, BellIcon } from '@heroicons/react/outline';
 
-interface EditEventModalProps extends ModalProps {
-    event: EventInterface,
-}
 
-const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, positiveFeedback, negativeFeedback }) => {
-    const [name, setName] = useState(event.name);
-    const [date, setDate] = useState(event.date);
-    const [time, setTime] = useState(event.time);
-    const [description, setDescription] = useState(event.description);
+const NewEventModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
+
+    const router = useRouter();
+    const { id } = router.query;
+
+    const [name, setName] = useState("");
+    const [date, setDate] = useState("");
+    const [time, setTime] = useState("");
+    const [description, setDescription] = useState("");
     const [reminder, setReminder] = useState(false);
 
-    const isFill = (value: string): boolean => (
-        value === "" || value == null
-    )
+
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (!event._id || isFill(name)) return;
+        if (id === "" || id == null) return;
+        if (name === "" || name == null || date === "" || date == null) return;
+
         try {
-            await updateEvent(event._id.toString(), name, date, time, description, reminder);
-            positiveFeedback("Event updated successfully");
+            await createEvent(id.toString(), name, date, time, description, reminder);
             handleClose();
+            positiveFeedback("Event created successfully")
         } catch (error) {
-            negativeFeedback();
+            handleClose()
+            negativeFeedback()
+
         }
     }
 
-
-
-
     return (
-        <Modal title={<Label icon={<CalendarIcon />} text="Event" />} open={open} onHide={handleClose}>
+        <Modal title="New Event" open={open} onHide={handleClose} >
+            <form>
 
-
-            <form onSubmit={handleSubmit}>
-
-
-                <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
-                    placeholder="Event name"
-                    className='modal-head-input' />
+                <label className="block">
+                    <span className="w-full">Name</span>
+                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
+                        placeholder="Event name"
+                        className='modal-input' />
+                </label>
 
                 <div className='flex space-x-1'>
                     <label className="flex flex-col w-full mt-1">
@@ -61,7 +61,7 @@ const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, pos
                 </div>
 
                 <label className="flex flex-col w-full mt-1">
-                    <p className='text-sm'> Description ({description != null && description.length}/200)</p>
+                    <p className='text-sm'> Description ({description.length}/200)</p>
                     <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
                         rows={4} maxLength={200}
                         className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
@@ -71,12 +71,14 @@ const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, pos
                     <BellIcon className='icon-md' />
                     {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
                 </button>
-                <div className="flex justify-end space-x-2">
+
+
+                <div className="flex justify-end space-x-2 mt-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel
                     </button>
-                    <button key={0} type='submit' className="modal-positive-btn">
-                        Update
+                    <button onClick={handleSubmit} className="modal-positive-btn">
+                        Create
                     </button>
                 </div>
 
@@ -85,4 +87,4 @@ const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, pos
     )
 }
 
-export default EditEventModal
+export default NewEventModal

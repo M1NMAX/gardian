@@ -1,8 +1,8 @@
 import React, { FC, useState } from 'react';
-import Modal from '../Modal';
-import { ModalProps } from '../../interfaces';
+import Modal from '../../../../Modal';
+import { ModalProps } from '../../../../../interfaces';
 import { useRouter } from 'next/router';
-import { createTodo } from '../../fetch/todos';
+import { createTodo } from '../../../../../fetch/todos';
 
 const NewToDoModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
 

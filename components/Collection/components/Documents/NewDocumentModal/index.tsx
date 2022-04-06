@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react';
-import Modal from '../Modal';
+import Modal from '../../../../Modal';
 import { CheckIcon, DocumentIcon } from '@heroicons/react/outline';
 import DocumentStatus from '../DocumentStatus';
-import { ModalProps } from '../../interfaces';
-import ActionIcon from '../ActionIcon';
-import { createDocument, updateDocument } from '../../fetch/documents';
+import { ModalProps } from '../../../../../interfaces';
+import ActionIcon from '../../../../ActionIcon';
+import { createDocument, updateDocument } from '../../../../../fetch/documents';
 import { useRouter } from 'next/router';
-import Label from '../Label';
+import Label from '../../../../Label';
 
 
 const NewDocumentModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {

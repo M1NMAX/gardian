@@ -8,7 +8,7 @@ import { deleteEvent, renameEvent } from '../../../../fetch/events';
 import useModal from '../../../../hooks/useModal';
 import { EventInterface } from '../../../../interfaces';
 import DeleteModal from '../../../DeleteModal';
-import EditEventModal from '../../../EditEventModal';
+import EditEventModal from './EditEventModal';
 import RenameModal from '../../../RenameModal';
 
 const Events = () => {

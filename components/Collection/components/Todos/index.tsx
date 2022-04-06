@@ -3,7 +3,7 @@ import { BellIcon, CalendarIcon, ChevronUpIcon, DocumentTextIcon, DotsVerticalIc
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query';
 import { TodoInterface } from '../../../../interfaces';
-import EditTodoModal from '../../../EditTodoModal';
+import EditTodoModal from './EditTodoModal';
 import toast from 'react-hot-toast';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import ActionIcon from '../../../ActionIcon';
