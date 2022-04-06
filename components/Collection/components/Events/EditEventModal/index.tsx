@@ -1,4 +1,4 @@
-import { BadgeCheckIcon, BellIcon, CalendarIcon } from '@heroicons/react/outline'
+import { CalendarIcon } from '@heroicons/react/outline'
 import React, { FC, useState } from 'react'
 import { updateEvent } from '../../../../../fetch/events'
 import { EventInterface, ModalProps } from '../../../../../interfaces'
@@ -36,41 +36,45 @@ const EditEventModal: FC<EditEventModalProps> = ({ event, open, handleClose, pos
 
     return (
         <Modal title={<Label icon={<CalendarIcon />} text="Event" />} open={open} onHide={handleClose}>
-
-
-            <form onSubmit={handleSubmit}>
-
-
-                <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
-                    placeholder="Event name"
-                    className='modal-head-input' />
+            <form onSubmit={handleSubmit} className="modal-form">
+                <label>
+                    <span className='modal-input-label'>Name</span>
+                    <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
+                        placeholder="Event name"
+                        className='modal-head-input' />
+                </label>
 
                 <div className='flex space-x-1'>
-                    <label className="flex flex-col w-full mt-1">
-                        <p className="text-sm" > Event date</p>
-                        <input type="date" name="date" value={date} onChange={(e) => { setDate(e.target.value) }}
-                            className="w-full h-10 p-3 rounded  border border-black bg-gray-50 dark:bg-gray-700" />
+                    <label className='basis-1/2'>
+                        <span className="modal-input-label" > Event date</span>
+                        <input type="date" name="date" value={date}
+                            onChange={(e) => { setDate(e.target.value) }}
+                            className="modal-input" />
                     </label>
 
-                    <label className="flex flex-col w-full mt-1">
-                        <p className="text-sm" > Event time</p>
-                        <input type="time" name="date" value={time} onChange={(e) => { setTime(e.target.value) }}
-                            className="w-full h-10 p-3 rounded  border border-black bg-gray-50 dark:bg-gray-700" />
+                    <label className='basis-1/2'>
+                        <span className="modal-input-label" > Event time</span>
+                        <input type="time" name="date" value={time}
+                            onChange={(e) => { setTime(e.target.value) }}
+                            className="modal-input" />
                     </label>
 
                 </div>
-
-                <label className="flex flex-col w-full mt-1">
-                    <p className='text-sm'> Description ({description != null && description.length}/200)</p>
-                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
-                        rows={4} maxLength={200}
-                        className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
+                <label>
+                    <input type="checkbox"
+                        name='reminder' checked={reminder}
+                        onChange={(e) => setReminder(e.target.checked)}
+                        className='modal-checkbox' />
+                    <span className='modal-input-label' > Reminder</span>
                 </label>
 
-                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setReminder(!reminder)}>
-                    <BellIcon className='icon-md' />
-                    {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
-                </button>
+                <label>
+                    <span className='modal-input-label'> Description ({description != null && description.length}/200)</span>
+                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
+                        rows={4} maxLength={200}
+                        className='modal-text-area' />
+                </label>
+
                 <div className="flex justify-end space-x-2">
                     <button onClick={handleClose} className="modal-neutral-btn">
                         Cancel

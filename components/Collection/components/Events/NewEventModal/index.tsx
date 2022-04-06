@@ -3,7 +3,8 @@ import React, { FC, useState } from 'react';
 import Modal from '../../../../Modal';
 import { ModalProps } from '../../../../../interfaces';
 import { createEvent } from '../../../../../fetch/events';
-import { BadgeCheckIcon, BellIcon } from '@heroicons/react/outline';
+import { CalendarIcon } from '@heroicons/react/outline';
+import Label from '../../../../Label';
 
 
 const NewEventModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, negativeFeedback }) => {
@@ -35,42 +36,44 @@ const NewEventModal: FC<ModalProps> = ({ open, handleClose, positiveFeedback, ne
     }
 
     return (
-        <Modal title="New Event" open={open} onHide={handleClose} >
-            <form>
+        <Modal title={<Label icon={<CalendarIcon />} text="New event" />} open={open} onHide={handleClose} >
+            <form className='modal-form'>
 
-                <label className="block">
-                    <span className="w-full">Name</span>
+                <label>
+                    <span className="modal-input-label">Name</span>
                     <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
                         placeholder="Event name"
-                        className='modal-input' />
+                        className='modal-head-input' />
                 </label>
 
                 <div className='flex space-x-1'>
-                    <label className="flex flex-col w-full mt-1">
-                        <p className="text-sm" > Event date</p>
+                    <label className="basis-1/2">
+                        <span className="modal-input-label" > Event date</span>
                         <input type="date" name="date" value={date} onChange={(e) => { setDate(e.target.value) }}
-                            className="w-full h-10 p-3 rounded  border border-black bg-gray-50 dark:bg-gray-700" />
+                            className="modal-input" />
                     </label>
 
-                    <label className="flex flex-col w-full mt-1">
-                        <p className="text-sm" > Event time</p>
+                    <label className="basis-1/2">
+                        <span className="modal-input-label" > Event time</span>
                         <input type="time" name="date" value={time} onChange={(e) => { setTime(e.target.value) }}
-                            className="w-full h-10 p-3 rounded  border border-black bg-gray-50 dark:bg-gray-700" />
+                            className="modal-input" />
                     </label>
-
                 </div>
 
-                <label className="flex flex-col w-full mt-1">
-                    <p className='text-sm'> Description ({description.length}/200)</p>
-                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
-                        rows={4} maxLength={200}
-                        className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700' />
+                <label>
+                    <input type="checkbox"
+                        name='reminder' checked={reminder}
+                        onChange={(e) => setReminder(e.target.checked)}
+                        className='modal-checkbox' />
+                    <span className='modal-input-label' > Reminder</span>
                 </label>
 
-                <button key={1} type="button" className='relative btn btn-secondary' onClick={() => setReminder(!reminder)}>
-                    <BellIcon className='icon-md' />
-                    {reminder && <BadgeCheckIcon className='absolute -top-1 -right-2 icon-xs text-primary' />}
-                </button>
+                <label className="flex flex-col w-full mt-1">
+                    <span className="modal-input-label"> Description ({description.length}/200)</span>
+                    <textarea name='description' value={description} onChange={(e) => setDescription(e.target.value)}
+                        rows={4} maxLength={200}
+                        className='modal-text-area' />
+                </label>
 
 
                 <div className="flex justify-end space-x-2 mt-2">
