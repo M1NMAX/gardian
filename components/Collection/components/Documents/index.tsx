@@ -81,7 +81,7 @@ const Document: FC<DocumentProps> = ({ document }) => {
 
       <button
         onClick={editDocumentModal.openModal}
-        className="grow flex items-center justify-between space-x-1">
+        className="grow flex flex-col items-start md:flex-row md:items-center justify-between space-x-1">
         <span className='text-lg font-semibold'>
           {document.name}
         </span>

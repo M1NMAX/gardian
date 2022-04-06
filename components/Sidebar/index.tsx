@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
 import SidebarBtn from './components/SidebarBtn';
@@ -20,11 +20,8 @@ import Logo from '../Logo';
 const Sidebar: FC = () => {
     const router = useRouter();
 
-
     const { data, error, isError, isLoading } =
         useQuery<CollectionInterface[], Error>('collections', getUserCollections);
-
-
 
     const { width } = useWindowDimensions();
     const [sidebar, setSidebar] = useRecoilState(sidebarState)
@@ -33,6 +30,22 @@ const Sidebar: FC = () => {
     useEffect(() => {
         if (width > 768) setSidebar(true)
     }, [width])
+
+    
+
+    const wrapper = useRef<HTMLDivElement>(null);
+     //handle outside click in small device
+     const checkOutsideClick = useCallback(event => {
+        if (sidebar && wrapper.current &&
+            !wrapper.current.contains(event.target) && width <= 768) {
+            setSidebar(false);
+        }
+    }, [sidebar, wrapper, width])
+
+    useEffect(() => {
+        document.addEventListener("mousedown", checkOutsideClick)
+        return () => document.removeEventListener("mousedown", checkOutsideClick)
+    }, [checkOutsideClick]);
 
 
     //Modal: create collection
@@ -76,7 +89,7 @@ const Sidebar: FC = () => {
 
 
     return (
-        <div className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
+        <div ref={wrapper} className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
             <div className="flex flex-col px-1 py-2  space-y-1 ">
