@@ -78,25 +78,25 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({ id, name, variant, isSu
 
 
   return (
-    <div>
+    <div className='relative'>
 
-      <div className={`${id === urlId && 'bg-green-400'} 
-        flex items-center justify-between w-full pl-2 pr-1  
+      <div className={`${id === urlId && 'bg-green-400'} ${isSub ? 'pl-10' : 'pl-2.5'}
+        flex items-center justify-between w-full h-8 pr-1  
        hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 
-        font-semibold  rounded-sm group `}>
+        font-semibold rounded-sm `}>
 
 
         <Link href={`/collections/${id}`}>
-          <a className='flex  items-center space-x-1 grow truncate'>
-            {isSub && <ReplyIcon className='icon-xs -rotate-180' />}
+          <a className='flex items-center space-x-1'>
+            <ReplyIcon className='icon-xs -rotate-180' />
             {handleVariantIcon(variant)}
-            <span>
+            <span className='w-1/2 truncate'>
               {name}
             </span>
           </a>
         </Link>
 
-        <div className='md:invisible md:group-hover:visible '>
+        <div className='absolute top-0 right-0'>
           <CollectionMenu onClickRename={renameCollectionModal.openModal}
             onClickDelete={deleteCollectionModal.openModal} />
         </div>

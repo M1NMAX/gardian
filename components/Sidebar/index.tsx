@@ -94,7 +94,7 @@ const Sidebar: FC = () => {
                     <ActionIcon icon={<PlusIcon />} variant="secondary" onClick={openModal} />
                 </div>
 
-                <div className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto 
+                <div className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto overflow-x-hidden
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
                     {data?.map((collection, idx: number) => (
                         !collection.isSub && handleCollection(idx, collection)
