@@ -19,7 +19,7 @@ import Logo from '../Logo';
 
 const Sidebar: FC = () => {
     const router = useRouter();
-    const { id } = router.query;
+
 
     const { data, error, isError, isLoading } =
         useQuery<CollectionInterface[], Error>('collections', getUserCollections);
@@ -42,6 +42,36 @@ const Sidebar: FC = () => {
 
     const positiveFeedback = (msg: string) => toast.success(msg);
     const negativeFeedback = () => toast.success("Something went wrong, try later");
+
+
+    const getSubCollection = (id: number): CollectionInterface[] => {
+        if (!data) return [];
+        return data.filter(collection => (collection.collectionId === id))
+    }
+
+    const handleCollection = (idx: number, collection: CollectionInterface): JSX.Element => {
+
+        let result = <></>
+        if (!collection._id) return result
+        
+        if (collection.variant != "collection") {
+            result = <SidebarCollection key={idx} id={collection._id} name={collection.name}
+                variant={collection.variant} isSub={false} />
+        } else {
+            const subCollections = getSubCollection(collection._id)
+            result = <>
+                <SidebarCollection key={idx} id={collection._id} name={collection.name}
+                    variant={collection.variant} isSub={false} />
+                {subCollections.map((sub, i) => (
+                    <SidebarCollection key={i} id={sub._id} name={sub.name + "smot"}
+                        variant={sub.variant} isSub={true} />
+                ))}
+            </>
+
+        }
+
+        return result;
+    }
 
 
 
@@ -67,8 +97,7 @@ const Sidebar: FC = () => {
                 <div className='flex flex-col space-y-1 sidebarCollections-height w-full overflow-y-auto 
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
                     {data?.map((collection, idx: number) => (
-                        <SidebarCollection key={idx} id={collection._id} name={collection.name}
-                            variant={collection.variant} />
+                        !collection.isSub && handleCollection(idx, collection)
                     ))}
                     {isLoading && <span>Loading...</span>}
                     {isError && <span>Error: {error.message}</span>}

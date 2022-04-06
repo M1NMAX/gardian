@@ -6,7 +6,7 @@ interface basicSchema {
     _id?: number,
     name: string,
     userId: string,
-    collectionId: Types.ObjectId | null,
+    collectionId: Number | null,
     createdAt?: Date,
     updatedAt?: Date,
 }
