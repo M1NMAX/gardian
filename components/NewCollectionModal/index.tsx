@@ -1,9 +1,11 @@
 import React, { FC, useState } from "react"
 import Modal from "../Modal";
-import { CheckIcon } from "@heroicons/react/outline";
+import { CheckCircleIcon } from "@heroicons/react/solid";
 import { RadioGroup } from "@headlessui/react";
 import { NewCollectionModalProps } from "../../interfaces";
 import { createCollection } from "../../fetch/collections";
+import { CollectionIcon } from "@heroicons/react/outline";
+import Label from "../Label";
 
 const kindsOfCollections = [
     {
@@ -22,7 +24,7 @@ const kindsOfCollections = [
         variant: 'document',
     },
     {
-        name: 'ToDo',
+        name: 'To Do',
         description: 'Checklist of task.',
         variant: 'todo',
 
@@ -52,11 +54,11 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
         }
 
         return (
-            <Modal title="New Collection" open={open} onHide={handleClose}>
-                <form onSubmit={handleSubmit}>
+            <Modal title={<Label icon={<CollectionIcon />} text="New collection" />} open={open} onHide={handleClose}>
+                <form onSubmit={handleSubmit} className="modal-form">
 
-                    <label className="block">
-                        <span className="w-full">Name</span>
+                    <label>
+                        <span className="modal-input-label">Name</span>
                         <input type="text" name="name" value={name} onChange={(e) => { setName(e.target.value) }}
                             placeholder="Collection name"
                             className='modal-input' />
@@ -64,7 +66,9 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
 
                     <div className="w-full mt-2">
                         <RadioGroup value={selectedVariant} onChange={setSelectedVariant}>
-                            <RadioGroup.Label>Type of collection</RadioGroup.Label>
+                            <RadioGroup.Label className="modal-input-label">
+                                Type of collection
+                            </RadioGroup.Label>
                             <div className="space-y-1">
                                 {kindsOfCollections.slice(0, isSub ? 4 : 5).map((kind) => (
                                     <RadioGroup.Option
@@ -75,9 +79,9 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
                                                 ? ''
                                                 : ''
                                             }
-                                                ${checked ? 'bg-primary bg-opacity-75 text-white' : 'bg-white'
+                                                ${checked ? 'bg-primary  text-white' : 'bg-gray-100 dark:bg-gray-800'
                                             }
-                                                 relative rounded-lg shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
                                         }>
                                         {({ checked }) => (
                                             <>
@@ -86,14 +90,14 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
                                                         <div className="text-sm">
                                                             <RadioGroup.Label
                                                                 as="p"
-                                                                className={`font-medium  ${checked ? 'text-white' : 'text-gray-900'
+                                                                className={`font-medium  ${checked ? 'text-white' : 'text-black dark:text-gray-50'
                                                                     }`}
                                                             >
                                                                 {kind.name}
                                                             </RadioGroup.Label>
                                                             <RadioGroup.Description
                                                                 as="span"
-                                                                className={`inline ${checked ? 'text-sky-100' : 'text-gray-500'
+                                                                className={`inline ${checked ? 'text-white' : 'text-gray-600 dark:text-gray-50'
                                                                     }`}
                                                             >
                                                                 <span>
@@ -106,7 +110,7 @@ const NewCollectionModal: FC<NewCollectionModalProps> =
                                                     </div>
                                                     {checked && (
                                                         <div className="flex-shrink-0 text-white">
-                                                            <CheckIcon className="w-6 h-6" />
+                                                            <CheckCircleIcon className="w-6 h-6" />
                                                         </div>
                                                     )}
                                                 </div>
