@@ -25,9 +25,9 @@ const getVariantStyle = ({
   variant: BadgeVariants;
   color: string;
 }) => {
-  if (variant === 'filled') return `bg-${color}-500 text-white`;
+  if (variant === 'filled') return `bg-green-500 text-white`;
   if (variant === 'outline')
-    return `bg-transparent text-${color}-500 border border-${color}-400 `;
+    return `bg-transparent text-green-500 border border-green-400 `;
 
   // Light is default variant
   return `bg-green-100 dark:bg-green-500/30 text-green-500 dark:text-green-600 `;
