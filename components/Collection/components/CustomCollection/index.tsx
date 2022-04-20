@@ -104,18 +104,13 @@ const Item: FC<ItemProps> = ({ item, collection }) => {
 
   return (
     <div className='flex justify-between items-center px-2 py-1 shadow-md rounded bg-gray-100 dark:bg-gray-800 '>
-      <button onClick={editItemModal.openModal} className='flex flex-col'>
-        <span>{item.name}</span>
+      <button
+        onClick={editItemModal.openModal}
+        className='flex flex-col space-y-1'>
+        <span className='text-lg'>{item.name}</span>
         <span className='flex space-x-1'>
           {item.properties?.map((property, idx) => (
-            <Badge
-              key={idx}
-              text={property.value}
-              variant='primary'
-              rounded='lg'
-              textSize='xs'
-              uppercase
-            />
+            <Badge key={idx}>{property.value}</Badge>
           ))}
         </span>
       </button>
