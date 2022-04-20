@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import Modal from '../../../../Modal';
+import Modal from '../../../../Frontstate/Modal';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../../../../interfaces';
 import { createCustomItem } from '../../../../../fetch/customItems';
 import { useRouter } from 'next/router';

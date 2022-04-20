@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import Modal from '../Modal';
+import Modal from '../Frontstate/Modal';
 
 interface RenameModalProps {
     name: string,

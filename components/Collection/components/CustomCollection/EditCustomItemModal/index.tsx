@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react'
 import { updateCustomItem } from '../../../../../fetch/customItems'
 import { CollectionInterface, CustomItemInterface, ModalProps, PropertyInCollectionInterface, PropertyInItemInterface } from '../../../../../interfaces'
 import Label from '../../../../Label'
-import Modal from '../../../../Modal'
+import Modal from '../../../../Frontstate/Modal'
 
 interface EditCustomItemProps extends ModalProps {
     collection: CollectionInterface

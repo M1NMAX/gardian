@@ -5,7 +5,7 @@ import React, { FC, useState } from 'react'
 import { updateCustomCollection } from '../../../../../fetch/collections';
 import { CollectionInterface, ModalProps, PropertyInCollectionInterface } from '../../../../../interfaces'
 import Properties from '../Properties';
-import Modal from '../../../../Modal';
+import Modal from '../../../../Frontstate/Modal';
 import Label from '../../../../Label';
 
 

@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react"
-import Modal from "../Modal";
+import Modal from "../Frontstate/Modal";
 import { CheckCircleIcon } from "@heroicons/react/solid";
 import { RadioGroup } from "@headlessui/react";
 import { NewCollectionModalProps } from "../../interfaces";

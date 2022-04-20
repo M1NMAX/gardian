@@ -1,7 +1,7 @@
 import { BadgeCheckIcon, BellIcon, CheckIcon } from '@heroicons/react/outline'
 import React, { FC, useState } from 'react'
 import { ModalProps, TodoInterface } from '../../../../../interfaces'
-import Modal from '../../../../Modal'
+import Modal from '../../../../Frontstate/Modal'
 import Label from '../../../../Label'
 import { updateTodo } from '../../../../../fetch/todos'
 

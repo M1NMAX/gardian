@@ -4,7 +4,7 @@ import { updateDocument } from '../../../../../fetch/documents';
 import { DocumentInterface, ModalProps } from '../../../../../interfaces'
 import ActionIcon from '../../../../Frontstate/ActionIcon';
 import DocumentStatus from '../DocumentStatus';
-import Modal from '../../../../Modal';
+import Modal from '../../../../Frontstate/Modal';
 import Label from '../../../../Label';
 
 interface EditDocumentModalProps extends ModalProps {

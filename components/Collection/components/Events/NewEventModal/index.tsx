@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
-import Modal from '../../../../Modal';
+import Modal from '../../../../Frontstate/Modal';
 import { ModalProps } from '../../../../../interfaces';
 import { createEvent } from '../../../../../fetch/events';
 import { CalendarIcon } from '@heroicons/react/outline';

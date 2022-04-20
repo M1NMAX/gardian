@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react'
 import { updateEvent } from '../../../../../fetch/events'
 import { EventInterface, ModalProps } from '../../../../../interfaces'
 import Label from '../../../../Label'
-import Modal from '../../../../Modal'
+import Modal from '../../../../Frontstate/Modal'
 
 interface EditEventModalProps extends ModalProps {
     event: EventInterface,

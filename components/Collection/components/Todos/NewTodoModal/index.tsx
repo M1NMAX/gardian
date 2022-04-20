@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import Modal from '../../../../Modal';
+import Modal from '../../../../Frontstate/Modal';
 import { ModalProps } from '../../../../../interfaces';
 import { useRouter } from 'next/router';
 import { createTodo } from '../../../../../fetch/todos';

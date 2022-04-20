@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { updateCollection } from '../../../../fetch/collections';
 import { CollectionInterface, ModalProps } from '../../../../interfaces';
 import Label from '../../../Label';
-import Modal from '../../../Modal';
+import Modal from '../../../Frontstate/Modal';
 
 interface EditCollectionModalProps extends ModalProps {
     collection: CollectionInterface
