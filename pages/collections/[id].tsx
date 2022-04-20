@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { CollectionInterface } from '../../interfaces';
-import Collection from '../../components/Collection';
+import Collection from '../../components/Collection/Collection';
 import Link from 'next/link';
 
 const Collections: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
