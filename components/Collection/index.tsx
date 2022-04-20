@@ -4,7 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { CollectionInterface } from '../../interfaces';
-import ActionIcon from '../ActionIcon';
+import ActionIcon from '../Frontstate/ActionIcon';
 import NewCustomItemModal from './components/CustomCollection/NewCustomItemModal';
 import NewEventModal from './components/Events/NewEventModal';
 import NewDocumentModal from './components/Documents/NewDocumentModal';

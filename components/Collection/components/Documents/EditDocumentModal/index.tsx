@@ -2,7 +2,7 @@ import { CheckIcon, DocumentIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react'
 import { updateDocument } from '../../../../../fetch/documents';
 import { DocumentInterface, ModalProps } from '../../../../../interfaces'
-import ActionIcon from '../../../../ActionIcon';
+import ActionIcon from '../../../../Frontstate/ActionIcon';
 import DocumentStatus from '../DocumentStatus';
 import Modal from '../../../../Modal';
 import Label from '../../../../Label';

@@ -3,7 +3,7 @@ import Modal from '../../../../Modal';
 import { CheckIcon, DocumentIcon } from '@heroicons/react/outline';
 import DocumentStatus from '../DocumentStatus';
 import { ModalProps } from '../../../../../interfaces';
-import ActionIcon from '../../../../ActionIcon';
+import ActionIcon from '../../../../Frontstate/ActionIcon';
 import { createDocument, updateDocument } from '../../../../../fetch/documents';
 import { useRouter } from 'next/router';
 import Label from '../../../../Label';

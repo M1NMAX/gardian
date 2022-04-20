@@ -6,7 +6,7 @@ import { TodoInterface } from '../../../../interfaces';
 import EditTodoModal from './EditTodoModal';
 import toast from 'react-hot-toast';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
-import ActionIcon from '../../../ActionIcon';
+import ActionIcon from '../../../Frontstate/ActionIcon';
 import { deleteTodo, updateTodoIsConcluded } from '../../../../fetch/todos';
 import useModal from '../../../../hooks/useModal';
 import DeleteModal from '../../../DeleteModal';

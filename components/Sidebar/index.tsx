@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import { ChevronDoubleLeftIcon, CollectionIcon, PlusIcon, SearchIcon } from '@heroicons/react/outline';
 import SidebarBtn from './components/SidebarBtn';
-import ActionIcon from '../ActionIcon';
+import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './components/SidebarCollection';
 import SidebarUserOptions from './components/SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
