@@ -3,7 +3,7 @@ import React, { FC, Fragment, useEffect } from 'react'
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { CollectionInterface, CustomItemInterface } from '../../../../interfaces';
-import Badge from '../../../Badge';
+import Badge from '../../../Frontstate/Badge';
 import EditCustomItemModal from './EditCustomItemModal';
 import DeleteModal from '../../../DeleteModal';
 import { deleteCustomItem, renameCustomItem } from '../../../../fetch/customItems';
