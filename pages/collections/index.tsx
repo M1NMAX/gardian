@@ -5,7 +5,7 @@ import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
 import { getUserCollections } from '../../fetch/collections';
-import CollectionOverview from '../../components/CollectionOverview';
+import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { CollectionInterface } from '../../interfaces';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';

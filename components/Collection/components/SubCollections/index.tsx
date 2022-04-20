@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
 import { useQuery } from 'react-query';
 import { CollectionInterface } from '../../../../interfaces';
-import CollectionOverview from '../../../CollectionOverview';
+import CollectionOverview from '../../../CollectionOverview/CollectionOverview';
 import EmptyCollection from '../EmptyCollection';
 
 const SubCollections = () => {
