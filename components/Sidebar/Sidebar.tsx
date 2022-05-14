@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
   ChevronDoubleLeftIcon,
+  CogIcon,
   CollectionIcon,
   PlusIcon,
   SearchIcon,
@@ -19,7 +20,7 @@ import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
 import { useRouter } from 'next/router';
-import Logo from '../Logo';
+import Menu from '../Frontstate/Menu';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -133,8 +134,7 @@ const Sidebar: FC = () => {
             onClick={() => setSidebar(false)}
           />
         </div>
-
-        <SidebarBtn icon={<SearchIcon />} text='Quick search' />
+        <hr />
 
         <div className='flex justify-between items-center'>
           <SidebarBtn
@@ -148,6 +148,7 @@ const Sidebar: FC = () => {
             onClick={openModal}
           />
         </div>
+        <Menu />
 
         <div
           className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto overflow-x-hidden
@@ -163,6 +164,7 @@ const Sidebar: FC = () => {
         <div className='absolute bottom-1 w-full px-1 flex justify-between items-center '>
           <SidebarUserOptions />
           <ThemeBtn />
+          <ActionIcon icon={<CogIcon />} />
         </div>
       </div>
       <Toaster />

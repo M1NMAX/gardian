@@ -14,7 +14,7 @@ const SidebarUserOptions: FC = ({}) => {
   return (
     <Menu>
       <Menu.Button className='space-x-2 btn btn-secondary grow truncate'>
-        <div className='relative w-8 h-8'>
+        <div className='relative w-7 h-7'>
           <Image
             src={user?.picture || logoSrc}
             layout='fill'
@@ -24,7 +24,7 @@ const SidebarUserOptions: FC = ({}) => {
         </div>
         <div className='flex flex-col items-start'>
           <span className='font-medium text-sm'>{user?.nickname}</span>
-          <span className='text-xs'>Master</span>
+          <span className='text-xs'>#Pro</span>
         </div>
       </Menu.Button>
 
