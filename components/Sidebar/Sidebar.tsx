@@ -139,12 +139,14 @@ const Sidebar: FC = () => {
           icon={<TemplateIcon />}
           text='Templates'
           url='/templates'
+          active={router.pathname === '/templates'}
         />
 
         <SidebarLink
           icon={<CollectionIcon />}
           text='All Collections'
           url='/collections'
+          active={router.pathname === '/collections'}
         />
 
         <div
