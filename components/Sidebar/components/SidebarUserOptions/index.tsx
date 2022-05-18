@@ -7,6 +7,7 @@ import { Menu, Transition } from '@headlessui/react';
 
 const SidebarUserOptions: FC = ({}) => {
   const { user, error, isLoading } = useUser();
+  console.table(user);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
@@ -14,7 +15,7 @@ const SidebarUserOptions: FC = ({}) => {
   return (
     <Menu>
       <Menu.Button className='space-x-2 btn btn-secondary grow truncate'>
-        <div className='relative w-7 h-7'>
+        <div className='relative w-6 h-6'>
           <Image
             src={user?.picture || logoSrc}
             layout='fill'
@@ -23,8 +24,7 @@ const SidebarUserOptions: FC = ({}) => {
           />
         </div>
         <div className='flex flex-col items-start'>
-          <span className='font-medium text-sm'>{user?.nickname}</span>
-          <span className='text-xs'>#Pro</span>
+          <span className='font-medium'>{user?.nickname}</span>
         </div>
       </Menu.Button>
 

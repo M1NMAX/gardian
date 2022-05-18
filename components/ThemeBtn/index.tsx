@@ -10,9 +10,9 @@ const ThemeBtn: FC = () => {
         <button onClick={handleMode}
             className='btn btn-secondary' >
             {darkTheme ? (
-                <SunIcon className='icon-md' />
+                <SunIcon className='icon-sm' />
             ) : (
-                <MoonIcon className='icon-md' />
+                <MoonIcon className='icon-sm' />
             )}
         </button>
     );
