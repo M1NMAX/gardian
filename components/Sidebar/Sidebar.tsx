@@ -6,6 +6,9 @@ import {
   CollectionIcon,
   PlusIcon,
   SearchIcon,
+  TemplateIcon,
+  UserAddIcon,
+  ViewGridAddIcon,
 } from '@heroicons/react/outline';
 import SidebarBtn from './components/SidebarBtn';
 import ActionIcon from '../Frontstate/ActionIcon';
@@ -124,31 +127,20 @@ const Sidebar: FC = () => {
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
       <div className='flex flex-col px-1 py-2  space-y-1 '>
-        <div className='flex justify-between space-x-2'>
-          <button className='bg-gray-300 dark:bg-gray-600 w-full rounded-full'>
-            Find, explore, do
-          </button>
-          <ActionIcon
-            icon={<ChevronDoubleLeftIcon />}
-            variant='secondary'
-            onClick={() => setSidebar(false)}
-          />
-        </div>
-        <hr />
-
         <div className='flex justify-between items-center'>
-          <SidebarBtn
-            icon={<CollectionIcon />}
-            text='Collections'
-            onClick={() => router.push('/collections')}
-          />
-          <ActionIcon
-            icon={<PlusIcon />}
-            variant='secondary'
-            onClick={openModal}
-          />
+          <SidebarUserOptions />
+          <ThemeBtn />
         </div>
-        <Menu />
+
+        <SidebarBtn icon={<SearchIcon />} text='Quick Find' />
+
+        <SidebarBtn icon={<TemplateIcon />} text='Templates' />
+
+        <SidebarBtn
+          icon={<CollectionIcon />}
+          text='All Collections'
+          onClick={() => router.push('/collections')}
+        />
 
         <div
           className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto overflow-x-hidden
@@ -161,10 +153,13 @@ const Sidebar: FC = () => {
           {isError && <span>Error: {error.message}</span>}
         </div>
 
-        <div className='absolute bottom-1 w-full px-1 flex justify-between items-center '>
-          <SidebarUserOptions />
-          <ThemeBtn />
-          <ActionIcon icon={<CogIcon />} />
+        <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
+          <SidebarBtn
+            icon={<PlusIcon />}
+            text='New collection'
+            onClick={openModal}
+          />
+          <ActionIcon icon={<ViewGridAddIcon />} />
         </div>
       </div>
       <Toaster />
