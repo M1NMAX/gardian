@@ -1,16 +1,14 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
-  ChevronDoubleLeftIcon,
   CogIcon,
   CollectionIcon,
   PlusIcon,
   SearchIcon,
   TemplateIcon,
-  UserAddIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-import SidebarBtn from './components/SidebarBtn';
+import SidebarLink from './components/SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './components/SidebarCollection';
 import SidebarUserOptions from './components/SidebarUserOptions';
@@ -127,7 +125,7 @@ const Sidebar: FC = () => {
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
       <div className='flex flex-col px-1 py-2  space-y-1 '>
-        
+        {/* Top section aka search  */}
         <div className='flex justify-between items-center space-x-1'>
           <button className='w-full space-x-2 flex items-center rounded p-1 bg-gray-300 dark:bg-gray-700'>
             <SearchIcon className='icon-sm' />
@@ -137,12 +135,16 @@ const Sidebar: FC = () => {
           <SidebarUserOptions />
         </div>
 
-        <SidebarBtn icon={<TemplateIcon />} text='Templates' />
+        <SidebarLink
+          icon={<TemplateIcon />}
+          text='Templates'
+          url='/templates'
+        />
 
-        <SidebarBtn
+        <SidebarLink
           icon={<CollectionIcon />}
           text='All Collections'
-          onClick={() => router.push('/collections')}
+          url='/collections'
         />
 
         <div
@@ -156,12 +158,16 @@ const Sidebar: FC = () => {
           {isError && <span>Error: {error.message}</span>}
         </div>
 
+        {/* Bottom section  */}
         <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
-          <SidebarBtn
-            icon={<PlusIcon />}
-            text='New collection'
+          <button
             onClick={openModal}
-          />
+            className='w-full space-x-1 btn btn-secondary'>
+            <span className='icon-sm'>
+              <PlusIcon />
+            </span>
+            <span>New Collection</span>
+          </button>
           <ActionIcon icon={<ViewGridAddIcon />} />
         </div>
       </div>

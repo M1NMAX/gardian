@@ -63,11 +63,6 @@ export interface CollectionOverviewProps {
 }
 
 
-export interface SidebarBtnProps {
-    icon: JSX.Element,
-    text: string,
-    onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
-}
 
 
 export interface ModalProps {
