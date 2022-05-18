@@ -127,12 +127,15 @@ const Sidebar: FC = () => {
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
       <div className='flex flex-col px-1 py-2  space-y-1 '>
-        <div className='flex justify-between items-center'>
-          <SidebarUserOptions />
+        
+        <div className='flex justify-between items-center space-x-1'>
+          <button className='w-full space-x-2 flex items-center rounded p-1 bg-gray-300 dark:bg-gray-700'>
+            <SearchIcon className='icon-sm' />
+            <span>Find, explore</span>
+          </button>
           <ThemeBtn />
+          <SidebarUserOptions />
         </div>
-
-        <SidebarBtn icon={<SearchIcon />} text='Quick Find' />
 
         <SidebarBtn icon={<TemplateIcon />} text='Templates' />
 
