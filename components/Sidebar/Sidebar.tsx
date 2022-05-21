@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
-  CogIcon,
+  ChevronRightIcon,
   CollectionIcon,
   PlusIcon,
   SearchIcon,
@@ -21,7 +21,27 @@ import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
 import { useRouter } from 'next/router';
-import Menu from '../Frontstate/Menu';
+import { ChevronUpIcon } from '@heroicons/react/solid';
+import { Disclosure } from '@headlessui/react';
+
+const groups = [
+  {
+    name: '/',
+    collections: [
+      { name: 'A1', items: 4 },
+      { name: 'A2', items: 2 },
+    ],
+  },
+  { name: 'personal', collections: [{ name: 'B1', items: 4 }] },
+  {
+    name: 'work',
+    collections: [
+      { name: 'C1', items: 4 },
+      { name: 'C2', items: 4 },
+      { name: 'C3', items: 4 },
+    ],
+  },
+];
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -148,7 +168,30 @@ const Sidebar: FC = () => {
           url='/collections'
           active={router.pathname === '/collections'}
         />
-
+        <div className='space-y-2 mt-2'>
+          {groups.map((group) => (
+            <Disclosure
+              defaultOpen
+              as='div'
+              className='rounded bg-gray-200  dark:bg-gray-700'>
+              {({ open }) => (
+                <>
+                  <Disclosure.Button className='flex items-center w-full p-1'>
+                    <ChevronRightIcon
+                      className={`${open ? 'rotate-90 transform' : ''} icon-xs`}
+                    />
+                    <span> {group.name}</span>
+                  </Disclosure.Button>
+                  <Disclosure.Panel className='px-4 py-1 text-sm'>
+                    {group.collections.map((collection) => (
+                      <div>{collection.name}</div>
+                    ))}
+                  </Disclosure.Panel>
+                </>
+              )}
+            </Disclosure>
+          ))}
+        </div>
         <div
           className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto overflow-x-hidden
                 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
