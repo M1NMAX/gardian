@@ -1,27 +1,7 @@
 import { Schema, model, models } from 'mongoose';
-import { ICollection, IItem } from '../../interfaces';
+import { ICollection } from '../../interfaces';
 import Template from './Template';
-
-const ItemSchama = new Schema<IItem>({
-    name: {
-        type: String,
-        required: true
-    },
-
-    value: {
-        type: String,
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-
-    }
-
-})
+import Item from './Item';
 
 const CollectionSchema = new Schema<ICollection>({
     name: {
@@ -41,7 +21,7 @@ const CollectionSchema = new Schema<ICollection>({
     template: {
         type: Template
     },
-    items: [ItemSchama],
+    items: [Item],
     updatedAt: {
         type: Date,
         default: Date.now,
