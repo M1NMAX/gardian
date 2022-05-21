@@ -1,7 +1,68 @@
 import { Schema, model, models } from 'mongoose';
-import { CollectionInterface } from '../../interfaces';
+import { ICollection, IItem, IProperty, ITemplate } from '../../interfaces';
 
-const CollectionSchema = new Schema<CollectionInterface>({
+
+const PropertySchema = new Schema<IProperty>({
+    name: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+    },
+    values: [String]
+    ,
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+
+    }
+});
+
+const TemplateSchema = new Schema<ITemplate>({
+    name: {
+        type: String,
+        required: true,
+    },
+    properties: [PropertySchema],
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+
+    }
+});
+
+
+const ItemSchama = new Schema<IItem>({
+    name: {
+        type: String,
+        required: true
+    },
+
+    value: {
+        type: String,
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+
+    }
+
+})
+
+const CollectionSchema = new Schema<ICollection>({
     name: {
         type: String,
         required: true,
@@ -12,47 +73,14 @@ const CollectionSchema = new Schema<CollectionInterface>({
         type: String,
         required: true,
     },
-    variant: {
-        type: String,
-        required: true,
-    },
-    isSub: {
-        type: Boolean,
-        required: true
-    },
-    collectionId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Collection'
-    },
-    parentName:{
-        type:String,
-        default: ""
-    },
     description: {
         type: String,
         default: ""
     },
-    isDescriptionHidden: {
-        type: Boolean,
-        default: false,
+    template: {
+        type: TemplateSchema
     },
-    properties: [
-        {
-            name: {
-                type: String,
-                required: true,
-            },
-            type: {
-                type: String,
-                required: true,
-            },
-
-            values: [{
-                type: String,
-                required: true,
-            }]
-        }
-    ],
+    items: [ItemSchama],
     updatedAt: {
         type: Date,
         default: Date.now,
@@ -60,7 +88,6 @@ const CollectionSchema = new Schema<CollectionInterface>({
     createdAt: {
         type: Date,
         default: Date.now,
-
     }
 })
-export default models.Collection || model<CollectionInterface>('Collection', CollectionSchema);
+export default models.Collection || model<ICollection>('Collection', CollectionSchema);

@@ -2,14 +2,36 @@
 interface IBase {
     _id?: number,
     name: string,
-    userId: string,
     createdAt?: Date,
     updatedAt?: Date,
 }
 
 export interface IGroup extends IBase {
     collections: Number[]
+    userId: string,
 }
+
+export interface IProperty extends IBase {
+    type: string,
+    values: string[],
+}
+export interface ITemplate extends IBase {
+    properties: IProperty[],
+}
+
+export interface IItem extends IBase {
+    value: string,
+}
+
+export interface ICollection extends IBase {
+    userId: string,
+    description: string,
+    template: ITemplate,
+    items: IItem[],
+}
+
+
+//DELETE
 //Schemas
 interface basicSchema {
     _id?: number,
