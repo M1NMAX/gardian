@@ -1,45 +1,6 @@
 import { Schema, model, models } from 'mongoose';
-import { ICollection, IItem, IProperty, ITemplate } from '../../interfaces';
-
-
-const PropertySchema = new Schema<IProperty>({
-    name: {
-        type: String,
-        required: true
-    },
-    type: {
-        type: String,
-    },
-    values: [String]
-    ,
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-
-    }
-});
-
-const TemplateSchema = new Schema<ITemplate>({
-    name: {
-        type: String,
-        required: true,
-    },
-    properties: [PropertySchema],
-    updatedAt: {
-        type: Date,
-        default: Date.now,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-
-    }
-});
-
+import { ICollection, IItem } from '../../interfaces';
+import Template from './Template';
 
 const ItemSchama = new Schema<IItem>({
     name: {
@@ -78,7 +39,7 @@ const CollectionSchema = new Schema<ICollection>({
         default: ""
     },
     template: {
-        type: TemplateSchema
+        type: Template
     },
     items: [ItemSchama],
     updatedAt: {
