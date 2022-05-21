@@ -15,7 +15,6 @@ import SidebarUserOptions from './components/SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { CollectionInterface } from '../../interfaces';
 import { getUserCollections } from '../../fetch/collections';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
@@ -46,10 +45,7 @@ const groups = [
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const { data, error, isError, isLoading } = useQuery<
-    CollectionInterface[],
-    Error
-  >('collections', getUserCollections);
+  
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -89,54 +85,8 @@ const Sidebar: FC = () => {
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  const getSubCollection = (id: number): CollectionInterface[] => {
-    if (!data) return [];
-    return data.filter((collection) => collection.collectionId === id);
-  };
+  
 
-  const handleCollection = (
-    idx: number,
-    collection: CollectionInterface
-  ): JSX.Element => {
-    let result = <></>;
-    if (!collection._id) return result;
-
-    if (collection.variant != 'collection') {
-      result = (
-        <SidebarCollection
-          key={idx}
-          id={collection._id}
-          name={collection.name}
-          variant={collection.variant}
-          isSub={false}
-        />
-      );
-    } else {
-      const subCollections = getSubCollection(collection._id);
-      result = (
-        <>
-          <SidebarCollection
-            key={idx}
-            id={collection._id}
-            name={collection.name}
-            variant={collection.variant}
-            isSub={false}
-          />
-          {subCollections.map((sub, i) => (
-            <SidebarCollection
-              key={i}
-              id={sub._id}
-              name={sub.name + 'smot'}
-              variant={sub.variant}
-              isSub={true}
-            />
-          ))}
-        </>
-      );
-    }
-
-    return result;
-  };
 
   return (
     <div
@@ -192,16 +142,7 @@ const Sidebar: FC = () => {
             </Disclosure>
           ))}
         </div>
-        <div
-          className='flex flex-col space-y-0.5 sidebarCollections-height w-full overflow-y-auto overflow-x-hidden
-                scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 '>
-          {data?.map(
-            (collection, idx: number) =>
-              !collection.isSub && handleCollection(idx, collection)
-          )}
-          {isLoading && <span>Loading...</span>}
-          {isError && <span>Error: {error.message}</span>}
-        </div>
+        
 
         {/* Bottom section  */}
         <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
