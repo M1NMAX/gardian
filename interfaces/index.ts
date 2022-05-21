@@ -1,6 +1,15 @@
-import { Types } from 'mongoose';
-import { FC } from 'react';
+//Base schema
+interface IBase {
+    _id?: number,
+    name: string,
+    userId: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+}
 
+export interface IGroup extends IBase {
+    collections: Number[]
+}
 //Schemas
 interface basicSchema {
     _id?: number,
