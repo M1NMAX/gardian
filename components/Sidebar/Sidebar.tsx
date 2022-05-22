@@ -15,37 +15,25 @@ import SidebarUserOptions from './components/SidebarUserOptions';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { getUserCollections } from '../../fetch/collections';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
 import { useRouter } from 'next/router';
-import { ChevronUpIcon } from '@heroicons/react/solid';
 import { Disclosure } from '@headlessui/react';
-
-const groups = [
-  {
-    name: '/',
-    collections: [
-      { name: 'A1', items: 4 },
-      { name: 'A2', items: 2 },
-    ],
-  },
-  { name: 'personal', collections: [{ name: 'B1', items: 4 }] },
-  {
-    name: 'work',
-    collections: [
-      { name: 'C1', items: 4 },
-      { name: 'C2', items: 4 },
-      { name: 'C3', items: 4 },
-    ],
-  },
-];
+import useModal from '../../hooks/useModal';
+import CreateGroupModal from '../CreateGroupModal';
+import { IGroup } from '../../interfaces';
+import { getGroups } from '../../fetch/group';
 
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  
+  const {
+    data: groups,
+    error,
+    isError,
+    isLoading,
+  } = useQuery<IGroup[], Error>('groups', getGroups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -85,8 +73,7 @@ const Sidebar: FC = () => {
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  
-
+  const createGroupModal = useModal();
 
   return (
     <div
@@ -119,7 +106,7 @@ const Sidebar: FC = () => {
           active={router.pathname === '/collections'}
         />
         <div className='space-y-2 mt-2'>
-          {groups.map((group) => (
+          {groups?.map((group) => (
             <Disclosure
               defaultOpen
               as='div'
@@ -134,7 +121,7 @@ const Sidebar: FC = () => {
                   </Disclosure.Button>
                   <Disclosure.Panel className='px-4 py-1 text-sm'>
                     {group.collections.map((collection) => (
-                      <div>{collection.name}</div>
+                      <div>{collection}</div>
                     ))}
                   </Disclosure.Panel>
                 </>
@@ -142,7 +129,6 @@ const Sidebar: FC = () => {
             </Disclosure>
           ))}
         </div>
-        
 
         {/* Bottom section  */}
         <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
@@ -154,7 +140,10 @@ const Sidebar: FC = () => {
             </span>
             <span>New Collection</span>
           </button>
-          <ActionIcon icon={<ViewGridAddIcon />} />
+          <ActionIcon
+            icon={<ViewGridAddIcon />}
+            onClick={() => createGroupModal.openModal()}
+          />
         </div>
       </div>
       <Toaster />
@@ -165,6 +154,15 @@ const Sidebar: FC = () => {
           parentName=''
           collectionId={null}
           handleClose={closeModal}
+          positiveFeedback={positiveFeedback}
+          negativeFeedback={negativeFeedback}
+        />
+      )}
+
+      {createGroupModal.isOpen && (
+        <CreateGroupModal
+          open={createGroupModal.isOpen}
+          handleClose={createGroupModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
         />
