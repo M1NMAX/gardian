@@ -147,15 +147,13 @@ const Sidebar: FC = () => {
         </div>
       </div>
       <Toaster />
-      {open && (
+      {open && groups && (
         <NewCollectionModal
           open={open}
-          isSub={false}
-          parentName=''
-          collectionId={null}
           handleClose={closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
+          groups={groups}
         />
       )}
 
