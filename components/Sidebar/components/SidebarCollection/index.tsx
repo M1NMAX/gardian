@@ -15,17 +15,12 @@ import CollectionIcon from '../../../CollectionIcon';
 
 interface SidebarCollectionProps {
   name: string;
-  variant: string;
   id?: number;
-  isSub: boolean;
 }
 
-const SidebarCollection: FC<SidebarCollectionProps> = ({
-  id,
-  name,
-  variant,
-  isSub,
-}) => {
+const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
+  const { id, name } = props;
+
   const router = useRouter();
   const { id: urlId } = router.query;
 
@@ -63,16 +58,12 @@ const SidebarCollection: FC<SidebarCollectionProps> = ({
   return (
     <div className='relative'>
       <div
-        className={`${id === urlId && 'bg-green-400'} ${
-          isSub ? 'pl-10' : 'pl-2.5'
-        }
-        flex items-center justify-between w-full h-8 pr-1  
-       hover:bg-gray-300 dark:hover:bg-gray-600 space-x-1 
-        font-semibold rounded-sm `}>
+        className={`${id === urlId && 'border-r-2 border-primary-bright bg-gray-300 dark:bg-gray-600 '} 
+        flex items-center justify-between w-full h-8 px-2
+       hover:bg-gray-400 dark:hover:bg-gray-500 space-x-1 
+        font-semibold `}>
         <Link href={`/collections/${id}`}>
           <a className='flex items-center space-x-1 w-full'>
-            <ReplyIcon className='icon-xs -rotate-180' />
-            <CollectionIcon variant={variant} iconSize='xs' />
             <span className='w-1/2 truncate'>{name}</span>
           </a>
         </Link>

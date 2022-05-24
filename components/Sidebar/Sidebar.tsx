@@ -119,11 +119,22 @@ const Sidebar: FC = () => {
                     />
                     <span> {group.name}</span>
                   </Disclosure.Button>
-                  <Disclosure.Panel className='px-4 py-1 text-sm'>
-                    {group.collections.map((collection) => (
-                      <div>{collection instanceof Number  ? collection : collection.name}</div>
-                    ))}
-                  </Disclosure.Panel>
+                  {group.collections.length > 0 && (
+                    <Disclosure.Panel className='py-1 text-sm'>
+                      {group.collections.map((collection) => (
+                        <>
+                          {collection instanceof Number ? (
+                            collection
+                          ) : (
+                            <SidebarCollection
+                              name={collection.name}
+                              id={collection._id}
+                            />
+                          )}
+                        </>
+                      ))}
+                    </Disclosure.Panel>
+                  )}
                 </>
               )}
             </Disclosure>
