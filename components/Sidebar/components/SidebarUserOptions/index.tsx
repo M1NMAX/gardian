@@ -1,13 +1,12 @@
 import React, { Fragment, FC } from 'react';
 import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
-import { CogIcon, LogoutIcon, SelectorIcon } from '@heroicons/react/outline';
+import { CogIcon, LogoutIcon } from '@heroicons/react/outline';
 import logoSrc from '../../../../public/logo192.png';
 import { Menu, Transition } from '@headlessui/react';
 
 const SidebarUserOptions: FC = ({}) => {
   const { user, error, isLoading } = useUser();
-  console.table(user);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
