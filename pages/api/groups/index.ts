@@ -16,9 +16,10 @@ export default withApiAuthRequired(
         switch (method) {
             case 'GET':
                 try {
-                    const groups = await Group.find({ userId: user?.sub }).sort({ name: 1 });
+                    const groups = await Group.find({ userId: user?.sub }).sort({ name: 1 }).populate("collections");
                     res.status(200).json({ isSuccess: true, data: groups });
                 } catch (error) {
+                    console.log(error)
                     res.status(400).json({ isSuccess: false });
                 }
                 break;

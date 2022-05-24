@@ -121,7 +121,7 @@ const Sidebar: FC = () => {
                   </Disclosure.Button>
                   <Disclosure.Panel className='px-4 py-1 text-sm'>
                     {group.collections.map((collection) => (
-                      <div>{collection}</div>
+                      <div>{collection instanceof Number  ? collection : collection.name}</div>
                     ))}
                   </Disclosure.Panel>
                 </>

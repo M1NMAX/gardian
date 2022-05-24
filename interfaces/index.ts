@@ -7,7 +7,7 @@ interface IBase {
 }
 
 export interface IGroup extends IBase {
-    collections: Number[]
+    collections: Number[] | ICollection[]
     userId: string,
 }
 
