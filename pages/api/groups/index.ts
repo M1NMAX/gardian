@@ -3,6 +3,7 @@ import dbConnect from '../../../backend/database/dbConnect';
 import Group from '../../../backend/models/Group';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { Response } from '../../../types';
+import Collection from '../../../backend/models/Collection';
 
 dbConnect();
 
@@ -16,7 +17,7 @@ export default withApiAuthRequired(
         switch (method) {
             case 'GET':
                 try {
-                    const groups = await Group.find({ userId: user?.sub }).sort({ name: 1 }).populate("collections");
+                    const groups = await Group.find({ userId: user?.sub }).sort({ name: 1 }).populate({ path: "collections", model: Collection });
                     res.status(200).json({ isSuccess: true, data: groups });
                 } catch (error) {
                     console.log(error)
