@@ -4,7 +4,6 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getUserCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
