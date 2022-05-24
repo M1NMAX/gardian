@@ -24,10 +24,10 @@ export interface IItem extends IBase {
 }
 
 export interface ICollection extends IBase {
-    userId: string,
-    description: string,
-    template: ITemplate,
-    items: IItem[],
+    userId?: string | null,
+    description?: string,
+    template?: ITemplate,
+    items?: IItem[],
 }
 
 //Components props
@@ -37,11 +37,7 @@ export interface ModalProps {
     positiveFeedback: (value: string) => void,
     negativeFeedback: () => void,
 }
-export interface NewCollectionModalProps extends ModalProps {
-    isSub: boolean,
-    collectionId: string | null,
-    parentName: string,
-}
+
 
 export interface DocumentStatusProps {
     isSaved: boolean,

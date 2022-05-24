@@ -12,11 +12,11 @@ export async function getCollection(id: number): Promise<ICollection> {
     return res.json().then(response => response.data);
 }
 
-export async function createCollection(name: string, variant: string, isSub: boolean, parentName: string, collectionId: string | null): Promise<ICollection> {
+export async function createCollection(collection: ICollection): Promise<ICollection> {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, variant, isSub, parentName, collectionId })
+        body: JSON.stringify(collection)
     };
     const res = await fetch(baseUrl, requestOptions);
     return res.json().then(response => response.data);

@@ -19,9 +19,10 @@ const CollectionSchema = new Schema<ICollection>({
         default: ""
     },
     template: {
-        type: Template
+        type: Template.schema,
+        default: ""
     },
-    items: [Item],
+    items: [Item.schema],
     updatedAt: {
         type: Date,
         default: Date.now,
