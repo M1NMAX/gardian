@@ -4,19 +4,41 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getUserCollections } from '../../fetch/collections';
+import { getCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { MenuAlt2Icon } from '@heroicons/react/outline';
+import {
+  AdjustmentsIcon,
+  DotsVerticalIcon,
+  FilterIcon,
+  MenuAlt2Icon,
+  PlusIcon,
+  StarIcon,
+  ViewGridIcon,
+} from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../../components/NewCollectionModal';
+import { ICollection, IGroup } from '../../interfaces';
+import { getGroups } from '../../fetch/group';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ user }) => {
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
+
+  const {
+    data: groups,
+    error,
+    isError,
+    isLoading,
+  } = useQuery<IGroup[], Error>('groups', getGroups);
+
+  const { data: collections } = useQuery<ICollection[], Error>(
+    'collections',
+    getCollections
+  );
 
   //TODO: Add loading and error
 
@@ -48,31 +70,39 @@ const Collections: NextPage<
                 onClick={() => setSidebar(true)}
               />
             )}
-            <h1 className='font-semibold text-xl'>Collections </h1>
           </div>
-          <button onClick={openModal} className='btn btn-primary'>
-            New
+          <div className='flex items-center space-x-1.5'>
+            <ActionIcon icon={<AdjustmentsIcon />} variant='secondary' />
+            <ActionIcon icon={<DotsVerticalIcon />} variant='secondary' />
+          </div>
+        </div>
+        <div>
+          <h1 className='font-semibold text-2xl'>My Collections</h1>
+          <button onClick={openModal} className='btn btn-secondary'>
+            <span className='icon-sm'>
+              <PlusIcon />
+            </span>
+            <span>New Collection</span>
           </button>
         </div>
 
         <div
           className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
                 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
-          {[1, 2, 3, 4].map((collection, idx: number) => (
-            <div>{collection}</div>
-          ))}
+          {collections &&
+            collections.map((collection, idx) => (
+              <CollectionOverview key={idx} collection={collection} />
+            ))}
         </div>
       </main>
       <Toaster />
-      {open && (
+      {open && groups && (
         <NewCollectionModal
           open={open}
-          isSub={false}
-          collectionId={null}
-          parentName=''
           handleClose={closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
+          groups={groups}
         />
       )}
     </>

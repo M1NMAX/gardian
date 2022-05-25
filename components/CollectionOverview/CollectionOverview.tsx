@@ -3,12 +3,18 @@ import React, { FC } from 'react';
 import toast from 'react-hot-toast';
 import { deleteCollection, renameCollection } from '../../fetch/collections';
 import useModal from '../../hooks/useModal';
-import { CollectionOverviewProps } from '../../interfaces';
+import { ICollection } from '../../interfaces';
 import CollectionMenu from '../CollectionMenu';
 import DeleteModal from '../DeleteModal';
 import RenameModal from '../RenameModal';
 
-const CollectionOverview: FC<CollectionOverviewProps> = ({ collection }) => {
+interface CollectionOverviewProps {
+  collection: ICollection;
+}
+
+const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
+  const { collection } = props;
+
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
@@ -46,11 +52,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = ({ collection }) => {
         <a className=' flex flex-col font-semibold text-lg'>
           {collection.name}
 
-          <span
-            className='w-fit px-1 font-medium text-xs uppercase
-            rounded border bg-gray-200  dark:bg-gray-700'>
-            {collection.variant}s
-          </span>
+          
           <span className='text-xs font-light italic'>
             {collection.updatedAt
               ? new Date(collection.updatedAt).toDateString()
