@@ -101,7 +101,7 @@ const Sidebar: FC = () => {
 
         <SidebarLink
           icon={<CollectionIcon />}
-          text='All Collections'
+          text='My Collections'
           url='/collections'
           active={router.pathname === '/collections'}
         />

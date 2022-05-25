@@ -1,4 +1,10 @@
-import { MenuAlt2Icon, PencilIcon } from '@heroicons/react/outline';
+import {
+  AdjustmentsIcon,
+  MenuAlt2Icon,
+  PencilIcon,
+  PlusIcon,
+  StarIcon,
+} from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
@@ -17,6 +23,9 @@ interface HeaderProps {
   children: JSX.Element;
   collection: ICollection;
 }
+interface TitleProps {
+  children: string;
+}
 
 interface DescriptionProps {
   children: string;
@@ -31,6 +40,8 @@ interface CollectionProps {
 }
 
 type CollectionComponent = FC<CollectionProps> & { Header: FC<HeaderProps> } & {
+  Title: FC<TitleProps>;
+} & {
   Description: FC<DescriptionProps>;
 } & { Body: FC<BodyProps> };
 
@@ -113,16 +124,11 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
         {children}
       </div>
       <div className='flex items-center space-x-1'>
-        <button onClick={handleNewClick} className='btn btn-primary'>
-          New
-        </button>
-        <ActionIcon
-          icon={<PencilIcon />}
-          variant='primary'
-          onClick={handleEditClick}
-        />
+        <ActionIcon icon={<StarIcon />} variant='secondary' />
+        <ActionIcon icon={<AdjustmentsIcon />} variant='secondary' />
+
         <CollectionMenu
-          variant='primary'
+          variant='secondary'
           onClickRename={openRenameModal}
           onClickDelete={openDeleteModal}
         />
@@ -160,18 +166,34 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   );
 };
 
+const Title: FC<TitleProps> = (props) => {
+  const { children } = props;
+  return (
+    <div className='px-4'>
+      <h1 className='font-medium text-3xl'>{children}</h1>
+      <button className='btn btn-secondary'>
+        <span className='icon-sm'>
+          <PlusIcon />
+        </span>
+        <span>New Item</span>
+      </button>
+    </div>
+  );
+};
+
 const Description: FC<DescriptionProps> = (props) => {
   const { children, hidden = false } = props;
-  return <p className={`${hidden && 'hidden'}`}>{children}</p>;
+  return <p className={`${hidden && 'hidden'} px-4`}>{children}</p>;
 };
 
 const Body: FC<BodyProps> = (props) => {
   const { children } = props;
 
-  return <>{children}</>;
+  return <div className='px-4'>{children}</div>;
 };
 
 Collection.Header = Header;
+Collection.Title = Title;
 Collection.Description = Description;
 Collection.Body = Body;
 
