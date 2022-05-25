@@ -123,9 +123,7 @@ const Sidebar: FC = () => {
                     <Disclosure.Panel className='py-1 text-sm'>
                       {group.collections.map((collection) => (
                         <>
-                          {collection instanceof Number ? (
-                            collection
-                          ) : (
+                          {!(collection instanceof Number) && (
                             <SidebarCollection
                               name={collection.name}
                               id={collection._id}
