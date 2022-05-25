@@ -25,7 +25,7 @@ export interface IItem extends IBase {
 
 export interface ICollection extends IBase {
     userId?: string | null,
-    description?: string,
+    description: string,
     template?: ITemplate,
     items?: IItem[],
 }
