@@ -81,9 +81,9 @@ const Sidebar: FC = () => {
       className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white`}>
-      <div className='flex flex-col px-1 py-2  space-y-1 '>
+      <div className='flex flex-col py-2  space-y-1 '>
         {/* Top section aka search  */}
-        <div className='flex justify-between items-center space-x-1'>
+        <div className='flex justify-between items-center space-x-1 px-2'>
           <button className='w-full space-x-2 flex items-center rounded p-1 bg-gray-300 dark:bg-gray-700'>
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
@@ -105,12 +105,12 @@ const Sidebar: FC = () => {
           url='/collections'
           active={router.pathname === '/collections'}
         />
-        <div className='space-y-2 mt-2'>
+        <div className='space-y-2 px-2'>
           {groups?.map((group) => (
             <Disclosure
               defaultOpen
               as='div'
-              className='rounded bg-gray-200  dark:bg-gray-700'>
+              className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
               {({ open }) => (
                 <>
                   <Disclosure.Button className='flex items-center w-full p-1'>
