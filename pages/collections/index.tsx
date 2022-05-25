@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -12,40 +12,30 @@ import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
   AdjustmentsIcon,
   DotsVerticalIcon,
-  FilterIcon,
   MenuAlt2Icon,
   PlusIcon,
-  StarIcon,
-  ViewGridIcon,
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../../components/NewCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
+import useModal from '../../hooks/useModal';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ user }) => {
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const {
-    data: groups,
-    error,
-    isError,
-    isLoading,
-  } = useQuery<IGroup[], Error>('groups', getGroups);
+  const { data: groups } = useQuery<IGroup[]>('groups', getGroups);
 
+  //TODO: Add loading and error feedback
   const { data: collections } = useQuery<ICollection[], Error>(
     'collections',
     getCollections
   );
 
-  //TODO: Add loading and error
-
   //Modal: create collection
-  const [open, setOpen] = useState(false);
-  const closeModal = () => setOpen(false);
-  const openModal = () => setOpen(true);
+  const newCollectionModal = useModal();
 
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () =>
@@ -62,30 +52,37 @@ const Collections: NextPage<
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content`}>
         <div className='flex justify-between items-center'>
+          {/* Header  */}
           <div className='flex items-center space-x-2'>
             {!sidebar && (
               <ActionIcon
                 icon={<MenuAlt2Icon />}
-                variant='secondary'
                 onClick={() => setSidebar(true)}
               />
             )}
           </div>
           <div className='flex items-center space-x-1.5'>
-            <ActionIcon icon={<AdjustmentsIcon />} variant='secondary' />
-            <ActionIcon icon={<DotsVerticalIcon />} variant='secondary' />
+            <ActionIcon
+              icon={<AdjustmentsIcon className='rotate-90' />}
+              variant='filled'
+            />
+            <ActionIcon icon={<DotsVerticalIcon />} variant='filled' />
           </div>
         </div>
-        <div>
-          <h1 className='font-semibold text-2xl'>My Collections</h1>
-          <button onClick={openModal} className='btn btn-secondary'>
+        {/* Title  */}
+        <div className='flex items-end justify-between'>
+          <h1 className='font-semibold text-3xl '>My Collections</h1>
+          <button
+            onClick={newCollectionModal.openModal}
+            className='btn btn-primary'>
             <span className='icon-sm'>
               <PlusIcon />
             </span>
-            <span>New Collection</span>
+            <span>New</span>
           </button>
         </div>
 
+        {/* Collections  */}
         <div
           className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
                 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
@@ -96,10 +93,12 @@ const Collections: NextPage<
         </div>
       </main>
       <Toaster />
-      {open && groups && (
+
+      {/* New collection modal  */}
+      {newCollectionModal.isOpen && groups && (
         <NewCollectionModal
-          open={open}
-          handleClose={closeModal}
+          open={newCollectionModal.isOpen}
+          handleClose={newCollectionModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           groups={groups}

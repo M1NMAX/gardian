@@ -1,19 +1,30 @@
 import React, { FC } from 'react';
 
+type ActionIconVariants = 'hover' | 'filled';
 interface ActionIconProps {
-    icon: JSX.Element,
-    variant?: "primary" | "secondary",
-    onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void,
+  icon: JSX.Element;
+  variant?: ActionIconVariants;
+  onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const ActionIcon: FC<ActionIconProps> = ({ icon, variant = "secondary", onClick }) => {
-    return (
-        <button onClick={onClick} className={`btn btn-${variant}`}>
-            <span className='icon-sm'>
-                {icon}
-            </span>
-        </button>
-    )
-}
+const getVariantStyle = (variant: ActionIconVariants) => {
+  if (variant === 'filled')
+    return `p-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 `;
 
-export default ActionIcon
+  //Hover is the default
+  return `p-1 hover:bg-gray-300 dark:hover:bg-gray-600`;
+};
+
+const ActionIcon: FC<ActionIconProps> = (props) => {
+  const { icon, variant = 'hover', onClick } = props;
+
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center rounded ${getVariantStyle(variant)}`}>
+      <span className='icon-sm'>{icon}</span>
+    </button>
+  );
+};
+
+export default ActionIcon;
