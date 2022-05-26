@@ -117,15 +117,14 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
         {!sidebar && (
           <ActionIcon
             icon={<MenuAlt2Icon />}
-            variant='secondary'
             onClick={() => setSidebar(true)}
           />
         )}
-        {children}
+      
       </div>
       <div className='flex items-center space-x-1'>
-        <ActionIcon icon={<StarIcon />} variant='secondary' />
-        <ActionIcon icon={<AdjustmentsIcon />} variant='secondary' />
+        <ActionIcon icon={<StarIcon />} variant='filled' />
+        <ActionIcon icon={<AdjustmentsIcon className='rotate-90' />} variant='filled' />
 
         <CollectionMenu
           variant='secondary'
@@ -169,13 +168,13 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
 const Title: FC<TitleProps> = (props) => {
   const { children } = props;
   return (
-    <div className='px-4'>
+    <div className='flex items-end justify-between'>
       <h1 className='font-medium text-3xl'>{children}</h1>
-      <button className='btn btn-secondary'>
+      <button className='btn btn-primary'>
         <span className='icon-sm'>
           <PlusIcon />
         </span>
-        <span>New Item</span>
+        <span>New</span>
       </button>
     </div>
   );
@@ -183,7 +182,7 @@ const Title: FC<TitleProps> = (props) => {
 
 const Description: FC<DescriptionProps> = (props) => {
   const { children, hidden = false } = props;
-  return <p className={`${hidden && 'hidden'} px-4`}>{children}</p>;
+  return <p className={`${hidden && 'hidden'}`}>{children}</p>;
 };
 
 const Body: FC<BodyProps> = (props) => {

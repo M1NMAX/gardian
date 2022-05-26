@@ -4,6 +4,7 @@ type ActionIconVariants = 'hover' | 'filled';
 interface ActionIconProps {
   icon: JSX.Element;
   variant?: ActionIconVariants;
+  rounded?: boolean;
   onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
@@ -16,12 +17,14 @@ const getVariantStyle = (variant: ActionIconVariants) => {
 };
 
 const ActionIcon: FC<ActionIconProps> = (props) => {
-  const { icon, variant = 'hover', onClick } = props;
+  const { icon, variant = 'hover', rounded = true, onClick } = props;
 
   return (
     <button
       onClick={onClick}
-      className={`flex items-center rounded ${getVariantStyle(variant)}`}>
+      className={`flex items-center ${rounded && 'rounded'} ${getVariantStyle(
+        variant
+      )}`}>
       <span className='icon-sm'>{icon}</span>
     </button>
   );
