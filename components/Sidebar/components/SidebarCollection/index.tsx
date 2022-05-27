@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import CollectionMenu from '../../../CollectionMenu';
 import toast from 'react-hot-toast';
 import {
   deleteCollection,
@@ -10,8 +9,7 @@ import {
 import RenameModal from '../../../RenameModal';
 import DeleteModal from '../../../DeleteModal';
 import useModal from '../../../../hooks/useModal';
-import { ReplyIcon } from '@heroicons/react/outline';
-import CollectionIcon from '../../../CollectionIcon';
+import SidebarCollectionMenu from '../SidebarCollectionMenu';
 
 interface SidebarCollectionProps {
   name: string;
@@ -69,7 +67,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         </Link>
 
         <div className='absolute top-0 right-0'>
-          <CollectionMenu
+          <SidebarCollectionMenu
             onClickRename={renameCollectionModal.openModal}
             onClickDelete={deleteCollectionModal.openModal}
           />

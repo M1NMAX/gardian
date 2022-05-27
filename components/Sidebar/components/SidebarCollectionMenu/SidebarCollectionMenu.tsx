@@ -19,7 +19,7 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
 }) => {
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='action-icon-filled-variant rounded'>
+      <Menu.Button className={`btn btn-${variant}`}>
         <DotsVerticalIcon className='icon-sm' />
       </Menu.Button>
       <Transition
