@@ -11,7 +11,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
 
   return (
     <Link href={`/collections/${collection._id}`}>
-      <a className='flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 hover:scale-105 '>
+      <a className='flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 '>
         <span className=' font-semibold text-lg'>{collection.name}</span>
         <span className='text-xs font-light italic'>
           {collection.updatedAt

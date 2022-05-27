@@ -11,11 +11,10 @@ import React, { FC, Fragment } from 'react';
 interface CollectionMenuProps {
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  variant?: 'primary' | 'secondary';
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
-  const { variant = 'secondary', onClickRename, onClickDelete } = props;
+  const { onClickRename, onClickDelete } = props;
 
   return (
     <Menu as='div' className='relative'>
