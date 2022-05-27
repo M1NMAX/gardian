@@ -12,8 +12,10 @@ export interface IGroup extends IBase {
 }
 
 export interface IProperty extends IBase {
+    name: string,
     type: string,
     values: string[],
+    color: string,
 }
 export interface ITemplate extends IBase {
     properties: IProperty[],
