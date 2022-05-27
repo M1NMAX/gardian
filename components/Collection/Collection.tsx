@@ -120,11 +120,13 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
             onClick={() => setSidebar(true)}
           />
         )}
-      
       </div>
       <div className='flex items-center space-x-1'>
         <ActionIcon icon={<StarIcon />} variant='filled' />
-        <ActionIcon icon={<AdjustmentsIcon className='rotate-90' />} variant='filled' />
+        <ActionIcon
+          icon={<AdjustmentsIcon className='rotate-90' />}
+          variant='filled'
+        />
 
         <CollectionMenu
           variant='secondary'
@@ -168,7 +170,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
 const Title: FC<TitleProps> = (props) => {
   const { children } = props;
   return (
-    <div className='flex items-end justify-between'>
+    <div>
       <h1 className='font-medium text-3xl'>{children}</h1>
       <button className='btn btn-primary'>
         <span className='icon-sm'>
