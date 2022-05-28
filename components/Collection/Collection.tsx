@@ -129,7 +129,6 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
         />
 
         <CollectionMenu
-          variant='secondary'
           onClickRename={openRenameModal}
           onClickDelete={openDeleteModal}
         />

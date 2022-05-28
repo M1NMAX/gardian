@@ -12,6 +12,7 @@ import { AdjustmentsIcon, MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import { ITemplate } from '../../interfaces';
 import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
+import Drawer from '../../components/Drawer';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -111,25 +112,11 @@ const TemplatesPage: NextPage<
           </div>
         </div>
         {/* Details  */}
-        <div
-          className={`${
-            showDetails ? 'w-1/2 py-2 px-4' : 'w-0'
-          } transition-all duration-200 ease-in-out flex flex-col
-          rounded bg-gray-100 dark:bg-gray-800  overflow-hidden`}>
-          <div className='flex justify-end'>
-            <ActionIcon
-              icon={<XIcon />}
-              variant='filled'
-              onClick={closeDetails}
-            />
-          </div>
-          {/* Tittle */}
-          <h1>{currentTemplate?.name}</h1>
-          {/* Description */}
-          {/* Examples */}
-          {/* Buttons */}
-          hfoaf
-        </div>
+        {currentTemplate && (
+          <Drawer opened={showDetails} onClose={closeDetails}>
+            <Drawer.Title>currentTemplate.name</Drawer.Title>
+          </Drawer>
+        )}
       </main>
     </>
   );
