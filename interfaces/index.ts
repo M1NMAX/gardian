@@ -13,7 +13,7 @@ export interface IGroup extends IBase {
 
 export interface IProperty extends IBase {
     name: string,
-    type: string,
+    type: "text" | "select" | "date" | "time" | "url",
     values: string[],
     color: string,
 }

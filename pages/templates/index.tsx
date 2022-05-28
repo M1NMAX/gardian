@@ -73,7 +73,7 @@ const TemplatesPage: NextPage<
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } transition-all duration-200 ease-linear 
         flex h-screen  space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
-        <div className={`${showDetails ? 'w-1/2' : 'w-full'} py-2 px-4`}>
+        <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
           <div className='flex justify-between items-center'>
             {/* Header  */}
             <div className='flex items-center space-x-2'>
@@ -116,22 +116,16 @@ const TemplatesPage: NextPage<
         {currentTemplate && (
           <Drawer opened={showDetails} onClose={closeDetails}>
             <Drawer.Title>{currentTemplate.name}</Drawer.Title>
-            <Drawer.Description>
-              <h3>About this template</h3>
-              <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book.
-              </p>{' '}
-            </Drawer.Description>
             <Drawer.Body>
-              <div>Some example</div>
               <div>
                 <button className='btn btn-primary'>Use template</button>
               </div>
+              <div>Some example</div>
             </Drawer.Body>
-            <Drawer.Footer>nfn</Drawer.Footer>
+            <Drawer.Description>
+              <h3 className='font-medium'>About this template</h3>
+              <p>{currentTemplate.description}</p>
+            </Drawer.Description>
           </Drawer>
         )}
       </main>
