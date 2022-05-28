@@ -114,7 +114,25 @@ const TemplatesPage: NextPage<
         {/* Details  */}
         {currentTemplate && (
           <Drawer opened={showDetails} onClose={closeDetails}>
-            <Drawer.Title>currentTemplate.name</Drawer.Title>
+            <Drawer.Title>{currentTemplate.name}</Drawer.Title>
+            <Drawer.Description>
+              <h3>About this template</h3>
+              <p>
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book.
+              </p>{' '}
+            </Drawer.Description>
+            <Drawer.Body>
+              <div>Some example</div>
+              <div>
+                <button className='btn btn-primary'>Use template</button>
+              </div>
+            </Drawer.Body>
+            <Drawer.Footer>
+              nfn
+            </Drawer.Footer>
           </Drawer>
         )}
       </main>
