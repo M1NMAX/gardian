@@ -46,6 +46,8 @@ const TemplatesPage: NextPage<
   const create = async () => {
     let newTemplate: ITemplate = {
       name: 'Events',
+      description:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
       properties: [
         { name: 'onve', type: 'text', values: [''], color: '#dc2626' },
         {
@@ -92,7 +94,7 @@ const TemplatesPage: NextPage<
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl '>Templates</h1>
-          <button onClick={openDetails} className='btn btn-primary'>
+          <button onClick={create} className='btn btn-primary'>
             More
           </button>
 
@@ -129,9 +131,7 @@ const TemplatesPage: NextPage<
                 <button className='btn btn-primary'>Use template</button>
               </div>
             </Drawer.Body>
-            <Drawer.Footer>
-              nfn
-            </Drawer.Footer>
+            <Drawer.Footer>nfn</Drawer.Footer>
           </Drawer>
         )}
       </main>

@@ -29,6 +29,10 @@ const TemplateSchema = new Schema<ITemplate>({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+        default: "",
+    },
     properties: [PropertySchema],
     updatedAt: {
         type: Date,

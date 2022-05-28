@@ -19,6 +19,7 @@ export interface IProperty extends IBase {
 }
 export interface ITemplate extends IBase {
     properties: IProperty[],
+    description: string,
 }
 
 export interface IItem extends IBase {
