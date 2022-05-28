@@ -1,6 +1,6 @@
 import { XIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
-import ActionIcon from '../Frontstate/ActionIcon';
+import ActionIcon from '../ActionIcon';
 
 interface IProps {
   children: ReactNode;

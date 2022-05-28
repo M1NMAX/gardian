@@ -4,7 +4,6 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
@@ -12,7 +11,7 @@ import { AdjustmentsIcon, MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
 import { ITemplate } from '../../interfaces';
 import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
-import Drawer from '../../components/Drawer';
+import Drawer from '../../components/Frontstate/Drawer';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
