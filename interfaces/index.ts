@@ -37,6 +37,13 @@ export interface ICollection extends IBase {
     items?: IItem[],
 }
 
+
+//Item example for template 
+export interface IExample extends IBase {
+    items: IItem[],
+    templateId: number
+}
+
 //Components props
 export interface ModalProps {
     open: boolean,
