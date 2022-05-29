@@ -116,16 +116,24 @@ const TemplatesPage: NextPage<
         {currentTemplate && (
           <Drawer opened={showDetails} onClose={closeDetails}>
             <Drawer.Title>{currentTemplate.name}</Drawer.Title>
-            <Drawer.Body>
-              <div>
-                <button className='btn btn-primary'>Use template</button>
-              </div>
-              <div>Some example</div>
-            </Drawer.Body>
+
             <Drawer.Description>
               <h3 className='font-medium'>About this template</h3>
               <p>{currentTemplate.description}</p>
             </Drawer.Description>
+
+            <Drawer.Body>
+              <div>
+                <p>Example of item </p>
+                <div></div>
+              </div>
+            </Drawer.Body>
+            <Drawer.Footer>
+              <div className='flex space-x-2'>
+                <button className='btn btn-primary'>Use blank template</button>
+                <button className='btn btn-primary'>Use pre-filled</button>
+              </div>
+            </Drawer.Footer>
           </Drawer>
         )}
       </main>

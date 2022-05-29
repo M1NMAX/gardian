@@ -22,8 +22,12 @@ export interface ITemplate extends IBase {
     description: string,
 }
 
-export interface IItem extends IBase {
+
+export interface IItemProperty extends IBase {
     value: string,
+}
+export interface IItem extends IBase {
+    properties: IItemProperty[],
 }
 
 export interface ICollection extends IBase {

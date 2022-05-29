@@ -34,7 +34,7 @@ const Drawer: DrawerComponent = (props) => {
       <div className='flex justify-end'>
         <ActionIcon icon={<XIcon />} variant='filled' onClick={onClose} />
       </div>
-      {children}
+      <div className='space-y-4'>{children}</div>
     </div>
   );
 };
