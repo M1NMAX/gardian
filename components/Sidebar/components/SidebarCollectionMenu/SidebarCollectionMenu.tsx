@@ -1,7 +1,10 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
+  DuplicateIcon,
   PencilIcon,
+  ReplyIcon,
+  StarIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
 import React, { FC, Fragment } from 'react';
@@ -33,7 +36,30 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
         <div className='fixed z-10'>
           <Menu.Items
             as='ul'
-            className='absolute  z-10  -top-4 -right-8 w-fit p-1 rounded border  origin-top-right bg-white dark:bg-gray-900'>
+            className='absolute z-10 w-52 p-1 rounded-r-lg rounded-bl-lg rounded-tl   origin-top-right bg-gray-200 dark:bg-gray-800'>
+            <Menu.Item as='li'>
+              <button
+                onClick={onClickDelete}
+                className='w-full space-x-1 btn btn-secondary'>
+                <TrashIcon className='icon-sm' />
+                <span> Delete </span>
+              </button>
+            </Menu.Item>
+
+            <Menu.Item as='li'>
+              <button className='collection-menu-item-btn'>
+                <StarIcon className='icon-sm' />
+                <span>Add to Favorites</span>
+              </button>
+            </Menu.Item>
+
+            <Menu.Item as='li'>
+              <button className='collection-menu-item-btn'>
+                <DuplicateIcon className='icon-sm' />
+                <span>Duplicate</span>
+              </button>
+            </Menu.Item>
+
             <Menu.Item as='li'>
               <button
                 onClick={onClickRename}
@@ -42,12 +68,11 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
                 <span>Rename</span>
               </button>
             </Menu.Item>
-            <Menu.Item>
-              <button
-                onClick={onClickDelete}
-                className='w-full space-x-1 btn btn-secondary'>
-                <TrashIcon className='icon-sm' />
-                <span> Delete </span>
+
+            <Menu.Item as='li'>
+              <button className='collection-menu-item-btn'>
+                <ReplyIcon className='icon-sm -scale-x-100' />
+                <span>Move to</span>
               </button>
             </Menu.Item>
           </Menu.Items>
