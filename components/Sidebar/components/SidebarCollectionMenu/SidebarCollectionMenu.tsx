@@ -22,7 +22,8 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
 }) => {
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className={`btn btn-${variant}`}>
+      <Menu.Button
+        className={`flex items-center p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600`}>
         <DotsVerticalIcon className='icon-sm' />
       </Menu.Button>
       <Transition

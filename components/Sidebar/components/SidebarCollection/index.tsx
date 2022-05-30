@@ -54,9 +54,12 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   };
 
   return (
-    <div className='relative'>
+    <>
       <div
-        className={`${id === urlId && 'border-r-2 border-primary-bright bg-gray-300 dark:bg-gray-600 '} 
+        className={`${
+          id === urlId &&
+          'border-r-2 border-primary-bright bg-gray-300 dark:bg-gray-600'
+        } 
         flex items-center justify-between w-full h-8 px-2 mb-1
        hover:bg-gray-400 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
@@ -66,7 +69,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           </a>
         </Link>
 
-        <div className='absolute top-0 right-0'>
+        <div>
           <SidebarCollectionMenu
             onClickRename={renameCollectionModal.openModal}
             onClickDelete={deleteCollectionModal.openModal}
@@ -91,7 +94,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           onDelete={handleDeleteCollection}
         />
       )}
-    </div>
+    </>
   );
 };
 
