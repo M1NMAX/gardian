@@ -7,15 +7,19 @@ import { useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { AdjustmentsIcon, MenuAlt2Icon, XIcon } from '@heroicons/react/outline';
+import { AdjustmentsIcon, MenuAlt2Icon } from '@heroicons/react/outline';
 import { ITemplate } from '../../interfaces';
 import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
+import { createCollection } from '../../fetch/collections';
+import { getGroups } from '../../fetch/group';
+import { useRouter } from 'next/router';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
+  const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
   const [showDetails, setShowDetails] = useState(false);
@@ -62,12 +66,27 @@ const TemplatesPage: NextPage<
     console.log(res);
   };
 
-  const createBlankCollection = async () => {
+  const createCollectionFromTemplate = async (blank: boolean) => {
     if (!templates) return;
     const template: ITemplate = templates.filter(
       (temlate) => temlate._id === currentTemplateId
     )[0];
-    console.log(template.name);
+
+    const { name, properties } = template;
+    try {
+      const groups = await getGroups();
+      //make sure that the first group id is not null
+      if (!groups[0]._id) return;
+
+      const res = await createCollection({
+        collection: { name, template: { name: 'empty', properties } },
+        groupId: groups[0]._id,
+      });
+
+      router.push('/collections/' + res._id);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -103,7 +122,7 @@ const TemplatesPage: NextPage<
           {/* Title  */}
           <h1 className='font-semibold text-3xl '>Templates</h1>
           <button onClick={createMockTemplate} className='btn btn-primary'>
-            More
+            Create mock template
           </button>
 
           {/* Templates  */}
@@ -139,11 +158,15 @@ const TemplatesPage: NextPage<
             <Drawer.Footer>
               <div className='flex space-x-2'>
                 <button
-                  onClick={createBlankCollection}
+                  onClick={() => createCollectionFromTemplate(false)}
                   className='btn btn-primary'>
                   Use blank template
                 </button>
-                <button className='btn btn-primary'>Use pre-filled</button>
+                <button
+                  onClick={() => createCollectionFromTemplate(true)}
+                  className='btn btn-primary'>
+                  Use pre-filled
+                </button>
               </div>
             </Drawer.Footer>
           </Drawer>
