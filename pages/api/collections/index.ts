@@ -27,13 +27,13 @@ export default withApiAuthRequired(
                 try {
 
                     const groupId = req.body.groupId;
-                    console.log(groupId)
+
                     //Find the group
                     const group = Group.findById(groupId);
                     if (!group) res.status(400).json({ isSuccess: false });
 
                     //Create collection 
-                    const collection = await Collection.create({ ...req.body, userId: user?.sub });
+                    const collection = await Collection.create({ ...req.body.collection, userId: user?.sub });
 
                     //Push collection id to group 
                     await Group.findByIdAndUpdate(groupId, { $push: { collections: collection._id } });

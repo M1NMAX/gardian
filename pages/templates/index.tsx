@@ -43,7 +43,7 @@ const TemplatesPage: NextPage<
     openDetails();
   };
 
-  const create = async () => {
+  const createMockTemplate = async () => {
     let newTemplate: ITemplate = {
       name: 'Events',
       description:
@@ -60,6 +60,14 @@ const TemplatesPage: NextPage<
     };
     const res = await createTemplate(newTemplate);
     console.log(res);
+  };
+
+  const createBlankCollection = async () => {
+    if (!templates) return;
+    const template: ITemplate = templates.filter(
+      (temlate) => temlate._id === currentTemplateId
+    )[0];
+    console.log(template.name);
   };
 
   return (
@@ -94,7 +102,7 @@ const TemplatesPage: NextPage<
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl '>Templates</h1>
-          <button onClick={create} className='btn btn-primary'>
+          <button onClick={createMockTemplate} className='btn btn-primary'>
             More
           </button>
 
@@ -130,7 +138,11 @@ const TemplatesPage: NextPage<
             </Drawer.Body>
             <Drawer.Footer>
               <div className='flex space-x-2'>
-                <button className='btn btn-primary'>Use blank template</button>
+                <button
+                  onClick={createBlankCollection}
+                  className='btn btn-primary'>
+                  Use blank template
+                </button>
                 <button className='btn btn-primary'>Use pre-filled</button>
               </div>
             </Drawer.Footer>

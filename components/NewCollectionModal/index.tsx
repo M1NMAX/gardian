@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import Modal from '../Frontstate/Modal';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
-import { IGroup, ModalProps } from '../../interfaces';
+import { ICollection, IGroup, ModalProps } from '../../interfaces';
 import { createCollection } from '../../fetch/collections';
 import { CollectionIcon } from '@heroicons/react/outline';
 import Label from '../Label';
@@ -22,7 +22,7 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
     if (!selectedGroup) return;
 
     try {
-      await createCollection({ name, groupId: selectedGroup });
+      await createCollection({ collection: { name }, groupId: selectedGroup });
       positiveFeedback('Collection created successfully');
       handleClose();
     } catch (error) {
