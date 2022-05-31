@@ -79,7 +79,11 @@ const TemplatesPage: NextPage<
       if (!groups[0]._id) return;
 
       const res = await createCollection({
-        collection: { name, template: { name: 'empty', properties } },
+        collection: {
+          name,
+          description: '',
+          template: { name: 'empty', properties },
+        },
         groupId: groups[0]._id,
       });
 
