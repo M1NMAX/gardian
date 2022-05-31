@@ -49,7 +49,7 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     let newItem: IItem = { name, properties };
     console.table(newItem);
   };
-  console.log(properties);
+
   return (
     <Modal title='New Item' open={open} onHide={handleClose}>
       <form onSubmit={handleSubmit} className='space-y-2'>
