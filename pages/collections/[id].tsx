@@ -45,7 +45,7 @@ const Collections: NextPage<
         {collection && (
           <Collection>
             <Collection.Header collection={collection}>
-              <h1 className='font-medium'>{collection.name}</h1>
+              <h1 className='font-medium text-3xl'>{collection.name}</h1>
             </Collection.Header>
             <Collection.Description>
               {collection.description}

@@ -124,7 +124,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
       </div>
       {/* Bottom section  */}
       <div>
-        <h1 className='font-medium text-3xl'>{children}</h1>
+        {children}
         <button onClick={newItemModal.openModal} className='btn btn-primary'>
           <span className='icon-sm'>
             <PlusIcon />
