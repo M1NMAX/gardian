@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import EditCollectionModal from './components/EditCollectionModal';
+import NewItemModal from './components/NewItemModal';
 
 interface HeaderProps {
   children: JSX.Element;
@@ -57,8 +58,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
-  let handleNewClick = (): void => {};
-  let handleEditClick = (): void => {};
+  const newItemModal = useModal();
 
   //Edit Collection Modal
   const {
@@ -108,6 +108,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
 
   return (
     <div>
+      {/* Top section  */}
       <div className='flex justify-between items-center'>
         <div className='flex items-center space-x-2'>
           {!sidebar && (
@@ -129,45 +130,55 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
             onClickDelete={openDeleteModal}
           />
         </div>
-        {/* Modals  */}
-
-        {editCollectionModal && (
-          <EditCollectionModal
-            collection={collection}
-            open={editCollectionModal}
-            handleClose={closeEditCollectionModal}
-            positiveFeedback={positiveFeedback}
-            negativeFeedback={negativeFeedback}
-          />
-        )}
-
-        {renameModal && (
-          <RenameModal
-            open={renameModal}
-            handleClose={closeRenameModal}
-            name={collection.name}
-            onRename={handleRenameCollection}
-          />
-        )}
-
-        {deleteModal && (
-          <DeleteModal
-            open={deleteModal}
-            handleClose={closeDeleteModal}
-            name={collection.name}
-            onDelete={handleDeleteCollection}
-          />
-        )}
       </div>
+      {/* Bottom section  */}
       <div>
         <h1 className='font-medium text-3xl'>{children}</h1>
-        <button className='btn btn-primary'>
+        <button onClick={newItemModal.openModal} className='btn btn-primary'>
           <span className='icon-sm'>
             <PlusIcon />
           </span>
           <span>New</span>
         </button>
       </div>
+
+      {/* Modals  */}
+      {newItemModal.isOpen && (
+        <NewItemModal
+          open={newItemModal.isOpen}
+          handleClose={newItemModal.closeModal}
+          positiveFeedback={positiveFeedback}
+          negativeFeedback={negativeFeedback}
+          collection={collection}
+        />
+      )}
+      {editCollectionModal && (
+        <EditCollectionModal
+          collection={collection}
+          open={editCollectionModal}
+          handleClose={closeEditCollectionModal}
+          positiveFeedback={positiveFeedback}
+          negativeFeedback={negativeFeedback}
+        />
+      )}
+
+      {renameModal && (
+        <RenameModal
+          open={renameModal}
+          handleClose={closeRenameModal}
+          name={collection.name}
+          onRename={handleRenameCollection}
+        />
+      )}
+
+      {deleteModal && (
+        <DeleteModal
+          open={deleteModal}
+          handleClose={closeDeleteModal}
+          name={collection.name}
+          onDelete={handleDeleteCollection}
+        />
+      )}
     </div>
   );
 };
