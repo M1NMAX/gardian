@@ -47,11 +47,12 @@ const Collections: NextPage<
             <Collection.Header collection={collection}>
               <h1 className='font-medium'>{collection.name}</h1>
             </Collection.Header>
-            <Collection.Title>{collection.name}</Collection.Title>
             <Collection.Description>
               {collection.description}
             </Collection.Description>
-            <Collection.Body>heo</Collection.Body>
+            <Collection.Body>
+              {collection.template ? 'has template' : 'no template'}
+            </Collection.Body>
           </Collection>
         )}
       </main>

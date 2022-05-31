@@ -23,9 +23,6 @@ interface HeaderProps {
   children: JSX.Element;
   collection: ICollection;
 }
-interface TitleProps {
-  children: string;
-}
 
 interface DescriptionProps {
   children: string;
@@ -40,8 +37,6 @@ interface CollectionProps {
 }
 
 type CollectionComponent = FC<CollectionProps> & { Header: FC<HeaderProps> } & {
-  Title: FC<TitleProps>;
-} & {
   Description: FC<DescriptionProps>;
 } & { Body: FC<BodyProps> };
 
@@ -112,71 +107,67 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   };
 
   return (
-    <div className='flex justify-between items-center'>
-      <div className='flex items-center space-x-2'>
-        {!sidebar && (
+    <div>
+      <div className='flex justify-between items-center'>
+        <div className='flex items-center space-x-2'>
+          {!sidebar && (
+            <ActionIcon
+              icon={<MenuAlt2Icon />}
+              onClick={() => setSidebar(true)}
+            />
+          )}
+        </div>
+        <div className='flex items-center space-x-1'>
+          <ActionIcon icon={<StarIcon />} variant='filled' />
           <ActionIcon
-            icon={<MenuAlt2Icon />}
-            onClick={() => setSidebar(true)}
+            icon={<AdjustmentsIcon className='rotate-90' />}
+            variant='filled'
+          />
+
+          <CollectionMenu
+            onClickRename={openRenameModal}
+            onClickDelete={openDeleteModal}
+          />
+        </div>
+        {/* Modals  */}
+
+        {editCollectionModal && (
+          <EditCollectionModal
+            collection={collection}
+            open={editCollectionModal}
+            handleClose={closeEditCollectionModal}
+            positiveFeedback={positiveFeedback}
+            negativeFeedback={negativeFeedback}
+          />
+        )}
+
+        {renameModal && (
+          <RenameModal
+            open={renameModal}
+            handleClose={closeRenameModal}
+            name={collection.name}
+            onRename={handleRenameCollection}
+          />
+        )}
+
+        {deleteModal && (
+          <DeleteModal
+            open={deleteModal}
+            handleClose={closeDeleteModal}
+            name={collection.name}
+            onDelete={handleDeleteCollection}
           />
         )}
       </div>
-      <div className='flex items-center space-x-1'>
-        <ActionIcon icon={<StarIcon />} variant='filled' />
-        <ActionIcon
-          icon={<AdjustmentsIcon className='rotate-90' />}
-          variant='filled'
-        />
-
-        <CollectionMenu
-          onClickRename={openRenameModal}
-          onClickDelete={openDeleteModal}
-        />
+      <div>
+        <h1 className='font-medium text-3xl'>{children}</h1>
+        <button className='btn btn-primary'>
+          <span className='icon-sm'>
+            <PlusIcon />
+          </span>
+          <span>New</span>
+        </button>
       </div>
-      {/* Modals  */}
-
-      {editCollectionModal && (
-        <EditCollectionModal
-          collection={collection}
-          open={editCollectionModal}
-          handleClose={closeEditCollectionModal}
-          positiveFeedback={positiveFeedback}
-          negativeFeedback={negativeFeedback}
-        />
-      )}
-
-      {renameModal && (
-        <RenameModal
-          open={renameModal}
-          handleClose={closeRenameModal}
-          name={collection.name}
-          onRename={handleRenameCollection}
-        />
-      )}
-
-      {deleteModal && (
-        <DeleteModal
-          open={deleteModal}
-          handleClose={closeDeleteModal}
-          name={collection.name}
-          onDelete={handleDeleteCollection}
-        />
-      )}
-    </div>
-  );
-};
-
-const Title: FC<TitleProps> = (props) => {
-  const { children } = props;
-  return (
-    <div>
-      <h1 className='font-medium text-3xl'>{children}</h1>
-      <button className='btn btn-primary'>
-        <span className='icon-sm'>
-          <PlusIcon />
-        </span>
-        <span>New</span>
-      </button>
     </div>
   );
 };
@@ -193,7 +184,6 @@ const Body: FC<BodyProps> = (props) => {
 };
 
 Collection.Header = Header;
-Collection.Title = Title;
 Collection.Description = Description;
 Collection.Body = Body;
 
