@@ -22,7 +22,10 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
     if (!selectedGroup) return;
 
     try {
-      await createCollection({ collection: { name }, groupId: selectedGroup });
+      await createCollection({
+        collection: { name, description: '' },
+        groupId: selectedGroup,
+      });
       positiveFeedback('Collection created successfully');
       handleClose();
     } catch (error) {

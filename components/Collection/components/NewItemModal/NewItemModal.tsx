@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { createItem } from '../../../../fetch/item';
 import {
   ICollection,
   IItem,
@@ -46,8 +47,16 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     e.preventDefault();
     if (!properties || !collection._id) return;
 
-    let newItem: IItem = { name, properties };
-    console.table(newItem);
+    let item: IItem = { name, properties };
+
+    try {
+      await createItem({ item, collectionId: collection._id });
+      positiveFeedback('Item created');
+      handleClose();
+    } catch (error) {
+      console.log(error);
+      negativeFeedback();
+    }
   };
 
   return (
