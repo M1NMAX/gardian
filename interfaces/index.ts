@@ -34,7 +34,7 @@ export interface ICollection extends IBase {
     userId?: string | null,
     description: string,
     template?: ITemplate,
-    items?: IItem[],
+    items?: Number[] | IItem[],
 }
 
 
