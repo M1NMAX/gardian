@@ -1,7 +1,6 @@
 import {
   AdjustmentsIcon,
   MenuAlt2Icon,
-  PencilIcon,
   PlusIcon,
   StarIcon,
 } from '@heroicons/react/outline';
@@ -17,7 +16,6 @@ import { deleteCollection, renameCollection } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
-import EditCollectionModal from './components/EditCollectionModal';
 import NewItemModal from './components/NewItemModal';
 
 interface HeaderProps {
@@ -59,13 +57,6 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   const newItemModal = useModal();
-
-  //Edit Collection Modal
-  const {
-    isOpen: editCollectionModal,
-    openModal: openEditCollectionModal,
-    closeModal: closeEditCollectionModal,
-  } = useModal();
 
   //Rename Collection Modal
   const {
@@ -150,15 +141,6 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           collection={collection}
-        />
-      )}
-      {editCollectionModal && (
-        <EditCollectionModal
-          collection={collection}
-          open={editCollectionModal}
-          handleClose={closeEditCollectionModal}
-          positiveFeedback={positiveFeedback}
-          negativeFeedback={negativeFeedback}
         />
       )}
 
