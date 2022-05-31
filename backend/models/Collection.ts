@@ -21,7 +21,11 @@ const CollectionSchema = new Schema<ICollection>({
     template: {
         type: Template.schema
     },
-    items: [Item.schema],
+    items: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Item'
+        }],
     updatedAt: {
         type: Date,
         default: Date.now,
