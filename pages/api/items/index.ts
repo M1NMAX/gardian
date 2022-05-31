@@ -3,6 +3,7 @@ import dbConnect from '../../../backend/database/dbConnect';
 import Item from '../../../backend/models/Item';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { Response } from '../../../types';
+import Collection from '../../../backend/models/Collection';
 
 dbConnect();
 
@@ -24,7 +25,17 @@ export default withApiAuthRequired(
                 break;
             case 'POST':
                 try {
-                    const item = await Item.create({ ...req.body, userId: user?.sub });
+                    const collectionId = req.body.collectionId;
+
+                    //Find collection
+                    const collection = Collection.findById(collectionId);
+                    if (!collection) res.status(400).json({ isSuccess: false });
+
+                    //Create Item
+                    const item = await Item.create({ ...req.body.item, userId: user?.sub });
+
+                    //Push item id to collection 
+                    await Collection.findByIdAndUpdate(collectionId, { $push: { items: item._id } });
                     res.status(201).json({ isSuccess: true, data: item });
                 } catch (error) {
                     res.status(400).json({ isSuccess: false });
