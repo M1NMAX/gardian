@@ -1,7 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 import { ICollection } from '../../interfaces';
 import Template from './Template';
-import Item from './Item';
 
 const CollectionSchema = new Schema<ICollection>({
     name: {
