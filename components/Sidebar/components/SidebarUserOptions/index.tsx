@@ -12,7 +12,7 @@ const SidebarUserOptions: FC = ({}) => {
   if (error) return <div>{error.message}</div>;
 
   return (
-    <Menu>
+    <Menu as='div' className='relative'>
       <Menu.Button className='space-x-2 btn btn-secondary'>
         <div className='relative w-6 h-6'>
           <Image
@@ -22,7 +22,6 @@ const SidebarUserOptions: FC = ({}) => {
             className=' p-2 rounded-full border-2 border-white'
           />
         </div>
-        
       </Menu.Button>
 
       <Transition
@@ -36,7 +35,7 @@ const SidebarUserOptions: FC = ({}) => {
         <div className='fixed z-10'>
           <Menu.Items
             as='ul'
-            className='absolute left-4 w-56 origin-top-right bg-gray-200 dark:bg-gray-900 divide-y divide-gray-100
+            className='absolute left-0 w-56 origin-top-right bg-gray-200 dark:bg-gray-800 divide-y divide-gray-100
                             rounded-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
             <div className='px-1 py-1 space-y-1 font-medium '>
               <Menu.Item as='li'>
@@ -57,15 +56,13 @@ const SidebarUserOptions: FC = ({}) => {
               </Menu.Item>
               <hr className='bg-gray-500 dark:bg-gray-700' />
               <Menu.Item as='li'>
-                <a href='/settings' className='btn btn-secondary space-x-1'>
+                <a href='/settings' className='collection-menu-item-btn'>
                   <CogIcon className='icon-md' />
                   <span>Settings</span>
                 </a>
               </Menu.Item>
-              <Menu.Item>
-                <a
-                  href='/api/auth/logout'
-                  className='btn btn-secondary space-x-1'>
+              <Menu.Item as='li'>
+                <a href='/api/auth/logout' className='collection-menu-item-btn'>
                   <LogoutIcon className='icon-md' />
                   <span>Log out</span>
                 </a>
