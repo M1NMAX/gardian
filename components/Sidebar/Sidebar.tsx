@@ -88,7 +88,7 @@ const Sidebar: FC = () => {
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
-          <ThemeBtn />
+
           <SidebarUserOptions />
         </div>
 
@@ -141,6 +141,7 @@ const Sidebar: FC = () => {
 
         {/* Bottom section  */}
         <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
+          <ThemeBtn />
           <button
             onClick={openModal}
             className='w-full space-x-1 btn btn-secondary'>
