@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
-import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
@@ -38,6 +38,7 @@ const Collections: NextPage<
 
   useEffect(() => {
     refetch();
+    closeDetails();
   }, [id]);
 
   // handle info for Drower
@@ -88,8 +89,7 @@ const Collections: NextPage<
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
-                <div>
-                  {' '}
+                <div className='flex justify-end items-center py-0.5 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
                   <button
                     onClick={newItemModal.openModal}
                     className='btn btn-primary'>
@@ -99,7 +99,7 @@ const Collections: NextPage<
                     <span>New</span>
                   </button>
                 </div>
-                <div className=' space-y-2'>
+                <div className='py-1 space-y-2'>
                   {collection.items &&
                     collection.items.map((item) => (
                       <>
@@ -161,11 +161,4 @@ const Collections: NextPage<
 
 export default Collections;
 
-export const getServerSideProps = withPageAuthRequired({
-  async getServerSideProps(ctx) {
-    // access the user session
-    const session = getSession(ctx.req, ctx.res);
-    console.log(session);
-    return { props: { customProp: 'bar' } };
-  },
-});
+export const getServerSideProps = withPageAuthRequired();
