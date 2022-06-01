@@ -13,7 +13,10 @@ import { getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { TrashIcon } from '@heroicons/react/outline';
+import { PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import useModal from '../../hooks/useModal';
+import toast from 'react-hot-toast';
+import NewItemModal from '../../components/Collection/components/NewItemModal';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -37,6 +40,7 @@ const Collections: NextPage<
     refetch();
   }, [id]);
 
+  // handle info for Drower
   const [currentItemId, setCurrentItemId] = useState<Number>();
   const [currentItem, setCurrentItem] = useState<IItem>();
 
@@ -58,6 +62,12 @@ const Collections: NextPage<
     openDetails();
   };
 
+  //New item Modal
+  const newItemModal = useModal();
+  //Feedback
+  const positiveFeedback = (msg: string) => toast.success(msg);
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
+
   return (
     <>
       <Head>
@@ -78,17 +88,30 @@ const Collections: NextPage<
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
-                {collection.items &&
-                  collection.items.map((item) => (
-                    <>
-                      {!(item instanceof Number) && (
-                        <ItemOverview
-                          item={item}
-                          onItemClick={handleOnClickItem}
-                        />
-                      )}
-                    </>
-                  ))}
+                <div>
+                  {' '}
+                  <button
+                    onClick={newItemModal.openModal}
+                    className='btn btn-primary'>
+                    <span className='icon-sm'>
+                      <PlusIcon />
+                    </span>
+                    <span>New</span>
+                  </button>
+                </div>
+                <div className=' space-y-2'>
+                  {collection.items &&
+                    collection.items.map((item) => (
+                      <>
+                        {!(item instanceof Number) && (
+                          <ItemOverview
+                            item={item}
+                            onItemClick={handleOnClickItem}
+                          />
+                        )}
+                      </>
+                    ))}
+                </div>
               </Collection.Body>
             </Collection>
           )}
@@ -121,6 +144,17 @@ const Collections: NextPage<
           </Drawer>
         )}
       </main>
+
+      {/* New item modal  */}
+      {collection && newItemModal.isOpen && (
+        <NewItemModal
+          open={newItemModal.isOpen}
+          handleClose={newItemModal.closeModal}
+          positiveFeedback={positiveFeedback}
+          negativeFeedback={negativeFeedback}
+          collection={collection}
+        />
+      )}
     </>
   );
 };

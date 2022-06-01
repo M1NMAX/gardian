@@ -1,7 +1,6 @@
 import {
   AdjustmentsIcon,
   MenuAlt2Icon,
-  PlusIcon,
   StarIcon,
 } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
@@ -16,7 +15,6 @@ import { deleteCollection, renameCollection } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
-import NewItemModal from './components/NewItemModal';
 
 interface HeaderProps {
   children: JSX.Element;
@@ -55,8 +53,6 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
-
-  const newItemModal = useModal();
 
   //Rename Collection Modal
   const {
@@ -122,27 +118,10 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           />
         </div>
       </div>
-      {/* Bottom section  */}
-      <div>
-        {children}
-        <button onClick={newItemModal.openModal} className='btn btn-primary'>
-          <span className='icon-sm'>
-            <PlusIcon />
-          </span>
-          <span>New</span>
-        </button>
-      </div>
+      {/* Bottom section AKA collection name  */}
+      <div>{children}</div>
 
       {/* Modals  */}
-      {newItemModal.isOpen && (
-        <NewItemModal
-          open={newItemModal.isOpen}
-          handleClose={newItemModal.closeModal}
-          positiveFeedback={positiveFeedback}
-          negativeFeedback={negativeFeedback}
-          collection={collection}
-        />
-      )}
 
       {renameModal && (
         <RenameModal
@@ -173,7 +152,7 @@ const Description: FC<DescriptionProps> = (props) => {
 const Body: FC<BodyProps> = (props) => {
   const { children } = props;
 
-  return <div className='px-4'>{children}</div>;
+  return <div>{children}</div>;
 };
 
 Collection.Header = Header;
