@@ -66,7 +66,7 @@ const TemplatesPage: NextPage<
     console.log(res);
   };
 
-  const createCollectionFromTemplate = async (blank: boolean) => {
+  const createCollectionBasedOnTemplate = async () => {
     if (!templates) return;
     const template: ITemplate = templates.filter(
       (temlate) => temlate._id === currentTemplateId
@@ -155,23 +155,33 @@ const TemplatesPage: NextPage<
 
             <Drawer.Body>
               <div>
-                <p>Example of item </p>
-                <div></div>
+                <p>Example of item structure </p>
+
+                <div className='flex flex-col space-y-2'>
+                  {[1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className='w-full flex flex-col p-1 rounded 
+                      bg-gray-200 dark:bg-gray-700 '>
+                      <span className='font-semibold text-lg'>item {i} </span>
+                      {currentTemplate.properties.map((property) => (
+                        <span className='px-1'>{property.name}</span>
+                      ))}
+                    </span>
+                  ))}
+                </div>
               </div>
             </Drawer.Body>
             <Drawer.Footer>
-              <div className='flex space-x-2'>
-                <button
-                  onClick={() => createCollectionFromTemplate(false)}
-                  className='btn btn-primary'>
-                  Use blank template
-                </button>
-                <button
-                  onClick={() => createCollectionFromTemplate(true)}
-                  className='btn btn-primary'>
-                  Use pre-filled
-                </button>
-              </div>
+              <button
+                onClick={createCollectionBasedOnTemplate}
+                className='w-full flex items-center justify-center p-1 rounded 
+                  bg-primary hover:bg-primary-dark'>
+                Use this template
+              </button>
+              <span className='text-xs text-center'>
+                The collection will star empty
+              </span>
             </Drawer.Footer>
           </Drawer>
         )}
