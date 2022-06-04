@@ -131,7 +131,7 @@ const Collections: NextPage<
               </div>
             </Drawer.Body>
             <Drawer.Footer>
-              <div className='flex items-center space-x-2'>
+              <div className='flex justify-between items-center space-x-2'>
                 <div className='font-light'>
                   Created{' '}
                   {currentItem.updatedAt
