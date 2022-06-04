@@ -9,7 +9,7 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { ICollection, IItem } from '../../interfaces';
 import Collection from '../../components/Collection';
-import { getItem } from '../../fetch/item';
+import { deleteItem, getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
@@ -17,6 +17,7 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
+import { removeItemFromCollection } from '../../fetch/collections';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -68,6 +69,22 @@ const Collections: NextPage<
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  const handleDeleteItem = async () => {
+    if (!collection) return;
+    if (!currentItemId || !collection._id) return;
+
+    try {
+      const itemId = currentItemId.valueOf();
+
+      await deleteItem(itemId);
+      await removeItemFromCollection(collection._id, itemId);
+      positiveFeedback('Item deleted');
+    } catch (error) {
+      console.log(error);
+      negativeFeedback();
+    }
+  };
 
   return (
     <>
@@ -138,7 +155,11 @@ const Collections: NextPage<
                     ? new Date(currentItem.updatedAt).toDateString()
                     : 'Loading'}
                 </div>
-                <ActionIcon icon={<TrashIcon />} variant='filled' />
+                <ActionIcon
+                  icon={<TrashIcon />}
+                  variant='filled'
+                  onClick={handleDeleteItem}
+                />
               </div>
             </Drawer.Footer>
           </Drawer>

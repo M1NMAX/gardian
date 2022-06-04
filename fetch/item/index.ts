@@ -20,7 +20,7 @@ export async function createItem({ item, collectionId }: { item: IItem, collecti
 }
 
 
-export async function deleteItem(id: string): Promise<boolean> {
+export async function deleteItem(id: number): Promise<boolean> {
     const res = await fetch(baseUrl + id, { method: 'DELETE' });
     return res.json().then(response => response.isSuccess);
 }
