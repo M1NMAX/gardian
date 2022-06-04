@@ -18,6 +18,7 @@ import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
 import { removeItemFromCollection } from '../../fetch/collections';
+import DeleteModal from '../../components/DeleteModal';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -70,6 +71,8 @@ const Collections: NextPage<
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
+  const deleteModal = useModal();
+
   const handleDeleteItem = async () => {
     if (!collection) return;
     if (!currentItemId || !collection._id) return;
@@ -79,6 +82,8 @@ const Collections: NextPage<
 
       await deleteItem(itemId);
       await removeItemFromCollection(collection._id, itemId);
+      closeDetails();
+      deleteModal.closeModal();
       positiveFeedback('Item deleted');
     } catch (error) {
       console.log(error);
@@ -158,7 +163,7 @@ const Collections: NextPage<
                 <ActionIcon
                   icon={<TrashIcon />}
                   variant='filled'
-                  onClick={handleDeleteItem}
+                  onClick={deleteModal.openModal}
                 />
               </div>
             </Drawer.Footer>
@@ -174,6 +179,16 @@ const Collections: NextPage<
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           collection={collection}
+        />
+      )}
+
+      {/* Delete item modal  */}
+      {currentItem && deleteModal.isOpen && (
+        <DeleteModal
+          name={currentItem.name}
+          open={deleteModal.isOpen}
+          handleClose={deleteModal.closeModal}
+          onDelete={handleDeleteItem}
         />
       )}
     </>
