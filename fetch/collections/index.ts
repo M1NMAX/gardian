@@ -47,3 +47,8 @@ export async function deleteCollection(id: string): Promise<boolean> {
     const res = await fetch(baseUrl + id, { method: 'DELETE' });
     return res.json().then(response => response.isSuccess);
 }
+
+export async function removeItemFromCollection(collectionId: number, itemId: number): Promise<boolean> {
+    const res = await fetch(baseUrl + collectionId + '/' + itemId, { method: 'PATCH' });
+    return res.json().then(response => response.isSuccess);
+}
