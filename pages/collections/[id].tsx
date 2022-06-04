@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { ICollection, IItem } from '../../interfaces';
+import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import { deleteItem, getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
@@ -19,6 +19,7 @@ import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
 import { removeItemFromCollection } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
+import Property from '../../components/Property';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -91,6 +92,17 @@ const Collections: NextPage<
     }
   };
 
+  const getCollectionPropertyById = (id?: number) => {
+    if (!collection) return;
+    if (!collection.template) return;
+    const collectionProperties = collection.template.properties;
+    const property = collectionProperties.filter(
+      (property) => property._id === id
+    )[0];
+
+    return property;
+  };
+
   return (
     <>
       <Head>
@@ -145,10 +157,10 @@ const Collections: NextPage<
             <Drawer.Body>
               <div className='space-y-2'>
                 {currentItem.properties.map((property) => (
-                  <div className='p-1 rounded border'>
-                    <p>{property.name}</p>
-                    <p>{property.value}</p>
-                  </div>
+                  <Property
+                    itemProperty={property}
+                    cProperty={getCollectionPropertyById(property._id)}
+                  />
                 ))}
               </div>
             </Drawer.Body>
