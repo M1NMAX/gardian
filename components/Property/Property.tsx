@@ -1,6 +1,7 @@
 import { MenuAlt1Icon, SelectorIcon } from '@heroicons/react/outline';
 import React, { FC } from 'react';
 import { IProperty, IItemProperty } from '../../interfaces';
+import PropertyMenu from './PropertyMenu';
 interface PropertyProps {
   cProperty?: IProperty;
   itemProperty: IItemProperty;
@@ -24,11 +25,16 @@ const Property: FC<PropertyProps> = (props) => {
 
     return result;
   };
+
+  if (!cProperty) return <></>;
   return (
     <div className='p-1 rounded border'>
-      <span className='flex items-center space-x-1 '>
-        {handlePropertyIcon('select')}
-        <span>{itemProperty.name}</span>
+      <span className='flex justify-between'>
+        <span className='flex items-center space-x-1 text-sm '>
+          {handlePropertyIcon(cProperty.type)}
+          <span>{itemProperty.name}</span>
+        </span>
+        <PropertyMenu />
       </span>
       <p>{itemProperty.value}</p>
     </div>
