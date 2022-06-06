@@ -13,7 +13,12 @@ import { deleteItem, getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import {
+  PlusIcon,
+  TrashIcon,
+  ViewGridIcon,
+  ViewListIcon,
+} from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
@@ -28,6 +33,10 @@ const Collections: NextPage<
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
 
+  //view mode
+  const [isListView, setIsListView] = useState(true);
+
+  //Fetch collection data
   const { data: collection, refetch } = useQuery<ICollection>(
     'collection',
     async (): Promise<ICollection> => {
@@ -87,7 +96,6 @@ const Collections: NextPage<
       deleteModal.closeModal();
       positiveFeedback('Item deleted');
     } catch (error) {
-      console.log(error);
       negativeFeedback();
     }
   };
@@ -99,7 +107,6 @@ const Collections: NextPage<
     const property = collectionProperties.filter(
       (property) => property._id === id
     )[0];
-
     return property;
   };
 
@@ -123,7 +130,13 @@ const Collections: NextPage<
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
-                <div className='flex justify-end items-center py-0.5 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
+                <div
+                  className='flex justify-between items-center py-0.5 border-dotted 
+                      border-b-2 border-gray-200 dark:border-gray-700'>
+                  <ActionIcon
+                    icon={isListView ? <ViewGridIcon /> : <ViewListIcon />}
+                    onClick={() => setIsListView(!isListView)}
+                  />
                   <button
                     onClick={newItemModal.openModal}
                     className='btn btn-primary'>
@@ -162,6 +175,10 @@ const Collections: NextPage<
                     cProperty={getCollectionPropertyById(property._id)}
                   />
                 ))}
+                <button className='btn btn-primary'>
+                  <PlusIcon className='icon-sm' />
+                  <span>Add property</span>
+                </button>
               </div>
             </Drawer.Body>
             <Drawer.Footer>
