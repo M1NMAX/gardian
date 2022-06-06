@@ -1,4 +1,4 @@
-import { PropertyType } from '../types';
+import { PropertyTypes } from '../types';
 
 //Base schema
 interface IBase {
@@ -15,7 +15,7 @@ export interface IGroup extends IBase {
 
 export interface IProperty extends IBase {
   name: string;
-  type: PropertyType;
+  type: PropertyTypes;
   values: string[];
   color: string;
 }

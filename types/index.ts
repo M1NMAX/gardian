@@ -5,7 +5,7 @@ export type Response = {
   data?: ICollection[] | IGroup[];
 };
 
-export type PropertyType =
+export type PropertyTypes =
   | 'text'
   | 'select'
   | 'checkbox'
