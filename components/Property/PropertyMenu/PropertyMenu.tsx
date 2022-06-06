@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
+  DuplicateIcon,
   PencilAltIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
@@ -26,14 +27,20 @@ const PropertyMenu = () => {
           <Menu.Item as='li'>
             <button className='collection-menu-item-btn'>
               <PencilAltIcon className='icon-sm' />
-              <span>Rename</span>
+              <span>Edit property</span>
+            </button>
+          </Menu.Item>
+          <Menu.Item as='li'>
+            <button className='collection-menu-item-btn'>
+              <DuplicateIcon className='icon-sm' />
+              <span>Duplicate property</span>
             </button>
           </Menu.Item>
 
           <Menu.Item>
             <button className='collection-menu-item-btn'>
               <TrashIcon className='icon-sm' />
-              <span> Delete </span>
+              <span> Delete property</span>
             </button>
           </Menu.Item>
         </Menu.Items>
