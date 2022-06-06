@@ -1,7 +1,9 @@
-import { MenuAlt1Icon, SelectorIcon } from '@heroicons/react/outline';
 import React, { FC } from 'react';
+import { MenuAlt1Icon, SelectorIcon } from '@heroicons/react/outline';
 import { IProperty, IItemProperty } from '../../interfaces';
 import PropertyMenu from './PropertyMenu';
+import useModal from '../../hooks/useModal';
+import EditPropertyModal from './EditPropertyModal';
 interface PropertyProps {
   cProperty?: IProperty;
   itemProperty: IItemProperty;
@@ -9,7 +11,6 @@ interface PropertyProps {
 
 const Property: FC<PropertyProps> = (props) => {
   const { cProperty, itemProperty } = props;
-  console.log(cProperty);
 
   const handlePropertyIcon = (type: string) => {
     let result = <></>;
@@ -26,18 +27,29 @@ const Property: FC<PropertyProps> = (props) => {
     return result;
   };
 
+  const editPropertyModal = useModal();
+
   if (!cProperty) return <></>;
   return (
-    <div className='p-1 rounded border'>
-      <span className='flex justify-between'>
-        <span className='flex items-center space-x-1 text-sm '>
-          {handlePropertyIcon(cProperty.type)}
-          <span>{itemProperty.name}</span>
+    <>
+      <div className='p-1 rounded border'>
+        <span className='flex justify-between'>
+          <span className='flex items-center space-x-1 text-sm '>
+            {handlePropertyIcon(cProperty.type)}
+            <span>{itemProperty.name}</span>
+          </span>
+          <PropertyMenu onClickEdit={editPropertyModal.openModal} />
         </span>
-        <PropertyMenu />
-      </span>
-      <p>{itemProperty.value}</p>
-    </div>
+        <p>{itemProperty.value}</p>
+      </div>
+      {editPropertyModal.isOpen && (
+        <EditPropertyModal
+          open={editPropertyModal.isOpen}
+          handleClose={editPropertyModal.closeModal}
+          property={cProperty}
+        />
+      )}
+    </>
   );
 };
 

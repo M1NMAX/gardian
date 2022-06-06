@@ -7,14 +7,13 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { ICollection, IItem, IProperty } from '../../interfaces';
+import { ICollection, IItem } from '../../interfaces';
 import Collection from '../../components/Collection';
 import { deleteItem, getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  DuplicateIcon,
   PlusIcon,
   TrashIcon,
   ViewGridIcon,
