@@ -1,9 +1,9 @@
-import { DuplicateIcon, TrashIcon } from '@heroicons/react/outline';
-import React, { FC, useState } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
 import { IProperty } from '../../../interfaces';
 import Modal from '../../Frontstate/Modal';
+import { PropertyTypes } from '../../../types';
 
-const propertyTypes = [
+const types = [
   'text',
   'select',
   'checkbox',
@@ -23,6 +23,13 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const { open, handleClose, property } = props;
   const [name, setName] = useState(property.name);
   const [selectedType, setSelectedType] = useState(property.type);
+
+  const isPropertyTypes = (t: string): t is PropertyTypes => types.includes(t);
+
+  const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (isPropertyTypes(value)) setSelectedType(value);
+  };
 
   return (
     <Modal
@@ -47,8 +54,9 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           <span className='modal-input-label'>Property type</span>
           <select
             value={selectedType}
+            onChange={handleSelect}
             className='modal-input first-letter:uppercase'>
-            {propertyTypes.map((type, idx) => (
+            {types.map((type, idx) => (
               <option key={idx} value={type}>
                 {type}
               </option>
