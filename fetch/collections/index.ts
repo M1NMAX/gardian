@@ -74,7 +74,7 @@ export async function removeItemFromCollection(
 // Property
 export async function addProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
-    baseUrl + collectionId,
+    baseUrl + collectionId + '/template/new',
     getRequestOptions('PATCH', { property, op: 'a' })
   );
   return res.json().then((response) => response.data);

@@ -22,7 +22,7 @@ import {
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
-import { removeItemFromCollection } from '../../fetch/collections';
+import { addProperty, removeItemFromCollection } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 
@@ -112,7 +112,7 @@ const Collections: NextPage<
 
   const handleOnClickAddProperty = () => {
     if (!collection) return;
-    if (!collection.template) return;
+    if (!collection._id || !collection.template) return;
     const newProperty: IProperty = {
       name: 'Property',
       type: 'text',
@@ -127,6 +127,7 @@ const Collections: NextPage<
     console.log('after');
     const nPA = [...collection.template.properties, newProperty];
     console.log(nPA);
+    addProperty(newProperty, collection._id);
 
     //Add to collection template
 
