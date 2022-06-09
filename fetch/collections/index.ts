@@ -1,7 +1,9 @@
 import { ICollection, IProperty } from '../../interfaces';
+import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
+//Collection
 export async function getCollections(): Promise<ICollection[]> {
   const res = await fetch(baseUrl);
   return res.json().then((response) => response.data);
@@ -56,14 +58,22 @@ export async function renameCollection(
   return res.json().then((response) => response.isSuccess);
 }
 
-function getRequestOptions(method: 'PATCH' | 'PUT', data: object) {
-  const requestOptions = {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  };
-  return requestOptions;
+export async function deleteCollection(id: string): Promise<boolean> {
+  const res = await fetch(baseUrl + id, { method: 'DELETE' });
+  return res.json().then((response) => response.isSuccess);
 }
+
+export async function removeItemFromCollection(
+  collectionId: number,
+  itemId: number
+): Promise<boolean> {
+  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
+    method: 'PATCH',
+  });
+  return res.json().then((response) => response.isSuccess);
+}
+
+// Property
 export async function addProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
     baseUrl + collectionId,
@@ -86,19 +96,4 @@ export async function deleteProperty(propertyId: number, collectionId: number) {
     getRequestOptions('PATCH', { propertyId, op: 'a' })
   );
   return res.json().then((response) => response.data);
-}
-
-export async function deleteCollection(id: string): Promise<boolean> {
-  const res = await fetch(baseUrl + id, { method: 'DELETE' });
-  return res.json().then((response) => response.isSuccess);
-}
-
-export async function removeItemFromCollection(
-  collectionId: number,
-  itemId: number
-): Promise<boolean> {
-  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
-    method: 'PATCH',
-  });
-  return res.json().then((response) => response.isSuccess);
 }
