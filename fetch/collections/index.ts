@@ -82,7 +82,7 @@ export async function addProperty(property: IProperty, collectionId: number) {
 
 export async function updProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
-    baseUrl + collectionId,
+    baseUrl + collectionId + '/template/update',
     getRequestOptions('PATCH', { property, op: 'm' })
   );
   return res.json().then((response) => response.data);
@@ -90,8 +90,8 @@ export async function updProperty(property: IProperty, collectionId: number) {
 
 export async function deleteProperty(propertyId: number, collectionId: number) {
   const res = await fetch(
-    baseUrl + collectionId,
-    getRequestOptions('PATCH', { propertyId, op: 'a' })
+    baseUrl + collectionId + '/template/remove',
+    getRequestOptions('PATCH', { propertyId })
   );
   return res.json().then((response) => response.data);
 }
