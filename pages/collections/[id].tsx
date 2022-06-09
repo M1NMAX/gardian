@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { ICollection, IItem } from '../../interfaces';
+import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import { deleteItem, getItem } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
@@ -33,7 +33,7 @@ const Collections: NextPage<
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
 
-  //view mode
+  //View mode
   const [isListView, setIsListView] = useState(true);
 
   //Fetch collection data
@@ -110,6 +110,31 @@ const Collections: NextPage<
     return property;
   };
 
+  const handleOnClickAddProperty = () => {
+    if (!collection) return;
+    if (!collection.template) return;
+    const newProperty: IProperty = {
+      name: 'Property',
+      type: 'text',
+      values: [''],
+      color: '#991b1b',
+    };
+
+    // ({id: collectionid}, {$push: {template.$.properties: {newPorperty}}})
+    console.log(collection.template);
+    console.log('before');
+    console.log(collection.template.properties);
+    console.log('after');
+    const nPA = [...collection.template.properties, newProperty];
+    console.log(nPA);
+
+    //Add to collection template
+
+    //Add property into all collection item
+
+    console.log(newProperty);
+  };
+
   return (
     <>
       <Head>
@@ -176,7 +201,9 @@ const Collections: NextPage<
                   />
                 ))}
 
-                <button className='btn btn-primary'>
+                <button
+                  onClick={handleOnClickAddProperty}
+                  className='btn btn-primary'>
                   <PlusIcon className='icon-sm' />
                   <span>Add property</span>
                 </button>
