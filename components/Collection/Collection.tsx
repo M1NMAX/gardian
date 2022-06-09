@@ -11,7 +11,11 @@ import { ICollection } from '../../interfaces';
 import ActionIcon from '../Frontstate/ActionIcon';
 import CollectionMenu from '../CollectionMenu';
 import useModal from '../../hooks/useModal';
-import { deleteCollection, renameCollection } from '../../fetch/collections';
+import {
+  deleteCollection,
+  renameCollection,
+  updateCollection,
+} from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
@@ -71,7 +75,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   const handleRenameCollection = (name: string): void => {
     if (!collection._id) return;
     try {
-      renameCollection(collection._id.toString(), name);
+      updateCollection(collection._id, { ...collection, name });
       closeRenameModal();
       positiveFeedback('Collection renamed successfully');
     } catch (error) {

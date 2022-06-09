@@ -31,17 +31,15 @@ export async function createCollection({
 }
 
 export async function updateCollection(
-  id: string,
-  name: string,
-  description: string,
-  isDescriptionHidden: boolean
+  collectionId: number,
+  collection: ICollection
 ): Promise<boolean> {
   const requestOptions = {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, description, isDescriptionHidden }),
+    body: JSON.stringify(collection),
   };
-  const res = await fetch(baseUrl + id, requestOptions);
+  const res = await fetch(baseUrl + collectionId, requestOptions);
   return res.json().then((response) => response.isSuccess);
 }
 
