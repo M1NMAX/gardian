@@ -119,14 +119,14 @@ const Collections: NextPage<
     if (!collection) return;
     if (!collection._id || !collection.template) return;
 
-    const newProperty: IProperty = {
+    const defaultProperty: IProperty = {
       name: 'Property',
       type: 'text',
       values: [''],
       color: '#991b1b',
     };
 
-    await addProperty(newProperty, collection._id);
+    await addProperty(defaultProperty, collection._id);
   };
 
   const handleUpdateProperty = async (property: IProperty) => {

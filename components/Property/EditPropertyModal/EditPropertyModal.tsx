@@ -51,9 +51,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     onUpdate({ ...property, name, values, type: selectedType });
-    console.log('name', name);
-    console.log('type', selectedType);
-    console.log('values', values);
+    handleClose();
   };
 
   return (
@@ -89,32 +87,37 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           </select>
         </label>
 
-        {values.map((value, idx) => (
-          <div
-            key={idx}
-            className='flex items-center justify-between h-8 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600 group'>
-            <div>
-              <span className='bg-gray-200 dark:bg-gray-600 rounded-sm px-1'>
-                {idx + 1}
-              </span>
+        <div
+          className={`mt-2 ${
+            !['select', 'multi-select'].includes(selectedType) && 'hidden'
+          }`}>
+          <p>Options</p>
+          {values.map((value, idx) => (
+            <span
+              key={idx}
+              className='flex items-center justify-between h-8 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600 group'>
+              <div>
+                <span className='bg-gray-200 dark:bg-gray-600 rounded-sm px-1'>
+                  {idx + 1}
+                </span>
 
-              <span className='px-1'>{value}</span>
-            </div>
-            <ActionIcon icon={<TrashIcon />} onClick={() => removeValue(idx)} />
-          </div>
-        ))}
+                <span className='px-1'>{value}</span>
+              </div>
+              <ActionIcon
+                icon={<TrashIcon />}
+                onClick={() => removeValue(idx)}
+              />
+            </span>
+          ))}
 
-        <div>
           <div className='flex items-center mt-1'>
             <label className='flex flex-col w-full'>
-              <span className='modal-input-label'>New section name</span>
+              <span className='modal-input-label'>New option </span>
               <div className='flex space-x-2 w-full'>
                 <input
                   name='newValue'
                   value={newValue}
-                  onChange={(e) => {
-                    setNewValue(e.target.value);
-                  }}
+                  onChange={(e) => setNewValue(e.target.value)}
                   className='modal-input'
                 />
 

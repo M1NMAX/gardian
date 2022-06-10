@@ -66,7 +66,7 @@ const Property: FC<PropertyProps> = (props) => {
         <span className='flex justify-between'>
           <span className='flex items-center space-x-1 text-sm '>
             {handlePropertyIcon(cProperty.type)}
-            <span>{itemProperty.name}</span>
+            <span>{cProperty.name}</span>
           </span>
           <PropertyMenu
             onClickEdit={editPropertyModal.openModal}
