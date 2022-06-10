@@ -114,9 +114,10 @@ const Collections: NextPage<
     return property;
   };
 
-  const handleOnClickAddProperty = () => {
+  const handleOnClickAddProperty = async () => {
     if (!collection) return;
     if (!collection._id || !collection.template) return;
+
     const newProperty: IProperty = {
       name: 'Property',
       type: 'text',
@@ -124,20 +125,7 @@ const Collections: NextPage<
       color: '#991b1b',
     };
 
-    // ({id: collectionid}, {$push: {template.$.properties: {newPorperty}}})
-    console.log(collection.template);
-    console.log('before');
-    console.log(collection.template.properties);
-    console.log('after');
-    const nPA = [...collection.template.properties, newProperty];
-    console.log(nPA);
-    addProperty(newProperty, collection._id);
-
-    //Add to collection template
-
-    //Add property into all collection item
-
-    console.log(newProperty);
+    await addProperty(newProperty, collection._id);
   };
 
   const handleDeleteProperty = async (id: number) => {
@@ -145,6 +133,12 @@ const Collections: NextPage<
     if (!collection._id) return;
     await deleteProperty(id, collection._id);
   };
+
+  const handleDuplicateProperty = async (property: IProperty) => {
+    if (!collection || !collection._id) return;
+    await addProperty(property, collection._id);
+  };
+  const handleUpdateProperty = async (property: IProperty) => {};
 
   return (
     <>
@@ -210,6 +204,7 @@ const Collections: NextPage<
                     itemProperty={property}
                     cProperty={getCollectionPropertyById(property._id)}
                     onPropertyDelete={handleDeleteProperty}
+                    onPropertyDuplicate={handleDuplicateProperty}
                   />
                 ))}
 

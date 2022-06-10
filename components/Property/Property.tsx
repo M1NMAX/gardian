@@ -9,10 +9,12 @@ interface PropertyProps {
   cProperty?: IProperty;
   itemProperty: IItemProperty;
   onPropertyDelete: (id: number) => void;
+  onPropertyDuplicate: (property: IProperty) => void;
 }
 
 const Property: FC<PropertyProps> = (props) => {
-  const { cProperty, itemProperty, onPropertyDelete } = props;
+  const { cProperty, itemProperty, onPropertyDelete, onPropertyDuplicate } =
+    props;
 
   const handlePropertyIcon = (type: string) => {
     let result = <></>;
@@ -39,6 +41,18 @@ const Property: FC<PropertyProps> = (props) => {
     deletePropertyModal.closeModal();
   };
 
+  const handleDuplicate = () => {
+    if (!cProperty) return;
+
+    const copy: IProperty = {
+      name: cProperty.name,
+      type: cProperty.type,
+      values: cProperty.values,
+      color: cProperty.color,
+    };
+    onPropertyDuplicate(copy);
+  };
+
   if (!cProperty) return <></>;
   return (
     <>
@@ -50,6 +64,7 @@ const Property: FC<PropertyProps> = (props) => {
           </span>
           <PropertyMenu
             onClickEdit={editPropertyModal.openModal}
+            onClickDuplicate={handleDuplicate}
             onClickDelete={deletePropertyModal.openModal}
           />
         </span>
