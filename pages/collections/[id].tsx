@@ -22,7 +22,11 @@ import {
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/components/NewItemModal';
-import { addProperty, removeItemFromCollection } from '../../fetch/collections';
+import {
+  addProperty,
+  deleteProperty,
+  removeItemFromCollection,
+} from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 
@@ -136,6 +140,12 @@ const Collections: NextPage<
     console.log(newProperty);
   };
 
+  const handleDeleteProperty = async (id: number) => {
+    if (!collection) return;
+    if (!collection._id) return;
+    await deleteProperty(id, collection._id);
+  };
+
   return (
     <>
       <Head>
@@ -199,6 +209,7 @@ const Collections: NextPage<
                   <Property
                     itemProperty={property}
                     cProperty={getCollectionPropertyById(property._id)}
+                    onPropertyDelete={handleDeleteProperty}
                   />
                 ))}
 

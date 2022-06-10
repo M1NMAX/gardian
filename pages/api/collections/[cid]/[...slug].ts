@@ -71,9 +71,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
         try {
           const propertyId = req.body.propertyId;
           //Remove property from collection template
+          console.log(propertyId);
           const collection = await Collection.findByIdAndUpdate(
             cid,
-            { $pull: { template: { properties: { _id: propertyId } } } },
+            { $pull: { 'template.properties': { _id: propertyId } } },
             { new: true }
           );
 
@@ -91,6 +92,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
 
           res.status(200).json({ isSuccess: true, data: collection });
         } catch (error) {
+          console.log(error);
           res.status(400).json({ isSuccess: false });
         }
         break;
