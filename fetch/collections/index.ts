@@ -75,7 +75,7 @@ export async function removeItemFromCollection(
 export async function addProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
     baseUrl + collectionId + '/template/new',
-    getRequestOptions('PATCH', { property, op: 'a' })
+    getRequestOptions('PATCH', { property })
   );
   return res.json().then((response) => response.data);
 }
@@ -83,7 +83,7 @@ export async function addProperty(property: IProperty, collectionId: number) {
 export async function updProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
     baseUrl + collectionId + '/template/update',
-    getRequestOptions('PATCH', { property, op: 'm' })
+    getRequestOptions('PATCH', { property })
   );
   return res.json().then((response) => response.data);
 }

@@ -52,7 +52,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
           const property = req.body.property;
           const collection = await Collection.findByIdAndUpdate(
             cid,
-            { $set: { template: { 'properties.$[element]': property } } },
+            { $set: { 'template.properties.$[element]': property } },
             { arrayFilters: [{ 'element._id': property._id }] }
           );
 

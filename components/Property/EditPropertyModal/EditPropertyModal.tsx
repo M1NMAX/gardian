@@ -1,8 +1,9 @@
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
 import { IProperty } from '../../../interfaces';
 import Modal from '../../Frontstate/Modal';
 import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
+import ActionIcon from '../../Frontstate/ActionIcon';
 
 const types = [
   'text',
@@ -19,9 +20,10 @@ interface EditPropertyModalProps {
   open: boolean;
   handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
   property: IProperty;
+  onUpdate: (property: IProperty) => void;
 }
 const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
-  const { open, handleClose, property } = props;
+  const { open, handleClose, property, onUpdate } = props;
 
   const [name, setName] = useState(property.name);
   const [selectedType, setSelectedType] = useState(property.type);
@@ -46,6 +48,14 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
     setNewValue('');
   };
 
+  const handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    onUpdate({ ...property, name, values, type: selectedType });
+    console.log('name', name);
+    console.log('type', selectedType);
+    console.log('values', values);
+  };
+
   return (
     <Modal
       title=''
@@ -53,7 +63,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
       onHide={handleClose}
       withCloseBtn={false}
       size='sm'>
-      <form>
+      <form onSubmit={handleSubmit}>
         <label>
           <span className='modal-input-label'>Name</span>
           <input
@@ -90,12 +100,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
 
               <span className='px-1'>{value}</span>
             </div>
-            <button
-              type='button'
-              onClick={() => removeValue(idx)}
-              className='rounded-md hover:bg-gray-300 dark:hover:bg-gray-100 hover:text-black block  md:hidden md:group-hover:block'>
-              <TrashIcon className='icon-sm' />
-            </button>
+            <ActionIcon icon={<TrashIcon />} onClick={() => removeValue(idx)} />
           </div>
         ))}
 
@@ -103,7 +108,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           <div className='flex items-center mt-1'>
             <label className='flex flex-col w-full'>
               <span className='modal-input-label'>New section name</span>
-              <div className='relative w-full'>
+              <div className='flex space-x-2 w-full'>
                 <input
                   name='newValue'
                   value={newValue}
@@ -112,23 +117,26 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
                   }}
                   className='modal-input'
                 />
-                <button
-                  type='button'
-                  onClick={() => {
-                    addValue(newValue);
-                  }}
-                  className='absolute right-1 top-1 w-10 h-8  rounded bg-yellow-300 hover:bg-amber-300 dark:text-black'>
-                  <ArrowUpIcon className='h-8 w-10' />
-                </button>
+
+                <ActionIcon
+                  icon={<ArrowUpIcon />}
+                  onClick={() => addValue(newValue)}
+                  variant='filled'
+                />
               </div>
             </label>
           </div>
         </div>
         <div className='flex justify-end space-x-2 mt-2'>
-          <button onClick={handleClose} className='modal-neutral-btn'>
+          <button
+            type='button'
+            onClick={handleClose}
+            className='modal-neutral-btn'>
             Cancel
           </button>
-          <button className='modal-positive-btn'>Save</button>
+          <button type='submit' className='modal-positive-btn'>
+            Save
+          </button>
         </div>
       </form>
     </Modal>

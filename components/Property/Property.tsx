@@ -8,13 +8,19 @@ import DeleteModal from '../DeleteModal';
 interface PropertyProps {
   cProperty?: IProperty;
   itemProperty: IItemProperty;
-  onPropertyDelete: (id: number) => void;
+  onPropertyUpdate: (property: IProperty) => void;
   onPropertyDuplicate: (property: IProperty) => void;
+  onPropertyDelete: (id: number) => void;
 }
 
 const Property: FC<PropertyProps> = (props) => {
-  const { cProperty, itemProperty, onPropertyDelete, onPropertyDuplicate } =
-    props;
+  const {
+    cProperty,
+    itemProperty,
+    onPropertyUpdate,
+    onPropertyDuplicate,
+    onPropertyDelete,
+  } = props;
 
   const handlePropertyIcon = (type: string) => {
     let result = <></>;
@@ -76,6 +82,7 @@ const Property: FC<PropertyProps> = (props) => {
           open={editPropertyModal.isOpen}
           handleClose={editPropertyModal.closeModal}
           property={cProperty}
+          onUpdate={onPropertyUpdate}
         />
       )}
       {deletePropertyModal.isOpen && (
