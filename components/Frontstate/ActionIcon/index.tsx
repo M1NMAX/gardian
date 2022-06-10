@@ -3,6 +3,7 @@ import React, { FC } from 'react';
 type ActionIconVariants = 'hover' | 'filled';
 interface ActionIconProps {
   icon: JSX.Element;
+  type?: 'button' | 'submit' | 'reset';
   variant?: ActionIconVariants;
   rounded?: boolean;
   onClick?: (ev: React.MouseEvent<HTMLButtonElement>) => void;
@@ -16,10 +17,17 @@ const getVariantStyle = (variant: ActionIconVariants) => {
 };
 
 const ActionIcon: FC<ActionIconProps> = (props) => {
-  const { icon, variant = 'hover', rounded = true, onClick } = props;
+  const {
+    icon,
+    type = 'button',
+    variant = 'hover',
+    rounded = true,
+    onClick,
+  } = props;
 
   return (
     <button
+      type={type}
       onClick={onClick}
       className={`flex items-center ${rounded && 'rounded'} ${getVariantStyle(
         variant
