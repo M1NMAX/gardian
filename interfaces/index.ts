@@ -1,92 +1,58 @@
+import { PropertyTypes } from '../types';
+
 //Base schema
 interface IBase {
-    _id?: number,
-    name: string,
-    userId: string,
-    createdAt?: Date,
-    updatedAt?: Date,
+  _id?: number;
+  name: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface IGroup extends IBase {
-    collections: Number[]
-}
-//Schemas
-interface basicSchema {
-    _id?: number,
-    name: string,
-    userId: string,
-    collectionId: Number | null,
-    createdAt?: Date,
-    updatedAt?: Date,
+  collections: Number[] | ICollection[];
+  userId: string;
 }
 
-export interface PropertyInCollectionInterface {
-    _id?: number,
-    name: string,
-    type: string,
-    values: string[]
+export interface IProperty extends IBase {
+  name: string;
+  type: PropertyTypes;
+  values: string[];
+  color: string;
+}
+export interface ITemplate extends IBase {
+  properties: IProperty[];
+  description?: string;
 }
 
-export interface PropertyInItemInterface {
-    _id?: number,
-    name: string,
-    value: string,
+export interface IItemProperty extends IBase {
+  value: string;
+}
+export interface IItem extends IBase {
+  properties: IItemProperty[];
 }
 
-export interface CollectionInterface extends basicSchema {
-    variant: string,
-    isSub: boolean,
-    properties: PropertyInCollectionInterface[],
-    description: string,
-    isDescriptionHidden: boolean,
-    parentName: string,
+export interface ICollection extends IBase {
+  userId?: string | null;
+  description: string;
+  template?: ITemplate;
+  items?: Number[] | IItem[];
 }
 
-export interface CustomItemInterface extends basicSchema {
-    properties: PropertyInItemInterface[],
-}
-
-export interface EventInterface extends basicSchema {
-    date: string,
-    time: string,
-    reminder: boolean,
-    description: string,
-}
-
-
-export interface DocumentInterface extends basicSchema {
-    content: string
-}
-
-export interface TodoInterface extends basicSchema {
-    isConcluded: boolean,
-    conclusionDate?: string,
-    reminderDate?: string,
-    description?: string,
+//Item example for template
+export interface IExample extends IBase {
+  items: IItem[];
+  templateId: number;
 }
 
 //Components props
-
-export interface CollectionOverviewProps {
-    collection: CollectionInterface,
-}
-
-
-
-
 export interface ModalProps {
-    open: boolean,
-    handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void,
-    positiveFeedback: (value: string) => void,
-    negativeFeedback: () => void,
-}
-export interface NewCollectionModalProps extends ModalProps {
-    isSub: boolean,
-    collectionId: string | null,
-    parentName: string,
+  open: boolean;
+  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
+  positiveFeedback: (value: string) => void;
+  negativeFeedback: () => void;
 }
 
 export interface DocumentStatusProps {
-    isSaved: boolean,
-    isError: boolean,
+  isSaved: boolean;
+  isError: boolean;
 }

@@ -1,12 +1,16 @@
-import { CollectionInterface, TodoInterface } from "../interfaces";
+import { ICollection, IGroup } from '../interfaces';
 
 export type Response = {
-    isSuccess: boolean,
-    data?: CollectionInterface[] | TodoInterface[],
-}
+  isSuccess: boolean;
+  data?: ICollection[] | IGroup[];
+};
 
-export type CollectionUpdateData = {
-    name?: string,
-    variant?: string,
-    description?: string
-}
+export type PropertyTypes =
+  | 'text'
+  | 'select'
+  | 'checkbox'
+  | 'url'
+  | 'date'
+  | 'number'
+  | 'multi-select'
+  | 'file';

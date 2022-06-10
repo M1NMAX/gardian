@@ -1,60 +1,97 @@
-import { CollectionInterface, PropertyInCollectionInterface } from "../../interfaces";
+import { ICollection, IProperty } from '../../interfaces';
+import { getRequestOptions } from '../utils';
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
-export async function getUserCollections(): Promise<CollectionInterface[]> {
-    const res = await fetch(apiBaseUrl + '/collections');
-    return res.json().then(response => response.data);
+//Collection
+export async function getCollections(): Promise<ICollection[]> {
+  const res = await fetch(baseUrl);
+  return res.json().then((response) => response.data);
 }
 
-export async function createCollection(name: string, variant: string, isSub: boolean, parentName: string, collectionId: string | null): Promise<CollectionInterface> {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, variant, isSub, parentName, collectionId })
-    };
-    const res = await fetch(apiBaseUrl + '/collections', requestOptions);
-    return res.json().then(response => response.data);
+export async function getCollection(id: number): Promise<ICollection> {
+  const res = await fetch(baseUrl + id);
+  return res.json().then((response) => response.data);
 }
 
-export async function getCollection(id: number): Promise<CollectionInterface> {
-    const res = await fetch(apiBaseUrl + '/collections/' + id);
-    return res.json().then(response => response.data);
+export async function createCollection({
+  collection,
+  groupId,
+}: {
+  collection: ICollection;
+  groupId: number;
+}): Promise<ICollection> {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ collection, groupId }),
+  };
+  const res = await fetch(baseUrl, requestOptions);
+  return res.json().then((response) => response.data);
 }
 
-
-export async function updateCustomCollection(id: string, name: string, properties: PropertyInCollectionInterface[]): Promise<boolean> {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, properties })
-    };
-    const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
-    return res.json().then(response => response.isSuccess);
+export async function updateCollection(
+  collectionId: number,
+  collection: ICollection
+): Promise<boolean> {
+  const requestOptions = {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(collection),
+  };
+  const res = await fetch(baseUrl + collectionId, requestOptions);
+  return res.json().then((response) => response.isSuccess);
 }
 
-export async function updateCollection(id: string, name: string, description: string, isDescriptionHidden: boolean): Promise<boolean> {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, isDescriptionHidden })
-    };
-    const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
-    return res.json().then(response => response.isSuccess);
-}
-
-
-export async function renameCollection(id: string, name: string): Promise<boolean> {
-    const requestOptions = {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name })
-    };
-    const res = await fetch(apiBaseUrl + '/collections/' + id, requestOptions);
-    return res.json().then(response => response.isSuccess);
+export async function renameCollection(
+  id: string,
+  name: string
+): Promise<boolean> {
+  const requestOptions = {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  };
+  const res = await fetch(baseUrl + id, requestOptions);
+  return res.json().then((response) => response.isSuccess);
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {
-    const res = await fetch(apiBaseUrl + '/collections/' + id, { method: 'DELETE' });
-    return res.json().then(response => response.isSuccess);
+  const res = await fetch(baseUrl + id, { method: 'DELETE' });
+  return res.json().then((response) => response.isSuccess);
+}
+
+export async function removeItemFromCollection(
+  collectionId: number,
+  itemId: number
+): Promise<boolean> {
+  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
+    method: 'PATCH',
+  });
+  return res.json().then((response) => response.isSuccess);
+}
+
+// Property
+export async function addProperty(property: IProperty, collectionId: number) {
+  const res = await fetch(
+    baseUrl + collectionId + '/template/new',
+    getRequestOptions('PATCH', { property })
+  );
+  return res.json().then((response) => response.data);
+}
+
+export async function updProperty(property: IProperty, collectionId: number) {
+  const res = await fetch(
+    baseUrl + collectionId + '/template/update',
+    getRequestOptions('PATCH', { property })
+  );
+  return res.json().then((response) => response.data);
+}
+
+export async function deleteProperty(propertyId: number, collectionId: number) {
+  const res = await fetch(
+    baseUrl + collectionId + '/template/remove',
+    getRequestOptions('PATCH', { propertyId })
+  );
+  return res.json().then((response) => response.data);
 }
