@@ -12,5 +12,4 @@ export type PropertyTypes =
   | 'url'
   | 'date'
   | 'number'
-  | 'multi-select'
   | 'file';

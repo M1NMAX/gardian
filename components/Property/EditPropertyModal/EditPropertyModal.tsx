@@ -5,16 +5,7 @@ import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
 import ActionIcon from '../../Frontstate/ActionIcon';
 
-const types = [
-  'text',
-  'select',
-  'checkbox',
-  'url',
-  'date',
-  'number',
-  'multi-select',
-  'file',
-];
+const types = ['text', 'select', 'checkbox', 'url', 'date', 'number', 'file'];
 
 interface EditPropertyModalProps {
   open: boolean;
