@@ -16,6 +16,77 @@ import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 
+const mockTemplates: ITemplate[] = [
+  {
+    name: 'Events',
+    description:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    properties: [
+      { name: 'Date', type: 'date', values: [''], color: '#dc2626' },
+      {
+        name: 'Note',
+        type: 'text',
+        values: [''],
+        color: '#facc15',
+      },
+    ],
+  },
+  {
+    name: 'Tasks',
+    description:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    properties: [
+      { name: 'Done', type: 'checkbox', values: [''], color: '#dc2626' },
+      {
+        name: 'note',
+        type: 'text',
+        values: [''],
+        color: '#facc15',
+      },
+    ],
+  },
+  {
+    name: 'Links',
+    description:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    properties: [{ name: 'URL', type: 'url', values: [''], color: '#dc2626' }],
+  },
+
+  {
+    name: 'Documents',
+    description:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    properties: [
+      { name: 'File', type: 'file', values: [''], color: '#dc2626' },
+      {
+        name: 'note',
+        type: 'text',
+        values: [''],
+        color: '#facc15',
+      },
+    ],
+  },
+  {
+    name: 'Movies',
+    description:
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    properties: [
+      {
+        name: 'Status',
+        type: 'select',
+        values: ['Plan to watch', 'Watching', 'Watched'],
+        color: '#dc2626',
+      },
+      {
+        name: 'note',
+        type: 'text',
+        values: [''],
+        color: '#facc15',
+      },
+    ],
+  },
+];
+
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
@@ -48,21 +119,7 @@ const TemplatesPage: NextPage<
   };
 
   const createMockTemplate = async () => {
-    let newTemplate: ITemplate = {
-      name: 'Events',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      properties: [
-        { name: 'onve', type: 'text', values: [''], color: '#dc2626' },
-        {
-          name: 'teow',
-          type: 'select',
-          values: ['one', 'm'],
-          color: '#facc15',
-        },
-      ],
-    };
-    const res = await createTemplate(newTemplate);
+    const res = mockTemplates.map((template) => createTemplate(template));
     console.log(res);
   };
 
