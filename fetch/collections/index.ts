@@ -34,30 +34,34 @@ export async function updateCollection(
   collectionId: number,
   collection: ICollection
 ): Promise<boolean> {
-  const requestOptions = {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(collection),
-  };
-  const res = await fetch(baseUrl + collectionId, requestOptions);
+  const res = await fetch(
+    baseUrl + collectionId,
+    getRequestOptions('PUT', collection)
+  );
   return res.json().then((response) => response.isSuccess);
 }
 
 export async function renameCollection(
-  id: string,
+  id: number,
   name: string
 ): Promise<boolean> {
-  const requestOptions = {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name }),
-  };
-  const res = await fetch(baseUrl + id, requestOptions);
-  return res.json().then((response) => response.isSuccess);
+  const collection = await getCollection(id);
+  return updateCollection(id, { ...collection, name });
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
+  return res.json().then((response) => response.isSuccess);
+}
+
+//ITEM
+export async function addItemToCollection(
+  collectionId: number,
+  itemId: number
+) {
+  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
+    method: 'PATCH',
+  });
   return res.json().then((response) => response.isSuccess);
 }
 
@@ -66,12 +70,12 @@ export async function removeItemFromCollection(
   itemId: number
 ): Promise<boolean> {
   const res = await fetch(baseUrl + collectionId + '/' + itemId, {
-    method: 'PATCH',
+    method: 'DELETE',
   });
   return res.json().then((response) => response.isSuccess);
 }
 
-// Property
+// PROPERTY
 export async function addProperty(property: IProperty, collectionId: number) {
   const res = await fetch(
     baseUrl + collectionId + '/template/new',
