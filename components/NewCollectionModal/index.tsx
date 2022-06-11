@@ -23,7 +23,12 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
     if (!selectedGroup) return;
 
     try {
-      const collection = await createCollection({ name, description: '' });
+      const collection = await createCollection({
+        name,
+        description: '',
+        isDescriptionHidden: false,
+        isFavourite: false,
+      });
       if (!collection._id) throw true;
       await addCollectionToGroup(selectedGroup, collection._id);
       positiveFeedback('Collection created successfully');

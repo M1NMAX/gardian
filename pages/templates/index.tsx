@@ -13,7 +13,7 @@ import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
-import { getGroups } from '../../fetch/group';
+import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 
 const TemplatesPage: NextPage<
@@ -76,18 +76,19 @@ const TemplatesPage: NextPage<
     try {
       const groups = await getGroups();
       //make sure that the first group id is not null
-      if (!groups[0]._id) return;
-
-      const res = await createCollection({
-        collection: {
-          name,
-          description: '',
-          template: { name: 'empty', properties },
-        },
-        groupId: groups[0]._id,
+      if (!groups[0]._id) throw true;
+      const collection = await createCollection({
+        name,
+        description: '',
+        isDescriptionHidden: false,
+        isFavourite: false,
+        template: { name: 'empty', properties },
       });
 
-      router.push('/collections/' + res._id);
+      if (!collection._id) throw true;
+      await addCollectionToGroup(groups[0]._id, collection._id);
+
+      router.push('/collections/' + collection._id);
     } catch (error) {
       console.log(error);
     }
