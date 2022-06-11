@@ -13,6 +13,19 @@ export async function createItem(item: IItem): Promise<IItem> {
   return res.json().then((response) => response.data);
 }
 
+export async function updateItem(
+  itemId: number,
+  item: IItem
+): Promise<boolean> {
+  const res = await fetch(baseUrl + itemId, getRequestOptions('PUT', item));
+  return res.json().then((response) => response.isSuccess);
+}
+
+export async function renameItem(id: number, name: string): Promise<boolean> {
+  const item = await getItem(id);
+  return updateItem(id, { ...item, name });
+}
+
 export async function deleteItem(id: number): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);
