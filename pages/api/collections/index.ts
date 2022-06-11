@@ -3,11 +3,9 @@ import dbConnect from '../../../backend/database/dbConnect';
 import Collection from '../../../backend/models/Collection';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { Response } from '../../../types';
-import Group from '../../../backend/models/Group';
 
 dbConnect();
 
-//TODO: input validation
 export default withApiAuthRequired(async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Response>
