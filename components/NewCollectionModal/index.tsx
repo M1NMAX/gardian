@@ -6,6 +6,7 @@ import { ICollection, IGroup, ModalProps } from '../../interfaces';
 import { createCollection } from '../../fetch/collections';
 import { CollectionIcon } from '@heroicons/react/outline';
 import Label from '../Label';
+import { addCollectionToGroup } from '../../fetch/group';
 
 interface NewCollectionModalProps extends ModalProps {
   groups: IGroup[];
@@ -22,10 +23,9 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
     if (!selectedGroup) return;
 
     try {
-      await createCollection({
-        collection: { name, description: '' },
-        groupId: selectedGroup,
-      });
+      const collection = await createCollection({ name, description: '' });
+      if (!collection._id) throw true;
+      await addCollectionToGroup(selectedGroup, collection._id);
       positiveFeedback('Collection created successfully');
       handleClose();
     } catch (error) {

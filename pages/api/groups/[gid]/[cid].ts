@@ -27,6 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
         if (!group) return res.status(400).json({ isSuccess: false });
         res.status(200).json({ isSuccess: true, data: group });
       } catch (error) {
+        console.log(error);
         res.status(400).json({ isSuccess: false });
       }
       break;

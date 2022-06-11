@@ -38,7 +38,7 @@ export async function addCollectionToGroup(
 ): Promise<boolean> {
   const res = await fetch(
     baseUrl + groupId + '/' + collectionId,
-    getRequestOptions('PUT', {})
+    getRequestOptions('PATCH', {})
   );
   return res.json().then((response) => response.isSuccess);
 }

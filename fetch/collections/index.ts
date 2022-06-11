@@ -14,19 +14,10 @@ export async function getCollection(id: number): Promise<ICollection> {
   return res.json().then((response) => response.data);
 }
 
-export async function createCollection({
-  collection,
-  groupId,
-}: {
-  collection: ICollection;
-  groupId: number;
-}): Promise<ICollection> {
-  const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ collection, groupId }),
-  };
-  const res = await fetch(baseUrl, requestOptions);
+export async function createCollection(
+  collection: ICollection
+): Promise<ICollection> {
+  const res = await fetch(baseUrl, getRequestOptions('POST', { collection }));
   return res.json().then((response) => response.data);
 }
 
