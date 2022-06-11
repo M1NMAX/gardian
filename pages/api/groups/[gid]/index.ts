@@ -1,53 +1,46 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../../backend/database/dbConnect';
-import Collection from '../../../../backend/models/Collection';
-import Item from '../../../../backend/models/Item';
+import Group from '../../../../backend/models/Group';
 import { Response } from '../../../../types';
 
 dbConnect();
 
 export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
-  //cid short for collectionId
   const {
-    query: { cid },
+    query: { gid },
     method,
   } = req;
 
   switch (method) {
     case 'GET':
       try {
-        const collection = await Collection.findById(cid).populate({
-          path: 'items',
-          model: Item,
-        });
-        if (!collection) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: collection });
+        const group = await Group.findById(gid);
+        if (!group) return res.status(400).json({ isSuccess: false });
+        res.status(200).json({ isSuccess: true, data: group });
       } catch (error) {
         res.status(400).json({ isSuccess: false });
       }
       break;
     case 'PUT':
       try {
-        const collection = await Collection.findByIdAndUpdate(
-          cid,
+        const group = await Group.findByIdAndUpdate(
+          gid,
           { ...req.body, updatedAt: Date.now() },
           {
             new: true,
             runValidators: true,
           }
         );
-        if (!collection) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: collection });
+        if (!group) return res.status(400).json({ isSuccess: false });
+        res.status(200).json({ isSuccess: true, data: group });
       } catch (error) {
         res.status(400).json({ isSuccess: false });
       }
       break;
-
     case 'DELETE':
       try {
-        const deletedCollection = await Collection.deleteOne({ _id: cid });
-        if (!deletedCollection)
-          return res.status(400).json({ isSuccess: false });
+        const deletedGroup = await Group.deleteOne({ _id: gid });
+        if (!deletedGroup) return res.status(400).json({ isSuccess: false });
         res.status(200).json({ isSuccess: true });
       } catch (error) {
         res.status(400).json({ isSuccess: false });

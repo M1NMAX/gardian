@@ -75,7 +75,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   const handleRenameCollection = (name: string): void => {
     if (!collection._id) return;
     try {
-      updateCollection(collection._id, { ...collection, name });
+      renameCollection(collection._id, name);
       closeRenameModal();
       positiveFeedback('Collection renamed successfully');
     } catch (error) {

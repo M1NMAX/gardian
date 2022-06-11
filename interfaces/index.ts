@@ -34,8 +34,10 @@ export interface IItem extends IBase {
 export interface ICollection extends IBase {
   userId?: string | null;
   description: string;
+  isDescriptionHidden: boolean;
   template?: ITemplate;
   items?: Number[] | IItem[];
+  isFavourite: boolean;
 }
 
 //Item example for template

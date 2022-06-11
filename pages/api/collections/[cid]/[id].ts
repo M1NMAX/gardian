@@ -5,29 +5,41 @@ import { Response } from '../../../../types';
 
 dbConnect();
 
-//TODO:input validation
 export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
-    const { query: { cid, id }, method } = req;
+  const {
+    query: { cid, id },
+    method,
+  } = req;
 
-    switch (method) {
-        case 'PATCH':
-            try {
-                //Remove item id from collection
-
-                //Check if collection exists
-                let collection = Collection.findById(cid);
-                if (!collection) return res.status(400).json({ isSuccess: false });
-
-                //Remove item id from collection
-                await Collection.findByIdAndUpdate(cid, { $pull: { items: id } });
-                res.status(200).json({ isSuccess: true });
-
-            } catch (error) {
-                res.status(400).json({ isSuccess: false });
-            }
-            break;
-        default:
-            res.status(400).json({ isSuccess: false });
-            break;
-    }
-}
+  switch (method) {
+    case 'PATCH':
+      //Adds item to collection
+      try {
+        const collection = await Collection.findByIdAndUpdate(cid, {
+          $push: { items: id },
+        });
+        if (!collection) return res.status(400).json({ isSuccess: false });
+        res.status(200).json({ isSuccess: true, data: collection });
+      } catch (error) {
+        res.status(400).json({ isSuccess: false });
+      }
+      break;
+    case 'DELETE':
+      //Remove item from collection
+      try {
+        const collection = await Collection.findByIdAndUpdate(
+          cid,
+          { $pull: { items: id } },
+          { new: true }
+        );
+        if (!collection) return res.status(400).json({ isSuccess: false });
+        res.status(200).json({ isSuccess: true, data: collection });
+      } catch (error) {
+        res.status(400).json({ isSuccess: false });
+      }
+      break;
+    default:
+      res.status(400).json({ isSuccess: false });
+      break;
+  }
+};

@@ -33,7 +33,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const handleRenameCollection = (name: string): void => {
     if (!id) return;
     try {
-      renameCollection(id.toString(), name);
+      renameCollection(id, name);
       renameCollectionModal.closeModal();
       positiveFeedback('Collection renamed successfully');
     } catch (error) {

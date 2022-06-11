@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { addItemToCollection } from '../../../../fetch/collections';
 import { createItem } from '../../../../fetch/item';
 import {
   ICollection,
@@ -47,10 +48,11 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     e.preventDefault();
     if (!properties || !collection._id) return;
 
-    let item: IItem = { name, properties };
-
     try {
-      await createItem({ item, collectionId: collection._id });
+      const item = await createItem({ name, properties });
+      console.log(item);
+      if (!item._id) throw true;
+      await addItemToCollection(collection._id, item._id);
       positiveFeedback('Item created');
       handleClose();
     } catch (error) {
