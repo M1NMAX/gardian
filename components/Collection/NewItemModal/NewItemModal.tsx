@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
-import { addItemToCollection } from '../../../../fetch/collections';
-import { createItem } from '../../../../fetch/item';
+import { addItemToCollection } from '../../../fetch/collections';
+import { createItem } from '../../../fetch/item';
 import {
   ICollection,
   IItem,
   IItemProperty,
   ModalProps,
-} from '../../../../interfaces';
-import Modal from '../../../Frontstate/Modal';
+} from '../../../interfaces';
+import Modal from '../../Frontstate/Modal';
 
 interface NewItemModalProps extends ModalProps {
   collection: ICollection;

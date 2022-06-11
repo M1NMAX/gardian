@@ -21,7 +21,7 @@ import {
 } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import NewItemModal from '../../components/Collection/components/NewItemModal';
+import NewItemModal from '../../components/Collection/NewItemModal';
 import {
   addProperty,
   deleteProperty,
