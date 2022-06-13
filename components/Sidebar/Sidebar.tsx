@@ -22,7 +22,7 @@ import { useRouter } from 'next/router';
 import { Disclosure } from '@headlessui/react';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
-import { IGroup } from '../../interfaces';
+import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 
 const Sidebar: FC = () => {
@@ -34,6 +34,10 @@ const Sidebar: FC = () => {
     isError,
     isLoading,
   } = useQuery<IGroup[], Error>('groups', getGroups);
+
+  const IsICollection = (obj: any): obj is ICollection => {
+    return '_id' in obj && 'name' in obj && 'properties' in obj;
+  };
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -123,7 +127,7 @@ const Sidebar: FC = () => {
                     <Disclosure.Panel className='py-1 text-sm'>
                       {group.collections.map((collection) => (
                         <>
-                          {!(collection instanceof Number) && (
+                          {IsICollection(collection) && (
                             <SidebarCollection
                               name={collection.name}
                               id={collection._id}

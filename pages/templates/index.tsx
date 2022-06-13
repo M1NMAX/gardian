@@ -97,7 +97,7 @@ const TemplatesPage: NextPage<
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<Number>();
+  const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
   //TODO: Add loading and error
@@ -113,7 +113,7 @@ const TemplatesPage: NextPage<
     );
   }, [templates, currentTemplateId]);
 
-  const handleOnClickTemplateOverview = (id: Number) => {
+  const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
     openDetails();
   };
@@ -139,7 +139,7 @@ const TemplatesPage: NextPage<
         description: '',
         isDescriptionHidden: false,
         isFavourite: false,
-        template: { name: 'empty', properties },
+        properties,
       });
 
       if (!collection._id) throw true;

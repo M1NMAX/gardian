@@ -3,7 +3,7 @@ import { IItem } from '../../interfaces';
 
 interface ItemOverviewProps {
   item: IItem;
-  onItemClick: (id: Number) => void;
+  onItemClick: (id: number) => void;
 }
 const ItemOverview: FC<ItemOverviewProps> = (props) => {
   const { item, onItemClick } = props;

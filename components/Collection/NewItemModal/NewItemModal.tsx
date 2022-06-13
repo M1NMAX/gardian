@@ -20,15 +20,15 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
   const [name, setName] = useState<string>('');
   const [properties, setProperties] = useState<IItemProperty[]>();
   useEffect(() => {
-    if (!collection.template) return;
+    if (!collection.properties) return;
     setProperties(
-      collection.template.properties.map((property) => ({
+      collection.properties.map((property) => ({
         _id: property._id,
         name: property.name,
         value: '',
       }))
     );
-  }, [collection.template]);
+  }, [collection.properties]);
 
   const getValueById = (id?: number): string => {
     if (!id || !properties) return '';
@@ -79,8 +79,8 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
         </label>
 
         <div className='flex flex-col'>
-          {collection.template &&
-            collection.template.properties.map((property) => (
+          {collection.properties &&
+            collection.properties.map((property) => (
               <label key={property._id} className='block'>
                 <span className='w-full'>{property.name}</span>
 

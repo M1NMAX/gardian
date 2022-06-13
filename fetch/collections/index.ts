@@ -90,9 +90,7 @@ export async function updateProperty(
 export async function deleteProperty(propertyId: number, collectionId: number) {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
-    {
-      method: 'DELETE',
-    }
+    { method: 'DELETE' }
   );
   return res.json().then((response) => response.data);
 }

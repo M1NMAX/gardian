@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
@@ -59,7 +59,7 @@ const Collections: NextPage<
   }, [id]);
 
   // handle info for Drower
-  const [currentItemId, setCurrentItemId] = useState<Number>();
+  const [currentItemId, setCurrentItemId] = useState<number>();
   const [currentItem, setCurrentItem] = useState<IItem>();
 
   useEffect(() => {
@@ -75,9 +75,13 @@ const Collections: NextPage<
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
 
-  const handleOnClickItem = (id: Number) => {
+  const handleOnClickItem = (id: number) => {
     setCurrentItemId(id.valueOf());
     openDetails();
+  };
+
+  const IsIItem = (obj: any): obj is IItem => {
+    return '_id' in obj && 'name' in obj && 'properties' in obj;
   };
 
   //New item Modal
@@ -107,8 +111,8 @@ const Collections: NextPage<
 
   const getCollectionPropertyById = (id?: number) => {
     if (!collection) return;
-    if (!collection.template) return;
-    const collectionProperties = collection.template.properties;
+    if (!collection.properties) return;
+    const collectionProperties = collection.properties;
     const property = collectionProperties.filter(
       (property) => property._id === id
     )[0];
@@ -116,8 +120,7 @@ const Collections: NextPage<
   };
 
   const handleOnClickAddProperty = async () => {
-    if (!collection) return;
-    if (!collection._id || !collection.template) return;
+    if (!collection || !collection._id) return;
 
     const defaultProperty: IProperty = {
       name: 'Property',
@@ -185,7 +188,7 @@ const Collections: NextPage<
                   {collection.items &&
                     collection.items.map((item) => (
                       <>
-                        {!(item instanceof Number) && (
+                        {IsIItem(item) && (
                           <ItemOverview
                             item={item}
                             onItemClick={handleOnClickItem}

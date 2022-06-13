@@ -9,7 +9,7 @@ interface IBase {
 }
 
 export interface IGroup extends IBase {
-  collections: Number[] | ICollection[];
+  collections: number[] | ICollection[];
   userId: string;
 }
 
@@ -32,14 +32,14 @@ export interface ICollection extends IBase {
   description: string;
   isDescriptionHidden: boolean;
   properties?: IProperty[];
-  items?: Number[] | IItem[];
+  items?: number[] | IItem[];
   isFavourite: boolean;
 }
 
 export interface ITemplate extends IBase {
   properties: IProperty[];
   description?: string;
-  items: Number[] | IItem[];
+  items?: number[] | IItem[];
 }
 
 //Components props

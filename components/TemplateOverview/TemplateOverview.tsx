@@ -3,7 +3,7 @@ import { ITemplate } from '../../interfaces';
 
 interface TemplateOverviewProps {
   template: ITemplate;
-  onTemplateClick: (id: Number) => void;
+  onTemplateClick: (id: number) => void;
 }
 const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
   const { template, onTemplateClick } = props;
