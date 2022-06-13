@@ -1,6 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 import { ICollection } from '../../interfaces';
-import Template from './Template';
+import Property from './Property';
 
 const CollectionSchema = new Schema<ICollection>({
   name: {
@@ -21,9 +21,8 @@ const CollectionSchema = new Schema<ICollection>({
     type: Boolean,
     default: false,
   },
-  template: {
-    type: Template.schema,
-  },
+  properties: [Property.schema],
+
   items: [
     {
       type: Schema.Types.ObjectId,
