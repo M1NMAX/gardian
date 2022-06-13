@@ -26,7 +26,7 @@ import {
   addProperty,
   deleteProperty,
   removeItemFromCollection,
-  updProperty,
+  updateProperty,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -130,8 +130,9 @@ const Collections: NextPage<
   };
 
   const handleUpdateProperty = async (property: IProperty) => {
+    if (!property._id) return;
     if (!collection || !collection._id) return;
-    await updProperty(property, collection._id);
+    await updateProperty(property._id, property, collection._id);
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
