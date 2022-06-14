@@ -1,4 +1,4 @@
-import { IItem, IProperty } from '../../interfaces';
+import { IItem, IItemProperty } from '../../interfaces';
 import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/items/';
@@ -32,7 +32,10 @@ export async function deleteItem(id: number): Promise<boolean> {
 }
 
 // PROPERTY
-export async function addPropertyToItem(itemId: number, property: IProperty) {
+export async function addPropertyToItem(
+  itemId: number,
+  property: IItemProperty
+) {
   const res = await fetch(
     baseUrl + itemId + '/properties/',
     getRequestOptions('POST', { property })
@@ -43,7 +46,7 @@ export async function addPropertyToItem(itemId: number, property: IProperty) {
 export async function updateItemProperty(
   itemId: number,
   propertyId: number,
-  property: IProperty
+  property: IItemProperty
 ) {
   const res = await fetch(
     baseUrl + itemId + '/properties/' + propertyId,

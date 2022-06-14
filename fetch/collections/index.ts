@@ -70,7 +70,7 @@ export async function removeItemFromCollection(
 export async function addPropertyToCollection(
   collectionId: number,
   property: IProperty
-) {
+): Promise<ICollection> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/',
     getRequestOptions('POST', { property })

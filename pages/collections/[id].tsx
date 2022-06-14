@@ -9,7 +9,12 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
-import { deleteItem, getItem } from '../../fetch/item';
+import {
+  addPropertyToItem,
+  deleteItem,
+  getItem,
+  removePropertyFromItem,
+} from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
@@ -80,7 +85,7 @@ const Collections: NextPage<
     openDetails();
   };
 
-  const IsIItem = (obj: any): obj is IItem => {
+  const isIItem = (obj: any): obj is IItem => {
     return '_id' in obj && 'name' in obj && 'properties' in obj;
   };
 
@@ -119,15 +124,34 @@ const Collections: NextPage<
     return property;
   };
 
+  const addPorpertyToAllItem = (collection: ICollection) => {
+    if (!collection.items || !collection.properties) return;
+
+    const collectionItems = collection.items;
+    const { _id, name } =
+      collection.properties[collection.properties.length - 1];
+    collectionItems.map((itemId) => {
+      typeof itemId == 'string' &&
+        addPropertyToItem(itemId, { _id, name, value: '' });
+    });
+  };
+
   const handleOnClickAddProperty = async () => {
     if (!collection || !collection._id) return;
 
-    await addPropertyToCollection(collection._id, {
-      name: 'Property',
-      type: 'text',
-      values: [''],
-      color: '#991b1b',
-    });
+    try {
+      const latestCollection = await addPropertyToCollection(collection._id, {
+        name: 'Property',
+        type: 'text',
+        values: [''],
+        color: '#991b1b',
+      });
+
+      //adds Property to all items of collection
+      addPorpertyToAllItem(latestCollection);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleUpdateProperty = async (property: IProperty) => {
@@ -138,12 +162,32 @@ const Collections: NextPage<
 
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collection || !collection._id) return;
-    await addPropertyToCollection(collection._id, property);
+    try {
+      const latestCollection = await addPropertyToCollection(
+        collection._id,
+        property
+      );
+      //adds duplicated Property to all items of collection
+      addPorpertyToAllItem(latestCollection);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDeleteProperty = async (propertyId: number) => {
     if (!collection || !collection._id) return;
-    await removePropertyFromCollection(collection._id, propertyId);
+    try {
+      await removePropertyFromCollection(collection._id, propertyId);
+
+      if (collection.items) {
+        collection.items.map((itemId) => {
+          typeof itemId == 'string' &&
+            removePropertyFromItem(itemId, propertyId);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -186,7 +230,7 @@ const Collections: NextPage<
                   {collection.items &&
                     collection.items.map((item) => (
                       <>
-                        {IsIItem(item) && (
+                        {isIItem(item) && (
                           <ItemOverview
                             item={item}
                             onItemClick={handleOnClickItem}

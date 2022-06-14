@@ -7,7 +7,7 @@ dbConnect();
 
 export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
   const {
-    query: { id, pid },
+    query: { cid, pid },
     method,
   } = req;
 
@@ -16,7 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
       try {
         const property = req.body.property;
         const colleciton = await Collection.findByIdAndUpdate(
-          id,
+          cid,
           { $set: { 'properties.$[element]': property } },
           { arrayFilters: [{ 'element._id': pid }] }
         );
@@ -28,7 +28,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
       break;
     case 'DELETE':
       try {
-        const colleciton = await Collection.findByIdAndUpdate(id, {
+        const colleciton = await Collection.findByIdAndUpdate(cid, {
           $pull: { properties: { _id: pid } },
         });
         if (!colleciton) return res.status(400).json({ isSuccess: false });
