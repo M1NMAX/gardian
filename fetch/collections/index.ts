@@ -67,7 +67,10 @@ export async function removeItemFromCollection(
 }
 
 // PROPERTY
-export async function addProperty(property: IProperty, collectionId: number) {
+export async function addPropertyToCollection(
+  collectionId: number,
+  property: IProperty
+) {
   const res = await fetch(
     baseUrl + collectionId + '/properties/',
     getRequestOptions('POST', { property })
@@ -75,10 +78,10 @@ export async function addProperty(property: IProperty, collectionId: number) {
   return res.json().then((response) => response.data);
 }
 
-export async function updateProperty(
+export async function updateCollectionProperty(
+  collectionId: number,
   propertyId: number,
-  property: IProperty,
-  collectionId: number
+  property: IProperty
 ) {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
@@ -87,7 +90,10 @@ export async function updateProperty(
   return res.json().then((response) => response.data);
 }
 
-export async function deleteProperty(propertyId: number, collectionId: number) {
+export async function removePropertyFromCollection(
+  collectionId: number,
+  propertyId: number
+) {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
     { method: 'DELETE' }

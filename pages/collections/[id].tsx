@@ -23,10 +23,10 @@ import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import NewItemModal from '../../components/Collection/NewItemModal';
 import {
-  addProperty,
-  deleteProperty,
+  addPropertyToCollection,
+  removePropertyFromCollection,
   removeItemFromCollection,
-  updateProperty,
+  updateCollectionProperty,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -122,30 +122,28 @@ const Collections: NextPage<
   const handleOnClickAddProperty = async () => {
     if (!collection || !collection._id) return;
 
-    const defaultProperty: IProperty = {
+    await addPropertyToCollection(collection._id, {
       name: 'Property',
       type: 'text',
       values: [''],
       color: '#991b1b',
-    };
-
-    await addProperty(defaultProperty, collection._id);
+    });
   };
 
   const handleUpdateProperty = async (property: IProperty) => {
     if (!property._id) return;
     if (!collection || !collection._id) return;
-    await updateProperty(property._id, property, collection._id);
+    await updateCollectionProperty(collection._id, property._id, property);
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collection || !collection._id) return;
-    await addProperty(property, collection._id);
+    await addPropertyToCollection(collection._id, property);
   };
 
   const handleDeleteProperty = async (propertyId: number) => {
     if (!collection || !collection._id) return;
-    await deleteProperty(propertyId, collection._id);
+    await removePropertyFromCollection(collection._id, propertyId);
   };
 
   return (
