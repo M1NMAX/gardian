@@ -3,8 +3,8 @@ import { addItemToCollection } from '../../../fetch/collections';
 import { createItem } from '../../../fetch/item';
 import {
   ICollection,
-  IItem,
   IItemProperty,
+  IProperty,
   ModalProps,
 } from '../../../interfaces';
 import Modal from '../../Frontstate/Modal';
@@ -80,18 +80,13 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
 
         <div className='flex flex-col'>
           {collection.properties &&
-            collection.properties.map((property) => (
-              <label key={property._id} className='block'>
-                <span className='w-full'>{property.name}</span>
-
-                <input
-                  type='text'
-                  name={property.name}
-                  value={getValueById(property._id)}
-                  onChange={(e) => setValueById(e.target.value, property._id)}
-                  className='modal-input'
-                />
-              </label>
+            collection.properties.map((property, idx) => (
+              <HandleInputType
+                key={idx}
+                property={property}
+                getValue={getValueById}
+                setValue={setValueById}
+              />
             ))}
         </div>
 
@@ -104,6 +99,48 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
       </form>
     </Modal>
   );
+};
+
+interface HandleInputProp {
+  property: IProperty;
+  getValue: (id?: number) => string;
+  setValue: (value: string, id?: number) => '' | undefined;
+}
+
+const HandleInputType: FC<HandleInputProp> = (props) => {
+  const { property, getValue, setValue } = props;
+
+  switch (property.type) {
+    case 'checkbox':
+      return (
+        <label className='flex items-center space-x-2'>
+          <input
+            type='checkbox'
+            name={property.name}
+            checked={getValue(property._id) == 'true'}
+            onChange={(e) => {
+              setValue(e.target.checked ? 'true' : 'false', property._id);
+            }}
+            className='modal-checkbox'
+          />
+          <span>{property.name}</span>
+        </label>
+      );
+
+    default:
+      return (
+        <label className='block'>
+          <span className='w-full'>{property.name}</span>
+          <input
+            type={property.type}
+            name={property.name}
+            value={getValue(property._id)}
+            onChange={(e) => setValue(e.target.value, property._id)}
+            className='modal-input'
+          />
+        </label>
+      );
+  }
 };
 
 export default NewItemModal;
