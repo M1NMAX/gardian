@@ -1,13 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { addItemToCollection } from '../../fetch/collections';
 import { createItem } from '../../fetch/item';
-import {
-  ICollection,
-  IItemProperty,
-  IProperty,
-  ModalProps,
-} from '../../interfaces';
+import { ICollection, IItemProperty, ModalProps } from '../../interfaces';
 import Modal from '../Frontstate/Modal';
+import PropertyInput from '../PropertyInput';
 
 interface NewItemModalProps extends ModalProps {
   collection: ICollection;
@@ -99,79 +95,6 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
       </form>
     </Modal>
   );
-};
-
-interface PropertyInputProps {
-  property: IProperty;
-  getValue: (id?: number) => string;
-  setValue: (value: string, id?: number) => '' | undefined;
-}
-
-const PropertyInput: FC<PropertyInputProps> = (props) => {
-  const { property, getValue, setValue } = props;
-
-  switch (property.type) {
-    case 'checkbox':
-      return (
-        <label className='flex items-center space-x-2'>
-          <input
-            type='checkbox'
-            name={property.name}
-            checked={getValue(property._id) == 'true'}
-            onChange={(e) => {
-              setValue(e.target.checked ? 'true' : 'false', property._id);
-            }}
-            className='modal-checkbox'
-          />
-          <span>{property.name}</span>
-        </label>
-      );
-    case 'select':
-      return (
-        <label className='block'>
-          <span className='w-full'> {property.name}</span>
-          <select
-            name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => setValue(e.target.value, property._id)}
-            className='modal-input'>
-            {property.values.map((value, idx) => (
-              <option key={idx} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-      );
-    case 'textarea':
-      return (
-        <label className='block'>
-          <span className='w-full'>{property.name}</span>
-          <textarea
-            name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => setValue(e.target.value, property._id)}
-            rows={4}
-            maxLength={200}
-            className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700'
-          />
-        </label>
-      );
-
-    default:
-      return (
-        <label className='block'>
-          <span className='w-full'>{property.name}</span>
-          <input
-            type={property.type}
-            name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => setValue(e.target.value, property._id)}
-            className='modal-input'
-          />
-        </label>
-      );
-  }
 };
 
 export default NewItemModal;
