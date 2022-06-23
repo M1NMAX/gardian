@@ -81,7 +81,7 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
         <div className='flex flex-col'>
           {collection.properties &&
             collection.properties.map((property, idx) => (
-              <HandleInputType
+              <PropertyInput
                 key={idx}
                 property={property}
                 getValue={getValueById}
@@ -101,13 +101,13 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
   );
 };
 
-interface HandleInputProp {
+interface PropertyInputProps {
   property: IProperty;
   getValue: (id?: number) => string;
   setValue: (value: string, id?: number) => '' | undefined;
 }
 
-const HandleInputType: FC<HandleInputProp> = (props) => {
+const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, getValue, setValue } = props;
 
   switch (property.type) {
@@ -124,6 +124,37 @@ const HandleInputType: FC<HandleInputProp> = (props) => {
             className='modal-checkbox'
           />
           <span>{property.name}</span>
+        </label>
+      );
+    case 'select':
+      return (
+        <label className='block'>
+          <span className='w-full'> {property.name}</span>
+          <select
+            name={property.name}
+            value={getValue(property._id)}
+            onChange={(e) => setValue(e.target.value, property._id)}
+            className='modal-input'>
+            {property.values.map((value, idx) => (
+              <option key={idx} value={value}>
+                {value}
+              </option>
+            ))}
+          </select>
+        </label>
+      );
+    case 'textarea':
+      return (
+        <label className='block'>
+          <span className='w-full'>{property.name}</span>
+          <textarea
+            name={property.name}
+            value={getValue(property._id)}
+            onChange={(e) => setValue(e.target.value, property._id)}
+            rows={4}
+            maxLength={200}
+            className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700'
+          />
         </label>
       );
 

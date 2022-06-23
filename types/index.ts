@@ -7,6 +7,7 @@ export type Response = {
 
 export type PropertyTypes =
   | 'text'
+  | 'textarea'
   | 'select'
   | 'checkbox'
   | 'url'
