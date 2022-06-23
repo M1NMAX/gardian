@@ -81,7 +81,7 @@ const Collections: NextPage<
   const closeDetails = () => setShowDetails(false);
 
   const handleOnClickItem = (id: number) => {
-    setCurrentItemId(id.valueOf());
+    setCurrentItemId(id);
     openDetails();
   };
 
@@ -253,7 +253,7 @@ const Collections: NextPage<
                 {currentItem.properties.map((property) => (
                   <Property
                     itemProperty={property}
-                    cProperty={getCollectionPropertyById(property._id)}
+                    collectionProperty={getCollectionPropertyById(property._id)}
                     onPropertyUpdate={handleUpdateProperty}
                     onPropertyDuplicate={handleDuplicateProperty}
                     onPropertyDelete={handleDeleteProperty}
