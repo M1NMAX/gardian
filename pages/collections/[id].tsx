@@ -26,7 +26,7 @@ import {
 } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import NewItemModal from '../../components/Collection/NewItemModal';
+import NewItemModal from '../../components/NewItemModal';
 import {
   addPropertyToCollection,
   removePropertyFromCollection,
@@ -232,6 +232,7 @@ const Collections: NextPage<
                       <>
                         {isIItem(item) && (
                           <ItemOverview
+                            key={item._id}
                             item={item}
                             onItemClick={handleOnClickItem}
                           />
