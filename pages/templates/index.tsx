@@ -29,11 +29,10 @@ const TemplatesPage: NextPage<
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
   useEffect(() => {
-    if (!templates) return;
     setCurrentTemplate(
-      templates.filter((temlate) => temlate._id === currentTemplateId)[0]
+      templates.find((template) => template._id === currentTemplateId)
     );
-  }, [templates, currentTemplateId]);
+  }, [currentTemplateId]);
 
   const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
@@ -69,6 +68,12 @@ const TemplatesPage: NextPage<
     } catch (error) {
       console.log(error);
     }
+  };
+  const getPropertyValue = (item: IItem, id: number): string => {
+    if (!id) return '';
+    const property = item.properties.find((property) => property._id === id);
+    if (!property) return '';
+    return property.value;
   };
 
   return (
@@ -130,21 +135,34 @@ const TemplatesPage: NextPage<
 
             <Drawer.Body>
               <div>
-                <p>Example of item structure </p>
+                <p>Example of item </p>
                 <div className='flex flex-col space-y-2'>
                   {currentTemplate.items?.map(
                     (item, idx) =>
                       isIItem(item) && (
                         <span
                           key={idx}
-                          className='w-full flex flex-col p-1 rounded 
-                    bg-gray-200 dark:bg-gray-700 '>
+                          className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
                           <span className='font-semibold text-lg'>
                             {item.name}
                           </span>
-                          {currentTemplate.properties.map((property) => (
-                            <span className='px-1'>{property.name}</span>
-                          ))}
+                          {currentTemplate.properties.map(
+                            (templateProperty) =>
+                              getPropertyValue(
+                                item,
+                                templateProperty._id || -1
+                              ) != '' && (
+                                <span className='space-x-1'>
+                                  <span>{templateProperty.name}</span>
+                                  <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                    {getPropertyValue(
+                                      item,
+                                      templateProperty._id || -1
+                                    )}
+                                  </span>
+                                </span>
+                              )
+                          )}
                         </span>
                       )
                   )}
@@ -158,8 +176,9 @@ const TemplatesPage: NextPage<
                   bg-primary hover:bg-primary-dark'>
                 Use this template
               </button>
+
               <span className='text-xs text-center'>
-                The collection will star empty
+                The collection will start empty
               </span>
             </Drawer.Footer>
           </Drawer>
