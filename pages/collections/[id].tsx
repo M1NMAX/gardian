@@ -227,12 +227,14 @@ const Collections: NextPage<
                 </div>
                 <div className='py-1 space-y-2'>
                   {collection.items &&
+                    collection.properties &&
                     collection.items.map((item) => (
                       <>
                         {isIItem(item) && (
                           <ItemOverview
                             key={item._id}
                             item={item}
+                            collectionProperty={collection.properties}
                             onItemClick={handleOnClickItem}
                           />
                         )}
