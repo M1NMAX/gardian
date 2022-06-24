@@ -5,11 +5,11 @@ import { IItem, IProperty } from '../../interfaces';
 
 interface ItemOverviewProps {
   item: IItem;
-  collectionProperty?: IProperty[];
+  collectionProperty: IProperty[];
   onItemClick: (id: number) => void;
 }
 const ItemOverview: FC<ItemOverviewProps> = (props) => {
-  const { item, collectionProperty = [], onItemClick } = props;
+  const { item, collectionProperty, onItemClick } = props;
   const handleClick = () => {
     if (!item._id) return;
     onItemClick(item._id);

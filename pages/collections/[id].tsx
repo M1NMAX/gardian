@@ -89,11 +89,12 @@ const Collections: NextPage<
     return '_id' in obj && 'name' in obj && 'properties' in obj;
   };
 
-  //New item Modal
-  const newItemModal = useModal();
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  //New item Modal
+  const newItemModal = useModal();
 
   const deleteModal = useModal();
 
@@ -234,7 +235,7 @@ const Collections: NextPage<
                           <ItemOverview
                             key={item._id}
                             item={item}
-                            collectionProperty={collection.properties}
+                            collectionProperty={collection.properties || []}
                             onItemClick={handleOnClickItem}
                           />
                         )}
