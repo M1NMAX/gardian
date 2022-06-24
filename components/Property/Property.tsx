@@ -22,21 +22,6 @@ const Property: FC<PropertyProps> = (props) => {
     onPropertyDelete,
   } = props;
 
-  const handlePropertyIcon = (type: string) => {
-    let result = <></>;
-    switch (type) {
-      case 'text':
-        result = <MenuAlt1Icon className='icon-xs' />;
-        break;
-
-      case 'select':
-        result = <SelectorIcon className='icon-xs' />;
-        break;
-    }
-
-    return result;
-  };
-
   const editPropertyModal = useModal();
   const deletePropertyModal = useModal();
 

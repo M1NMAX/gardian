@@ -3,89 +3,17 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
-import { useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import { AdjustmentsIcon, MenuAlt2Icon } from '@heroicons/react/outline';
-import { ITemplate } from '../../interfaces';
-import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
-
-const mockTemplates: ITemplate[] = [
-  {
-    name: 'Events',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [
-      { name: 'Date', type: 'date', values: [''], color: '#dc2626' },
-      {
-        name: 'Note',
-        type: 'text',
-        values: [''],
-        color: '#facc15',
-      },
-    ],
-  },
-  {
-    name: 'Tasks',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [
-      { name: 'Done', type: 'checkbox', values: [''], color: '#dc2626' },
-      {
-        name: 'note',
-        type: 'text',
-        values: [''],
-        color: '#facc15',
-      },
-    ],
-  },
-  {
-    name: 'Links',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [{ name: 'URL', type: 'url', values: [''], color: '#dc2626' }],
-  },
-
-  {
-    name: 'Documents',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [
-      { name: 'File', type: 'file', values: [''], color: '#dc2626' },
-      {
-        name: 'note',
-        type: 'text',
-        values: [''],
-        color: '#facc15',
-      },
-    ],
-  },
-  {
-    name: 'Movies',
-    description:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [
-      {
-        name: 'Status',
-        type: 'select',
-        values: ['Plan to watch', 'Watching', 'Watched'],
-        color: '#dc2626',
-      },
-      {
-        name: 'note',
-        type: 'text',
-        values: [''],
-        color: '#facc15',
-      },
-    ],
-  },
-];
+import { IItem, ITemplate } from '../../interfaces';
+import templates from '../../data/templates';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -100,12 +28,6 @@ const TemplatesPage: NextPage<
   const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
-  //TODO: Add loading and error
-  const { data: templates } = useQuery<ITemplate[], Error>(
-    'templates',
-    getTemplates
-  );
-
   useEffect(() => {
     if (!templates) return;
     setCurrentTemplate(
@@ -118,11 +40,9 @@ const TemplatesPage: NextPage<
     openDetails();
   };
 
-  const createMockTemplate = async () => {
-    const res = mockTemplates.map((template) => createTemplate(template));
-    console.log(res);
+  const isIItem = (obj: any): obj is IItem => {
+    return 'name' in obj && 'properties' in obj;
   };
-
   const createCollectionBasedOnTemplate = async () => {
     if (!templates) return;
     const template: ITemplate = templates.filter(
@@ -183,9 +103,6 @@ const TemplatesPage: NextPage<
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl '>Templates</h1>
-          <button onClick={createMockTemplate} className='btn btn-primary'>
-            Create mock template
-          </button>
 
           {/* Templates  */}
           <div
@@ -214,19 +131,23 @@ const TemplatesPage: NextPage<
             <Drawer.Body>
               <div>
                 <p>Example of item structure </p>
-
                 <div className='flex flex-col space-y-2'>
-                  {[1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className='w-full flex flex-col p-1 rounded 
-                      bg-gray-200 dark:bg-gray-700 '>
-                      <span className='font-semibold text-lg'>item {i} </span>
-                      {currentTemplate.properties.map((property) => (
-                        <span className='px-1'>{property.name}</span>
-                      ))}
-                    </span>
-                  ))}
+                  {currentTemplate.items?.map(
+                    (item, idx) =>
+                      isIItem(item) && (
+                        <span
+                          key={idx}
+                          className='w-full flex flex-col p-1 rounded 
+                    bg-gray-200 dark:bg-gray-700 '>
+                          <span className='font-semibold text-lg'>
+                            {item.name}
+                          </span>
+                          {currentTemplate.properties.map((property) => (
+                            <span className='px-1'>{property.name}</span>
+                          ))}
+                        </span>
+                      )
+                  )}
                 </div>
               </div>
             </Drawer.Body>
