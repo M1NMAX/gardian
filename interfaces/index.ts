@@ -20,8 +20,11 @@ export interface IProperty extends IBase {
   color: string;
 }
 
-export interface IItemProperty extends IBase {
+export interface IItemProperty {
+  _id?: number;
   value: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface IItem extends IBase {
   properties: IItemProperty[];

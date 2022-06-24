@@ -20,7 +20,6 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     setProperties(
       collection.properties.map((property) => ({
         _id: property._id,
-        name: property.name,
         value: '',
       }))
     );

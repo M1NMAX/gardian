@@ -128,11 +128,10 @@ const Collections: NextPage<
     if (!collection.items || !collection.properties) return;
 
     const collectionItems = collection.items;
-    const { _id, name } =
-      collection.properties[collection.properties.length - 1];
+    const { _id } = collection.properties[collection.properties.length - 1];
     collectionItems.map((itemId) => {
       typeof itemId == 'string' &&
-        addPropertyToItem(itemId, { _id, name, value: '' });
+        addPropertyToItem(itemId, { _id, value: '' });
     });
   };
 
