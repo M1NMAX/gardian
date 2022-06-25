@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { addItemToCollection } from '../../fetch/collections';
 import { createItem } from '../../fetch/item';
 import { ICollection, IItemProperty, ModalProps } from '../../interfaces';
@@ -15,6 +16,7 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
 
   const [name, setName] = useState<string>('');
   const [properties, setProperties] = useState<IItemProperty[]>();
+
   useEffect(() => {
     if (!collection.properties) return;
     setProperties(
@@ -39,21 +41,32 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     );
   };
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(createItem, {
+    onSuccess: async (data) => {
+      if (!collection._id) throw 'Collection._id is undefined';
+      if (!data._id) throw 'Item._id is undefined';
+
+      await addItemToCollection(collection._id, data._id);
+
+      queryClient.invalidateQueries(['collection', collection._id]);
+      queryClient.invalidateQueries(['items', collection._id]);
+
+      positiveFeedback('Item created');
+    },
+    onError: (error) => {
+      negativeFeedback();
+      console.log(error);
+    },
+    onSettled: () => handleClose(),
+  });
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (!properties || !collection._id) return;
 
-    try {
-      const item = await createItem({ name, properties });
-      console.log(item);
-      if (!item._id) throw true;
-      await addItemToCollection(collection._id, item._id);
-      positiveFeedback('Item created');
-      handleClose();
-    } catch (error) {
-      console.log(error);
-      negativeFeedback();
-    }
+    mutation.mutate({ name, properties });
   };
 
   return (

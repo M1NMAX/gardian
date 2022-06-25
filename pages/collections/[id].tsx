@@ -61,7 +61,7 @@ const Collections: NextPage<
       ? []
       : collection.items.map((item) => {
           return {
-            queryKey: ['item', item],
+            queryKey: ['items', collectionId, item],
             queryFn: () => getItem(item),
             enabled: !!collectionId,
           };
