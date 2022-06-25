@@ -63,6 +63,7 @@ const TemplatesPage: NextPage<
         description: '',
         isDescriptionHidden: false,
         isFavourite: false,
+        items: [],
         properties: properties.map((property) => ({
           name: property.name,
           type: property.type,

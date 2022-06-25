@@ -34,8 +34,8 @@ export interface ICollection extends IBase {
   userId?: string | null;
   description: string;
   isDescriptionHidden: boolean;
-  properties?: IProperty[];
-  items?: number[] | IItem[];
+  properties: IProperty[];
+  items: number[];
   isFavourite: boolean;
 }
 
