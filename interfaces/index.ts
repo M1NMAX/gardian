@@ -9,7 +9,7 @@ interface IBase {
 }
 
 export interface IGroup extends IBase {
-  collections: Number[] | ICollection[];
+  collections: number[] | ICollection[];
   userId: string;
 }
 
@@ -19,13 +19,12 @@ export interface IProperty extends IBase {
   values: string[];
   color: string;
 }
-export interface ITemplate extends IBase {
-  properties: IProperty[];
-  description?: string;
-}
 
-export interface IItemProperty extends IBase {
+export interface IItemProperty {
+  _id?: number;
   value: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 export interface IItem extends IBase {
   properties: IItemProperty[];
@@ -35,15 +34,15 @@ export interface ICollection extends IBase {
   userId?: string | null;
   description: string;
   isDescriptionHidden: boolean;
-  template?: ITemplate;
-  items?: Number[] | IItem[];
+  properties?: IProperty[];
+  items?: number[] | IItem[];
   isFavourite: boolean;
 }
 
-//Item example for template
-export interface IExample extends IBase {
-  items: IItem[];
-  templateId: number;
+export interface ITemplate extends IBase {
+  properties: IProperty[];
+  description?: string;
+  items?: number[] | IItem[];
 }
 
 //Components props
@@ -52,9 +51,4 @@ export interface ModalProps {
   handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
   positiveFeedback: (value: string) => void;
   negativeFeedback: () => void;
-}
-
-export interface DocumentStatusProps {
-  isSaved: boolean;
-  isError: boolean;
 }

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
@@ -9,7 +9,12 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
-import { deleteItem, getItem } from '../../fetch/item';
+import {
+  addPropertyToItem,
+  deleteItem,
+  getItem,
+  removePropertyFromItem,
+} from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
@@ -21,12 +26,12 @@ import {
 } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import NewItemModal from '../../components/Collection/components/NewItemModal';
+import NewItemModal from '../../components/NewItemModal';
 import {
-  addProperty,
-  deleteProperty,
+  addPropertyToCollection,
+  removePropertyFromCollection,
   removeItemFromCollection,
-  updProperty,
+  updateCollectionProperty,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -59,7 +64,7 @@ const Collections: NextPage<
   }, [id]);
 
   // handle info for Drower
-  const [currentItemId, setCurrentItemId] = useState<Number>();
+  const [currentItemId, setCurrentItemId] = useState<number>();
   const [currentItem, setCurrentItem] = useState<IItem>();
 
   useEffect(() => {
@@ -75,16 +80,21 @@ const Collections: NextPage<
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
 
-  const handleOnClickItem = (id: Number) => {
-    setCurrentItemId(id.valueOf());
+  const handleOnClickItem = (id: number) => {
+    setCurrentItemId(id);
     openDetails();
   };
 
-  //New item Modal
-  const newItemModal = useModal();
+  const isIItem = (obj: any): obj is IItem => {
+    return '_id' in obj && 'name' in obj && 'properties' in obj;
+  };
+
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  //New item Modal
+  const newItemModal = useModal();
 
   const deleteModal = useModal();
 
@@ -107,41 +117,77 @@ const Collections: NextPage<
 
   const getCollectionPropertyById = (id?: number) => {
     if (!collection) return;
-    if (!collection.template) return;
-    const collectionProperties = collection.template.properties;
+    if (!collection.properties) return;
+    const collectionProperties = collection.properties;
     const property = collectionProperties.filter(
       (property) => property._id === id
     )[0];
     return property;
   };
 
+  const addPorpertyToAllItem = (collection: ICollection) => {
+    if (!collection.items || !collection.properties) return;
+
+    const collectionItems = collection.items;
+    const { _id } = collection.properties[collection.properties.length - 1];
+    collectionItems.map((itemId) => {
+      typeof itemId == 'string' &&
+        addPropertyToItem(itemId, { _id, value: '' });
+    });
+  };
+
   const handleOnClickAddProperty = async () => {
-    if (!collection) return;
-    if (!collection._id || !collection.template) return;
+    if (!collection || !collection._id) return;
 
-    const defaultProperty: IProperty = {
-      name: 'Property',
-      type: 'text',
-      values: [''],
-      color: '#991b1b',
-    };
+    try {
+      const latestCollection = await addPropertyToCollection(collection._id, {
+        name: 'Property',
+        type: 'text',
+        values: [''],
+        color: '#991b1b',
+      });
 
-    await addProperty(defaultProperty, collection._id);
+      //adds Property to all items of collection
+      addPorpertyToAllItem(latestCollection);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleUpdateProperty = async (property: IProperty) => {
+    if (!property._id) return;
     if (!collection || !collection._id) return;
-    await updProperty(property, collection._id);
+    await updateCollectionProperty(collection._id, property._id, property);
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collection || !collection._id) return;
-    await addProperty(property, collection._id);
+    try {
+      const latestCollection = await addPropertyToCollection(
+        collection._id,
+        property
+      );
+      //adds duplicated Property to all items of collection
+      addPorpertyToAllItem(latestCollection);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleDeleteProperty = async (propertyId: number) => {
     if (!collection || !collection._id) return;
-    await deleteProperty(propertyId, collection._id);
+    try {
+      await removePropertyFromCollection(collection._id, propertyId);
+
+      if (collection.items) {
+        collection.items.map((itemId) => {
+          typeof itemId == 'string' &&
+            removePropertyFromItem(itemId, propertyId);
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -182,11 +228,14 @@ const Collections: NextPage<
                 </div>
                 <div className='py-1 space-y-2'>
                   {collection.items &&
+                    collection.properties &&
                     collection.items.map((item) => (
                       <>
-                        {!(item instanceof Number) && (
+                        {isIItem(item) && (
                           <ItemOverview
+                            key={item._id}
                             item={item}
+                            collectionProperty={collection.properties || []}
                             onItemClick={handleOnClickItem}
                           />
                         )}
@@ -206,7 +255,7 @@ const Collections: NextPage<
                 {currentItem.properties.map((property) => (
                   <Property
                     itemProperty={property}
-                    cProperty={getCollectionPropertyById(property._id)}
+                    collectionProperty={getCollectionPropertyById(property._id)}
                     onPropertyUpdate={handleUpdateProperty}
                     onPropertyDuplicate={handleDuplicateProperty}
                     onPropertyDelete={handleDeleteProperty}

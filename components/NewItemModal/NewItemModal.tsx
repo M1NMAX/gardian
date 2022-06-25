@@ -1,13 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
-import { addItemToCollection } from '../../../../fetch/collections';
-import { createItem } from '../../../../fetch/item';
-import {
-  ICollection,
-  IItem,
-  IItemProperty,
-  ModalProps,
-} from '../../../../interfaces';
-import Modal from '../../../Frontstate/Modal';
+import { addItemToCollection } from '../../fetch/collections';
+import { createItem } from '../../fetch/item';
+import { ICollection, IItemProperty, ModalProps } from '../../interfaces';
+import Modal from '../Frontstate/Modal';
+import PropertyInput from '../PropertyInput';
 
 interface NewItemModalProps extends ModalProps {
   collection: ICollection;
@@ -20,15 +16,14 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
   const [name, setName] = useState<string>('');
   const [properties, setProperties] = useState<IItemProperty[]>();
   useEffect(() => {
-    if (!collection.template) return;
+    if (!collection.properties) return;
     setProperties(
-      collection.template.properties.map((property) => ({
+      collection.properties.map((property) => ({
         _id: property._id,
-        name: property.name,
         value: '',
       }))
     );
-  }, [collection.template]);
+  }, [collection.properties]);
 
   const getValueById = (id?: number): string => {
     if (!id || !properties) return '';
@@ -79,19 +74,14 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
         </label>
 
         <div className='flex flex-col'>
-          {collection.template &&
-            collection.template.properties.map((property) => (
-              <label key={property._id} className='block'>
-                <span className='w-full'>{property.name}</span>
-
-                <input
-                  type='text'
-                  name={property.name}
-                  value={getValueById(property._id)}
-                  onChange={(e) => setValueById(e.target.value, property._id)}
-                  className='modal-input'
-                />
-              </label>
+          {collection.properties &&
+            collection.properties.map((property, idx) => (
+              <PropertyInput
+                key={idx}
+                property={property}
+                getValue={getValueById}
+                setValue={setValueById}
+              />
             ))}
         </div>
 

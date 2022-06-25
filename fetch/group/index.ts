@@ -36,10 +36,9 @@ export async function addCollectionToGroup(
   groupId: number,
   collectionId: number
 ): Promise<boolean> {
-  const res = await fetch(
-    baseUrl + groupId + '/' + collectionId,
-    getRequestOptions('PATCH', {})
-  );
+  const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
+    method: 'PATCH',
+  });
   return res.json().then((response) => response.isSuccess);
 }
 
@@ -47,7 +46,7 @@ export async function removeCollectionFromGroup(
   groupId: number,
   collectionId: number
 ): Promise<boolean> {
-  const res = await fetch(baseUrl + groupId + '/' + collectionId, {
+  const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'DELETE',
   });
   return res.json().then((response) => response.isSuccess);

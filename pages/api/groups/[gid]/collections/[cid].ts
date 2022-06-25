@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../../backend/database/dbConnect';
-import Group from '../../../../backend/models/Group';
-import { Response } from '../../../../types';
+import dbConnect from '../../../../../backend/database/dbConnect';
+import Group from '../../../../../backend/models/Group';
+import { Response } from '../../../../../types';
 
 dbConnect();
 

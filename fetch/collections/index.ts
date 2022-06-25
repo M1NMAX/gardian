@@ -50,7 +50,7 @@ export async function addItemToCollection(
   collectionId: number,
   itemId: number
 ) {
-  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
+  const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
     method: 'PATCH',
   });
   return res.json().then((response) => response.isSuccess);
@@ -60,33 +60,43 @@ export async function removeItemFromCollection(
   collectionId: number,
   itemId: number
 ): Promise<boolean> {
-  const res = await fetch(baseUrl + collectionId + '/' + itemId, {
+  const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
     method: 'DELETE',
   });
   return res.json().then((response) => response.isSuccess);
 }
 
 // PROPERTY
-export async function addProperty(property: IProperty, collectionId: number) {
+export async function addPropertyToCollection(
+  collectionId: number,
+  property: IProperty
+): Promise<ICollection> {
   const res = await fetch(
-    baseUrl + collectionId + '/template/new',
-    getRequestOptions('PATCH', { property })
+    baseUrl + collectionId + '/properties/',
+    getRequestOptions('POST', { property })
   );
   return res.json().then((response) => response.data);
 }
 
-export async function updProperty(property: IProperty, collectionId: number) {
+export async function updateCollectionProperty(
+  collectionId: number,
+  propertyId: number,
+  property: IProperty
+) {
   const res = await fetch(
-    baseUrl + collectionId + '/template/update',
-    getRequestOptions('PATCH', { property })
+    baseUrl + collectionId + '/properties/' + propertyId,
+    getRequestOptions('PUT', { property })
   );
   return res.json().then((response) => response.data);
 }
 
-export async function deleteProperty(propertyId: number, collectionId: number) {
+export async function removePropertyFromCollection(
+  collectionId: number,
+  propertyId: number
+) {
   const res = await fetch(
-    baseUrl + collectionId + '/template/remove',
-    getRequestOptions('PATCH', { propertyId })
+    baseUrl + collectionId + '/properties/' + propertyId,
+    { method: 'DELETE' }
   );
   return res.json().then((response) => response.data);
 }

@@ -3,18 +3,18 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
-import { useQuery } from 'react-query';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import { AdjustmentsIcon, MenuAlt2Icon } from '@heroicons/react/outline';
-import { ITemplate } from '../../interfaces';
-import { createTemplate, getTemplates } from '../../fetch/templates';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
+import { IItem, ITemplate } from '../../interfaces';
+import templates from '../../data/templates';
+import Property from '../../backend/models/Property';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -26,72 +26,64 @@ const TemplatesPage: NextPage<
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<Number>();
+  const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
-  //TODO: Add loading and error
-  const { data: templates } = useQuery<ITemplate[], Error>(
-    'templates',
-    getTemplates
-  );
+  const getTemplate = (id: number) => {
+    const template = templates.find((template) => template._id === id);
+    return template;
+  };
 
   useEffect(() => {
-    if (!templates) return;
-    setCurrentTemplate(
-      templates.filter((temlate) => temlate._id === currentTemplateId)[0]
-    );
-  }, [templates, currentTemplateId]);
+    if (!currentTemplateId) return;
+    setCurrentTemplate(getTemplate(currentTemplateId));
+  }, [currentTemplateId]);
 
-  const handleOnClickTemplateOverview = (id: Number) => {
+  const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
     openDetails();
   };
 
-  const createMockTemplate = async () => {
-    let newTemplate: ITemplate = {
-      name: 'Events',
-      description:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-      properties: [
-        { name: 'onve', type: 'text', values: [''], color: '#dc2626' },
-        {
-          name: 'teow',
-          type: 'select',
-          values: ['one', 'm'],
-          color: '#facc15',
-        },
-      ],
-    };
-    const res = await createTemplate(newTemplate);
-    console.log(res);
+  const isIItem = (obj: any): obj is IItem => {
+    return 'name' in obj && 'properties' in obj;
   };
-
   const createCollectionBasedOnTemplate = async () => {
-    if (!templates) return;
-    const template: ITemplate = templates.filter(
-      (temlate) => temlate._id === currentTemplateId
-    )[0];
+    if (!currentTemplateId) return;
+
+    const template = getTemplate(currentTemplateId);
+    if (!template) return;
 
     const { name, properties } = template;
     try {
       const groups = await getGroups();
       //make sure that the first group id is not null
-      if (!groups[0]._id) throw true;
+      if (!groups[0]._id) throw 'There are not group available';
       const collection = await createCollection({
         name,
         description: '',
         isDescriptionHidden: false,
         isFavourite: false,
-        template: { name: 'empty', properties },
+        properties: properties.map((property) => ({
+          name: property.name,
+          type: property.type,
+          values: property.values,
+          color: property.color,
+        })),
       });
 
-      if (!collection._id) throw true;
+      if (!collection._id) throw 'Collection creation failed';
       await addCollectionToGroup(groups[0]._id, collection._id);
 
       router.push('/collections/' + collection._id);
     } catch (error) {
       console.log(error);
     }
+  };
+  const getPropertyValue = (item: IItem, id: number): string => {
+    if (!id) return '';
+    const property = item.properties.find((property) => property._id === id);
+    if (!property) return '';
+    return property.value;
   };
 
   return (
@@ -126,9 +118,6 @@ const TemplatesPage: NextPage<
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl '>Templates</h1>
-          <button onClick={createMockTemplate} className='btn btn-primary'>
-            Create mock template
-          </button>
 
           {/* Templates  */}
           <div
@@ -156,20 +145,37 @@ const TemplatesPage: NextPage<
 
             <Drawer.Body>
               <div>
-                <p>Example of item structure </p>
-
+                <p>Example of item </p>
                 <div className='flex flex-col space-y-2'>
-                  {[1, 2].map((i) => (
-                    <span
-                      key={i}
-                      className='w-full flex flex-col p-1 rounded 
-                      bg-gray-200 dark:bg-gray-700 '>
-                      <span className='font-semibold text-lg'>item {i} </span>
-                      {currentTemplate.properties.map((property) => (
-                        <span className='px-1'>{property.name}</span>
-                      ))}
-                    </span>
-                  ))}
+                  {currentTemplate.items?.map(
+                    (item, idx) =>
+                      isIItem(item) && (
+                        <span
+                          key={idx}
+                          className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
+                          <span className='font-semibold text-lg'>
+                            {item.name}
+                          </span>
+                          {currentTemplate.properties.map(
+                            (templateProperty) =>
+                              getPropertyValue(
+                                item,
+                                templateProperty._id || -1
+                              ) != '' && (
+                                <span className='space-x-1'>
+                                  <span>{templateProperty.name}</span>
+                                  <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                    {getPropertyValue(
+                                      item,
+                                      templateProperty._id || -1
+                                    )}
+                                  </span>
+                                </span>
+                              )
+                          )}
+                        </span>
+                      )
+                  )}
                 </div>
               </div>
             </Drawer.Body>
@@ -180,8 +186,9 @@ const TemplatesPage: NextPage<
                   bg-primary hover:bg-primary-dark'>
                 Use this template
               </button>
+
               <span className='text-xs text-center'>
-                The collection will star empty
+                The collection will start empty
               </span>
             </Drawer.Footer>
           </Drawer>
