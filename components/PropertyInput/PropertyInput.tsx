@@ -52,7 +52,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
             onChange={(e) => setValue(e.target.value, property._id)}
             rows={4}
             maxLength={200}
-            className='resize-none rounded border border-black bg-gray-50 dark:bg-gray-700'
+            className='modal-text-area'
           />
         </label>
       );
