@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useQueries, useQuery } from 'react-query';
+import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
 import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
@@ -47,8 +47,9 @@ const Collections: NextPage<
   //View mode
   const [isListView, setIsListView] = useState(true);
 
-  //Fetch collection data
+  const queryClient = useQueryClient();
 
+  //Fetch collection data
   const { data: collection, refetch } = useQuery<ICollection>(
     ['collection', id],
     () => getCollection(!id || Array.isArray(id) ? '22' : id)
@@ -103,6 +104,27 @@ const Collections: NextPage<
   const newItemModal = useModal();
 
   const deleteModal = useModal();
+
+  const deleteItemMutation = useMutation(deleteItem, {
+    onSuccess: async () => {
+      if (!collectionId) throw 'CollectionId is undefined';
+      if (!currentItemId) throw 'CurrentItemId is undefined';
+
+      await removeItemFromCollection(collectionId, currentItemId);
+
+      queryClient.invalidateQueries(['collection', collectionId]);
+      queryClient.invalidateQueries(['items', collectionId, currentItemId]);
+
+      positiveFeedback('Item deleted');
+      closeDetails();
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+    onSettled: () => {
+      deleteModal.closeModal();
+    },
+  });
 
   const handleDeleteItem = async () => {
     if (!collection) return;
@@ -309,7 +331,7 @@ const Collections: NextPage<
           name={currentItem.name}
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
-          onDelete={handleDeleteItem}
+          onDelete={() => deleteItemMutation.mutate(currentItemId || -1)}
         />
       )}
     </>
