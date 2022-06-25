@@ -14,6 +14,7 @@ import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
 import templates from '../../data/templates';
+import Property from '../../backend/models/Property';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -28,10 +29,14 @@ const TemplatesPage: NextPage<
   const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
+  const getTemplate = (id: number) => {
+    const template = templates.find((template) => template._id === id);
+    return template;
+  };
+
   useEffect(() => {
-    setCurrentTemplate(
-      templates.find((template) => template._id === currentTemplateId)
-    );
+    if (!currentTemplateId) return;
+    setCurrentTemplate(getTemplate(currentTemplateId));
   }, [currentTemplateId]);
 
   const handleOnClickTemplateOverview = (id: number) => {
@@ -43,25 +48,30 @@ const TemplatesPage: NextPage<
     return 'name' in obj && 'properties' in obj;
   };
   const createCollectionBasedOnTemplate = async () => {
-    if (!templates) return;
-    const template: ITemplate = templates.filter(
-      (temlate) => temlate._id === currentTemplateId
-    )[0];
+    if (!currentTemplateId) return;
+
+    const template = getTemplate(currentTemplateId);
+    if (!template) return;
 
     const { name, properties } = template;
     try {
       const groups = await getGroups();
       //make sure that the first group id is not null
-      if (!groups[0]._id) throw true;
+      if (!groups[0]._id) throw 'There are not group available';
       const collection = await createCollection({
         name,
         description: '',
         isDescriptionHidden: false,
         isFavourite: false,
-        properties,
+        properties: properties.map((property) => ({
+          name: property.name,
+          type: property.type,
+          values: property.values,
+          color: property.color,
+        })),
       });
 
-      if (!collection._id) throw true;
+      if (!collection._id) throw 'Collection creation failed';
       await addCollectionToGroup(groups[0]._id, collection._id);
 
       router.push('/collections/' + collection._id);
