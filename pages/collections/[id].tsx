@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useQuery } from 'react-query';
+import { useQueries, useQuery } from 'react-query';
 import { ICollection, IItem, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
@@ -32,6 +32,7 @@ import {
   removePropertyFromCollection,
   removeItemFromCollection,
   updateCollectionProperty,
+  getCollection,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -47,15 +48,24 @@ const Collections: NextPage<
   const [isListView, setIsListView] = useState(true);
 
   //Fetch collection data
+
   const { data: collection, refetch } = useQuery<ICollection>(
-    'collection',
-    async (): Promise<ICollection> => {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + '/collections/' + id
-      );
-      const response = await res.json();
-      return response.data;
-    }
+    ['collection', id],
+    () => getCollection(!id || Array.isArray(id) ? '22' : id)
+  );
+
+  const collectionId = collection?._id;
+
+  const itemsQueries = useQueries(
+    !collection
+      ? []
+      : collection.items.map((item) => {
+          return {
+            queryKey: ['item', item],
+            queryFn: () => getItem(item),
+            enabled: !!collectionId,
+          };
+        })
   );
 
   useEffect(() => {
@@ -70,7 +80,7 @@ const Collections: NextPage<
   useEffect(() => {
     const fetchItem = async () => {
       if (!currentItemId) return;
-      const res = await getItem(currentItemId.valueOf());
+      const res = await getItem(currentItemId);
       setCurrentItem(res);
     };
     fetchItem();
@@ -83,10 +93,6 @@ const Collections: NextPage<
   const handleOnClickItem = (id: number) => {
     setCurrentItemId(id);
     openDetails();
-  };
-
-  const isIItem = (obj: any): obj is IItem => {
-    return '_id' in obj && 'name' in obj && 'properties' in obj;
   };
 
   //Feedback
@@ -227,20 +233,17 @@ const Collections: NextPage<
                   </button>
                 </div>
                 <div className='py-1 space-y-2'>
-                  {collection.items &&
-                    collection.properties &&
-                    collection.items.map((item) => (
-                      <>
-                        {isIItem(item) && (
-                          <ItemOverview
-                            key={item._id}
-                            item={item}
-                            collectionProperty={collection.properties || []}
-                            onItemClick={handleOnClickItem}
-                          />
-                        )}
-                      </>
-                    ))}
+                  {itemsQueries.map(
+                    ({ data: item }) =>
+                      item && (
+                        <ItemOverview
+                          key={item._id}
+                          item={item}
+                          collectionProperty={collection.properties}
+                          onItemClick={handleOnClickItem}
+                        />
+                      )
+                  )}
                 </div>
               </Collection.Body>
             </Collection>

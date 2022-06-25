@@ -9,7 +9,7 @@ export async function getCollections(): Promise<ICollection[]> {
   return res.json().then((response) => response.data);
 }
 
-export async function getCollection(id: number): Promise<ICollection> {
+export async function getCollection(id: number | string): Promise<ICollection> {
   const res = await fetch(baseUrl + id);
   return res.json().then((response) => response.data);
 }
