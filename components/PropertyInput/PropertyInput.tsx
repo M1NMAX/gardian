@@ -4,7 +4,7 @@ import { IProperty } from '../../interfaces';
 interface PropertyInputProps {
   property: IProperty;
   getValue: (id?: number) => string;
-  setValue: (value: string, id?: number) => '' | undefined;
+  setValue: (value: string, id?: number) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, getValue, setValue } = props;

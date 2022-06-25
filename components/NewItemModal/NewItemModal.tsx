@@ -18,7 +18,6 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
   const [properties, setProperties] = useState<IItemProperty[]>();
 
   useEffect(() => {
-    if (!collection.properties) return;
     setProperties(
       collection.properties.map((property) => ({
         _id: property._id,
@@ -29,13 +28,15 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
 
   const getValueById = (id?: number): string => {
     if (!id || !properties) return '';
-    return properties.filter((property) => property._id === id)[0].value;
+    const property = properties.find((property) => property._id === id);
+
+    return property ? property.value : '';
   };
 
   const setValueById = (value: string, id?: number) => {
-    if (!id) return '';
+    if (!id || !properties) return;
     setProperties(
-      properties?.map((property) =>
+      properties.map((property) =>
         property._id === id ? { ...property, value } : property
       )
     );
@@ -43,7 +44,7 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation(createItem, {
+  const { mutate: addNewItemMutation } = useMutation(createItem, {
     onSuccess: async (data) => {
       if (!collection._id) throw 'Collection._id is undefined';
       if (!data._id) throw 'Item._id is undefined';
@@ -66,7 +67,7 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
     e.preventDefault();
     if (!properties || !collection._id) return;
 
-    mutation.mutate({ name, properties });
+    addNewItemMutation({ name, properties });
   };
 
   return (
