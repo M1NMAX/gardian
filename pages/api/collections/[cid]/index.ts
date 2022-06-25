@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import dbConnect from '../../../../backend/database/dbConnect';
 import Collection from '../../../../backend/models/Collection';
-import Item from '../../../../backend/models/Item';
 import { Response } from '../../../../types';
 
 dbConnect();
@@ -16,10 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
   switch (method) {
     case 'GET':
       try {
-        const collection = await Collection.findById(cid).populate({
-          path: 'items',
-          model: Item,
-        });
+        const collection = await Collection.findById(cid);
         if (!collection) return res.status(400).json({ isSuccess: false });
         res.status(200).json({ isSuccess: true, data: collection });
       } catch (error) {
