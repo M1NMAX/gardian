@@ -7,13 +7,14 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItem, IProperty } from '../../interfaces';
+import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
   addPropertyToItem,
   deleteItem,
   getItem,
   removePropertyFromItem,
+  updateItemProperty,
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
@@ -82,7 +83,7 @@ const Collections: NextPage<
     closeDetails();
   }, [id]);
 
-  //Mutation
+  //Mutations
   //Handle delete item mutation
   const deleteItemMutation = useMutation(deleteItem, {
     onSuccess: async () => {
@@ -106,7 +107,6 @@ const Collections: NextPage<
   });
 
   // handle Drawer
-
   const [showDetails, setShowDetails] = useState(false);
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
@@ -118,25 +118,50 @@ const Collections: NextPage<
 
   //Handle selected item
   const [selectedItemId, setSelectedItemId] = useState<number>();
-  const [currentItem, setCurrentItem] = useState<IItem>();
+  const [selectedItemName, setSelectedItemName] = useState<string>('');
+  const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
+  const [selectedItemPorperties, setSelectedItemPorperties] = useState<
+    IItemProperty[]
+  >([]);
 
   useEffect(() => {
     const fetchItem = async () => {
       if (!selectedItemId) return;
-      const res = await getItem(selectedItemId);
-      setCurrentItem(res);
+      const item = await getItem(selectedItemId);
+      setSelectedItemName(item.name);
+      setSelectedItemUpdateTs(item.updatedAt);
+      setSelectedItemPorperties(item.properties);
     };
     fetchItem();
   }, [collection, selectedItemId]);
 
-  const getCollectionPropertyById = (id?: number) => {
-    if (!collection) return;
-    if (!collection.properties) return;
-    const collectionProperties = collection.properties;
-    const property = collectionProperties.filter(
+  const getCollectionPropertyById = (id: number) => {
+    if (!id || !collection) return {} as IProperty;
+
+    const property = collection.properties.find(
       (property) => property._id === id
-    )[0];
-    return property;
+    );
+
+    return property || ({} as IProperty);
+  };
+
+  const setPropertyValue = (id: number, value: string): void => {
+    if (!id) return;
+    //Do some mutation for certain property type
+    setSelectedItemPorperties(
+      selectedItemPorperties.map((property) =>
+        property._id == id ? { ...property, value } : property
+      )
+    );
+  };
+
+  const getPropertyValue = (id: number): string => {
+    if (!id) return '';
+    const property = selectedItemPorperties.find(
+      (property) => property._id === id
+    );
+    if (!property) return '';
+    return property.value;
   };
 
   //Property mutation, i.e. update, add, duplicate and delete
@@ -259,20 +284,27 @@ const Collections: NextPage<
           )}
         </div>
 
-        {currentItem && (
+        {selectedItemId && (
           <Drawer opened={showDetails} onClose={closeDetails}>
-            <Drawer.Title>{currentItem.name}</Drawer.Title>
+            <Drawer.Title>{selectedItemName}</Drawer.Title>
             <Drawer.Body>
               <div className='space-y-2'>
-                {currentItem.properties.map((property) => (
-                  <Property
-                    itemProperty={property}
-                    collectionProperty={getCollectionPropertyById(property._id)}
-                    onPropertyUpdate={handleUpdateProperty}
-                    onPropertyDuplicate={handleDuplicateProperty}
-                    onPropertyDelete={handleDeleteProperty}
-                  />
-                ))}
+                {selectedItemPorperties.map(
+                  (property) =>
+                    property._id && (
+                      <Property
+                        itemProperty={property}
+                        collectionProperty={getCollectionPropertyById(
+                          property._id
+                        )}
+                        getValue={getPropertyValue}
+                        setValue={setPropertyValue}
+                        onPropertyUpdate={handleUpdateProperty}
+                        onPropertyDuplicate={handleDuplicateProperty}
+                        onPropertyDelete={handleDeleteProperty}
+                      />
+                    )
+                )}
 
                 <button
                   onClick={handleOnClickAddProperty}
@@ -285,9 +317,9 @@ const Collections: NextPage<
             <Drawer.Footer>
               <div className='flex justify-between items-center space-x-2'>
                 <div className='font-light'>
-                  Created{' '}
-                  {currentItem.updatedAt
-                    ? new Date(currentItem.updatedAt).toDateString()
+                  Last update{' '}
+                  {selectedItemUpdateTs
+                    ? new Date(selectedItemUpdateTs).toDateString()
                     : 'Loading'}
                 </div>
                 <ActionIcon
@@ -313,9 +345,9 @@ const Collections: NextPage<
       )}
 
       {/* Delete item modal  */}
-      {currentItem && deleteModal.isOpen && (
+      {selectedItemId && deleteModal.isOpen && (
         <DeleteModal
-          name={currentItem.name}
+          name={selectedItemName}
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
           onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}

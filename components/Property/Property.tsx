@@ -6,8 +6,10 @@ import useModal from '../../hooks/useModal';
 import EditPropertyModal from './EditPropertyModal';
 import DeleteModal from '../DeleteModal';
 interface PropertyProps {
-  collectionProperty?: IProperty;
+  collectionProperty: IProperty;
   itemProperty: IItemProperty;
+  getValue: (id: number) => string;
+  setValue: (id: number, value: string) => void;
   onPropertyUpdate: (property: IProperty) => void;
   onPropertyDuplicate: (property: IProperty) => void;
   onPropertyDelete: (id: number) => void;
@@ -17,6 +19,8 @@ const Property: FC<PropertyProps> = (props) => {
   const {
     collectionProperty,
     itemProperty,
+    getValue,
+    setValue,
     onPropertyUpdate,
     onPropertyDuplicate,
     onPropertyDelete,
@@ -44,14 +48,14 @@ const Property: FC<PropertyProps> = (props) => {
     onPropertyDuplicate(copy);
   };
 
-  if (!collectionProperty) return <></>;
   return (
     <>
       <div className='p-1 flex justify-between rounded border border-dashed'>
         {collectionProperty.type === 'checkbox'}
         <PropertyInput
           property={collectionProperty}
-          itemProperty={itemProperty}
+          getValue={getValue}
+          setValue={setValue}
         />
         <PropertyMenu
           onClickEdit={editPropertyModal.openModal}
@@ -82,10 +86,13 @@ const Property: FC<PropertyProps> = (props) => {
 
 interface PropertyInputProps {
   property: IProperty;
-  itemProperty: IItemProperty;
+  getValue: (id: number) => string;
+  setValue: (id: number, value: string) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
-  const { property, itemProperty } = props;
+  const { property, getValue, setValue } = props;
+
+  if (!property._id) return <></>;
 
   switch (property.type) {
     case 'checkbox':
@@ -94,9 +101,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           <input
             type='checkbox'
             name={property.name}
-            checked={itemProperty.value === 'true'}
+            checked={getValue(property._id) === 'true'}
             onChange={(e) => {
-              console.log(e.target.value);
+              if (!property._id) return;
+              setValue(property._id, e.target.checked ? 'true' : 'false');
             }}
             className='modal-checkbox'
           />
@@ -109,8 +117,11 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           <span className='w-full'> {property.name}</span>
           <select
             name={property.name}
-            value={itemProperty.value}
-            onChange={(e) => console.log(e.target.value)}
+            value={getValue(property._id)}
+            onChange={(e) => {
+              if (!property._id) return;
+              setValue(property._id, e.target.value);
+            }}
             className='modal-input'>
             {property.values.map((value, idx) => (
               <option key={idx} value={value}>
@@ -126,8 +137,11 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           <span className='w-full'>{property.name}</span>
           <textarea
             name={property.name}
-            value={itemProperty.value}
-            onChange={(e) => console.log(e.target.value)}
+            value={getValue(property._id)}
+            onChange={(e) => {
+              if (!property._id) return;
+              setValue(property._id, e.target.value);
+            }}
             rows={4}
             maxLength={200}
             className='modal-text-area'
@@ -142,8 +156,11 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           <input
             type={property.type}
             name={property.name}
-            value={itemProperty.value}
-            onChange={(e) => console.log(e.target.value, property._id)}
+            value={getValue(property._id)}
+            onChange={(e) => {
+              if (!property._id) return;
+              setValue(property._id, e.target.value);
+            }}
             className='modal-input'
           />
         </label>
