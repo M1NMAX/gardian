@@ -47,16 +47,24 @@ const Collections: NextPage<
   //View mode
   const [isListView, setIsListView] = useState(true);
 
-  const queryClient = useQueryClient();
+  //Feedback
+  const positiveFeedback = (msg: string) => toast.success(msg);
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
-  //Fetch collection data
+  //Modals
+  const newItemModal = useModal();
+  const deleteModal = useModal();
+
+  //Query and cache
+  const queryClient = useQueryClient();
+  //Fetch collection and its items
   const { data: collection, refetch } = useQuery<ICollection>(
     ['collection', id],
     () => getCollection(!id || Array.isArray(id) ? '22' : id)
   );
 
   const collectionId = collection?._id;
-
+  //Fetch collection items
   const itemsQueries = useQueries(
     !collection
       ? []
@@ -74,46 +82,17 @@ const Collections: NextPage<
     closeDetails();
   }, [id]);
 
-  // handle info for Drower
-  const [currentItemId, setCurrentItemId] = useState<number>();
-  const [currentItem, setCurrentItem] = useState<IItem>();
-
-  useEffect(() => {
-    const fetchItem = async () => {
-      if (!currentItemId) return;
-      const res = await getItem(currentItemId);
-      setCurrentItem(res);
-    };
-    fetchItem();
-  }, [collection, currentItemId]);
-
-  const [showDetails, setShowDetails] = useState(false);
-  const openDetails = () => setShowDetails(true);
-  const closeDetails = () => setShowDetails(false);
-
-  const handleOnClickItem = (id: number) => {
-    setCurrentItemId(id);
-    openDetails();
-  };
-
-  //Feedback
-  const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () => toast.error('Something went wrong, try later');
-
-  //New item Modal
-  const newItemModal = useModal();
-
-  const deleteModal = useModal();
-
+  //Mutation
+  //Handle delete item mutation
   const deleteItemMutation = useMutation(deleteItem, {
     onSuccess: async () => {
       if (!collectionId) throw 'CollectionId is undefined';
-      if (!currentItemId) throw 'CurrentItemId is undefined';
+      if (!selectedItemId) throw 'CurrentItemId is undefined';
 
-      await removeItemFromCollection(collectionId, currentItemId);
+      await removeItemFromCollection(collectionId, selectedItemId);
 
       queryClient.invalidateQueries(['collection', collectionId]);
-      queryClient.invalidateQueries(['items', collectionId, currentItemId]);
+      queryClient.removeQueries(['items', collectionId, selectedItemId]);
 
       positiveFeedback('Item deleted');
       closeDetails();
@@ -126,22 +105,29 @@ const Collections: NextPage<
     },
   });
 
-  const handleDeleteItem = async () => {
-    if (!collection) return;
-    if (!currentItemId || !collection._id) return;
+  // handle Drawer
 
-    try {
-      const itemId = currentItemId.valueOf();
+  const [showDetails, setShowDetails] = useState(false);
+  const openDetails = () => setShowDetails(true);
+  const closeDetails = () => setShowDetails(false);
 
-      await deleteItem(itemId);
-      await removeItemFromCollection(collection._id, itemId);
-      closeDetails();
-      deleteModal.closeModal();
-      positiveFeedback('Item deleted');
-    } catch (error) {
-      negativeFeedback();
-    }
+  const handleOnClickItem = (id: number) => {
+    setSelectedItemId(id);
+    openDetails();
   };
+
+  //Handle selected item
+  const [selectedItemId, setSelectedItemId] = useState<number>();
+  const [currentItem, setCurrentItem] = useState<IItem>();
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (!selectedItemId) return;
+      const res = await getItem(selectedItemId);
+      setCurrentItem(res);
+    };
+    fetchItem();
+  }, [collection, selectedItemId]);
 
   const getCollectionPropertyById = (id?: number) => {
     if (!collection) return;
@@ -153,6 +139,7 @@ const Collections: NextPage<
     return property;
   };
 
+  //Property mutation, i.e. update, add, duplicate and delete
   const addPorpertyToAllItem = (collection: ICollection) => {
     if (!collection.items || !collection.properties) return;
 
@@ -331,7 +318,7 @@ const Collections: NextPage<
           name={currentItem.name}
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
-          onDelete={() => deleteItemMutation.mutate(currentItemId || -1)}
+          onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
         />
       )}
     </>
