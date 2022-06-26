@@ -28,11 +28,14 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
       className='w-full flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800'>
       <span className=' font-semibold text-lg'>{item.name}</span>
       <span className='flex space-x-1 text-sm font-medium text-gray-700 dark:text-gray-100'>
-        {collectionProperty.map((property) => (
-          <span className='px-0.5 rounded bg-white dark:bg-gray-600'>
-            <MiniProperty property={property} getValue={getValueById} />
-          </span>
-        ))}
+        {collectionProperty.map(
+          (property) =>
+            getValueById(property._id) != '' && (
+              <span className='px-0.5 rounded bg-white dark:bg-gray-600'>
+                <MiniProperty property={property} getValue={getValueById} />
+              </span>
+            )
+        )}
       </span>
     </button>
   );

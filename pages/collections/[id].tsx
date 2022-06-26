@@ -141,8 +141,6 @@ const Collections: NextPage<
     {
       onSuccess: ({ propertyId }) => {
         if (!collectionId) throw 'CollectionId is undefined';
-        //clear item's property value to avoid property type conflict
-        setPropertyValue(propertyId, '');
 
         queryClient.invalidateQueries(['collection', collectionId]);
         queryClient.invalidateQueries(['items', collectionId]);
