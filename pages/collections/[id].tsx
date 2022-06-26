@@ -106,6 +106,65 @@ const Collections: NextPage<
     },
   });
 
+  //handle add collection property mutation
+  const addCollectioPropertyMutation = useMutation(addPropertyToCollection, {
+    onSuccess: (data) => {
+      if (!collectionId) throw 'CollectionId is undefined';
+
+      //adds Property to all items of collection
+      addPorpertyToAllItem(data);
+
+      queryClient.invalidateQueries(['collection', collectionId]);
+      queryClient.invalidateQueries(['items', collectionId]);
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+  });
+
+  //handle update collection property mutation
+  const updateCollectioPropertyMutation = useMutation(
+    updateCollectionProperty,
+    {
+      onSuccess: ({ propertyId }) => {
+        if (!collectionId) throw 'CollectionId is undefined';
+        //clear item's property value to avoid property type conflict
+        setPropertyValue(propertyId, '');
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+        queryClient.invalidateQueries(['items', collectionId]);
+
+        positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //handle delete collection property mutation
+  const deleteCollectioPropertyMutation = useMutation(
+    removePropertyFromCollection,
+    {
+      onSuccess: async ({ propertyId }) => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        // remove property form all collection's item
+        collection.items.map((itemId) =>
+          removePropertyFromItem(itemId, propertyId)
+        );
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+        queryClient.invalidateQueries(['items', collectionId]);
+
+        positiveFeedback('Property removed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
   // handle Drawer
   const [showDetails, setShowDetails] = useState(false);
   const openDetails = () => setShowDetails(true);
@@ -147,7 +206,7 @@ const Collections: NextPage<
 
   const setPropertyValue = (id: number, value: string): void => {
     if (!id) return;
-    //Do some mutation for certain property type
+    //TODO:Do some mutation for certain property type
     setSelectedItemPorperties(
       selectedItemPorperties.map((property) =>
         property._id == id ? { ...property, value } : property
@@ -164,70 +223,52 @@ const Collections: NextPage<
     return property.value;
   };
 
-  //Property mutation, i.e. update, add, duplicate and delete
+  //Util function that add the lastest collection property
+  //to all collection's items
   const addPorpertyToAllItem = (collection: ICollection) => {
-    if (!collection.items || !collection.properties) return;
-
-    const collectionItems = collection.items;
+    //get id of the lastest collection's property
     const { _id } = collection.properties[collection.properties.length - 1];
-    collectionItems.map((itemId) => {
-      typeof itemId == 'string' &&
-        addPropertyToItem(itemId, { _id, value: '' });
+
+    collection.items.map((itemId) => {
+      addPropertyToItem(itemId, { _id, value: '' });
     });
   };
 
+  //handles that make user of mutations above
   const handleOnClickAddProperty = async () => {
     if (!collection || !collection._id) return;
-
-    try {
-      const latestCollection = await addPropertyToCollection(collection._id, {
+    addCollectioPropertyMutation.mutate({
+      collectionId: collection._id,
+      property: {
         name: 'Property',
         type: 'text',
         values: [''],
         color: '#991b1b',
-      });
-
-      //adds Property to all items of collection
-      addPorpertyToAllItem(latestCollection);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleUpdateProperty = async (property: IProperty) => {
-    if (!property._id) return;
-    if (!collection || !collection._id) return;
-    await updateCollectionProperty(collection._id, property._id, property);
+      },
+    });
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collection || !collection._id) return;
-    try {
-      const latestCollection = await addPropertyToCollection(
-        collection._id,
-        property
-      );
-      //adds duplicated Property to all items of collection
-      addPorpertyToAllItem(latestCollection);
-    } catch (error) {
-      console.log(error);
-    }
+    addCollectioPropertyMutation.mutate({
+      collectionId: collection._id,
+      property,
+    });
+  };
+
+  const handleUpdateProperty = async (property: IProperty) => {
+    if (!property._id) return;
+    if (!collectionId) return;
+    updateCollectioPropertyMutation.mutate({
+      collectionId,
+      propertyId: property._id,
+      property,
+    });
   };
 
   const handleDeleteProperty = async (propertyId: number) => {
-    if (!collection || !collection._id) return;
-    try {
-      await removePropertyFromCollection(collection._id, propertyId);
-
-      if (collection.items) {
-        collection.items.map((itemId) => {
-          typeof itemId == 'string' &&
-            removePropertyFromItem(itemId, propertyId);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    if (!collection || !collectionId) return;
+    deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
   };
 
   return (

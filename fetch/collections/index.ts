@@ -3,6 +3,23 @@ import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
+//Types
+type RemovePropertyFromCollectionArg = {
+  collectionId: number;
+  propertyId: number;
+};
+
+type UpdateCollectionPropertyArg = {
+  collectionId: number;
+  propertyId: number;
+  property: IProperty;
+};
+
+type AddPropertyFromCollectionArg = {
+  collectionId: number;
+  property: IProperty;
+};
+
 //Collection
 export async function getCollections(): Promise<ICollection[]> {
   const res = await fetch(baseUrl);
@@ -67,10 +84,10 @@ export async function removeItemFromCollection(
 }
 
 // PROPERTY
-export async function addPropertyToCollection(
-  collectionId: number,
-  property: IProperty
-): Promise<ICollection> {
+export async function addPropertyToCollection({
+  collectionId,
+  property,
+}: AddPropertyFromCollectionArg): Promise<ICollection> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/',
     getRequestOptions('POST', { property })
@@ -78,25 +95,37 @@ export async function addPropertyToCollection(
   return res.json().then((response) => response.data);
 }
 
-export async function updateCollectionProperty(
-  collectionId: number,
-  propertyId: number,
-  property: IProperty
-) {
+export async function updateCollectionProperty({
+  collectionId,
+  propertyId,
+  property,
+}: UpdateCollectionPropertyArg): Promise<{
+  status: boolean;
+  propertyId: number;
+}> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
     getRequestOptions('PUT', { property })
   );
-  return res.json().then((response) => response.data);
+  return res.json().then((response) => ({
+    status: response.isSuccess,
+    propertyId,
+  }));
 }
 
-export async function removePropertyFromCollection(
-  collectionId: number,
-  propertyId: number
-) {
+export async function removePropertyFromCollection({
+  collectionId,
+  propertyId,
+}: RemovePropertyFromCollectionArg): Promise<{
+  status: boolean;
+  propertyId: number;
+}> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
     { method: 'DELETE' }
   );
-  return res.json().then((response) => response.data);
+  return res.json().then((response) => ({
+    status: response.isSuccess,
+    propertyId,
+  }));
 }
