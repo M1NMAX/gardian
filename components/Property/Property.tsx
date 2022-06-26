@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { MenuAlt1Icon, SelectorIcon } from '@heroicons/react/outline';
 import { IProperty, IItemProperty } from '../../interfaces';
 import PropertyMenu from './PropertyMenu';
 import useModal from '../../hooks/useModal';
@@ -50,8 +49,7 @@ const Property: FC<PropertyProps> = (props) => {
 
   return (
     <>
-      <div className='p-1 flex justify-between rounded border border-dashed'>
-        {collectionProperty.type === 'checkbox'}
+      <div className='flex justify-between space-x-0.5 '>
         <PropertyInput
           property={collectionProperty}
           getValue={getValue}
@@ -97,7 +95,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
   switch (property.type) {
     case 'checkbox':
       return (
-        <label className='flex items-center space-x-2'>
+        <label className='flex items-center space-x-2 property-within-drawer'>
           <input
             type='checkbox'
             name={property.name}
@@ -113,7 +111,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
       );
     case 'select':
       return (
-        <label className='block'>
+        <label className='property-within-drawer'>
           <span className='w-full'> {property.name}</span>
           <select
             name={property.name}
@@ -133,7 +131,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
       );
     case 'textarea':
       return (
-        <label className='block'>
+        <label className='property-within-drawer'>
           <span className='w-full'>{property.name}</span>
           <textarea
             name={property.name}
@@ -151,7 +149,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
 
     default:
       return (
-        <label className='block'>
+        <label className='property-within-drawer'>
           <span className='w-full'>{property.name}</span>
           <input
             type={property.type}
@@ -161,7 +159,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
               if (!property._id) return;
               setValue(property._id, e.target.value);
             }}
-            className='modal-input'
+            className='modal-input '
           />
         </label>
       );

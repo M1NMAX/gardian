@@ -58,6 +58,10 @@
     height: calc(100vh - theme('spacing.40'));
   }
 
+  .property-within-drawer {
+    @apply w-full p-1 rounded-sm  border border-dashed;
+  }
+
   /* Genaral input  */
   .checkbox-input {
     @apply w-6 h-6 appearance-none  rounded bg-gray-200 dark:bg-gray-700 

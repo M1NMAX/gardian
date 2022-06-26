@@ -28,13 +28,13 @@ const Drawer: DrawerComponent = (props) => {
   return (
     <div
       className={`${
-        opened ? 'w-1/3 py-2 px-4' : 'w-0'
+        opened ? 'w-1/3 py-2 px-1.5' : 'w-0'
       } transition-all duration-200 ease-in-out flex flex-col
   rounded bg-gray-100 dark:bg-gray-800  overflow-hidden`}>
       <div className='flex justify-end'>
         <ActionIcon icon={<XIcon />} variant='filled' onClick={onClose} />
       </div>
-      <div className='space-y-4'>{children}</div>
+      <div className='space-y-3'>{children}</div>
     </div>
   );
 };
@@ -57,7 +57,11 @@ const Body: FC<BodyProps> = (props) => {
 const Footer: FC<FooterProps> = (props) => {
   const { children } = props;
 
-  return <div>{children}</div>;
+  return (
+    <div className='pt-1 border-dashed border-t border-green-200'>
+      {children}
+    </div>
+  );
 };
 
 Drawer.Title = Title;
