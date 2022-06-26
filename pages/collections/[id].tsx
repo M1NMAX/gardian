@@ -84,6 +84,19 @@ const Collections: NextPage<
   }, [id]);
 
   //Mutations
+
+  //Handle delete item mutation
+  const updateItemPropertyMutation = useMutation(updateItemProperty, {
+    onSuccess: async () => {
+      if (!collectionId) throw 'CollectionId is undefined';
+      if (!selectedItemId) throw 'CurrentItemId is undefined';
+
+      queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+  });
   //Handle delete item mutation
   const deleteItemMutation = useMutation(deleteItem, {
     onSuccess: async () => {
@@ -205,13 +218,18 @@ const Collections: NextPage<
   };
 
   const setPropertyValue = (id: number, value: string): void => {
-    if (!id) return;
+    if (!id || !selectedItemId) return;
     //TODO:Do some mutation for certain property type
     setSelectedItemPorperties(
       selectedItemPorperties.map((property) =>
         property._id == id ? { ...property, value } : property
       )
     );
+    updateItemPropertyMutation.mutate({
+      itemId: selectedItemId,
+      propertyId: id,
+      property: { _id: id, value },
+    });
   };
 
   const getPropertyValue = (id: number): string => {

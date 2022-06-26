@@ -43,11 +43,16 @@ export async function addPropertyToItem(
   return res.json().then((response) => response.data);
 }
 
-export async function updateItemProperty(
-  itemId: number,
-  propertyId: number,
-  property: IItemProperty
-) {
+type UpdateItemPropertyArg = {
+  itemId: number;
+  propertyId: number;
+  property: IItemProperty;
+};
+export async function updateItemProperty({
+  itemId,
+  propertyId,
+  property,
+}: UpdateItemPropertyArg) {
   const res = await fetch(
     baseUrl + itemId + '/properties/' + propertyId,
     getRequestOptions('PUT', { property })
