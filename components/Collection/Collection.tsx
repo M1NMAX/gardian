@@ -1,8 +1,9 @@
 import {
   AdjustmentsIcon,
   MenuAlt2Icon,
-  StarIcon,
+  StarIcon as StarIconOutline,
 } from '@heroicons/react/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, ReactNode } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
@@ -14,11 +15,13 @@ import useModal from '../../hooks/useModal';
 import {
   deleteCollection,
   renameCollection,
+  toggleCollectionIsFavourite,
   updateCollection,
 } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
+import { useMutation, useQueryClient } from 'react-query';
 
 interface HeaderProps {
   children: JSX.Element;
@@ -57,6 +60,24 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  const queryClient = useQueryClient();
+  //handle update collection property mutation
+  const toggleCollectionIsFavouriteMutation = useMutation(
+    toggleCollectionIsFavourite,
+    {
+      onSuccess: () => {
+        if (!collection._id) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collection._id]);
+
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
 
   //Rename Collection Modal
   const {
@@ -110,7 +131,20 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           )}
         </div>
         <div className='flex items-center space-x-1'>
-          <ActionIcon icon={<StarIcon />} variant='filled' />
+          <ActionIcon
+            icon={
+              collection.isFavourite ? (
+                <StarIconFilled className='text-green-500' />
+              ) : (
+                <StarIconOutline />
+              )
+            }
+            variant='filled'
+            onClick={() => {
+              if (!collection._id) return;
+              toggleCollectionIsFavouriteMutation.mutate(collection._id);
+            }}
+          />
           <ActionIcon
             icon={<AdjustmentsIcon className='rotate-90' />}
             variant='filled'

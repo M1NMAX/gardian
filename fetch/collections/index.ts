@@ -57,6 +57,16 @@ export async function renameCollection(
   return updateCollection(id, { ...collection, name });
 }
 
+export async function toggleCollectionIsFavourite(
+  id: number
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, {
+    ...collection,
+    isFavourite: !collection.isFavourite,
+  });
+}
+
 export async function deleteCollection(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);

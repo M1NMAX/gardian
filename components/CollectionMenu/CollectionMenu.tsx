@@ -3,9 +3,10 @@ import {
   DotsVerticalIcon,
   PencilIcon,
   ReplyIcon,
-  StarIcon,
+  StarIcon as StarIconOutline,
   TrashIcon,
 } from '@heroicons/react/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
@@ -32,13 +33,6 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
         <Menu.Items
           as='ul'
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
-          <Menu.Item as='li'>
-            <button className='collection-menu-item-btn'>
-              <StarIcon className='icon-sm' />
-              <span>Add to Favorites</span>
-            </button>
-          </Menu.Item>
-
           <Menu.Item as='li'>
             <button
               onClick={onClickRename}
