@@ -28,6 +28,8 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
         description: '',
         isDescriptionHidden: false,
         isFavourite: false,
+        properties: [],
+        items: [],
       });
       if (!collection._id) throw true;
       await addCollectionToGroup(selectedGroup, collection._id);

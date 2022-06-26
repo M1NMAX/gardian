@@ -6,14 +6,15 @@ import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useQuery } from 'react-query';
-import { ICollection, IItem, IProperty } from '../../interfaces';
+import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
+import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
   addPropertyToItem,
   deleteItem,
   getItem,
   removePropertyFromItem,
+  updateItemProperty,
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
@@ -32,6 +33,7 @@ import {
   removePropertyFromCollection,
   removeItemFromCollection,
   updateCollectionProperty,
+  getCollection,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -46,16 +48,34 @@ const Collections: NextPage<
   //View mode
   const [isListView, setIsListView] = useState(true);
 
-  //Fetch collection data
+  //Feedback
+  const positiveFeedback = (msg: string) => toast.success(msg);
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  //Modals
+  const newItemModal = useModal();
+  const deleteModal = useModal();
+
+  //Query and cache
+  const queryClient = useQueryClient();
+  //Fetch collection and its items
   const { data: collection, refetch } = useQuery<ICollection>(
-    'collection',
-    async (): Promise<ICollection> => {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_API_URL + '/collections/' + id
-      );
-      const response = await res.json();
-      return response.data;
-    }
+    ['collection', id],
+    () => getCollection(!id || Array.isArray(id) ? '22' : id)
+  );
+
+  const collectionId = collection?._id;
+  //Fetch collection items
+  const itemsQueries = useQueries(
+    !collection
+      ? []
+      : collection.items.map((item) => {
+          return {
+            queryKey: ['items', collectionId, item],
+            queryFn: () => getItem(item),
+            enabled: !!collectionId,
+          };
+        })
   );
 
   useEffect(() => {
@@ -63,131 +83,192 @@ const Collections: NextPage<
     closeDetails();
   }, [id]);
 
-  // handle info for Drower
-  const [currentItemId, setCurrentItemId] = useState<number>();
-  const [currentItem, setCurrentItem] = useState<IItem>();
+  //Mutations
+  //Handle delete item mutation
+  const deleteItemMutation = useMutation(deleteItem, {
+    onSuccess: async () => {
+      if (!collectionId) throw 'CollectionId is undefined';
+      if (!selectedItemId) throw 'CurrentItemId is undefined';
 
-  useEffect(() => {
-    const fetchItem = async () => {
-      if (!currentItemId) return;
-      const res = await getItem(currentItemId.valueOf());
-      setCurrentItem(res);
-    };
-    fetchItem();
-  }, [collection, currentItemId]);
+      await removeItemFromCollection(collectionId, selectedItemId);
 
+      queryClient.invalidateQueries(['collection', collectionId]);
+      queryClient.removeQueries(['items', collectionId, selectedItemId]);
+
+      positiveFeedback('Item deleted');
+      closeDetails();
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+    onSettled: () => {
+      deleteModal.closeModal();
+    },
+  });
+
+  //handle add collection property mutation
+  const addCollectioPropertyMutation = useMutation(addPropertyToCollection, {
+    onSuccess: (data) => {
+      if (!collectionId) throw 'CollectionId is undefined';
+
+      //adds Property to all items of collection
+      addPorpertyToAllItem(data);
+
+      queryClient.invalidateQueries(['collection', collectionId]);
+      queryClient.invalidateQueries(['items', collectionId]);
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+  });
+
+  //handle update collection property mutation
+  const updateCollectioPropertyMutation = useMutation(
+    updateCollectionProperty,
+    {
+      onSuccess: ({ propertyId }) => {
+        if (!collectionId) throw 'CollectionId is undefined';
+        //clear item's property value to avoid property type conflict
+        setPropertyValue(propertyId, '');
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+        queryClient.invalidateQueries(['items', collectionId]);
+
+        positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //handle delete collection property mutation
+  const deleteCollectioPropertyMutation = useMutation(
+    removePropertyFromCollection,
+    {
+      onSuccess: async ({ propertyId }) => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        // remove property form all collection's item
+        collection.items.map((itemId) =>
+          removePropertyFromItem(itemId, propertyId)
+        );
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+        queryClient.invalidateQueries(['items', collectionId]);
+
+        positiveFeedback('Property removed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  // handle Drawer
   const [showDetails, setShowDetails] = useState(false);
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
 
   const handleOnClickItem = (id: number) => {
-    setCurrentItemId(id);
+    setSelectedItemId(id);
     openDetails();
   };
 
-  const isIItem = (obj: any): obj is IItem => {
-    return '_id' in obj && 'name' in obj && 'properties' in obj;
-  };
+  //Handle selected item
+  const [selectedItemId, setSelectedItemId] = useState<number>();
+  const [selectedItemName, setSelectedItemName] = useState<string>('');
+  const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
+  const [selectedItemPorperties, setSelectedItemPorperties] = useState<
+    IItemProperty[]
+  >([]);
 
-  //Feedback
-  const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () => toast.error('Something went wrong, try later');
+  useEffect(() => {
+    const fetchItem = async () => {
+      if (!selectedItemId) return;
+      const item = await getItem(selectedItemId);
+      setSelectedItemName(item.name);
+      setSelectedItemUpdateTs(item.updatedAt);
+      setSelectedItemPorperties(item.properties);
+    };
+    fetchItem();
+  }, [collection, selectedItemId]);
 
-  //New item Modal
-  const newItemModal = useModal();
+  const getCollectionPropertyById = (id: number) => {
+    if (!id || !collection) return {} as IProperty;
 
-  const deleteModal = useModal();
-
-  const handleDeleteItem = async () => {
-    if (!collection) return;
-    if (!currentItemId || !collection._id) return;
-
-    try {
-      const itemId = currentItemId.valueOf();
-
-      await deleteItem(itemId);
-      await removeItemFromCollection(collection._id, itemId);
-      closeDetails();
-      deleteModal.closeModal();
-      positiveFeedback('Item deleted');
-    } catch (error) {
-      negativeFeedback();
-    }
-  };
-
-  const getCollectionPropertyById = (id?: number) => {
-    if (!collection) return;
-    if (!collection.properties) return;
-    const collectionProperties = collection.properties;
-    const property = collectionProperties.filter(
+    const property = collection.properties.find(
       (property) => property._id === id
-    )[0];
-    return property;
+    );
+
+    return property || ({} as IProperty);
   };
 
-  const addPorpertyToAllItem = (collection: ICollection) => {
-    if (!collection.items || !collection.properties) return;
+  const setPropertyValue = (id: number, value: string): void => {
+    if (!id) return;
+    //TODO:Do some mutation for certain property type
+    setSelectedItemPorperties(
+      selectedItemPorperties.map((property) =>
+        property._id == id ? { ...property, value } : property
+      )
+    );
+  };
 
-    const collectionItems = collection.items;
+  const getPropertyValue = (id: number): string => {
+    if (!id) return '';
+    const property = selectedItemPorperties.find(
+      (property) => property._id === id
+    );
+    if (!property) return '';
+    return property.value;
+  };
+
+  //Util function that add the lastest collection property
+  //to all collection's items
+  const addPorpertyToAllItem = (collection: ICollection) => {
+    //get id of the lastest collection's property
     const { _id } = collection.properties[collection.properties.length - 1];
-    collectionItems.map((itemId) => {
-      typeof itemId == 'string' &&
-        addPropertyToItem(itemId, { _id, value: '' });
+
+    collection.items.map((itemId) => {
+      addPropertyToItem(itemId, { _id, value: '' });
     });
   };
 
+  //handles that make user of mutations above
   const handleOnClickAddProperty = async () => {
     if (!collection || !collection._id) return;
-
-    try {
-      const latestCollection = await addPropertyToCollection(collection._id, {
+    addCollectioPropertyMutation.mutate({
+      collectionId: collection._id,
+      property: {
         name: 'Property',
         type: 'text',
         values: [''],
         color: '#991b1b',
-      });
-
-      //adds Property to all items of collection
-      addPorpertyToAllItem(latestCollection);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleUpdateProperty = async (property: IProperty) => {
-    if (!property._id) return;
-    if (!collection || !collection._id) return;
-    await updateCollectionProperty(collection._id, property._id, property);
+      },
+    });
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collection || !collection._id) return;
-    try {
-      const latestCollection = await addPropertyToCollection(
-        collection._id,
-        property
-      );
-      //adds duplicated Property to all items of collection
-      addPorpertyToAllItem(latestCollection);
-    } catch (error) {
-      console.log(error);
-    }
+    addCollectioPropertyMutation.mutate({
+      collectionId: collection._id,
+      property,
+    });
+  };
+
+  const handleUpdateProperty = async (property: IProperty) => {
+    if (!property._id) return;
+    if (!collectionId) return;
+    updateCollectioPropertyMutation.mutate({
+      collectionId,
+      propertyId: property._id,
+      property,
+    });
   };
 
   const handleDeleteProperty = async (propertyId: number) => {
-    if (!collection || !collection._id) return;
-    try {
-      await removePropertyFromCollection(collection._id, propertyId);
-
-      if (collection.items) {
-        collection.items.map((itemId) => {
-          typeof itemId == 'string' &&
-            removePropertyFromItem(itemId, propertyId);
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    if (!collection || !collectionId) return;
+    deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
   };
 
   return (
@@ -227,40 +308,44 @@ const Collections: NextPage<
                   </button>
                 </div>
                 <div className='py-1 space-y-2'>
-                  {collection.items &&
-                    collection.properties &&
-                    collection.items.map((item) => (
-                      <>
-                        {isIItem(item) && (
-                          <ItemOverview
-                            key={item._id}
-                            item={item}
-                            collectionProperty={collection.properties || []}
-                            onItemClick={handleOnClickItem}
-                          />
-                        )}
-                      </>
-                    ))}
+                  {itemsQueries.map(
+                    ({ data: item }) =>
+                      item && (
+                        <ItemOverview
+                          key={item._id}
+                          item={item}
+                          collectionProperty={collection.properties}
+                          onItemClick={handleOnClickItem}
+                        />
+                      )
+                  )}
                 </div>
               </Collection.Body>
             </Collection>
           )}
         </div>
 
-        {currentItem && (
+        {selectedItemId && (
           <Drawer opened={showDetails} onClose={closeDetails}>
-            <Drawer.Title>{currentItem.name}</Drawer.Title>
+            <Drawer.Title>{selectedItemName}</Drawer.Title>
             <Drawer.Body>
               <div className='space-y-2'>
-                {currentItem.properties.map((property) => (
-                  <Property
-                    itemProperty={property}
-                    collectionProperty={getCollectionPropertyById(property._id)}
-                    onPropertyUpdate={handleUpdateProperty}
-                    onPropertyDuplicate={handleDuplicateProperty}
-                    onPropertyDelete={handleDeleteProperty}
-                  />
-                ))}
+                {selectedItemPorperties.map(
+                  (property) =>
+                    property._id && (
+                      <Property
+                        itemProperty={property}
+                        collectionProperty={getCollectionPropertyById(
+                          property._id
+                        )}
+                        getValue={getPropertyValue}
+                        setValue={setPropertyValue}
+                        onPropertyUpdate={handleUpdateProperty}
+                        onPropertyDuplicate={handleDuplicateProperty}
+                        onPropertyDelete={handleDeleteProperty}
+                      />
+                    )
+                )}
 
                 <button
                   onClick={handleOnClickAddProperty}
@@ -273,9 +358,9 @@ const Collections: NextPage<
             <Drawer.Footer>
               <div className='flex justify-between items-center space-x-2'>
                 <div className='font-light'>
-                  Created{' '}
-                  {currentItem.updatedAt
-                    ? new Date(currentItem.updatedAt).toDateString()
+                  Last update{' '}
+                  {selectedItemUpdateTs
+                    ? new Date(selectedItemUpdateTs).toDateString()
                     : 'Loading'}
                 </div>
                 <ActionIcon
@@ -301,12 +386,12 @@ const Collections: NextPage<
       )}
 
       {/* Delete item modal  */}
-      {currentItem && deleteModal.isOpen && (
+      {selectedItemId && deleteModal.isOpen && (
         <DeleteModal
-          name={currentItem.name}
+          name={selectedItemName}
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
-          onDelete={handleDeleteItem}
+          onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
         />
       )}
     </>
