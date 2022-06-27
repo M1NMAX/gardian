@@ -125,16 +125,16 @@ const Sidebar: FC = () => {
                   </Disclosure.Button>
                   {group.collections.length > 0 && (
                     <Disclosure.Panel className='py-1 text-sm'>
-                      {group.collections.map((collection) => (
-                        <>
-                          {IsICollection(collection) && (
+                      {group.collections.map(
+                        (collectionId) =>
+                          group._id && (
                             <SidebarCollection
-                              name={collection.name}
-                              id={collection._id}
+                              key={collectionId}
+                              collectionId={collectionId}
+                              groupId={group._id}
                             />
-                          )}
-                        </>
-                      ))}
+                          )
+                      )}
                     </Disclosure.Panel>
                   )}
                 </>
