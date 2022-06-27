@@ -6,15 +6,21 @@ import {
   deleteCollection,
   getCollection,
   renameCollection,
+  toggleCollectionIsFavourite,
 } from '../../../../fetch/collections';
 import RenameModal from '../../../RenameModal';
 import DeleteModal from '../../../DeleteModal';
 import useModal from '../../../../hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import MoveCollectionModal from '../../../MoveCollectionModal';
+import {
+  addCollectionToGroup,
+  removeCollectionFromGroup,
+} from '../../../../fetch/group';
 
 interface SidebarCollectionProps {
-  collectionId: number;
+  collectionId: string;
   groupId: number;
 }
 
@@ -34,6 +40,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     toast.success('Something went wrong, try later');
 
   const renameCollectionModal = useModal();
+  const moveCollectionModal = useModal();
   const deleteCollectionModal = useModal();
 
   //Rename Collection fuction
@@ -52,9 +59,37 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const handleDeleteCollection = () => {
     if (!collectionId) return;
     try {
-      deleteCollection(collectionId.toString());
+      deleteCollection(collectionId);
       deleteCollectionModal.closeModal();
       positiveFeedback('Collection deleted successfully');
+    } catch (error) {
+      negativeFeedback();
+    }
+  };
+
+  const queryClient = useQueryClient();
+
+  const toggleCollectionIsFavouriteMutation = useMutation(
+    toggleCollectionIsFavourite,
+    {
+      onSuccess: () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  const handleMoveCollection = async (desGroupId: number) => {
+    try {
+      await removeCollectionFromGroup(groupId, collectionId);
+      await addCollectionToGroup(desGroupId, collectionId);
+      positiveFeedback('Success');
     } catch (error) {
       negativeFeedback();
     }
@@ -64,7 +99,10 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   return (
     <>
       <div
-        className={`
+        className={`${
+          collectionId === urlId &&
+          'border-r-2 border-primary-bright bg-gray-300 dark:bg-gray-600'
+        } 
         flex items-center justify-between w-full h-8 px-2 mb-1
        hover:bg-gray-400 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
@@ -77,6 +115,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <div>
           <SidebarCollectionMenu
             onClickRename={renameCollectionModal.openModal}
+            onClickMove={moveCollectionModal.openModal}
             onClickDelete={deleteCollectionModal.openModal}
           />
         </div>
@@ -88,6 +127,15 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           handleClose={renameCollectionModal.closeModal}
           name={collection.name}
           onRename={handleRenameCollection}
+        />
+      )}
+
+      {moveCollectionModal.isOpen && (
+        <MoveCollectionModal
+          currentGroupId={groupId}
+          open={moveCollectionModal.isOpen}
+          handleClose={moveCollectionModal.closeModal}
+          onMove={handleMoveCollection}
         />
       )}
 

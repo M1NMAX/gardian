@@ -11,13 +11,13 @@ import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickMove: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  variant?: 'primary' | 'secondary';
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = ({
-  variant = 'secondary',
   onClickRename,
+  onClickMove,
   onClickDelete,
 }) => {
   return (
@@ -71,7 +71,9 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
+              <button
+                onClick={onClickMove}
+                className='collection-menu-item-btn'>
                 <ReplyIcon className='icon-sm -scale-x-100' />
                 <span>Move to</span>
               </button>

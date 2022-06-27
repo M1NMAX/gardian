@@ -39,7 +39,7 @@ export async function createCollection(
 }
 
 export async function updateCollection(
-  collectionId: number,
+  collectionId: number | string,
   collection: ICollection
 ): Promise<boolean> {
   const res = await fetch(
@@ -50,7 +50,7 @@ export async function updateCollection(
 }
 
 export async function renameCollection(
-  id: number,
+  id: number | string,
   name: string
 ): Promise<boolean> {
   const collection = await getCollection(id);

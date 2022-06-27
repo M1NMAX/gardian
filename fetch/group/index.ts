@@ -34,7 +34,7 @@ export async function renameGroup(id: number, name: string): Promise<boolean> {
 
 export async function addCollectionToGroup(
   groupId: number,
-  collectionId: number
+  collectionId: number | string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'PATCH',
@@ -44,7 +44,7 @@ export async function addCollectionToGroup(
 
 export async function removeCollectionFromGroup(
   groupId: number,
-  collectionId: number
+  collectionId: number | string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'DELETE',

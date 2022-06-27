@@ -9,7 +9,7 @@ interface IBase {
 }
 
 export interface IGroup extends IBase {
-  collections: number[];
+  collections: string[];
   userId: string;
 }
 
