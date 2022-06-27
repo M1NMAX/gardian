@@ -4,21 +4,26 @@ import {
   DuplicateIcon,
   PencilIcon,
   ReplyIcon,
-  StarIcon,
+  StarIcon as StarIconOutline,
   TrashIcon,
 } from '@heroicons/react/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
+  isFavourite: boolean;
+  onClickAddToFavourite: () => void;
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMove: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = ({
+  isFavourite,
+  onClickDelete,
+  onClickAddToFavourite,
   onClickRename,
   onClickMove,
-  onClickDelete,
 }) => {
   return (
     <Menu as='div' className='relative'>
@@ -48,9 +53,18 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
-                <StarIcon className='icon-sm' />
-                <span>Add to Favorites</span>
+              <button
+                onClick={onClickAddToFavourite}
+                className='collection-menu-item-btn'>
+                {isFavourite ? (
+                  <StarIconFilled className='icon-sm text-green-500' />
+                ) : (
+                  <StarIconOutline className='icon-sm' />
+                )}
+
+                <span>
+                  {isFavourite ? 'Remove from Favourites' : 'Add to Favoutires'}
+                </span>
               </button>
             </Menu.Item>
 

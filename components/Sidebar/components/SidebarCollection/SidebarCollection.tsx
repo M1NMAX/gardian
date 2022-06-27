@@ -66,6 +66,8 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
       negativeFeedback();
     }
   };
+  const handleToggleFavourite = () =>
+    toggleCollectionIsFavouriteMutation.mutate(collectionId);
 
   const queryClient = useQueryClient();
 
@@ -73,10 +75,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     toggleCollectionIsFavourite,
     {
       onSuccess: () => {
-        if (!collectionId) throw 'CollectionId is undefined';
-
-        queryClient.invalidateQueries(['collection', collectionId]);
-
+        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
         positiveFeedback('Success');
       },
       onError: () => {
@@ -85,15 +84,21 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     }
   );
 
-  const handleMoveCollection = async (desGroupId: number) => {
-    try {
+  const moveCollectionMutation = useMutation(
+    async (desGroupId: number) => {
       await removeCollectionFromGroup(groupId, collectionId);
       await addCollectionToGroup(desGroupId, collectionId);
-      positiveFeedback('Success');
-    } catch (error) {
-      negativeFeedback();
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
     }
-  };
+  );
 
   if (!collection) return <></>;
   return (
@@ -114,9 +119,11 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
         <div>
           <SidebarCollectionMenu
+            isFavourite={collection.isFavourite}
+            onClickDelete={deleteCollectionModal.openModal}
+            onClickAddToFavourite={handleToggleFavourite}
             onClickRename={renameCollectionModal.openModal}
             onClickMove={moveCollectionModal.openModal}
-            onClickDelete={deleteCollectionModal.openModal}
           />
         </div>
       </div>
@@ -135,7 +142,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           currentGroupId={groupId}
           open={moveCollectionModal.isOpen}
           handleClose={moveCollectionModal.closeModal}
-          onMove={handleMoveCollection}
+          onMove={moveCollectionMutation.mutate}
         />
       )}
 

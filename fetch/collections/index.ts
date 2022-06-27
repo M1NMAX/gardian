@@ -58,7 +58,7 @@ export async function renameCollection(
 }
 
 export async function toggleCollectionIsFavourite(
-  id: number
+  id: number | string
 ): Promise<boolean> {
   const collection = await getCollection(id);
   return updateCollection(id, {

@@ -3,6 +3,8 @@ import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/groups/';
 
+//Types
+
 export async function createGroup(name: string): Promise<IGroup> {
   const res = await fetch(baseUrl, getRequestOptions('POST', { name }));
   return res.json().then((response) => response.data);
