@@ -11,11 +11,12 @@ import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickMoveTo: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
-  const { onClickRename, onClickDelete } = props;
+  const { onClickRename, onClickMoveTo, onClickDelete } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -43,7 +44,9 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
           </Menu.Item>
 
           <Menu.Item as='li'>
-            <button className='collection-menu-item-btn'>
+            <button
+              onClick={onClickMoveTo}
+              className='collection-menu-item-btn'>
               <ReplyIcon className='icon-sm -scale-x-100' />
               <span>Move to</span>
             </button>

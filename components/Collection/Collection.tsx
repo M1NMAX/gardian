@@ -16,12 +16,12 @@ import {
   deleteCollection,
   renameCollection,
   toggleCollectionIsFavourite,
-  updateCollection,
 } from '../../fetch/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import { useMutation, useQueryClient } from 'react-query';
+import MoveCollectionModal from '../MoveCollectionModal';
 
 interface HeaderProps {
   children: JSX.Element;
@@ -85,6 +85,14 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
     openModal: openRenameModal,
     closeModal: closeRenameModal,
   } = useModal();
+
+  //Move Collection Modal
+  const {
+    isOpen: isMoveModalOpen,
+    openModal: openMoveModal,
+    closeModal: closeMoveModal,
+  } = useModal();
+
   //Delete Collection Modal
   const {
     isOpen: deleteModal,
@@ -104,7 +112,16 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
     }
   };
 
-  //Rename Collection fuction
+  const handleMoveCollection = (id: number) => {
+    if (!collection._id) return;
+    try {
+      console.log(id);
+    } catch (error) {
+      negativeFeedback();
+    }
+  };
+
+  //Handle delete collection
   const handleDeleteCollection = () => {
     if (!collection._id) return;
     try {
@@ -152,6 +169,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
 
           <CollectionMenu
             onClickRename={openRenameModal}
+            onClickMoveTo={openMoveModal}
             onClickDelete={openDeleteModal}
           />
         </div>
@@ -167,6 +185,14 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           handleClose={closeRenameModal}
           name={collection.name}
           onRename={handleRenameCollection}
+        />
+      )}
+
+      {isMoveModalOpen && (
+        <MoveCollectionModal
+          open={isMoveModalOpen}
+          handleClose={closeMoveModal}
+          onMove={handleMoveCollection}
         />
       )}
 
