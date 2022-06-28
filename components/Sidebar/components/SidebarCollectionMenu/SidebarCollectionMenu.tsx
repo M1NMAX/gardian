@@ -13,18 +13,21 @@ import React, { FC, Fragment } from 'react';
 interface CollectionMenuProps {
   isFavourite: boolean;
   onClickAddToFavourite: () => void;
+  onClickDuplicate: () => void;
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMove: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const CollectionMenu: FC<CollectionMenuProps> = ({
-  isFavourite,
-  onClickDelete,
-  onClickAddToFavourite,
-  onClickRename,
-  onClickMove,
-}) => {
+const CollectionMenu: FC<CollectionMenuProps> = (props) => {
+  const {
+    isFavourite,
+    onClickDelete,
+    onClickAddToFavourite,
+    onClickDuplicate,
+    onClickRename,
+    onClickMove,
+  } = props;
   return (
     <Menu as='div' className='relative'>
       <Menu.Button
@@ -69,7 +72,9 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
+              <button
+                onClick={onClickDuplicate}
+                className='collection-menu-item-btn'>
                 <DuplicateIcon className='icon-sm' />
                 <span>Duplicate</span>
               </button>

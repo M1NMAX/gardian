@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import {
+  addItemToCollection,
+  createCollection,
   deleteCollection,
   getCollection,
   renameCollection,
@@ -18,6 +20,7 @@ import {
   addCollectionToGroup,
   removeCollectionFromGroup,
 } from '../../../../fetch/group';
+import { createItem, getItem } from '../../../../fetch/item';
 
 interface SidebarCollectionProps {
   collectionId: string;
@@ -84,6 +87,48 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     }
   );
 
+  const duplicateCollectionMutation = useMutation(
+    async () => {
+      if (!collection) return;
+      const {
+        name,
+        description,
+        properties,
+        isDescriptionHidden,
+        isFavourite,
+      } = collection;
+      //Create a collection's copy
+      const duplicatedCollection = await createCollection({
+        name: name + '(copy)',
+        description,
+        isDescriptionHidden,
+        isFavourite,
+        properties,
+        items: [],
+      });
+
+      collection.items.map(async (itemId) => {
+        const { name, properties } = await getItem(itemId);
+
+        const newItem = await createItem({ name, properties });
+
+        if (!newItem._id || !duplicatedCollection._id) return;
+
+        await addItemToCollection(duplicatedCollection._id, newItem._id);
+        await addCollectionToGroup(groupId, duplicatedCollection._id);
+      });
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
   const moveCollectionMutation = useMutation(
     async (desGroupId: number) => {
       await removeCollectionFromGroup(groupId, collectionId);
@@ -122,6 +167,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
             isFavourite={collection.isFavourite}
             onClickDelete={deleteCollectionModal.openModal}
             onClickAddToFavourite={handleToggleFavourite}
+            onClickDuplicate={duplicateCollectionMutation.mutate}
             onClickRename={renameCollectionModal.openModal}
             onClickMove={moveCollectionModal.openModal}
           />

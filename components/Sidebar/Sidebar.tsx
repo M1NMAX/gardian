@@ -35,10 +35,6 @@ const Sidebar: FC = () => {
     isLoading,
   } = useQuery<IGroup[], Error>('groups', getGroups);
 
-  const IsICollection = (obj: any): obj is ICollection => {
-    return '_id' in obj && 'name' in obj && 'properties' in obj;
-  };
-
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
