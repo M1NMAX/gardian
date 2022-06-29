@@ -14,7 +14,6 @@ import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
 import templates from '../../data/templates';
-import Property from '../../backend/models/Property';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -145,38 +144,71 @@ const TemplatesPage: NextPage<
             </Drawer.Description>
 
             <Drawer.Body>
-              <div>
-                <p>Example of item </p>
-                <div className='flex flex-col space-y-2'>
-                  {currentTemplate.items?.map(
-                    (item, idx) =>
-                      isIItem(item) && (
-                        <span
-                          key={idx}
-                          className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
-                          <span className='font-semibold text-lg'>
-                            {item.name}
-                          </span>
-                          {currentTemplate.properties.map(
-                            (templateProperty) =>
-                              getPropertyValue(
-                                item,
-                                templateProperty._id || -1
-                              ) != '' && (
-                                <span className='space-x-1'>
-                                  <span>{templateProperty.name}</span>
-                                  <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
-                                    {getPropertyValue(
-                                      item,
-                                      templateProperty._id || -1
-                                    )}
+              <div className='space-y-2'>
+                <div>
+                  <p>Example of item </p>
+                  <div className='flex flex-col space-y-2'>
+                    {currentTemplate.items?.map(
+                      (item, idx) =>
+                        isIItem(item) && (
+                          <span
+                            key={idx}
+                            className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
+                            <span className='font-semibold text-lg'>
+                              {item.name}
+                            </span>
+                            {currentTemplate.properties.map(
+                              (templateProperty) =>
+                                getPropertyValue(
+                                  item,
+                                  templateProperty._id || -1
+                                ) != '' && (
+                                  <span className='space-x-1'>
+                                    <span>{templateProperty.name}</span>
+                                    <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                      {getPropertyValue(
+                                        item,
+                                        templateProperty._id || -1
+                                      )}
+                                    </span>
                                   </span>
-                                </span>
-                              )
-                          )}
-                        </span>
-                      )
-                  )}
+                                )
+                            )}
+                          </span>
+                        )
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <p>Properties</p>
+                  <table
+                    className='w-full border-separate border-spacing-2 
+                    border-l-2 border-gray-300 dark:border-gray-600 '>
+                    <thead>
+                      <tr>
+                        <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
+                          Name
+                        </th>
+                        <th className='rounded-tr border-2 border-gray-300 dark:border-gray-600'>
+                          Type
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentTemplate.properties.map((property) => (
+                        <tr>
+                          <td className='border-2 border-gray-300 dark:border-gray-600'>
+                            {property.name}
+                          </td>
+                          <td
+                            className='border-2 border-gray-300 dark:border-gray-600
+                          first-letter:uppercase'>
+                            {property.type}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </Drawer.Body>

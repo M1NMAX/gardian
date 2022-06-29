@@ -41,8 +41,8 @@ export interface ICollection extends IBase {
 
 export interface ITemplate extends IBase {
   properties: IProperty[];
-  description?: string;
-  items?: number[] | IItem[];
+  description: string;
+  items: IItem[];
 }
 
 //Components props
