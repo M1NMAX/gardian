@@ -5,7 +5,16 @@ import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
 import ActionIcon from '../../Frontstate/ActionIcon';
 
-const types = ['text', 'select', 'checkbox', 'url', 'date', 'number', 'file'];
+const types = [
+  'text',
+  'textarea',
+  'select',
+  'checkbox',
+  'url',
+  'date',
+  'number',
+  'file',
+];
 
 interface EditPropertyModalProps {
   open: boolean;
@@ -78,10 +87,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           </select>
         </label>
 
-        <div
-          className={`mt-2 ${
-            !['select', 'multi-select'].includes(selectedType) && 'hidden'
-          }`}>
+        <div className={`mt-2 ${selectedType !== 'select' && 'hidden'}`}>
           <p>Options</p>
           {values.map((value, idx) => (
             <span

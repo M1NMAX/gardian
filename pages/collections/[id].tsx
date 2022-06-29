@@ -139,7 +139,7 @@ const Collections: NextPage<
   const updateCollectioPropertyMutation = useMutation(
     updateCollectionProperty,
     {
-      onSuccess: ({ propertyId }) => {
+      onSuccess: () => {
         if (!collectionId) throw 'CollectionId is undefined';
 
         queryClient.invalidateQueries(['collection', collectionId]);
@@ -217,7 +217,7 @@ const Collections: NextPage<
 
   const setPropertyValue = (id: number, value: string): void => {
     if (!id || !selectedItemId) return;
-    //TODO:Do some mutation for certain property type
+
     setSelectedItemPorperties(
       selectedItemPorperties.map((property) =>
         property._id == id ? { ...property, value } : property
