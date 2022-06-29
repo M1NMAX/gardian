@@ -182,8 +182,8 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
        hover:bg-gray-400 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
         <Link href={`/collections/${collectionId}`}>
-          <a className='flex items-center space-x-1 w-full'>
-            <span className='w-1/2 truncate'>{collection.name}</span>
+          <a className='flex items-center space-x-1 w-9/12'>
+            <span className='truncate'>{collection.name}</span>
           </a>
         </Link>
 
