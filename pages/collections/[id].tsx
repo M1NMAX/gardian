@@ -310,12 +310,8 @@ const Collections: NextPage<
               </Collection.Description>
               <Collection.Body>
                 <div
-                  className='flex justify-between items-center py-0.5 border-dotted 
+                  className='flex justify-end items-center py-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
-                  <ActionIcon
-                    icon={isListView ? <ViewGridIcon /> : <ViewListIcon />}
-                    onClick={() => setIsListView(!isListView)}
-                  />
                   <button
                     onClick={newItemModal.openModal}
                     className='btn btn-primary'>
