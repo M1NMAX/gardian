@@ -67,6 +67,16 @@ export async function toggleCollectionIsFavourite(
   });
 }
 
+export async function toggleCollectionDescriptionState(
+  id: number | string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, {
+    ...collection,
+    isDescriptionHidden: !collection.isDescriptionHidden,
+  });
+}
+
 export async function deleteCollection(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);

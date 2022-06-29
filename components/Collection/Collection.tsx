@@ -15,6 +15,7 @@ import useModal from '../../hooks/useModal';
 import {
   deleteCollection,
   renameCollection,
+  toggleCollectionDescriptionState,
   toggleCollectionIsFavourite,
 } from '../../fetch/collections';
 import { useRouter } from 'next/router';
@@ -68,6 +69,27 @@ const Header: FC<HeaderProps> = (props) => {
   //handle update collection property mutation
   const toggleCollectionIsFavouriteMutation = useMutation(
     toggleCollectionIsFavourite,
+    {
+      onSuccess: () => {
+        if (!collection._id) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collection._id]);
+
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  const handleDescriptionState = () => {
+    if (!collection._id) return;
+    toggleCollectionDescriptionMutation.mutate(collection._id);
+  };
+  //handle toggle collection description state mutation
+  const toggleCollectionDescriptionMutation = useMutation(
+    toggleCollectionDescriptionState,
     {
       onSuccess: () => {
         if (!collection._id) throw 'CollectionId is undefined';
@@ -173,7 +195,9 @@ const Header: FC<HeaderProps> = (props) => {
           <CollectionAdjustmentMenu />
 
           <CollectionMenu
+            isDescriptionHidden={collection.isDescriptionHidden}
             onClickNewItem={openNewItemModal}
+            onClickDesctiption={handleDescriptionState}
             onClickRename={openRenameModal}
             onClickDelete={openDeleteModal}
           />

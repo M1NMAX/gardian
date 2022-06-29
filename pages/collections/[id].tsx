@@ -305,7 +305,7 @@ const Collections: NextPage<
                 openNewItemModal={newItemModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
-              <Collection.Description>
+              <Collection.Description hidden={collection.isDescriptionHidden}>
                 {collection.description}
               </Collection.Description>
               <Collection.Body>

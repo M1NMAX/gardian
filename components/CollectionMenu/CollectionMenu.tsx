@@ -1,6 +1,7 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
+  InformationCircleIcon,
   PencilIcon,
   PlusIcon,
   TrashIcon,
@@ -8,13 +9,21 @@ import {
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
+  isDescriptionHidden: boolean;
   onClickNewItem: () => void;
+  onClickDesctiption: () => void;
   onClickRename: () => void;
   onClickDelete: () => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
-  const { onClickRename, onClickNewItem, onClickDelete } = props;
+  const {
+    isDescriptionHidden,
+    onClickRename,
+    onClickDesctiption,
+    onClickNewItem,
+    onClickDelete,
+  } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -40,6 +49,16 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
               <span>New Item</span>
             </button>
           </Menu.Item>
+
+          <Menu.Item as='li'>
+            <button
+              onClick={onClickDesctiption}
+              className='collection-menu-item-btn'>
+              <InformationCircleIcon className='icon-sm' />
+              <span>{isDescriptionHidden ? 'Show' : 'Hide'} Description</span>
+            </button>
+          </Menu.Item>
+
           <Menu.Item as='li'>
             <button
               onClick={onClickRename}
