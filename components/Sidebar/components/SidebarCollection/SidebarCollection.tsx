@@ -47,18 +47,6 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const deleteCollectionModal = useModal();
 
   //Rename Collection fuction
-  const handleRenameCollection = (name: string): void => {
-    if (!collectionId) return;
-    try {
-      renameCollection(collectionId, name);
-      renameCollectionModal.closeModal();
-      positiveFeedback('Collection renamed successfully');
-    } catch (error) {
-      negativeFeedback();
-    }
-  };
-
-  //Rename Collection fuction
   const handleDeleteCollection = () => {
     if (!collectionId) return;
     try {
@@ -129,6 +117,25 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     }
   );
 
+  const renameCollectionMutation = useMutation(
+    async (name: string) => {
+      await renameCollection(collectionId, name);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
+        queryClient.invalidateQueries(['collection', collectionId]);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        renameCollectionModal.closeModal();
+      },
+    }
+  );
+
   const moveCollectionMutation = useMutation(
     async (desGroupId: number) => {
       await removeCollectionFromGroup(groupId, collectionId);
@@ -179,7 +186,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           open={renameCollectionModal.isOpen}
           handleClose={renameCollectionModal.closeModal}
           name={collection.name}
-          onRename={handleRenameCollection}
+          onRename={renameCollectionMutation.mutate}
         />
       )}
 

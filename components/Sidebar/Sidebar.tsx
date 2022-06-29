@@ -33,7 +33,7 @@ const Sidebar: FC = () => {
     error,
     isError,
     isLoading,
-  } = useQuery<IGroup[], Error>('groups', getGroups);
+  } = useQuery<IGroup[], Error>(['groups'], getGroups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
