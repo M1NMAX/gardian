@@ -2,21 +2,19 @@ import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
   PencilIcon,
-  ReplyIcon,
-  StarIcon as StarIconOutline,
+  PlusIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
-import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
-  onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickMoveTo: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickNewItem: () => void;
+  onClickRename: () => void;
+  onClickDelete: () => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
-  const { onClickRename, onClickMoveTo, onClickDelete } = props;
+  const { onClickRename, onClickNewItem, onClickDelete } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -36,6 +34,14 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
             <button
+              onClick={onClickNewItem}
+              className='collection-menu-item-btn'>
+              <PlusIcon className='icon-sm' />
+              <span>New Item</span>
+            </button>
+          </Menu.Item>
+          <Menu.Item as='li'>
+            <button
               onClick={onClickRename}
               className='collection-menu-item-btn'>
               <PencilIcon className='icon-sm' />
@@ -43,14 +49,6 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </button>
           </Menu.Item>
 
-          <Menu.Item as='li'>
-            <button
-              onClick={onClickMoveTo}
-              className='collection-menu-item-btn'>
-              <ReplyIcon className='icon-sm -scale-x-100' />
-              <span>Move to</span>
-            </button>
-          </Menu.Item>
           <Menu.Item>
             <button
               onClick={onClickDelete}

@@ -22,18 +22,13 @@ import { useRouter } from 'next/router';
 import { Disclosure } from '@headlessui/react';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
-import { ICollection, IGroup } from '../../interfaces';
+import { IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const {
-    data: groups,
-    error,
-    isError,
-    isLoading,
-  } = useQuery<IGroup[], Error>(['groups'], getGroups);
+  const { data: groups } = useQuery<IGroup[], Error>(['groups'], getGroups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);

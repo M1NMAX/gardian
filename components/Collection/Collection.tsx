@@ -21,11 +21,11 @@ import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import { useMutation, useQueryClient } from 'react-query';
-import MoveCollectionModal from '../MoveCollectionModal';
 
 interface HeaderProps {
-  children: JSX.Element;
+  children: ReactNode;
   collection: ICollection;
+  openNewItemModal: () => void;
 }
 
 interface DescriptionProps {
@@ -53,7 +53,9 @@ const Collection: CollectionComponent = ({ children }) => {
   );
 };
 
-const Header: FC<HeaderProps> = ({ children, collection }) => {
+const Header: FC<HeaderProps> = (props) => {
+  const { children, collection, openNewItemModal } = props;
+
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
@@ -86,13 +88,6 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
     closeModal: closeRenameModal,
   } = useModal();
 
-  //Move Collection Modal
-  const {
-    isOpen: isMoveModalOpen,
-    openModal: openMoveModal,
-    closeModal: closeMoveModal,
-  } = useModal();
-
   //Delete Collection Modal
   const {
     isOpen: deleteModal,
@@ -100,40 +95,52 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
     closeModal: closeDeleteModal,
   } = useModal();
 
-  //Rename Collection fuction
-  const handleRenameCollection = (name: string): void => {
-    if (!collection._id) return;
-    try {
-      renameCollection(collection._id, name);
-      closeRenameModal();
-      positiveFeedback('Collection renamed successfully');
-    } catch (error) {
-      negativeFeedback();
+  //handle rename collection and its mutation
+  const renameCollectionMutation = useMutation(
+    async (name: string) => {
+      if (!collection._id) return;
+      await renameCollection(collection._id.toString(), name);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['sidebarCollection', collection._id]);
+        queryClient.invalidateQueries(['collection', collection._id]);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        closeRenameModal();
+      },
     }
-  };
+  );
 
-  const handleMoveCollection = (id: number) => {
-    if (!collection._id) return;
-    try {
-      console.log(id);
-    } catch (error) {
-      negativeFeedback();
-    }
-  };
+  //handle delete collection and its mutation
+  const deleteCollectionMutation = useMutation(
+    async () => {
+      if (!collection._id) return;
+      await deleteCollection(collection._id.toString());
+    },
+    {
+      onSuccess: () => {
+        if (!collection._id) return;
 
-  //Handle delete collection
-  const handleDeleteCollection = () => {
-    if (!collection._id) return;
-    try {
-      deleteCollection(collection._id.toString());
-      closeDeleteModal();
-      positiveFeedback('Collection deleted successfully');
-      //Redirect user to collection overview
-      router.push('/collections');
-    } catch (error) {
-      negativeFeedback();
+        queryClient.removeQueries(['sidebarCollection', collection._id]);
+        queryClient.removeQueries(['collection', collection._id]);
+
+        positiveFeedback('Collection deleted');
+        //send user to My Collection page after delete
+        router.push('/collections');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        closeDeleteModal();
+      },
     }
-  };
+  );
 
   return (
     <div>
@@ -168,8 +175,8 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           />
 
           <CollectionMenu
+            onClickNewItem={openNewItemModal}
             onClickRename={openRenameModal}
-            onClickMoveTo={openMoveModal}
             onClickDelete={openDeleteModal}
           />
         </div>
@@ -184,15 +191,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           open={renameModal}
           handleClose={closeRenameModal}
           name={collection.name}
-          onRename={handleRenameCollection}
-        />
-      )}
-
-      {isMoveModalOpen && (
-        <MoveCollectionModal
-          open={isMoveModalOpen}
-          handleClose={closeMoveModal}
-          onMove={handleMoveCollection}
+          onRename={renameCollectionMutation.mutate}
         />
       )}
 
@@ -201,7 +200,7 @@ const Header: FC<HeaderProps> = ({ children, collection }) => {
           open={deleteModal}
           handleClose={closeDeleteModal}
           name={collection.name}
-          onDelete={handleDeleteCollection}
+          onDelete={deleteCollectionMutation.mutate}
         />
       )}
     </div>

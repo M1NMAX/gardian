@@ -300,7 +300,9 @@ const Collections: NextPage<
         <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
           {collection && (
             <Collection>
-              <Collection.Header collection={collection}>
+              <Collection.Header
+                collection={collection}
+                openNewItemModal={newItemModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
               <Collection.Description>
