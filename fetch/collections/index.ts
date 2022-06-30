@@ -77,6 +77,14 @@ export async function toggleCollectionDescriptionState(
   });
 }
 
+export async function updateCollectionDescription(
+  id: number | string,
+  description: string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, { ...collection, description });
+}
+
 export async function deleteCollection(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);

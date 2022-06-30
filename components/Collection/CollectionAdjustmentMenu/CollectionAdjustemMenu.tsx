@@ -80,7 +80,7 @@ const CollectionAdjustmentMenu: FC<CollectionAdjustmentMenuProps> = (props) => {
               <Menu.Item as='li'>
                 <button className='collection-menu-item-btn'>
                   <SortDescendingIcon className='icon-sm' />
-                  <span>Creation data</span>
+                  <span>Creation date</span>
                 </button>
               </Menu.Item>
             </ul>

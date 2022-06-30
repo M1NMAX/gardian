@@ -34,9 +34,11 @@ import {
   removeItemFromCollection,
   updateCollectionProperty,
   getCollection,
+  updateCollectionDescription,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
+import EditDescriptionModal from '../../components/EditDescriptionModal';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -55,6 +57,7 @@ const Collections: NextPage<
   //Modals
   const newItemModal = useModal();
   const deleteModal = useModal();
+  const descriptionModal = useModal();
 
   //Query and cache
   const queryClient = useQueryClient();
@@ -146,6 +149,26 @@ const Collections: NextPage<
         queryClient.invalidateQueries(['items', collectionId]);
 
         positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //handle update collection property mutation
+  const updateCollectioDescriptionMutation = useMutation(
+    async (description: string) => {
+      if (!collectionId) return;
+      await updateCollectionDescription(collectionId, description);
+    },
+    {
+      onSuccess: () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+
+        positiveFeedback('Description updated');
       },
       onError: () => {
         negativeFeedback();
@@ -302,10 +325,13 @@ const Collections: NextPage<
             <Collection>
               <Collection.Header
                 collection={collection}
-                openNewItemModal={newItemModal.openModal}>
+                openNewItemModal={newItemModal.openModal}
+                onClickAddDescription={descriptionModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
-              <Collection.Description hidden={collection.isDescriptionHidden}>
+              <Collection.Description
+                hidden={collection.isDescriptionHidden}
+                onClickEditDescription={descriptionModal.openModal}>
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
@@ -387,7 +413,6 @@ const Collections: NextPage<
           </Drawer>
         )}
       </main>
-
       {/* New item modal  */}
       {collection && newItemModal.isOpen && (
         <NewItemModal
@@ -398,7 +423,6 @@ const Collections: NextPage<
           collection={collection}
         />
       )}
-
       {/* Delete item modal  */}
       {selectedItemId && deleteModal.isOpen && (
         <DeleteModal
@@ -406,6 +430,15 @@ const Collections: NextPage<
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
           onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
+        />
+      )}
+      {/* Edit description */}
+      {collection && descriptionModal.isOpen && (
+        <EditDescriptionModal
+          description={collection.description}
+          open={descriptionModal.isOpen}
+          handleClose={descriptionModal.closeModal}
+          onSave={updateCollectioDescriptionMutation.mutate}
         />
       )}
     </>

@@ -1,5 +1,6 @@
 import {
-  AdjustmentsIcon,
+  EmojiHappyIcon,
+  InformationCircleIcon,
   MenuAlt2Icon,
   StarIcon as StarIconOutline,
 } from '@heroicons/react/outline';
@@ -28,11 +29,13 @@ interface HeaderProps {
   children: ReactNode;
   collection: ICollection;
   openNewItemModal: () => void;
+  onClickAddDescription: () => void;
 }
 
 interface DescriptionProps {
   children: string;
   hidden?: boolean;
+  onClickEditDescription: () => void;
 }
 
 interface BodyProps {
@@ -56,7 +59,8 @@ const Collection: CollectionComponent = ({ children }) => {
 };
 
 const Header: FC<HeaderProps> = (props) => {
-  const { children, collection, openNewItemModal } = props;
+  const { children, collection, openNewItemModal, onClickAddDescription } =
+    props;
 
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -204,7 +208,28 @@ const Header: FC<HeaderProps> = (props) => {
         </div>
       </div>
       {/* Bottom section AKA collection name  */}
-      <div>{children}</div>
+      <div className='group'>
+        <div className='flex space-x-1'>
+          <button
+            className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
+              invisible group-hover:visible'>
+            <EmojiHappyIcon className='icon-xs' />
+            <span>Add Icon</span>
+          </button>
+
+          {/* only render the follow btn if colllection does not have description */}
+          {collection.description === '' && (
+            <button
+              onClick={onClickAddDescription}
+              className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
+              invisible group-hover:visible'>
+              <InformationCircleIcon className='icon-xs' />
+              <span>Add Description </span>
+            </button>
+          )}
+        </div>
+        {children}
+      </div>
 
       {/* Modals  */}
 
@@ -230,8 +255,21 @@ const Header: FC<HeaderProps> = (props) => {
 };
 
 const Description: FC<DescriptionProps> = (props) => {
-  const { children, hidden = false } = props;
-  return <p className={`${hidden && 'hidden'}`}>{children}</p>;
+  const { children, hidden = false, onClickEditDescription } = props;
+  return (
+    <div className={`${hidden && 'hidden'} group`}>
+      {children !== '' && (
+        <button
+          onClick={onClickEditDescription}
+          className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
+              invisible group-hover:visible'>
+          <InformationCircleIcon className='icon-xs' />
+          <span>Edit Description</span>
+        </button>
+      )}
+      <p>{children}</p>
+    </div>
+  );
 };
 
 const Body: FC<BodyProps> = (props) => {
