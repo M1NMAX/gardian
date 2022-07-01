@@ -3,6 +3,8 @@ import ThemeBtn from '../ThemeBtn';
 import {
   ChevronRightIcon,
   CollectionIcon,
+  DotsHorizontalIcon,
+  DotsVerticalIcon,
   PlusIcon,
   SearchIcon,
   TemplateIcon,
@@ -128,6 +130,13 @@ const Sidebar: FC = () => {
                       )}
                     </Disclosure.Panel>
                   )}
+                  <div className='flex justify-end px-0.5 pb-0.5'>
+                    <button
+                      className='flex items-center justify-center px-1 
+                    rounded hover:bg-gray-300 dark:hover:bg-gray-600'>
+                      <DotsHorizontalIcon className='icon-xs' />
+                    </button>
+                  </div>
                 </>
               )}
             </Disclosure>
