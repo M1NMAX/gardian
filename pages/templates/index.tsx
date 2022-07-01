@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -6,14 +6,26 @@ import Head from 'next/head';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { AdjustmentsIcon, MenuAlt2Icon } from '@heroicons/react/outline';
+import {
+  AdjustmentsIcon,
+  CheckCircleIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  MenuAlt2Icon,
+  SortAscendingIcon,
+  SortDescendingIcon,
+  TableIcon,
+  ViewGridIcon,
+  ViewListIcon,
+} from '@heroicons/react/outline';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
-import templates from '../../data/templates';
+import { templates as rawTemplates } from '../../data/templates';
+import { Popover, RadioGroup, Transition } from '@headlessui/react';
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -24,6 +36,28 @@ const TemplatesPage: NextPage<
   const [showDetails, setShowDetails] = useState(false);
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
+
+  const [selectedView, setSelectedView] = useState<string>('grid');
+  const [selectedSort, setSelectedSort] = useState<string>('name+asc');
+  const [templates, setTemplates] = useState(rawTemplates);
+
+  const dynamicSort = (par: string) => {
+    const [property, order] = par.split('+');
+
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    return (a: ITemplate, b: ITemplate) => {
+      const aPorperty = a[property as keyof typeof a] || a.name;
+      const bPorperty = b[property as keyof typeof b] || b.name;
+      let result = aPorperty < bPorperty ? -1 : aPorperty > bPorperty ? 1 : 0;
+      return result * sortOrder;
+    };
+  };
+
+  useEffect(
+    () => setTemplates(templates.sort(dynamicSort(selectedSort))),
+    [selectedSort]
+  );
 
   const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
@@ -108,11 +142,169 @@ const TemplatesPage: NextPage<
                 />
               )}
             </div>
-            <div className='flex items-center space-x-1.5'>
-              <ActionIcon
-                icon={<AdjustmentsIcon className='rotate-90' />}
-                variant='filled'
-              />
+            <div>
+              <Popover className='relative'>
+                <Popover.Button className='action-icon-filled-variant rounded'>
+                  <AdjustmentsIcon className='icon-sm rotate-90' />
+                </Popover.Button>
+                <Transition
+                  as={Fragment}
+                  enter='transition ease-out duration-200'
+                  enterFrom='opacity-0 translate-y-1'
+                  enterTo='opacity-100 translate-y-0'
+                  leave='transition ease-in duration-150'
+                  leaveFrom='opacity-100 translate-y-0'
+                  leaveTo='opacity-0 translate-y-1'>
+                  <Popover.Panel
+                    className='absolute right-0 z-10 mt-1 w-screen max-w-xs py-1 px-2 
+                    rounded-l-lg rounded-br-lg rounded-tr dark:border 
+                    dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800
+                   space-y-2 divide-y-2  divide-gray-300 dark:divide-gray-600'>
+                    {({ close }) => (
+                      <>
+                        <RadioGroup
+                          value={selectedView}
+                          onChange={(e) => {
+                            setSelectedView(e);
+                            close();
+                          }}>
+                          <RadioGroup.Label className='font-semibold'>
+                            View
+                          </RadioGroup.Label>
+                          <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                            <RadioGroup.Option
+                              value='grid'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1  font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewGridIcon className='icon-xs' />
+                                  <span className='text-sm'>Grid</span>
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+
+                            <RadioGroup.Option
+                              value='list'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1 font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewListIcon className='icon-xs' />
+                                  <span className='text-sm'>List</span>
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+                          </div>
+                        </RadioGroup>
+                        <RadioGroup
+                          value={selectedSort}
+                          onChange={(e) => {
+                            setSelectedSort(e);
+                            close();
+                          }}>
+                          <RadioGroup.Label className='font-medium'>
+                            Sort by
+                          </RadioGroup.Label>
+                          <div className='space-y-1'>
+                            <RadioGroup.Option
+                              value='name+asc'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-primary  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <>
+                                  <div className='flex w-full items-center justify-between'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      className={`flex items-center space-x-1 font-medium ${
+                                        checked
+                                          ? 'text-white'
+                                          : 'text-black dark:text-gray-50'
+                                      }`}>
+                                      <SortAscendingIcon className='icon-sm' />
+                                      <span className='text-sm'>Name</span>
+                                    </RadioGroup.Label>
+
+                                    {checked && (
+                                      <div className='shrink-0 text-white'>
+                                        <CheckIcon className='icon-sm' />
+                                      </div>
+                                    )}
+                                  </div>
+                                </>
+                              )}
+                            </RadioGroup.Option>
+
+                            <RadioGroup.Option
+                              value='name+des'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-primary  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <>
+                                  <div className='flex w-full items-center justify-between'>
+                                    <RadioGroup.Label
+                                      as='p'
+                                      className={`flex items-center space-x-1 font-medium ${
+                                        checked
+                                          ? 'text-white'
+                                          : 'text-black dark:text-gray-50'
+                                      }`}>
+                                      <SortDescendingIcon className='icon-sm' />
+                                      <span className='text-sm'>Name</span>
+                                    </RadioGroup.Label>
+
+                                    {checked && (
+                                      <div className='shrink-0 text-white'>
+                                        <CheckIcon className='icon-sm' />
+                                      </div>
+                                    )}
+                                  </div>
+                                </>
+                              )}
+                            </RadioGroup.Option>
+                          </div>
+                        </RadioGroup>
+                      </>
+                    )}
+                  </Popover.Panel>
+                </Transition>
+              </Popover>
             </div>
           </div>
 
@@ -121,12 +313,16 @@ const TemplatesPage: NextPage<
 
           {/* Templates  */}
           <div
-            className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
-                overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+            className={`${
+              selectedView === 'grid'
+                ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
+                : 'flex flex-col space-y-1'
+            }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
             {templates &&
               templates.map((template, idx) => (
                 <TemplateOverview
                   key={idx}
+                  active={currentTemplateId === template._id}
                   template={template}
                   onTemplateClick={handleOnClickTemplateOverview}
                 />

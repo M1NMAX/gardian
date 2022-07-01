@@ -1,6 +1,6 @@
 import { ITemplate } from '../interfaces';
 
-const templates: ITemplate[] = [
+export const templates: ITemplate[] = [
   {
     _id: 1,
     name: 'Events',
@@ -170,5 +170,3 @@ const templates: ITemplate[] = [
     ],
   },
 ];
-
-export default templates;
