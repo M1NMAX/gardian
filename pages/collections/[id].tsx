@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
@@ -20,7 +20,10 @@ import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
+  CheckIcon,
   PlusIcon,
+  SelectorIcon,
+  TableIcon,
   TrashIcon,
   ViewGridIcon,
   ViewListIcon,
@@ -39,6 +42,15 @@ import {
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
+import { Listbox, RadioGroup, Transition } from '@headlessui/react';
+import ItemRow from '../../components/ItemRow';
+
+const sortOptions = [
+  { name: 'Name Ascending', alias: 'name+asc' },
+  { name: 'Name Descending', alias: 'name+des' },
+  { name: 'Recently Added', alias: 'createdAt+asc' },
+  { name: 'Oldest Added', alias: 'createdAt+des' },
+];
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -310,6 +322,9 @@ const Collections: NextPage<
     deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
   };
 
+  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+
   return (
     <>
       <Head>
@@ -336,8 +351,88 @@ const Collections: NextPage<
               </Collection.Description>
               <Collection.Body>
                 <div
-                  className='flex justify-end items-center py-1 border-dotted 
+                  className='flex justify-between items-center py-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
+                  {/*Views */}
+                  <div className='flex justify-between items-center'>
+                    <RadioGroup
+                      value={selectedView}
+                      onChange={(e) => {
+                        setSelectedView(e);
+                        close();
+                      }}>
+                      <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                        <RadioGroup.Option
+                          value='grid'
+                          className={({ checked }) =>
+                            `${
+                              checked
+                                ? 'bg-green-500  text-white'
+                                : 'bg-gray-100 dark:bg-gray-800'
+                            }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                          }>
+                          {({ checked }) => (
+                            <RadioGroup.Label
+                              as='p'
+                              className={`flex items-center space-x-1  font-medium ${
+                                checked
+                                  ? 'text-white'
+                                  : 'text-black dark:text-gray-50'
+                              }`}>
+                              <ViewGridIcon className='icon-sm' />
+                            </RadioGroup.Label>
+                          )}
+                        </RadioGroup.Option>
+
+                        <RadioGroup.Option
+                          value='list'
+                          className={({ checked }) =>
+                            `${
+                              checked
+                                ? 'bg-green-500  text-white'
+                                : 'bg-gray-100 dark:bg-gray-800'
+                            }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                          }>
+                          {({ checked }) => (
+                            <RadioGroup.Label
+                              as='p'
+                              className={`flex items-center space-x-1 font-medium ${
+                                checked
+                                  ? 'text-white'
+                                  : 'text-black dark:text-gray-50'
+                              }`}>
+                              <ViewListIcon className='icon-sm' />
+                            </RadioGroup.Label>
+                          )}
+                        </RadioGroup.Option>
+
+                        <RadioGroup.Option
+                          value='table'
+                          className={({ checked }) =>
+                            `${
+                              checked
+                                ? 'bg-green-500  text-white'
+                                : 'bg-gray-100 dark:bg-gray-800'
+                            }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                          }>
+                          {({ checked }) => (
+                            <RadioGroup.Label
+                              as='p'
+                              className={`flex items-center space-x-1 font-medium ${
+                                checked
+                                  ? 'text-white'
+                                  : 'text-black dark:text-gray-50'
+                              }`}>
+                              <TableIcon className='icon-sm' />
+                            </RadioGroup.Label>
+                          )}
+                        </RadioGroup.Option>
+                      </div>
+                    </RadioGroup>
+                  </div>
                   <button
                     onClick={newItemModal.openModal}
                     className='btn btn-primary'>
@@ -347,18 +442,62 @@ const Collections: NextPage<
                     <span>New</span>
                   </button>
                 </div>
-                <div className='py-1 space-y-2'>
-                  {itemsQueries.map(
-                    ({ data: item }) =>
-                      item && (
-                        <ItemOverview
-                          key={item._id}
-                          item={item}
-                          collectionProperty={collection.properties}
-                          onItemClick={handleOnClickItem}
-                        />
-                      )
+
+                <div
+                  className={` 
+                  ${selectedView === 'list' && 'flex flex-col space-y-1.5'}
+                  ${
+                    selectedView === 'grid' &&
+                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                  } 
+                  
+                  pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
+                   dark:scrollbar-thumb-gray-600 `}>
+                  {selectedView === 'table' && (
+                    <table
+                      className='w-full border-separate border-spacing-2 
+                 border-gray-300 dark:border-gray-600'>
+                      <thead>
+                        <tr>
+                          <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
+                            Name
+                          </th>
+                          {collection.properties.map((property) => (
+                            <th
+                              key={property._id}
+                              className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
+                              {property.name}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {itemsQueries.map(
+                          ({ data: item }) =>
+                            item && (
+                              <ItemRow
+                                key={item._id}
+                                item={item}
+                                collectionProperties={collection.properties}
+                                onItemClick={handleOnClickItem}
+                              />
+                            )
+                        )}
+                      </tbody>
+                    </table>
                   )}
+                  {selectedView !== 'table' &&
+                    itemsQueries.map(
+                      ({ data: item }) =>
+                        item && (
+                          <ItemOverview
+                            key={item._id}
+                            item={item}
+                            collectionProperty={collection.properties}
+                            onItemClick={handleOnClickItem}
+                          />
+                        )
+                    )}
                 </div>
               </Collection.Body>
             </Collection>
