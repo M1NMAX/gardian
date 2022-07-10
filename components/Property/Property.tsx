@@ -42,7 +42,6 @@ const Property: FC<PropertyProps> = (props) => {
       name: collectionProperty.name,
       type: collectionProperty.type,
       values: collectionProperty.values,
-      color: collectionProperty.color,
     };
     onPropertyDuplicate(copy);
   };

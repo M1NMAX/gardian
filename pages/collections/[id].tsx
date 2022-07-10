@@ -297,7 +297,6 @@ const Collections: NextPage<
         name: 'Property',
         type: 'text',
         values: [''],
-        color: '#991b1b',
       },
     });
   };

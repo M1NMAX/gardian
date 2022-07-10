@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import Modal from '../Frontstate/Modal';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
-import { ICollection, IGroup, ModalProps } from '../../interfaces';
+import { IGroup, ModalProps } from '../../interfaces';
 import { createCollection } from '../../fetch/collections';
 import { CollectionIcon } from '@heroicons/react/outline';
 import Label from '../Label';

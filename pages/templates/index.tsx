@@ -7,12 +7,9 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  AdjustmentsIcon,
   CheckIcon,
   MenuAlt2Icon,
   SelectorIcon,
-  SortAscendingIcon,
-  SortDescendingIcon,
   ViewGridIcon,
   ViewListIcon,
 } from '@heroicons/react/outline';
@@ -22,7 +19,7 @@ import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
-import { Listbox, Popover, RadioGroup, Transition } from '@headlessui/react';
+import { Listbox, RadioGroup, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
 
 const sortOptions = [
@@ -104,7 +101,6 @@ const TemplatesPage: NextPage<
           name: property.name,
           type: property.type,
           values: property.values,
-          color: property.color,
         })),
       });
 
