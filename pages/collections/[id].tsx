@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
+import { ICollection, IItemProperty, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
   addPropertyToItem,
@@ -20,9 +20,7 @@ import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  CheckIcon,
   PlusIcon,
-  SelectorIcon,
   TableIcon,
   TrashIcon,
   ViewGridIcon,
@@ -42,8 +40,9 @@ import {
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
-import { Listbox, RadioGroup, Transition } from '@headlessui/react';
+import { RadioGroup } from '@headlessui/react';
 import ItemRow from '../../components/ItemRow';
+import { DotsVerticalIcon } from '@heroicons/react/solid';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -60,7 +59,8 @@ const Collections: NextPage<
   const sidebar = useRecoilValue(sidebarState);
 
   //View mode
-  const [isListView, setIsListView] = useState(true);
+  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -74,9 +74,12 @@ const Collections: NextPage<
   //Query and cache
   const queryClient = useQueryClient();
   //Fetch collection and its items
-  const { data: collection, refetch } = useQuery<ICollection>(
-    ['collection', id],
-    () => getCollection(!id || Array.isArray(id) ? '22' : id)
+  const {
+    data: collection,
+    isLoading,
+    refetch,
+  } = useQuery<ICollection>(['collection', id], () =>
+    getCollection(!id || Array.isArray(id) ? '22' : id)
   );
 
   const collectionId = collection?._id;
@@ -322,9 +325,6 @@ const Collections: NextPage<
     deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
   };
 
-  const [selectedView, setSelectedView] = useState('grid');
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
-
   return (
     <>
       <Head>
@@ -350,101 +350,120 @@ const Collections: NextPage<
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
-                <div
-                  className='flex justify-between items-center py-1 border-dotted 
-                      border-b-2 border-gray-200 dark:border-gray-700'>
-                  {/*Views */}
-                  <div className='flex justify-between items-center'>
-                    <RadioGroup
-                      value={selectedView}
-                      onChange={(e) => {
-                        setSelectedView(e);
-                        close();
-                      }}>
-                      <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
-                        <RadioGroup.Option
-                          value='grid'
-                          className={({ checked }) =>
-                            `${
-                              checked
-                                ? 'bg-green-500  text-white'
-                                : 'bg-gray-100 dark:bg-gray-800'
-                            }
-                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
-                          }>
-                          {({ checked }) => (
-                            <RadioGroup.Label
-                              as='p'
-                              className={`flex items-center space-x-1  font-medium ${
-                                checked
-                                  ? 'text-white'
-                                  : 'text-black dark:text-gray-50'
-                              }`}>
-                              <ViewGridIcon className='icon-sm' />
-                            </RadioGroup.Label>
-                          )}
-                        </RadioGroup.Option>
-
-                        <RadioGroup.Option
-                          value='list'
-                          className={({ checked }) =>
-                            `${
-                              checked
-                                ? 'bg-green-500  text-white'
-                                : 'bg-gray-100 dark:bg-gray-800'
-                            }
-                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
-                          }>
-                          {({ checked }) => (
-                            <RadioGroup.Label
-                              as='p'
-                              className={`flex items-center space-x-1 font-medium ${
-                                checked
-                                  ? 'text-white'
-                                  : 'text-black dark:text-gray-50'
-                              }`}>
-                              <ViewListIcon className='icon-sm' />
-                            </RadioGroup.Label>
-                          )}
-                        </RadioGroup.Option>
-
-                        <RadioGroup.Option
-                          value='table'
-                          className={({ checked }) =>
-                            `${
-                              checked
-                                ? 'bg-green-500  text-white'
-                                : 'bg-gray-100 dark:bg-gray-800'
-                            }
-                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
-                          }>
-                          {({ checked }) => (
-                            <RadioGroup.Label
-                              as='p'
-                              className={`flex items-center space-x-1 font-medium ${
-                                checked
-                                  ? 'text-white'
-                                  : 'text-black dark:text-gray-50'
-                              }`}>
-                              <TableIcon className='icon-sm' />
-                            </RadioGroup.Label>
-                          )}
-                        </RadioGroup.Option>
-                      </div>
-                    </RadioGroup>
+                {!isLoading && collection && collection.items.length === 0 ? (
+                  // if collection has no items
+                  <div
+                    className='mt-4 py-1 flex justify-center border-dotted 
+                  border-t-2 border-gray-200 dark:border-gray-700'>
+                    <button
+                      onClick={newItemModal.openModal}
+                      className='w-full py-1 flex items-center justify-center 
+                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                      <span className='icon-sm'>
+                        <PlusIcon />
+                      </span>
+                      <span>New Item</span>
+                    </button>
                   </div>
-                  <button
-                    onClick={newItemModal.openModal}
-                    className='btn btn-primary'>
-                    <span className='icon-sm'>
-                      <PlusIcon />
-                    </span>
-                    <span>New</span>
-                  </button>
-                </div>
+                ) : (
+                  //  collection has at leat one item
+                  <div>
+                    <div
+                      className='flex justify-between items-center py-1 border-dotted 
+                      border-b-2 border-gray-200 dark:border-gray-700'>
+                      {/*Views */}
+                      <div className='flex justify-between items-center'>
+                        <RadioGroup
+                          value={selectedView}
+                          onChange={(e) => {
+                            setSelectedView(e);
+                            close();
+                          }}>
+                          <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                            <RadioGroup.Option
+                              value='grid'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1  font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewGridIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
 
-                <div
-                  className={` 
+                            <RadioGroup.Option
+                              value='list'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1 font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewListIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+
+                            <RadioGroup.Option
+                              value='table'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1 font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <TableIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      <button
+                        onClick={newItemModal.openModal}
+                        className='btn btn-primary'>
+                        <span className='icon-sm'>
+                          <PlusIcon />
+                        </span>
+                        <span>New</span>
+                      </button>
+                    </div>
+
+                    {/*Dispay all collection's item */}
+                    <div
+                      className={` 
                   ${selectedView === 'list' && 'flex flex-col space-y-1.5'}
                   ${
                     selectedView === 'grid' &&
@@ -453,52 +472,61 @@ const Collections: NextPage<
                   
                   pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
                    dark:scrollbar-thumb-gray-600 `}>
-                  {selectedView === 'table' && (
-                    <table
-                      className='w-full border-separate border-spacing-2 
+                      {/* Table view is selected  */}
+                      {selectedView === 'table' && (
+                        <table
+                          className='w-full border-separate border-spacing-2 
                  border-gray-300 dark:border-gray-600'>
-                      <thead>
-                        <tr>
-                          <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
-                            Name
-                          </th>
-                          {collection.properties.map((property) => (
-                            <th
-                              key={property._id}
-                              className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
-                              {property.name}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {itemsQueries.map(
-                          ({ data: item }) =>
+                          <thead>
+                            <tr>
+                              <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
+                                Name
+                              </th>
+                              {collection.properties.map((property) => (
+                                <th
+                                  key={property._id}
+                                  className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
+                                  {property.name}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {itemsQueries.map(
+                              ({ data: item }) =>
+                                item && (
+                                  <ItemRow
+                                    key={item._id}
+                                    item={item}
+                                    collectionProperties={collection.properties}
+                                    onItemClick={handleOnClickItem}
+                                  />
+                                )
+                            )}
+                          </tbody>
+                        </table>
+                      )}
+                      {selectedView !== 'table' &&
+                        itemsQueries.map(({ data: item, isLoading }) =>
+                          isLoading ? (
+                            <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                              <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                            </div>
+                          ) : (
                             item && (
-                              <ItemRow
+                              <ItemOverview
                                 key={item._id}
                                 item={item}
-                                collectionProperties={collection.properties}
+                                collectionProperty={collection.properties}
                                 onItemClick={handleOnClickItem}
                               />
                             )
+                          )
                         )}
-                      </tbody>
-                    </table>
-                  )}
-                  {selectedView !== 'table' &&
-                    itemsQueries.map(
-                      ({ data: item }) =>
-                        item && (
-                          <ItemOverview
-                            key={item._id}
-                            item={item}
-                            collectionProperty={collection.properties}
-                            onItemClick={handleOnClickItem}
-                          />
-                        )
-                    )}
-                </div>
+                    </div>
+                  </div>
+                )}
               </Collection.Body>
             </Collection>
           )}
