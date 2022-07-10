@@ -12,7 +12,7 @@ import {
 import SidebarLink from './components/SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './components/SidebarCollection';
-import SidebarUserOptions from './components/SidebarUserOptions';
+import SidebarUserOptions from './components/SidebarUserMenu';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';

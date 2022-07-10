@@ -5,23 +5,26 @@ import { CogIcon, LogoutIcon } from '@heroicons/react/outline';
 import logoSrc from '../../../../public/logo192.png';
 import { Menu, Transition } from '@headlessui/react';
 
-const SidebarUserOptions: FC = ({}) => {
-  const { user, error, isLoading } = useUser();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
+const SidebarUserMenu: FC = () => {
+  const { user, isLoading } = useUser();
 
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='space-x-2 btn btn-secondary'>
-        <div className='relative w-6 h-6'>
-          <Image
-            src={user?.picture || logoSrc}
-            layout='fill'
-            objectFit='contain'
-            className=' p-2 rounded-full border-2 border-white'
-          />
-        </div>
+      <Menu.Button className='action-icon-hover-variant rounded'>
+        {isLoading ? (
+          <div
+            className='h-6 w-6  animate-pulse rounded-full 
+         bg-gray-400 dark:bg-gray-600'></div>
+        ) : (
+          <div className='relative w-6 h-6'>
+            <Image
+              src={user?.picture || logoSrc}
+              layout='fill'
+              objectFit='contain'
+              className=' p-2 rounded-full border-2 border-white'
+            />
+          </div>
+        )}
       </Menu.Button>
 
       <Transition
@@ -35,12 +38,13 @@ const SidebarUserOptions: FC = ({}) => {
         <div className='fixed z-10'>
           <Menu.Items
             as='ul'
-            className='absolute left-0 w-56 origin-top-right bg-gray-200 dark:bg-gray-800 divide-y divide-gray-100
-                            rounded-sm shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-            <div className='px-1 py-1 space-y-1 font-medium '>
+            className='absolute  left-0 w-56 origin-top-right bg-gray-200  dark:bg-gray-800
+             divide-y-2 divide-gray-100 divide-dashed rounded shadow-lg 
+             ring-1 ring-black ring-opacity-5 focus:outline-none'>
+            <div className='py-2'>
               <Menu.Item as='li'>
                 <div className='flex items-center space-x-2 px-1.5'>
-                  <div className='relative w-10 h-10 '>
+                  <div className='relative w-8 h-8 '>
                     <Image
                       src={user?.picture || logoSrc}
                       layout='fill'
@@ -54,16 +58,17 @@ const SidebarUserOptions: FC = ({}) => {
                   </div>
                 </div>
               </Menu.Item>
-              <hr className='bg-gray-500 dark:bg-gray-700' />
+            </div>
+            <div className='px-1 py-1 space-y-1'>
               <Menu.Item as='li'>
                 <a href='/settings' className='collection-menu-item-btn'>
-                  <CogIcon className='icon-md' />
+                  <CogIcon className='icon-sm' />
                   <span>Settings</span>
                 </a>
               </Menu.Item>
               <Menu.Item as='li'>
                 <a href='/api/auth/logout' className='collection-menu-item-btn'>
-                  <LogoutIcon className='icon-md' />
+                  <LogoutIcon className='icon-sm' />
                   <span>Log out</span>
                 </a>
               </Menu.Item>
@@ -75,4 +80,4 @@ const SidebarUserOptions: FC = ({}) => {
   );
 };
 
-export default SidebarUserOptions;
+export default SidebarUserMenu;
