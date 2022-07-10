@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -8,13 +8,11 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
   AdjustmentsIcon,
-  CheckCircleIcon,
   CheckIcon,
-  ChevronDownIcon,
   MenuAlt2Icon,
+  SelectorIcon,
   SortAscendingIcon,
   SortDescendingIcon,
-  TableIcon,
   ViewGridIcon,
   ViewListIcon,
 } from '@heroicons/react/outline';
@@ -24,8 +22,13 @@ import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
+import { Listbox, Popover, RadioGroup, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
-import { Popover, RadioGroup, Transition } from '@headlessui/react';
+
+const sortOptions = [
+  { name: 'Name Ascending', alias: 'name+asc' },
+  { name: 'Name Descending', alias: 'name+des' },
+];
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -38,7 +41,7 @@ const TemplatesPage: NextPage<
   const closeDetails = () => setShowDetails(false);
 
   const [selectedView, setSelectedView] = useState<string>('grid');
-  const [selectedSort, setSelectedSort] = useState<string>('name+asc');
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [templates, setTemplates] = useState(rawTemplates);
 
   const dynamicSort = (par: string) => {
@@ -55,7 +58,7 @@ const TemplatesPage: NextPage<
   };
 
   useEffect(
-    () => setTemplates(templates.sort(dynamicSort(selectedSort))),
+    () => setTemplates(templates.sort(dynamicSort(selectedSort.alias))),
     [selectedSort]
   );
 
@@ -130,193 +133,147 @@ const TemplatesPage: NextPage<
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } transition-all duration-200 ease-linear 
-        flex h-screen  space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
-        <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
-          <div className='flex justify-between items-center'>
-            {/* Header  */}
-            <div className='flex items-center space-x-2'>
-              {!sidebar && (
-                <ActionIcon
-                  icon={<MenuAlt2Icon />}
-                  onClick={() => setSidebar(true)}
-                />
-              )}
-            </div>
-            <div>
-              <Popover className='relative'>
-                <Popover.Button className='action-icon-filled-variant rounded'>
-                  <AdjustmentsIcon className='icon-sm rotate-90' />
-                </Popover.Button>
-                <Transition
-                  as={Fragment}
-                  enter='transition ease-out duration-200'
-                  enterFrom='opacity-0 translate-y-1'
-                  enterTo='opacity-100 translate-y-0'
-                  leave='transition ease-in duration-150'
-                  leaveFrom='opacity-100 translate-y-0'
-                  leaveTo='opacity-0 translate-y-1'>
-                  <Popover.Panel
-                    className='absolute right-0 z-10 mt-1 w-screen max-w-xs py-1 px-2 
-                    rounded-l-lg rounded-br-lg rounded-tr dark:border 
-                    dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800
-                   space-y-2 divide-y-2  divide-gray-300 dark:divide-gray-600'>
-                    {({ close }) => (
-                      <>
-                        <RadioGroup
-                          value={selectedView}
-                          onChange={(e) => {
-                            setSelectedView(e);
-                            close();
-                          }}>
-                          <RadioGroup.Label className='font-semibold'>
-                            View
-                          </RadioGroup.Label>
-                          <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
-                            <RadioGroup.Option
-                              value='grid'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1  font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <ViewGridIcon className='icon-xs' />
-                                  <span className='text-sm'>Grid</span>
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
-
-                            <RadioGroup.Option
-                              value='list'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1 font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <ViewListIcon className='icon-xs' />
-                                  <span className='text-sm'>List</span>
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
-                          </div>
-                        </RadioGroup>
-                        <RadioGroup
-                          value={selectedSort}
-                          onChange={(e) => {
-                            setSelectedSort(e);
-                            close();
-                          }}>
-                          <RadioGroup.Label className='font-medium'>
-                            Sort by
-                          </RadioGroup.Label>
-                          <div className='space-y-1'>
-                            <RadioGroup.Option
-                              value='name+asc'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-primary  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <>
-                                  <div className='flex w-full items-center justify-between'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      className={`flex items-center space-x-1 font-medium ${
-                                        checked
-                                          ? 'text-white'
-                                          : 'text-black dark:text-gray-50'
-                                      }`}>
-                                      <SortAscendingIcon className='icon-sm' />
-                                      <span className='text-sm'>Name</span>
-                                    </RadioGroup.Label>
-
-                                    {checked && (
-                                      <div className='shrink-0 text-white'>
-                                        <CheckIcon className='icon-sm' />
-                                      </div>
-                                    )}
-                                  </div>
-                                </>
-                              )}
-                            </RadioGroup.Option>
-
-                            <RadioGroup.Option
-                              value='name+des'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-primary  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <>
-                                  <div className='flex w-full items-center justify-between'>
-                                    <RadioGroup.Label
-                                      as='p'
-                                      className={`flex items-center space-x-1 font-medium ${
-                                        checked
-                                          ? 'text-white'
-                                          : 'text-black dark:text-gray-50'
-                                      }`}>
-                                      <SortDescendingIcon className='icon-sm' />
-                                      <span className='text-sm'>Name</span>
-                                    </RadioGroup.Label>
-
-                                    {checked && (
-                                      <div className='shrink-0 text-white'>
-                                        <CheckIcon className='icon-sm' />
-                                      </div>
-                                    )}
-                                  </div>
-                                </>
-                              )}
-                            </RadioGroup.Option>
-                          </div>
-                        </RadioGroup>
-                      </>
-                    )}
-                  </Popover.Panel>
-                </Transition>
-              </Popover>
-            </div>
+        flex h-screen   space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
+        <div
+          className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
+          {/* Header  */}
+          <div className='flex items-center space-x-2'>
+            {!sidebar && (
+              <ActionIcon
+                icon={<MenuAlt2Icon />}
+                onClick={() => setSidebar(true)}
+              />
+            )}
           </div>
 
           {/* Title  */}
-          <h1 className='font-semibold text-3xl '>Templates</h1>
+          <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-bright'>
+            Templates
+          </h1>
+
+          {/*Filter */}
+          <div className='flex justify-between items-center'>
+            <Listbox value={selectedSort} onChange={setSelectedSort}>
+              <div className='relative mt-1'>
+                <Listbox.Label className='absolute z-20 pl-3 text-xs'>
+                  Sort by
+                </Listbox.Label>
+                <Listbox.Button
+                  className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
+              py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
+              focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
+              focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
+              focus-visible:ring-offset-orange-300 sm:text-sm'>
+                  <span className='block truncate'>{selectedSort.name}</span>
+                  <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                    <SelectorIcon
+                      className='h-5 w-5 text-gray-400'
+                      aria-hidden='true'
+                    />
+                  </span>
+                </Listbox.Button>
+                <Transition
+                  as={Fragment}
+                  leave='transition ease-in duration-100'
+                  leaveFrom='opacity-100'
+                  leaveTo='opacity-0'>
+                  <Listbox.Options
+                    className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
+                  bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
+                focus:outline-none sm:text-sm'>
+                    {sortOptions.map((option, optionIdx) => (
+                      <Listbox.Option
+                        key={optionIdx}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                            active
+                              ? 'bg-green-100 text-green-800'
+                              : 'text-gray-900 dark:text-white'
+                          }`
+                        }
+                        value={option}>
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${
+                                selected ? 'font-medium' : 'font-normal'
+                              }`}>
+                              {option.name}
+                            </span>
+                            {selected ? (
+                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
+                                <CheckIcon
+                                  className='icon-sm'
+                                  aria-hidden='true'
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox>
+            <RadioGroup
+              value={selectedView}
+              onChange={(e) => {
+                setSelectedView(e);
+                close();
+              }}>
+              <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                <RadioGroup.Option
+                  value='grid'
+                  className={({ checked }) =>
+                    `${
+                      checked
+                        ? 'bg-green-500  text-white'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                  }>
+                  {({ checked }) => (
+                    <RadioGroup.Label
+                      as='p'
+                      className={`flex items-center space-x-1  font-medium ${
+                        checked ? 'text-white' : 'text-black dark:text-gray-50'
+                      }`}>
+                      <ViewGridIcon className='icon-xs' />
+                    </RadioGroup.Label>
+                  )}
+                </RadioGroup.Option>
+
+                <RadioGroup.Option
+                  value='list'
+                  className={({ checked }) =>
+                    `${
+                      checked
+                        ? 'bg-green-500  text-white'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    }
+                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                  }>
+                  {({ checked }) => (
+                    <RadioGroup.Label
+                      as='p'
+                      className={`flex items-center space-x-1 font-medium ${
+                        checked ? 'text-white' : 'text-black dark:text-gray-50'
+                      }`}>
+                      <ViewListIcon className='icon-xs' />
+                    </RadioGroup.Label>
+                  )}
+                </RadioGroup.Option>
+              </div>
+            </RadioGroup>
+          </div>
 
           {/* Templates  */}
           <div
             className={`${
               selectedView === 'grid'
                 ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
-                : 'flex flex-col space-y-1'
+                : 'flex flex-col space-y-2'
             }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
             {templates &&
               templates.map((template, idx) => (
