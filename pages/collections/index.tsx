@@ -10,10 +10,7 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  AdjustmentsIcon,
   CheckIcon,
-  ChevronDownIcon,
-  DotsVerticalIcon,
   MenuAlt2Icon,
   PlusIcon,
   SelectorIcon,
@@ -25,7 +22,7 @@ import NewCollectionModal from '../../components/NewCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
-import { Listbox, Menu, RadioGroup, Transition } from '@headlessui/react';
+import { Listbox, RadioGroup, Transition } from '@headlessui/react';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -36,13 +33,12 @@ const sortOptions = [
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
-> = ({ user }) => {
+> = () => {
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
   const { data: groups } = useQuery<IGroup[]>('groups', getGroups);
 
-  //TODO: Add loading and error feedback
-  const { data: collections } = useQuery<ICollection[], Error>(
+  const { data: collections, isLoading } = useQuery<ICollection[], Error>(
     'collections',
     getCollections
   );
@@ -216,11 +212,30 @@ const Collections: NextPage<
               ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
               : 'flex flex-col space-y-2'
           }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
-          {collections &&
-            collections.map((collection, idx) => (
-              <CollectionOverview key={idx} collection={collection} />
-            ))}
+          {isLoading
+            ? [0, 1, 2].map((idx) => (
+                // show 3 skeleton  if is loading
+                <div
+                  key={idx}
+                  className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                  <div className='w-1/3 h-4  rounded-md bg-gray-200 dark:bg-gray-500'></div>
+                  <div className='w-2/3 h-5 rounded-md bg-gray-200 dark:bg-gray-500'></div>
+                  <div className='w-1/12 h-3 rounded-md bg-gray-200 dark:bg-gray-500'></div>
+                </div>
+              ))
+            : collections &&
+              collections.map((collection, idx) => (
+                <CollectionOverview key={idx} collection={collection} />
+              ))}
         </div>
+
+        {!isLoading && collections && collections.length === 0 && (
+          <div className='flex justify-center'>
+            <p className='text-lg  p-2 rounded-md bg-gray-100 dark:bg-gray-800 '>
+              Wow, such empty &#58;&#41;
+            </p>
+          </div>
+        )}
       </main>
       <Toaster />
 
