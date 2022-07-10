@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
+import { ICollection, IItemProperty, IProperty } from '../../interfaces';
 import Collection from '../../components/Collection';
 import {
   addPropertyToItem,
@@ -21,6 +21,7 @@ import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
   PlusIcon,
+  TableIcon,
   TrashIcon,
   ViewGridIcon,
   ViewListIcon,
@@ -34,9 +35,21 @@ import {
   removeItemFromCollection,
   updateCollectionProperty,
   getCollection,
+  updateCollectionDescription,
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
+import EditDescriptionModal from '../../components/EditDescriptionModal';
+import { RadioGroup } from '@headlessui/react';
+import ItemRow from '../../components/ItemRow';
+import { DotsVerticalIcon } from '@heroicons/react/solid';
+
+const sortOptions = [
+  { name: 'Name Ascending', alias: 'name+asc' },
+  { name: 'Name Descending', alias: 'name+des' },
+  { name: 'Recently Added', alias: 'createdAt+asc' },
+  { name: 'Oldest Added', alias: 'createdAt+des' },
+];
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -46,7 +59,8 @@ const Collections: NextPage<
   const sidebar = useRecoilValue(sidebarState);
 
   //View mode
-  const [isListView, setIsListView] = useState(true);
+  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -55,13 +69,17 @@ const Collections: NextPage<
   //Modals
   const newItemModal = useModal();
   const deleteModal = useModal();
+  const descriptionModal = useModal();
 
   //Query and cache
   const queryClient = useQueryClient();
   //Fetch collection and its items
-  const { data: collection, refetch } = useQuery<ICollection>(
-    ['collection', id],
-    () => getCollection(!id || Array.isArray(id) ? '22' : id)
+  const {
+    data: collection,
+    isLoading,
+    refetch,
+  } = useQuery<ICollection>(['collection', id], () =>
+    getCollection(!id || Array.isArray(id) ? '22' : id)
   );
 
   const collectionId = collection?._id;
@@ -84,6 +102,19 @@ const Collections: NextPage<
   }, [id]);
 
   //Mutations
+
+  //Handle delete item mutation
+  const updateItemPropertyMutation = useMutation(updateItemProperty, {
+    onSuccess: async () => {
+      if (!collectionId) throw 'CollectionId is undefined';
+      if (!selectedItemId) throw 'CurrentItemId is undefined';
+
+      queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+  });
   //Handle delete item mutation
   const deleteItemMutation = useMutation(deleteItem, {
     onSuccess: async () => {
@@ -126,15 +157,33 @@ const Collections: NextPage<
   const updateCollectioPropertyMutation = useMutation(
     updateCollectionProperty,
     {
-      onSuccess: ({ propertyId }) => {
+      onSuccess: () => {
         if (!collectionId) throw 'CollectionId is undefined';
-        //clear item's property value to avoid property type conflict
-        setPropertyValue(propertyId, '');
 
         queryClient.invalidateQueries(['collection', collectionId]);
         queryClient.invalidateQueries(['items', collectionId]);
 
         positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //handle update collection property mutation
+  const updateCollectioDescriptionMutation = useMutation(
+    async (description: string) => {
+      if (!collectionId) return;
+      await updateCollectionDescription(collectionId, description);
+    },
+    {
+      onSuccess: () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+
+        positiveFeedback('Description updated');
       },
       onError: () => {
         negativeFeedback();
@@ -205,13 +254,18 @@ const Collections: NextPage<
   };
 
   const setPropertyValue = (id: number, value: string): void => {
-    if (!id) return;
-    //TODO:Do some mutation for certain property type
+    if (!id || !selectedItemId) return;
+
     setSelectedItemPorperties(
       selectedItemPorperties.map((property) =>
         property._id == id ? { ...property, value } : property
       )
     );
+    updateItemPropertyMutation.mutate({
+      itemId: selectedItemId,
+      propertyId: id,
+      property: { _id: id, value },
+    });
   };
 
   const getPropertyValue = (id: number): string => {
@@ -284,42 +338,209 @@ const Collections: NextPage<
         <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
           {collection && (
             <Collection>
-              <Collection.Header collection={collection}>
+              <Collection.Header
+                collection={collection}
+                openNewItemModal={newItemModal.openModal}
+                onClickAddDescription={descriptionModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
-              <Collection.Description>
+              <Collection.Description
+                hidden={collection.isDescriptionHidden}
+                onClickEditDescription={descriptionModal.openModal}>
                 {collection.description}
               </Collection.Description>
               <Collection.Body>
-                <div
-                  className='flex justify-between items-center py-0.5 border-dotted 
+                {!isLoading && collection && collection.items.length === 0 ? (
+                  // if collection has no items
+                  <div
+                    className='mt-4 py-1 flex justify-center border-dotted 
+                  border-t-2 border-gray-200 dark:border-gray-700'>
+                    <button
+                      onClick={newItemModal.openModal}
+                      className='w-full py-1 flex items-center justify-center 
+                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                      <span className='icon-sm'>
+                        <PlusIcon />
+                      </span>
+                      <span>New Item</span>
+                    </button>
+                  </div>
+                ) : (
+                  //  collection has at leat one item
+                  <div>
+                    <div
+                      className='flex justify-between items-center py-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
-                  <ActionIcon
-                    icon={isListView ? <ViewGridIcon /> : <ViewListIcon />}
-                    onClick={() => setIsListView(!isListView)}
-                  />
-                  <button
-                    onClick={newItemModal.openModal}
-                    className='btn btn-primary'>
-                    <span className='icon-sm'>
-                      <PlusIcon />
-                    </span>
-                    <span>New</span>
-                  </button>
-                </div>
-                <div className='py-1 space-y-2'>
-                  {itemsQueries.map(
-                    ({ data: item }) =>
-                      item && (
-                        <ItemOverview
-                          key={item._id}
-                          item={item}
-                          collectionProperty={collection.properties}
-                          onItemClick={handleOnClickItem}
-                        />
-                      )
-                  )}
-                </div>
+                      {/*Views */}
+                      <div className='flex justify-between items-center'>
+                        <RadioGroup
+                          value={selectedView}
+                          onChange={(e) => {
+                            setSelectedView(e);
+                            close();
+                          }}>
+                          <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                            <RadioGroup.Option
+                              value='grid'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1  font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewGridIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+
+                            <RadioGroup.Option
+                              value='list'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1 font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <ViewListIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+
+                            <RadioGroup.Option
+                              value='table'
+                              className={({ checked }) =>
+                                `${
+                                  checked
+                                    ? 'bg-green-500  text-white'
+                                    : 'bg-gray-100 dark:bg-gray-800'
+                                }
+                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
+                              }>
+                              {({ checked }) => (
+                                <RadioGroup.Label
+                                  as='p'
+                                  className={`flex items-center space-x-1 font-medium ${
+                                    checked
+                                      ? 'text-white'
+                                      : 'text-black dark:text-gray-50'
+                                  }`}>
+                                  <TableIcon className='icon-sm' />
+                                </RadioGroup.Label>
+                              )}
+                            </RadioGroup.Option>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      <button
+                        onClick={newItemModal.openModal}
+                        className='btn btn-primary'>
+                        <span className='icon-sm'>
+                          <PlusIcon />
+                        </span>
+                        <span>New</span>
+                      </button>
+                    </div>
+
+                    {/*Dispay all collection's item */}
+                    <div
+                      className={` 
+                  ${selectedView === 'list' && 'flex flex-col space-y-1.5'}
+                  ${
+                    selectedView === 'grid' &&
+                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                  } 
+                  
+                  pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
+                   dark:scrollbar-thumb-gray-600 `}>
+                      {/* Table view is selected  */}
+                      {selectedView === 'table' && (
+                        <table
+                          className='w-full border-separate border-spacing-2 
+                 border-gray-300 dark:border-gray-600'>
+                          <thead>
+                            <tr>
+                              <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
+                                Name
+                              </th>
+                              {collection.properties.map((property) => (
+                                <th
+                                  key={property._id}
+                                  className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
+                                  {property.name}
+                                </th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {itemsQueries.map(({ data: item, isLoading }) =>
+                              isLoading ? (
+                                <tr className='h-7 cursor-pointer animate-pulse'>
+                                  <td
+                                    className='border-2 border-gray-300 dark:border-gray-600 
+                                  bg-gray-300 dark:bg-gray-600'></td>
+
+                                  {collection.properties.map((property) => (
+                                    <td
+                                      key={property._id}
+                                      className='border-2 border-gray-300 dark:border-gray-600 
+                                  bg-gray-300 dark:bg-gray-600'></td>
+                                  ))}
+                                </tr>
+                              ) : (
+                                item && (
+                                  <ItemRow
+                                    key={item._id}
+                                    item={item}
+                                    collectionProperties={collection.properties}
+                                    onItemClick={handleOnClickItem}
+                                  />
+                                )
+                              )
+                            )}
+                          </tbody>
+                        </table>
+                      )}
+                      {selectedView !== 'table' &&
+                        itemsQueries.map(({ data: item, isLoading }) =>
+                          isLoading ? (
+                            <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                              <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                            </div>
+                          ) : (
+                            item && (
+                              <ItemOverview
+                                key={item._id}
+                                item={item}
+                                collectionProperty={collection.properties}
+                                onItemClick={handleOnClickItem}
+                              />
+                            )
+                          )
+                        )}
+                    </div>
+                  </div>
+                )}
               </Collection.Body>
             </Collection>
           )}
@@ -373,7 +594,6 @@ const Collections: NextPage<
           </Drawer>
         )}
       </main>
-
       {/* New item modal  */}
       {collection && newItemModal.isOpen && (
         <NewItemModal
@@ -384,7 +604,6 @@ const Collections: NextPage<
           collection={collection}
         />
       )}
-
       {/* Delete item modal  */}
       {selectedItemId && deleteModal.isOpen && (
         <DeleteModal
@@ -392,6 +611,15 @@ const Collections: NextPage<
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
           onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
+        />
+      )}
+      {/* Edit description */}
+      {collection && descriptionModal.isOpen && (
+        <EditDescriptionModal
+          description={collection.description}
+          open={descriptionModal.isOpen}
+          handleClose={descriptionModal.closeModal}
+          onSave={updateCollectioDescriptionMutation.mutate}
         />
       )}
     </>

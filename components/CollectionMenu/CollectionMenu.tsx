@@ -1,20 +1,29 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
+  InformationCircleIcon,
   PencilIcon,
-  ReplyIcon,
-  StarIcon,
+  PlusIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
-  onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+  isDescriptionHidden: boolean;
+  onClickNewItem: () => void;
+  onClickDesctiption: () => void;
+  onClickRename: () => void;
+  onClickDelete: () => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
-  const { onClickRename, onClickDelete } = props;
+  const {
+    isDescriptionHidden,
+    onClickRename,
+    onClickDesctiption,
+    onClickNewItem,
+    onClickDelete,
+  } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -33,9 +42,20 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
           as='ul'
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
-            <button className='collection-menu-item-btn'>
-              <StarIcon className='icon-sm' />
-              <span>Add to Favorites</span>
+            <button
+              onClick={onClickNewItem}
+              className='collection-menu-item-btn'>
+              <PlusIcon className='icon-sm' />
+              <span>New Item</span>
+            </button>
+          </Menu.Item>
+
+          <Menu.Item as='li'>
+            <button
+              onClick={onClickDesctiption}
+              className='collection-menu-item-btn'>
+              <InformationCircleIcon className='icon-sm' />
+              <span>{isDescriptionHidden ? 'Show' : 'Hide'} Description</span>
             </button>
           </Menu.Item>
 
@@ -48,12 +68,6 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </button>
           </Menu.Item>
 
-          <Menu.Item as='li'>
-            <button className='collection-menu-item-btn'>
-              <ReplyIcon className='icon-sm -scale-x-100' />
-              <span>Move to</span>
-            </button>
-          </Menu.Item>
           <Menu.Item>
             <button
               onClick={onClickDelete}

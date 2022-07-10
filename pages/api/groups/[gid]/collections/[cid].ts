@@ -35,7 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
       try {
         const group = await Group.findByIdAndUpdate(
           gid,
-          { $pull: { collection: cid } },
+          { $pull: { collections: cid } },
           { new: true }
         );
         if (!group) return res.status(400).json({ isSuccess: false });

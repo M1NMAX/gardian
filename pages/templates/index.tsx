@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -6,15 +6,29 @@ import Head from 'next/head';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { AdjustmentsIcon, MenuAlt2Icon } from '@heroicons/react/outline';
+import {
+  AdjustmentsIcon,
+  CheckIcon,
+  MenuAlt2Icon,
+  SelectorIcon,
+  SortAscendingIcon,
+  SortDescendingIcon,
+  ViewGridIcon,
+  ViewListIcon,
+} from '@heroicons/react/outline';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
-import templates from '../../data/templates';
-import Property from '../../backend/models/Property';
+import { Listbox, Popover, RadioGroup, Transition } from '@headlessui/react';
+import { templates as rawTemplates } from '../../data/templates';
+
+const sortOptions = [
+  { name: 'Name Ascending', alias: 'name+asc' },
+  { name: 'Name Descending', alias: 'name+des' },
+];
 
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -25,6 +39,28 @@ const TemplatesPage: NextPage<
   const [showDetails, setShowDetails] = useState(false);
   const openDetails = () => setShowDetails(true);
   const closeDetails = () => setShowDetails(false);
+
+  const [selectedView, setSelectedView] = useState<string>('grid');
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+  const [templates, setTemplates] = useState(rawTemplates);
+
+  const dynamicSort = (par: string) => {
+    const [property, order] = par.split('+');
+
+    const sortOrder = order === 'asc' ? 1 : -1;
+
+    return (a: ITemplate, b: ITemplate) => {
+      const aPorperty = a[property as keyof typeof a] || a.name;
+      const bPorperty = b[property as keyof typeof b] || b.name;
+      let result = aPorperty < bPorperty ? -1 : aPorperty > bPorperty ? 1 : 0;
+      return result * sortOrder;
+    };
+  };
+
+  useEffect(
+    () => setTemplates(templates.sort(dynamicSort(selectedSort.alias))),
+    [selectedSort]
+  );
 
   const [currentTemplateId, setCurrentTemplateId] = useState<number>();
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
@@ -97,37 +133,153 @@ const TemplatesPage: NextPage<
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } transition-all duration-200 ease-linear 
-        flex h-screen  space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
-        <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
-          <div className='flex justify-between items-center'>
-            {/* Header  */}
-            <div className='flex items-center space-x-2'>
-              {!sidebar && (
-                <ActionIcon
-                  icon={<MenuAlt2Icon />}
-                  onClick={() => setSidebar(true)}
-                />
-              )}
-            </div>
-            <div className='flex items-center space-x-1.5'>
+        flex h-screen   space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
+        <div
+          className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
+          {/* Header  */}
+          <div className='flex items-center space-x-2'>
+            {!sidebar && (
               <ActionIcon
-                icon={<AdjustmentsIcon className='rotate-90' />}
-                variant='filled'
+                icon={<MenuAlt2Icon />}
+                onClick={() => setSidebar(true)}
               />
-            </div>
+            )}
           </div>
 
           {/* Title  */}
-          <h1 className='font-semibold text-3xl '>Templates</h1>
+          <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-bright'>
+            Templates
+          </h1>
+
+          {/*Filter */}
+          <div className='flex justify-between items-center'>
+            <Listbox value={selectedSort} onChange={setSelectedSort}>
+              <div className='relative mt-1'>
+                <Listbox.Label className='absolute z-20 pl-3 text-xs'>
+                  Sort by
+                </Listbox.Label>
+                <Listbox.Button
+                  className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
+              py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
+              focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
+              focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
+              focus-visible:ring-offset-orange-300 sm:text-sm'>
+                  <span className='block truncate'>{selectedSort.name}</span>
+                  <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                    <SelectorIcon
+                      className='h-5 w-5 text-gray-400'
+                      aria-hidden='true'
+                    />
+                  </span>
+                </Listbox.Button>
+                <Transition
+                  as={Fragment}
+                  leave='transition ease-in duration-100'
+                  leaveFrom='opacity-100'
+                  leaveTo='opacity-0'>
+                  <Listbox.Options
+                    className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
+                  bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
+                focus:outline-none sm:text-sm'>
+                    {sortOptions.map((option, optionIdx) => (
+                      <Listbox.Option
+                        key={optionIdx}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                            active
+                              ? 'bg-green-100 text-green-800'
+                              : 'text-gray-900 dark:text-white'
+                          }`
+                        }
+                        value={option}>
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${
+                                selected ? 'font-medium' : 'font-normal'
+                              }`}>
+                              {option.name}
+                            </span>
+                            {selected ? (
+                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
+                                <CheckIcon
+                                  className='icon-sm'
+                                  aria-hidden='true'
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox>
+            <RadioGroup
+              value={selectedView}
+              onChange={(e) => {
+                setSelectedView(e);
+                close();
+              }}>
+              <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
+                <RadioGroup.Option
+                  value='grid'
+                  className={({ checked }) =>
+                    `${
+                      checked
+                        ? 'bg-green-500  text-white'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    }
+                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
+                  }>
+                  {({ checked }) => (
+                    <RadioGroup.Label
+                      as='p'
+                      className={`flex items-center space-x-1  font-medium ${
+                        checked ? 'text-white' : 'text-black dark:text-gray-50'
+                      }`}>
+                      <ViewGridIcon className='icon-xs' />
+                    </RadioGroup.Label>
+                  )}
+                </RadioGroup.Option>
+
+                <RadioGroup.Option
+                  value='list'
+                  className={({ checked }) =>
+                    `${
+                      checked
+                        ? 'bg-green-500  text-white'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    }
+                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                  }>
+                  {({ checked }) => (
+                    <RadioGroup.Label
+                      as='p'
+                      className={`flex items-center space-x-1 font-medium ${
+                        checked ? 'text-white' : 'text-black dark:text-gray-50'
+                      }`}>
+                      <ViewListIcon className='icon-xs' />
+                    </RadioGroup.Label>
+                  )}
+                </RadioGroup.Option>
+              </div>
+            </RadioGroup>
+          </div>
 
           {/* Templates  */}
           <div
-            className='grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-2 max-h-full
-                overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+            className={`${
+              selectedView === 'grid'
+                ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
+                : 'flex flex-col space-y-2'
+            }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
             {templates &&
               templates.map((template, idx) => (
                 <TemplateOverview
                   key={idx}
+                  active={currentTemplateId === template._id}
                   template={template}
                   onTemplateClick={handleOnClickTemplateOverview}
                 />
@@ -145,38 +297,71 @@ const TemplatesPage: NextPage<
             </Drawer.Description>
 
             <Drawer.Body>
-              <div>
-                <p>Example of item </p>
-                <div className='flex flex-col space-y-2'>
-                  {currentTemplate.items?.map(
-                    (item, idx) =>
-                      isIItem(item) && (
-                        <span
-                          key={idx}
-                          className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
-                          <span className='font-semibold text-lg'>
-                            {item.name}
-                          </span>
-                          {currentTemplate.properties.map(
-                            (templateProperty) =>
-                              getPropertyValue(
-                                item,
-                                templateProperty._id || -1
-                              ) != '' && (
-                                <span className='space-x-1'>
-                                  <span>{templateProperty.name}</span>
-                                  <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
-                                    {getPropertyValue(
-                                      item,
-                                      templateProperty._id || -1
-                                    )}
+              <div className='space-y-2'>
+                <div>
+                  <p>Example of item </p>
+                  <div className='flex flex-col space-y-2'>
+                    {currentTemplate.items?.map(
+                      (item, idx) =>
+                        isIItem(item) && (
+                          <span
+                            key={idx}
+                            className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
+                            <span className='font-semibold text-lg'>
+                              {item.name}
+                            </span>
+                            {currentTemplate.properties.map(
+                              (templateProperty) =>
+                                getPropertyValue(
+                                  item,
+                                  templateProperty._id || -1
+                                ) != '' && (
+                                  <span className='space-x-1'>
+                                    <span>{templateProperty.name}</span>
+                                    <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                      {getPropertyValue(
+                                        item,
+                                        templateProperty._id || -1
+                                      )}
+                                    </span>
                                   </span>
-                                </span>
-                              )
-                          )}
-                        </span>
-                      )
-                  )}
+                                )
+                            )}
+                          </span>
+                        )
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <p>Properties</p>
+                  <table
+                    className='w-full border-separate border-spacing-2 
+                    border-l-2 border-gray-300 dark:border-gray-600 '>
+                    <thead>
+                      <tr>
+                        <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
+                          Name
+                        </th>
+                        <th className='rounded-tr border-2 border-gray-300 dark:border-gray-600'>
+                          Type
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentTemplate.properties.map((property) => (
+                        <tr>
+                          <td className='border-2 border-gray-300 dark:border-gray-600'>
+                            {property.name}
+                          </td>
+                          <td
+                            className='border-2 border-gray-300 dark:border-gray-600
+                          first-letter:uppercase'>
+                            {property.type}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </Drawer.Body>

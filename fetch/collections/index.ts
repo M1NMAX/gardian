@@ -39,7 +39,7 @@ export async function createCollection(
 }
 
 export async function updateCollection(
-  collectionId: number,
+  collectionId: number | string,
   collection: ICollection
 ): Promise<boolean> {
   const res = await fetch(
@@ -50,11 +50,39 @@ export async function updateCollection(
 }
 
 export async function renameCollection(
-  id: number,
+  id: number | string,
   name: string
 ): Promise<boolean> {
   const collection = await getCollection(id);
   return updateCollection(id, { ...collection, name });
+}
+
+export async function toggleCollectionIsFavourite(
+  id: number | string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, {
+    ...collection,
+    isFavourite: !collection.isFavourite,
+  });
+}
+
+export async function toggleCollectionDescriptionState(
+  id: number | string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, {
+    ...collection,
+    isDescriptionHidden: !collection.isDescriptionHidden,
+  });
+}
+
+export async function updateCollectionDescription(
+  id: number | string,
+  description: string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, { ...collection, description });
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {

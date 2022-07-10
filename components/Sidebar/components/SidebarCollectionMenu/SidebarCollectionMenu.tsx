@@ -4,22 +4,30 @@ import {
   DuplicateIcon,
   PencilIcon,
   ReplyIcon,
-  StarIcon,
+  StarIcon as StarIconOutline,
   TrashIcon,
 } from '@heroicons/react/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
+  isFavourite: boolean;
+  onClickAddToFavourite: () => void;
+  onClickDuplicate: () => void;
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickMove: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
-  variant?: 'primary' | 'secondary';
 }
 
-const CollectionMenu: FC<CollectionMenuProps> = ({
-  variant = 'secondary',
-  onClickRename,
-  onClickDelete,
-}) => {
+const CollectionMenu: FC<CollectionMenuProps> = (props) => {
+  const {
+    isFavourite,
+    onClickDelete,
+    onClickAddToFavourite,
+    onClickDuplicate,
+    onClickRename,
+    onClickMove,
+  } = props;
   return (
     <Menu as='div' className='relative'>
       <Menu.Button
@@ -48,14 +56,25 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
-                <StarIcon className='icon-sm' />
-                <span>Add to Favorites</span>
+              <button
+                onClick={onClickAddToFavourite}
+                className='collection-menu-item-btn'>
+                {isFavourite ? (
+                  <StarIconFilled className='icon-sm text-green-500' />
+                ) : (
+                  <StarIconOutline className='icon-sm' />
+                )}
+
+                <span>
+                  {isFavourite ? 'Remove from Favourites' : 'Add to Favoutires'}
+                </span>
               </button>
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
+              <button
+                onClick={onClickDuplicate}
+                className='collection-menu-item-btn'>
                 <DuplicateIcon className='icon-sm' />
                 <span>Duplicate</span>
               </button>
@@ -71,7 +90,9 @@ const CollectionMenu: FC<CollectionMenuProps> = ({
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button className='collection-menu-item-btn'>
+              <button
+                onClick={onClickMove}
+                className='collection-menu-item-btn'>
                 <ReplyIcon className='icon-sm -scale-x-100' />
                 <span>Move to</span>
               </button>

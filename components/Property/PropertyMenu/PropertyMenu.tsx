@@ -17,7 +17,7 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
   const { onClickEdit, onClickDuplicate, onClickDelete } = props;
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='action-icon-filled-variant rounded'>
+      <Menu.Button className='action-icon-hover-variant rounded'>
         <DotsVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition

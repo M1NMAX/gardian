@@ -3,6 +3,8 @@ import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/groups/';
 
+//Types
+
 export async function createGroup(name: string): Promise<IGroup> {
   const res = await fetch(baseUrl, getRequestOptions('POST', { name }));
   return res.json().then((response) => response.data);
@@ -34,7 +36,7 @@ export async function renameGroup(id: number, name: string): Promise<boolean> {
 
 export async function addCollectionToGroup(
   groupId: number,
-  collectionId: number
+  collectionId: number | string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'PATCH',
@@ -44,7 +46,7 @@ export async function addCollectionToGroup(
 
 export async function removeCollectionFromGroup(
   groupId: number,
-  collectionId: number
+  collectionId: number | string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'DELETE',
