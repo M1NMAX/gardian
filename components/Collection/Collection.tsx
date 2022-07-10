@@ -23,7 +23,6 @@ import { useRouter } from 'next/router';
 import RenameModal from '../RenameModal';
 import DeleteModal from '../DeleteModal';
 import { useMutation, useQueryClient } from 'react-query';
-import CollectionAdjustmentMenu from './CollectionAdjustmentMenu';
 
 interface HeaderProps {
   children: ReactNode;
@@ -196,7 +195,6 @@ const Header: FC<HeaderProps> = (props) => {
               toggleCollectionIsFavouriteMutation.mutate(collection._id);
             }}
           />
-          <CollectionAdjustmentMenu />
 
           <CollectionMenu
             isDescriptionHidden={collection.isDescriptionHidden}
