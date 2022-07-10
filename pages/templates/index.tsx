@@ -154,10 +154,8 @@ const TemplatesPage: NextPage<
           {/*Filter */}
           <div className='flex justify-between items-center'>
             <Listbox value={selectedSort} onChange={setSelectedSort}>
-              <div className='relative mt-1'>
-                <Listbox.Label className='absolute z-20 pl-3 text-xs'>
-                  Sort by
-                </Listbox.Label>
+              <div className='relative  mt-1 flex flex-col'>
+                <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
                 <Listbox.Button
                   className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
               py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
