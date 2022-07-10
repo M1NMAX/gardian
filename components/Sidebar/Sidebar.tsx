@@ -3,7 +3,6 @@ import ThemeBtn from '../ThemeBtn';
 import {
   ChevronRightIcon,
   CollectionIcon,
-  DotsHorizontalIcon,
   DotsVerticalIcon,
   PlusIcon,
   SearchIcon,
@@ -110,12 +109,21 @@ const Sidebar: FC = () => {
               className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
               {({ open }) => (
                 <>
-                  <Disclosure.Button className='flex items-center w-full p-1'>
-                    <ChevronRightIcon
-                      className={`${open ? 'rotate-90 transform' : ''} icon-xs`}
-                    />
-                    <span> {group.name}</span>
-                  </Disclosure.Button>
+                  <div className='flex justify-between py-0.5 pr-2'>
+                    <Disclosure.Button className='flex items-center w-full p-0.5'>
+                      <ChevronRightIcon
+                        className={`${
+                          open ? 'rotate-90 transform' : ''
+                        } icon-xs`}
+                      />
+                      <span> {group.name}</span>
+                    </Disclosure.Button>
+                    <button
+                      className='flex items-center justify-center px-1 
+                    rounded hover:bg-gray-300 dark:hover:bg-gray-600'>
+                      <DotsVerticalIcon className='icon-xs' />
+                    </button>
+                  </div>
                   {group.collections.length > 0 && (
                     <Disclosure.Panel className='py-1 text-sm'>
                       {group.collections.map(
@@ -130,13 +138,6 @@ const Sidebar: FC = () => {
                       )}
                     </Disclosure.Panel>
                   )}
-                  <div className='flex justify-end px-0.5 pb-0.5'>
-                    <button
-                      className='flex items-center justify-center px-1 
-                    rounded hover:bg-gray-300 dark:hover:bg-gray-600'>
-                      <DotsHorizontalIcon className='icon-xs' />
-                    </button>
-                  </div>
                 </>
               )}
             </Disclosure>
@@ -144,20 +145,24 @@ const Sidebar: FC = () => {
         </div>
 
         {/* Bottom section  */}
-        <div className='absolute left-0 right-0 bottom-1 w-full px-1 flex justify-between items-center '>
+        <div
+          className='absolute left-0 right-0 bottom-1 w-full px-1 
+        grid grid-cols-6 gap-2  '>
           <ThemeBtn />
-          <button
-            onClick={openModal}
-            className='w-full space-x-1 btn btn-secondary'>
-            <span className='icon-sm'>
-              <PlusIcon />
-            </span>
-            <span>New Collection</span>
-          </button>
-          <ActionIcon
-            icon={<ViewGridAddIcon />}
-            onClick={() => createGroupModal.openModal()}
-          />
+          <div className='col-span-5 flex  border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
+            <button
+              onClick={openModal}
+              className='w-full space-x-1 btn btn-secondary'>
+              <span className='icon-sm'>
+                <PlusIcon />
+              </span>
+              <span>New Collection</span>
+            </button>
+            <ActionIcon
+              icon={<ViewGridAddIcon />}
+              onClick={() => createGroupModal.openModal()}
+            />
+          </div>
         </div>
       </div>
       <Toaster />
