@@ -492,8 +492,21 @@ const Collections: NextPage<
                             </tr>
                           </thead>
                           <tbody>
-                            {itemsQueries.map(
-                              ({ data: item }) =>
+                            {itemsQueries.map(({ data: item, isLoading }) =>
+                              isLoading ? (
+                                <tr className='h-7 cursor-pointer animate-pulse'>
+                                  <td
+                                    className='border-2 border-gray-300 dark:border-gray-600 
+                                  bg-gray-300 dark:bg-gray-600'></td>
+
+                                  {collection.properties.map((property) => (
+                                    <td
+                                      key={property._id}
+                                      className='border-2 border-gray-300 dark:border-gray-600 
+                                  bg-gray-300 dark:bg-gray-600'></td>
+                                  ))}
+                                </tr>
+                              ) : (
                                 item && (
                                   <ItemRow
                                     key={item._id}
@@ -502,6 +515,7 @@ const Collections: NextPage<
                                     onItemClick={handleOnClickItem}
                                   />
                                 )
+                              )
                             )}
                           </tbody>
                         </table>
