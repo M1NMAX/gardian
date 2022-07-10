@@ -98,8 +98,6 @@ const Header: FC<HeaderProps> = (props) => {
         if (!collection._id) throw 'CollectionId is undefined';
 
         queryClient.invalidateQueries(['collection', collection._id]);
-
-        positiveFeedback('Success');
       },
       onError: () => {
         negativeFeedback();
