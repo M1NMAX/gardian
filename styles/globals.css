@@ -118,7 +118,7 @@
 
   .modal-positive-btn {
     @apply text-lg rounded-md px-4 py-1 bg-primary hover:bg-primary-dark 
-    dark:text-black font-medium disabled:hover:bg-yellow-300 
+    dark:text-black font-medium disabled:invisible
     disabled:cursor-no-drop;
   }
 

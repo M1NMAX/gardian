@@ -152,7 +152,9 @@ const Sidebar: FC = () => {
           <div className='col-span-5 flex  border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
             <button
               onClick={openModal}
-              className='w-full space-x-1 btn btn-secondary'>
+              disabled={groups?.length === 0}
+              className='w-full space-x-1 btn btn-secondary 
+              disabled:cursor-no-drop disabled:invisible'>
               <span className='icon-sm'>
                 <PlusIcon />
               </span>
