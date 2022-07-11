@@ -36,12 +36,8 @@ const Property: FC<PropertyProps> = (props) => {
   const handleDuplicate = () => {
     if (!collectionProperty) return;
 
-    const copy: IProperty = {
-      name: collectionProperty.name,
-      type: collectionProperty.type,
-      values: collectionProperty.values,
-    };
-    onPropertyDuplicate(copy);
+    const { name, type, values } = collectionProperty;
+    onPropertyDuplicate({ name, type, values });
   };
 
   return (
