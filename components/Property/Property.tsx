@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
-import { IProperty, IItemProperty } from '../../interfaces';
+import { IProperty } from '../../interfaces';
 import PropertyMenu from './PropertyMenu';
 import useModal from '../../hooks/useModal';
 import EditPropertyModal from './EditPropertyModal';
 import DeleteModal from '../DeleteModal';
 interface PropertyProps {
   collectionProperty: IProperty;
-  itemProperty: IItemProperty;
   getValue: (id: number) => string;
   setValue: (id: number, value: string) => void;
   onPropertyUpdate: (property: IProperty) => void;
@@ -17,7 +16,6 @@ interface PropertyProps {
 const Property: FC<PropertyProps> = (props) => {
   const {
     collectionProperty,
-    itemProperty,
     getValue,
     setValue,
     onPropertyUpdate,
