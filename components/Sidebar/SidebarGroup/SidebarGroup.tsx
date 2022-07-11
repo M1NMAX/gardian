@@ -1,5 +1,5 @@
 import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from 'react-query';
@@ -80,11 +80,17 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
         {({ open }) => (
           <>
             <div className='flex items-center justify-between py-0.5 pr-2'>
-              <Disclosure.Button className='flex items-center w-full p-0.5'>
+              <Disclosure.Button className='flex items-center space-x-0.5 w-full p-0.5'>
                 <ChevronRightIcon
                   className={`${open ? 'rotate-90 transform' : ''} icon-xs`}
                 />
                 <span> {name}</span>
+                <span className='mt-0.5 flex items-center space-x-0.5'>
+                  <LightningBoltIcon className='w-4 h-4' />
+                  <span className='text-xs font-light italic'>
+                    {group.collections.length}
+                  </span>
+                </span>
               </Disclosure.Button>
               {/* Only show delete btn if group empty */}
               <SidebarGroupMenu

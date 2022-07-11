@@ -27,7 +27,7 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
       onClick={handleClick}
       className='w-full flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800'>
       <span className=' font-semibold text-lg'>{item.name}</span>
-      <span className='flex space-x-1 text-sm font-medium text-gray-700 dark:text-gray-100'>
+      <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
           (property) =>
             getValueById(property._id) != '' && (
