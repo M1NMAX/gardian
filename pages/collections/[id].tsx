@@ -14,6 +14,7 @@ import {
   deleteItem,
   getItem,
   removePropertyFromItem,
+  renameItem,
   updateItemProperty,
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
@@ -42,7 +43,6 @@ import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
 import ItemRow from '../../components/ItemRow';
-import { DotsVerticalIcon } from '@heroicons/react/solid';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -98,12 +98,32 @@ const Collections: NextPage<
 
   useEffect(() => {
     refetch();
-    closeDetails();
+    closeDrawer();
   }, [id]);
 
   //Mutations
 
-  //Handle delete item mutation
+  //Handle rename item mutation
+  const renameItemMutation = useMutation(
+    async (name: string) => {
+      if (name === '') return;
+      if (!selectedItemId) return;
+      await renameItem(selectedItemId, name);
+    },
+    {
+      onSuccess: async () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+        if (!selectedItemId) throw 'CurrentItemId is undefined';
+
+        queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //Handle update item mutation
   const updateItemPropertyMutation = useMutation(updateItemProperty, {
     onSuccess: async () => {
       if (!collectionId) throw 'CollectionId is undefined';
@@ -127,7 +147,7 @@ const Collections: NextPage<
       queryClient.removeQueries(['items', collectionId, selectedItemId]);
 
       positiveFeedback('Item deleted');
-      closeDetails();
+      closeDrawer();
     },
     onError: () => {
       negativeFeedback();
@@ -215,9 +235,12 @@ const Collections: NextPage<
   );
 
   // handle Drawer
-  const [showDetails, setShowDetails] = useState(false);
-  const openDetails = () => setShowDetails(true);
-  const closeDetails = () => setShowDetails(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const openDetails = () => setShowDrawer(true);
+  const closeDrawer = () => {
+    setShowDrawer(false);
+    setSelectedItemId(null);
+  };
 
   const handleOnClickItem = (id: number) => {
     setSelectedItemId(id);
@@ -225,7 +248,7 @@ const Collections: NextPage<
   };
 
   //Handle selected item
-  const [selectedItemId, setSelectedItemId] = useState<number>();
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [selectedItemName, setSelectedItemName] = useState<string>('');
   const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
   const [selectedItemPorperties, setSelectedItemPorperties] = useState<
@@ -335,7 +358,7 @@ const Collections: NextPage<
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } flex h-screen space-x-2 dark:bg-gray-900 dark:text-white`}>
-        <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
+        <div className={`${showDrawer ? 'w-2/3' : 'w-full'} py-2 px-4`}>
           {collection && (
             <Collection>
               <Collection.Header
@@ -547,15 +570,27 @@ const Collections: NextPage<
         </div>
 
         {selectedItemId && (
-          <Drawer opened={showDetails} onClose={closeDetails}>
-            <Drawer.Title>{selectedItemName}</Drawer.Title>
+          <Drawer opened={showDrawer} onClose={closeDrawer}>
+            <Drawer.Title>
+              <label
+                className='block mt-1 mr-8 p-1 rounded-sm 
+              border border-dashed border-gray-300 dark:border-gray-600'>
+                <span className='text-sm'>Name</span>
+                <input
+                  value={selectedItemName}
+                  onChange={(e) => setSelectedItemName(e.target.value)}
+                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                  className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
+                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary'
+                />
+              </label>
+            </Drawer.Title>
             <Drawer.Body>
               <div className='space-y-2'>
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (
                       <Property
-                        itemProperty={property}
                         collectionProperty={getCollectionPropertyById(
                           property._id
                         )}

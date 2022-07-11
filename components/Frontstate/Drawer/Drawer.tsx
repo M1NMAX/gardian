@@ -7,7 +7,7 @@ interface IProps {
 }
 
 interface TitleProps {
-  children: string;
+  children: ReactNode;
 }
 interface DescriptionProps extends IProps {}
 interface BodyProps extends IProps {}
