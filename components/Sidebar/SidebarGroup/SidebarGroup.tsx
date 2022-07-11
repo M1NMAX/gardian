@@ -3,7 +3,7 @@ import { ChevronRightIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from 'react-query';
-import { renameGroup } from '../../../fetch/group';
+import { deleteGroup, renameGroup } from '../../../fetch/group';
 import useModal from '../../../hooks/useModal';
 import { IGroup } from '../../../interfaces';
 import DeleteModal from '../../DeleteModal';
@@ -34,8 +34,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
   const renameGroupMutation = useMutation(
     async (name: string) => {
       if (!id) return;
-      const res = await renameGroup(id, name);
-      console.log(res);
+      await renameGroup(id, name);
     },
     {
       onSuccess: () => {
@@ -48,6 +47,26 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
       },
       onSettled: () => {
         renameGroupModal.closeModal();
+      },
+    }
+  );
+
+  //handle delete group and its mutation
+  const deleteGroupMutation = useMutation(
+    async () => {
+      if (!id) return;
+      await deleteGroup(id);
+    },
+    {
+      onSuccess: () => {
+        positiveFeedback('Success');
+        queryClient.invalidateQueries(['groups']);
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        deleteGroupModal.closeModal();
       },
     }
   );
@@ -93,14 +112,14 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
         />
       )}
 
-      {/* {deleteGroupModal.isOpen && (
+      {deleteGroupModal.isOpen && (
         <DeleteModal
           open={deleteGroupModal.isOpen}
           handleClose={deleteGroupModal.closeModal}
           name={name}
-          onDelete={deleteCollectionMutation.mutate}
+          onDelete={deleteGroupMutation.mutate}
         />
-      )} */}
+      )}
     </>
   );
 };
