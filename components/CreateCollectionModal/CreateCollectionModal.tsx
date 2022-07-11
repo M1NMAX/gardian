@@ -2,14 +2,19 @@ import React, { FC, useState } from 'react';
 import Modal from '../Frontstate/Modal';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
-import { IGroup, ModalProps } from '../../interfaces';
+import { IGroup } from '../../interfaces';
 import { createCollection } from '../../fetch/collections';
-import { CollectionIcon } from '@heroicons/react/outline';
+import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import Label from '../Label';
 import { addCollectionToGroup } from '../../fetch/group';
+import { useMutation, useQueryClient } from 'react-query';
 
-interface NewCollectionModalProps extends ModalProps {
+interface NewCollectionModalProps {
   groups: IGroup[];
+  open: boolean;
+  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
+  positiveFeedback: (value: string) => void;
+  negativeFeedback: () => void;
 }
 
 const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
@@ -18,11 +23,12 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
   const [name, setName] = useState('');
   const [selectedGroup, setSelectedGroup] = useState(groups[0]._id);
 
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
-    if (!selectedGroup) return;
+  const queryClient = useQueryClient();
 
-    try {
+  const createCollectionMutation = useMutation(
+    async (name: string) => {
+      if (!selectedGroup) return;
+
       const collection = await createCollection({
         name,
         description: '',
@@ -33,12 +39,25 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
       });
       if (!collection._id) throw true;
       await addCollectionToGroup(selectedGroup, collection._id);
-      positiveFeedback('Collection created successfully');
-      handleClose();
-    } catch (error) {
-      console.log(error);
-      negativeFeedback();
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+
+        positiveFeedback('Collection created');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        handleClose();
+      },
     }
+  );
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    createCollectionMutation.mutate(name);
   };
 
   return (
@@ -64,21 +83,19 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
         <div className='w-full mt-2'>
           <RadioGroup value={selectedGroup} onChange={setSelectedGroup}>
             <RadioGroup.Label className='modal-input-label'>
-              Type of collection
+              Group
             </RadioGroup.Label>
             <div className='space-y-1'>
               {groups.map((group, idx) => (
                 <RadioGroup.Option
                   key={idx}
                   value={group._id}
-                  className={({ active, checked }) =>
-                    `${active ? '' : ''}
-                                                ${
-                                                  checked
-                                                    ? 'bg-primary  text-white'
-                                                    : 'bg-gray-100 dark:bg-gray-800'
-                                                }
-                                                 relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
+                  className={({ checked }) =>
+                    `${
+                      checked
+                        ? 'bg-primary  text-white'
+                        : 'bg-gray-100 dark:bg-gray-800'
+                    } relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
                   }>
                   {({ checked }) => (
                     <>
@@ -101,7 +118,12 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
                                   ? 'text-white'
                                   : 'text-gray-600 dark:text-gray-50'
                               }`}>
-                              <span>Description</span>
+                              <span className='mt-0.5 flex items-center space-x-0.5'>
+                                <LightningBoltIcon className='w-4 h-4' />
+                                <span className='text-xs font-light italic'>
+                                  {group.collections.length}
+                                </span>
+                              </span>
                             </RadioGroup.Description>
                           </div>
                         </div>
@@ -123,7 +145,9 @@ const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
           <button onClick={handleClose} className='modal-neutral-btn'>
             Cancel
           </button>
-          <button className='modal-positive-btn'>Create</button>
+          <button disabled={name.length === 0} className='modal-positive-btn'>
+            Create
+          </button>
         </div>
       </form>
     </Modal>
