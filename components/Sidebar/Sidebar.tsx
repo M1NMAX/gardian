@@ -9,10 +9,10 @@ import {
   TemplateIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-import SidebarLink from './components/SidebarLink';
+import SidebarLink from './SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
-import SidebarCollection from './components/SidebarCollection';
-import SidebarUserOptions from './components/SidebarUserMenu';
+import SidebarCollection from './SidebarCollection';
+import SidebarUserOptions from './SidebarUserMenu';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';

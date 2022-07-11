@@ -9,18 +9,18 @@ import {
   getCollection,
   renameCollection,
   toggleCollectionIsFavourite,
-} from '../../../../fetch/collections';
-import RenameModal from '../../../RenameModal';
-import DeleteModal from '../../../DeleteModal';
-import useModal from '../../../../hooks/useModal';
+} from '../../../fetch/collections';
+import RenameModal from '../../RenameModal';
+import DeleteModal from '../../DeleteModal';
+import useModal from '../../../hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import MoveCollectionModal from '../../../MoveCollectionModal';
+import MoveCollectionModal from '../../MoveCollectionModal';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
-} from '../../../../fetch/group';
-import { createItem, getItem } from '../../../../fetch/item';
+} from '../../../fetch/group';
+import { createItem, getItem } from '../../../fetch/item';
 
 interface SidebarCollectionProps {
   collectionId: string;
