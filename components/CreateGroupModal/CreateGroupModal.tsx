@@ -1,28 +1,45 @@
-import { CollectionIcon } from '@heroicons/react/outline';
+import { ViewGridAddIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
 import { createGroup } from '../../fetch/group';
-import { ModalProps } from '../../interfaces';
 import Modal from '../Frontstate/Modal';
 import Label from '../Label';
 
-const CreateGroupModal: FC<ModalProps> = (props) => {
+interface CreateGroupModalProps {
+  open: boolean;
+  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
+  positiveFeedback: (value: string) => void;
+  negativeFeedback: () => void;
+}
+
+const CreateGroupModal: FC<CreateGroupModalProps> = (props) => {
   const { open, handleClose, positiveFeedback, negativeFeedback } = props;
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState<string>('');
+
+  const queryClient = useQueryClient();
+
+  const createGroupMutation = useMutation(createGroup, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['groups']);
+      positiveFeedback('Group dreated');
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+    onSettled: () => {
+      handleClose();
+    },
+  });
+
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    try {
-      createGroup(name);
-      positiveFeedback('Group created');
-      handleClose();
-    } catch (error) {
-      negativeFeedback();
-    }
+    createGroupMutation.mutate(name);
   };
 
   return (
     <Modal
-      title={<Label icon={<CollectionIcon />} text='New collection' />}
+      title={<Label icon={<ViewGridAddIcon />} text='New Group' />}
       open={open}
       onHide={handleClose}>
       <form onSubmit={handleSubmit} className='modal-form'>
@@ -35,7 +52,7 @@ const CreateGroupModal: FC<ModalProps> = (props) => {
             onChange={(e) => {
               setName(e.target.value);
             }}
-            placeholder='Collection name'
+            placeholder='Group name'
             className='modal-input'
           />
         </label>
@@ -43,7 +60,9 @@ const CreateGroupModal: FC<ModalProps> = (props) => {
           <button onClick={handleClose} className='modal-neutral-btn'>
             Cancel
           </button>
-          <button className='modal-positive-btn'>Create</button>
+          <button disabled={name.length === 0} className='modal-positive-btn'>
+            Create
+          </button>
         </div>
       </form>
     </Modal>
