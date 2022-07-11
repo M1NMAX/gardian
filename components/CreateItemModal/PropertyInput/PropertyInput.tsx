@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { IProperty } from '../../interfaces';
+import { IProperty } from '../../../interfaces';
 
 interface PropertyInputProps {
   property: IProperty;

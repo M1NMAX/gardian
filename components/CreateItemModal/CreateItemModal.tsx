@@ -4,7 +4,7 @@ import { addItemToCollection } from '../../fetch/collections';
 import { createItem } from '../../fetch/item';
 import { ICollection, IItemProperty } from '../../interfaces';
 import Modal from '../Frontstate/Modal';
-import PropertyInput from '../PropertyInput';
+import PropertyInput from './PropertyInput';
 
 interface CreateItemModalProps {
   collection: ICollection;
