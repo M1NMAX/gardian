@@ -7,12 +7,12 @@ export const templates: ITemplate[] = [
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
-      { _id: 1, name: 'Date', type: 'date', values: [''] },
+      { _id: 1, name: 'Date', type: 'date', values: [] },
       {
         _id: 2,
         name: 'Notes',
         type: 'textarea',
-        values: [''],
+        values: [],
       },
     ],
     items: [
@@ -42,19 +42,19 @@ export const templates: ITemplate[] = [
         _id: 1,
         name: 'Done',
         type: 'checkbox',
-        values: [''],
+        values: [],
       },
       {
         _id: 2,
         name: 'Conclusion date',
         type: 'date',
-        values: [''],
+        values: [],
       },
       {
         _id: 3,
         name: 'Notes',
         type: 'textarea',
-        values: [''],
+        values: [],
       },
     ],
     items: [

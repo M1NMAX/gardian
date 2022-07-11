@@ -320,7 +320,7 @@ const Collections: NextPage<
       property: {
         name: 'Property',
         type: 'text',
-        values: [''],
+        values: [],
       },
     });
   };
