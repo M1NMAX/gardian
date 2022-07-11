@@ -114,6 +114,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
               setValue(property._id, e.target.value);
             }}
             className='modal-input'>
+            <option value='' selected disabled hidden></option>
             {property.values.map((value, idx) => (
               <option key={idx} value={value}>
                 {value}
