@@ -1,9 +1,7 @@
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
-  ChevronRightIcon,
   CollectionIcon,
-  DotsVerticalIcon,
   PlusIcon,
   SearchIcon,
   TemplateIcon,
@@ -12,7 +10,7 @@ import {
 import SidebarLink from './SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './SidebarCollection';
-import SidebarUserOptions from './SidebarUserMenu';
+import SidebarUserMenu from './SidebarUserMenu';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
@@ -20,11 +18,11 @@ import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import NewCollectionModal from '../NewCollectionModal';
 import { useRouter } from 'next/router';
-import { Disclosure } from '@headlessui/react';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
 import { IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
+import SidebarGroup from './SidebarGroup';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -84,8 +82,7 @@ const Sidebar: FC = () => {
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
-
-          <SidebarUserOptions />
+          <SidebarUserMenu />
         </div>
 
         <SidebarLink
@@ -101,47 +98,24 @@ const Sidebar: FC = () => {
           url='/collections'
           active={router.pathname === '/collections'}
         />
+
+        {/* Display groups */}
         <div className='space-y-2 px-2'>
-          {groups?.map((group) => (
-            <Disclosure
-              defaultOpen
-              as='div'
-              className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
-              {({ open }) => (
-                <>
-                  <div className='flex justify-between py-0.5 pr-2'>
-                    <Disclosure.Button className='flex items-center w-full p-0.5'>
-                      <ChevronRightIcon
-                        className={`${
-                          open ? 'rotate-90 transform' : ''
-                        } icon-xs`}
+          {groups &&
+            groups.map((group, idx) => (
+              <SidebarGroup key={idx} group={group}>
+                {group.collections.map(
+                  (collectionId) =>
+                    group._id && (
+                      <SidebarCollection
+                        key={collectionId}
+                        collectionId={collectionId}
+                        groupId={group._id}
                       />
-                      <span> {group.name}</span>
-                    </Disclosure.Button>
-                    <button
-                      className='flex items-center justify-center px-1 
-                    rounded hover:bg-gray-300 dark:hover:bg-gray-600'>
-                      <DotsVerticalIcon className='icon-xs' />
-                    </button>
-                  </div>
-                  {group.collections.length > 0 && (
-                    <Disclosure.Panel className='py-1 text-sm'>
-                      {group.collections.map(
-                        (collectionId) =>
-                          group._id && (
-                            <SidebarCollection
-                              key={collectionId}
-                              collectionId={collectionId}
-                              groupId={group._id}
-                            />
-                          )
-                      )}
-                    </Disclosure.Panel>
-                  )}
-                </>
-              )}
-            </Disclosure>
-          ))}
+                    )
+                )}
+              </SidebarGroup>
+            ))}
         </div>
 
         {/* Bottom section  */}
