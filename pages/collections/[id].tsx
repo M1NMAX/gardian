@@ -462,7 +462,7 @@ const Collections: NextPage<
                     {/*Dispay all collection's item */}
                     <div
                       className={` 
-                  ${selectedView === 'list' && 'flex flex-col space-y-1.5'}
+                  ${selectedView === 'list' && 'flex flex-col space-y-2'}
                   ${
                     selectedView === 'grid' &&
                     'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
@@ -481,6 +481,7 @@ const Collections: NextPage<
                             <ItemOverview
                               key={item._id}
                               item={item}
+                              active={selectedItemId === item._id}
                               collectionProperty={collection.properties}
                               onItemClick={handleOnClickItem}
                             />

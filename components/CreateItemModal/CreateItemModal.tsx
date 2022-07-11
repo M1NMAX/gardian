@@ -107,7 +107,9 @@ const CreateItemModal: FC<CreateItemModalProps> = (props) => {
           <button onClick={handleClose} className='modal-neutral-btn'>
             Cancel
           </button>
-          <button className='modal-positive-btn'>Create</button>
+          <button disabled={name.length === 0} className='modal-positive-btn'>
+            Create
+          </button>
         </div>
       </form>
     </Modal>

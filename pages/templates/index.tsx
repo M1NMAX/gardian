@@ -33,9 +33,12 @@ const TemplatesPage: NextPage<
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const [showDetails, setShowDetails] = useState(false);
-  const openDetails = () => setShowDetails(true);
-  const closeDetails = () => setShowDetails(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const openDrawer = () => setShowDrawer(true);
+  const closeDrawer = () => {
+    setShowDrawer(false);
+    setCurrentTemplateId(null);
+  };
 
   const [selectedView, setSelectedView] = useState<string>('grid');
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
@@ -59,7 +62,9 @@ const TemplatesPage: NextPage<
     [selectedSort]
   );
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<number>();
+  const [currentTemplateId, setCurrentTemplateId] = useState<number | null>(
+    null
+  );
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
   const getTemplate = (id: number) => {
@@ -74,7 +79,7 @@ const TemplatesPage: NextPage<
 
   const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
-    openDetails();
+    openDrawer();
   };
 
   const isIItem = (obj: any): obj is IItem => {
@@ -131,7 +136,7 @@ const TemplatesPage: NextPage<
         } transition-all duration-200 ease-linear 
         flex h-screen   space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
         <div
-          className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
+          className={`${showDrawer ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
           {/* Header  */}
           <div className='flex items-center space-x-2'>
             {!sidebar && (
@@ -280,9 +285,9 @@ const TemplatesPage: NextPage<
               ))}
           </div>
         </div>
-        {/* Details  */}
+        {/* Drawer  */}
         {currentTemplate && (
-          <Drawer opened={showDetails} onClose={closeDetails}>
+          <Drawer opened={showDrawer} onClose={closeDrawer}>
             <Drawer.Title>{currentTemplate.name}</Drawer.Title>
 
             <Drawer.Description>
@@ -295,7 +300,7 @@ const TemplatesPage: NextPage<
                 <div>
                   <p>Example of item </p>
                   <div className='flex flex-col space-y-2'>
-                    {currentTemplate.items?.map(
+                    {currentTemplate.items.map(
                       (item, idx) =>
                         isIItem(item) && (
                           <span

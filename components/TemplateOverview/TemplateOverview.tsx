@@ -19,7 +19,7 @@ const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
     <button
       onClick={handleClick}
       className={`${
-        active && 'border-x-2 border-green-500'
+        active && 'border-r-2 border-green-500'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className=' font-semibold text-lg'>{name}</span>
