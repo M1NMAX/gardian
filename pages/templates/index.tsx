@@ -97,10 +97,10 @@ const TemplatesPage: NextPage<
         isDescriptionHidden: false,
         isFavourite: false,
         items: [],
-        properties: properties.map((property) => ({
-          name: property.name,
-          type: property.type,
-          values: property.values,
+        properties: properties.map(({ name, type, values }) => ({
+          name,
+          type,
+          values,
         })),
       });
 
