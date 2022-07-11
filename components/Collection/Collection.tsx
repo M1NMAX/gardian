@@ -1,5 +1,4 @@
 import {
-  EmojiHappyIcon,
   InformationCircleIcon,
   MenuAlt2Icon,
   StarIcon as StarIconOutline,
