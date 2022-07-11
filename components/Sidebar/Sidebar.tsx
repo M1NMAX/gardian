@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
   CollectionIcon,
@@ -16,7 +16,7 @@ import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
-import NewCollectionModal from '../NewCollectionModal';
+import CreateCollectionModal from '../CreateCollectionModal';
 import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
@@ -58,16 +58,14 @@ const Sidebar: FC = () => {
     return () => document.removeEventListener('mousedown', checkOutsideClick);
   }, [checkOutsideClick]);
 
-  //Modal: create collection
-  const [open, setOpen] = useState(false);
-  const closeModal = () => setOpen(false);
-  const openModal = () => setOpen(true);
+  //Modals
+  const createCollectionModal = useModal();
+  const createGroupModal = useModal();
 
+  //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
-
-  const createGroupModal = useModal();
 
   return (
     <div
@@ -126,7 +124,7 @@ const Sidebar: FC = () => {
           <ThemeBtn />
           <div className='col-span-5 flex  border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
             <button
-              onClick={openModal}
+              onClick={createCollectionModal.openModal}
               disabled={groups?.length === 0}
               className='w-full space-x-1 btn btn-secondary 
               disabled:cursor-no-drop disabled:invisible'>
@@ -143,10 +141,10 @@ const Sidebar: FC = () => {
         </div>
       </div>
       <Toaster />
-      {open && groups && (
-        <NewCollectionModal
-          open={open}
-          handleClose={closeModal}
+      {groups && createCollectionModal.isOpen && (
+        <CreateCollectionModal
+          open={createCollectionModal.isOpen}
+          handleClose={createCollectionModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           groups={groups}

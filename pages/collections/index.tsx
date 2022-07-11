@@ -18,7 +18,7 @@ import {
   ViewListIcon,
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
-import NewCollectionModal from '../../components/NewCollectionModal';
+import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
@@ -44,7 +44,7 @@ const Collections: NextPage<
   );
 
   //Modal: create collection
-  const newCollectionModal = useModal();
+  const createCollectionModal = useModal();
 
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () =>
@@ -79,7 +79,7 @@ const Collections: NextPage<
             My Collections
           </h1>
           <button
-            onClick={newCollectionModal.openModal}
+            onClick={createCollectionModal.openModal}
             className='btn btn-primary'>
             <span className='icon-sm'>
               <PlusIcon />
@@ -238,10 +238,10 @@ const Collections: NextPage<
       <Toaster />
 
       {/* New collection modal  */}
-      {newCollectionModal.isOpen && groups && (
-        <NewCollectionModal
-          open={newCollectionModal.isOpen}
-          handleClose={newCollectionModal.closeModal}
+      {createCollectionModal.isOpen && groups && (
+        <CreateCollectionModal
+          open={createCollectionModal.isOpen}
+          handleClose={createCollectionModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           groups={groups}
