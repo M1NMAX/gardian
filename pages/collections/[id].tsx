@@ -22,7 +22,6 @@ import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
   PlusIcon,
-  TableIcon,
   TrashIcon,
   ViewGridIcon,
   ViewListIcon,
@@ -42,7 +41,6 @@ import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
-import ItemRow from '../../components/ItemRow';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -448,29 +446,6 @@ const Collections: NextPage<
                                 </RadioGroup.Label>
                               )}
                             </RadioGroup.Option>
-
-                            <RadioGroup.Option
-                              value='table'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1 font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <TableIcon className='icon-sm' />
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
                           </div>
                         </RadioGroup>
                       </div>
@@ -495,72 +470,23 @@ const Collections: NextPage<
                   
                   pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
                    dark:scrollbar-thumb-gray-600 `}>
-                      {/* Table view is selected  */}
-                      {selectedView === 'table' && (
-                        <table
-                          className='w-full border-separate border-spacing-2 
-                 border-gray-300 dark:border-gray-600'>
-                          <thead>
-                            <tr>
-                              <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
-                                Name
-                              </th>
-                              {collection.properties.map((property) => (
-                                <th
-                                  key={property._id}
-                                  className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
-                                  {property.name}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {itemsQueries.map(({ data: item, isLoading }) =>
-                              isLoading ? (
-                                <tr className='h-7 cursor-pointer animate-pulse'>
-                                  <td
-                                    className='border-2 border-gray-300 dark:border-gray-600 
-                                  bg-gray-300 dark:bg-gray-600'></td>
-
-                                  {collection.properties.map((property) => (
-                                    <td
-                                      key={property._id}
-                                      className='border-2 border-gray-300 dark:border-gray-600 
-                                  bg-gray-300 dark:bg-gray-600'></td>
-                                  ))}
-                                </tr>
-                              ) : (
-                                item && (
-                                  <ItemRow
-                                    key={item._id}
-                                    item={item}
-                                    collectionProperties={collection.properties}
-                                    onItemClick={handleOnClickItem}
-                                  />
-                                )
-                              )
-                            )}
-                          </tbody>
-                        </table>
-                      )}
-                      {selectedView !== 'table' &&
-                        itemsQueries.map(({ data: item, isLoading }) =>
-                          isLoading ? (
-                            <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
-                              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                              <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                            </div>
-                          ) : (
-                            item && (
-                              <ItemOverview
-                                key={item._id}
-                                item={item}
-                                collectionProperty={collection.properties}
-                                onItemClick={handleOnClickItem}
-                              />
-                            )
+                      {itemsQueries.map(({ data: item, isLoading }) =>
+                        isLoading ? (
+                          <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                            <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                            <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                          </div>
+                        ) : (
+                          item && (
+                            <ItemOverview
+                              key={item._id}
+                              item={item}
+                              collectionProperty={collection.properties}
+                              onItemClick={handleOnClickItem}
+                            />
                           )
-                        )}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
