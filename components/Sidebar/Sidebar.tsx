@@ -104,6 +104,7 @@ const Sidebar: FC = () => {
           {groups &&
             groups.map((group, idx) => (
               <SidebarGroup key={idx} group={group}>
+                {/**Display group collections */}
                 {group.collections.map(
                   (collectionId) =>
                     group._id && (

@@ -7,13 +7,13 @@ import {
 import React, { FC, Fragment } from 'react';
 
 interface SidebarGroupMenuProps {
-  showDelete?: boolean;
+  showDelete: boolean;
   onClickRename: () => void;
   onClickDelete: () => void;
 }
 
 const SidebarGroupMenu: FC<SidebarGroupMenuProps> = (props) => {
-  const { showDelete = true, onClickRename, onClickDelete } = props;
+  const { showDelete, onClickRename, onClickDelete } = props;
   return (
     <Menu as='div' className='relative'>
       <Menu.Button
