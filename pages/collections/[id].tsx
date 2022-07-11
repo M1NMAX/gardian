@@ -232,6 +232,7 @@ const Collections: NextPage<
     IItemProperty[]
   >([]);
 
+  //Fetch the selected item data
   useEffect(() => {
     const fetchItem = async () => {
       if (!selectedItemId) return;
@@ -278,7 +279,7 @@ const Collections: NextPage<
   };
 
   //Util function that add the lastest collection property
-  //to all collection's items
+  //to all collection items
   const addPorpertyToAllItem = (collection: ICollection) => {
     //get id of the lastest collection's property
     const { _id } = collection.properties[collection.properties.length - 1];
