@@ -59,13 +59,7 @@ const SidebarUserMenu: FC = () => {
                 </div>
               </Menu.Item>
             </div>
-            <div className='px-1 py-1 space-y-1'>
-              <Menu.Item as='li'>
-                <a href='/settings' className='collection-menu-item-btn'>
-                  <CogIcon className='icon-sm' />
-                  <span>Settings</span>
-                </a>
-              </Menu.Item>
+            <div className='px-1 py-1'>
               <Menu.Item as='li'>
                 <a href='/api/auth/logout' className='collection-menu-item-btn'>
                   <LogoutIcon className='icon-sm' />
