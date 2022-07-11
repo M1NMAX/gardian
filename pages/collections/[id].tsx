@@ -28,7 +28,7 @@ import {
 } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import NewItemModal from '../../components/NewItemModal';
+import CreateItemModal from '../../components/CreateItemModal';
 import {
   addPropertyToCollection,
   removePropertyFromCollection,
@@ -65,7 +65,7 @@ const Collections: NextPage<
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //Modals
-  const newItemModal = useModal();
+  const createItemModal = useModal();
   const deleteModal = useModal();
   const descriptionModal = useModal();
 
@@ -361,7 +361,7 @@ const Collections: NextPage<
             <Collection>
               <Collection.Header
                 collection={collection}
-                openNewItemModal={newItemModal.openModal}
+                openNewItemModal={createItemModal.openModal}
                 onClickAddDescription={descriptionModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
@@ -377,7 +377,7 @@ const Collections: NextPage<
                     className='mt-4 py-1 flex justify-center border-dotted 
                   border-t-2 border-gray-200 dark:border-gray-700'>
                     <button
-                      onClick={newItemModal.openModal}
+                      onClick={createItemModal.openModal}
                       className='w-full py-1 flex items-center justify-center 
                       rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
                       <span className='icon-sm'>
@@ -450,7 +450,7 @@ const Collections: NextPage<
                         </RadioGroup>
                       </div>
                       <button
-                        onClick={newItemModal.openModal}
+                        onClick={createItemModal.openModal}
                         className='btn btn-primary'>
                         <span className='icon-sm'>
                           <PlusIcon />
@@ -555,11 +555,11 @@ const Collections: NextPage<
           </Drawer>
         )}
       </main>
-      {/* New item modal  */}
-      {collection && newItemModal.isOpen && (
-        <NewItemModal
-          open={newItemModal.isOpen}
-          handleClose={newItemModal.closeModal}
+      {/* create item modal  */}
+      {collection && createItemModal.isOpen && (
+        <CreateItemModal
+          open={createItemModal.isOpen}
+          handleClose={createItemModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           collection={collection}
