@@ -59,7 +59,7 @@
   }
 
   .property-within-drawer {
-    @apply w-full p-1 rounded-sm  border border-dashed;
+    @apply w-full p-1 rounded-sm border border-dashed border-gray-300 dark:border-gray-600;
   }
 
   /* Genaral input  */
