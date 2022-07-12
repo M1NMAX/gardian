@@ -30,14 +30,16 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
         active && 'border-r-2 border-green-500'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
-      <span className='w-full font-semibold text-lg truncate '>
+      <span className='w-full text-left font-semibold text-lg truncate '>
         {item.name}
       </span>
       <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
-          (property) =>
+          (property, idx) =>
             getValueById(property._id) != '' && (
-              <span className='px-0.5 rounded bg-white dark:bg-gray-600'>
+              <span
+                key={idx}
+                className='px-0.5 rounded bg-white dark:bg-gray-600'>
                 <MiniProperty property={property} getValue={getValueById} />
               </span>
             )

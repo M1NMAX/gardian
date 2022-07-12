@@ -4,6 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { LogoutIcon } from '@heroicons/react/outline';
 import logoSrc from '../../../public/logo192.png';
 import { Menu, Transition } from '@headlessui/react';
+import Link from 'next/link';
 
 const SidebarUserMenu: FC = () => {
   const { user, isLoading } = useUser();
@@ -61,10 +62,12 @@ const SidebarUserMenu: FC = () => {
             </div>
             <div className='px-1 py-1'>
               <Menu.Item as='li'>
-                <a href='/api/auth/logout' className='collection-menu-item-btn'>
-                  <LogoutIcon className='icon-sm' />
-                  <span>Log out</span>
-                </a>
+                <Link href='/api/auth/logout'>
+                  <a className='collection-menu-item-btn'>
+                    <LogoutIcon className='icon-sm' />
+                    <span>Log out</span>
+                  </a>
+                </Link>
               </Menu.Item>
             </div>
           </Menu.Items>

@@ -34,8 +34,10 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
 
         {/** Collection properties */}
         <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm overflow-x-auto scrollbar-none'>
-          {properties.map((property) => (
-            <span className=' text-sm font-semibold px-1 rounded bg-white dark:bg-gray-700 '>
+          {properties.map((property, idx) => (
+            <span
+              key={idx}
+              className='text-sm font-semibold px-1 rounded bg-white dark:bg-gray-700 '>
               {property.name}
             </span>
           ))}
