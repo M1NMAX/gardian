@@ -17,7 +17,6 @@ export interface IProperty extends IBase {
   name: string;
   type: PropertyTypes;
   values: string[];
-  color: string;
 }
 
 export interface IItemProperty {

@@ -7,13 +7,12 @@ export const templates: ITemplate[] = [
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
-      { _id: 1, name: 'Date', type: 'date', values: [''], color: '#dc2626' },
+      { _id: 1, name: 'Date', type: 'date', values: [] },
       {
         _id: 2,
         name: 'Notes',
         type: 'textarea',
-        values: [''],
-        color: '#facc15',
+        values: [],
       },
     ],
     items: [
@@ -43,22 +42,19 @@ export const templates: ITemplate[] = [
         _id: 1,
         name: 'Done',
         type: 'checkbox',
-        values: [''],
-        color: '#dc2626',
+        values: [],
       },
       {
         _id: 2,
         name: 'Conclusion date',
         type: 'date',
-        values: [''],
-        color: '#facc15',
+        values: [],
       },
       {
         _id: 3,
         name: 'Notes',
         type: 'textarea',
-        values: [''],
-        color: '#facc15',
+        values: [],
       },
     ],
     items: [
@@ -85,9 +81,7 @@ export const templates: ITemplate[] = [
     name: 'Links',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [
-      { _id: 1, name: 'URL', type: 'url', values: [''], color: '#dc2626' },
-    ],
+    properties: [{ _id: 1, name: 'URL', type: 'url', values: [''] }],
     items: [
       {
         name: 'Static data forum',
@@ -122,7 +116,6 @@ export const templates: ITemplate[] = [
         name: 'Status',
         type: 'select',
         values: ['Plan to watch', 'Watching', 'Watched'],
-        color: '#dc2626',
       },
       {
         _id: 2,
@@ -140,14 +133,12 @@ export const templates: ITemplate[] = [
           '9-Great',
           '10-Masterpiece',
         ],
-        color: '#facc15',
       },
       {
         _id: 3,
         name: 'Plataform',
         type: 'select',
         values: ['Netflix', 'Vizer.tv', 'Stremio'],
-        color: '#facc15',
       },
     ],
     items: [

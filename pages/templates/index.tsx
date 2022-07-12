@@ -7,12 +7,9 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  AdjustmentsIcon,
   CheckIcon,
   MenuAlt2Icon,
   SelectorIcon,
-  SortAscendingIcon,
-  SortDescendingIcon,
   ViewGridIcon,
   ViewListIcon,
 } from '@heroicons/react/outline';
@@ -22,7 +19,7 @@ import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
-import { Listbox, Popover, RadioGroup, Transition } from '@headlessui/react';
+import { Listbox, RadioGroup, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
 
 const sortOptions = [
@@ -36,9 +33,12 @@ const TemplatesPage: NextPage<
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const [showDetails, setShowDetails] = useState(false);
-  const openDetails = () => setShowDetails(true);
-  const closeDetails = () => setShowDetails(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const openDrawer = () => setShowDrawer(true);
+  const closeDrawer = () => {
+    setShowDrawer(false);
+    setCurrentTemplateId(null);
+  };
 
   const [selectedView, setSelectedView] = useState<string>('grid');
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
@@ -62,7 +62,9 @@ const TemplatesPage: NextPage<
     [selectedSort]
   );
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<number>();
+  const [currentTemplateId, setCurrentTemplateId] = useState<number | null>(
+    null
+  );
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
   const getTemplate = (id: number) => {
@@ -77,7 +79,7 @@ const TemplatesPage: NextPage<
 
   const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
-    openDetails();
+    openDrawer();
   };
 
   const isIItem = (obj: any): obj is IItem => {
@@ -100,11 +102,10 @@ const TemplatesPage: NextPage<
         isDescriptionHidden: false,
         isFavourite: false,
         items: [],
-        properties: properties.map((property) => ({
-          name: property.name,
-          type: property.type,
-          values: property.values,
-          color: property.color,
+        properties: properties.map(({ name, type, values }) => ({
+          name,
+          type,
+          values,
         })),
       });
 
@@ -133,18 +134,18 @@ const TemplatesPage: NextPage<
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } transition-all duration-200 ease-linear 
-        flex h-screen   space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
+        flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
         <div
-          className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
+          className={`${
+            showDrawer ? 'w-0  md:w-2/3 md:px-2' : 'w-full px-4'
+          } py-2 space-y-2`}>
           {/* Header  */}
-          <div className='flex items-center space-x-2'>
-            {!sidebar && (
-              <ActionIcon
-                icon={<MenuAlt2Icon />}
-                onClick={() => setSidebar(true)}
-              />
-            )}
-          </div>
+          {!sidebar && (
+            <ActionIcon
+              icon={<MenuAlt2Icon />}
+              onClick={() => setSidebar(true)}
+            />
+          )}
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-bright'>
@@ -154,10 +155,8 @@ const TemplatesPage: NextPage<
           {/*Filter */}
           <div className='flex justify-between items-center'>
             <Listbox value={selectedSort} onChange={setSelectedSort}>
-              <div className='relative mt-1'>
-                <Listbox.Label className='absolute z-20 pl-3 text-xs'>
-                  Sort by
-                </Listbox.Label>
+              <div className='relative mt-1 flex flex-col'>
+                <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
                 <Listbox.Button
                   className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
               py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
@@ -286,9 +285,9 @@ const TemplatesPage: NextPage<
               ))}
           </div>
         </div>
-        {/* Details  */}
+        {/* Drawer  */}
         {currentTemplate && (
-          <Drawer opened={showDetails} onClose={closeDetails}>
+          <Drawer opened={showDrawer} onClose={closeDrawer}>
             <Drawer.Title>{currentTemplate.name}</Drawer.Title>
 
             <Drawer.Description>
@@ -301,7 +300,7 @@ const TemplatesPage: NextPage<
                 <div>
                   <p>Example of item </p>
                   <div className='flex flex-col space-y-2'>
-                    {currentTemplate.items?.map(
+                    {currentTemplate.items.map(
                       (item, idx) =>
                         isIItem(item) && (
                           <span

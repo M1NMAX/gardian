@@ -13,7 +13,6 @@ const types = [
   'url',
   'date',
   'number',
-  'file',
 ];
 
 interface EditPropertyModalProps {

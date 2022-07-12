@@ -1,30 +1,29 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import ThemeBtn from '../ThemeBtn';
 import {
-  ChevronRightIcon,
   CollectionIcon,
-  DotsVerticalIcon,
   PlusIcon,
   SearchIcon,
   TemplateIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-import SidebarLink from './components/SidebarLink';
+import SidebarLink from './SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
-import SidebarCollection from './components/SidebarCollection';
-import SidebarUserOptions from './components/SidebarUserOptions';
+import SidebarCollection from './SidebarCollection';
+import SidebarUserMenu from './SidebarUserMenu';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
-import NewCollectionModal from '../NewCollectionModal';
+import CreateCollectionModal from '../CreateCollectionModal';
 import { useRouter } from 'next/router';
-import { Disclosure } from '@headlessui/react';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
 import { IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
+import SidebarGroup from './SidebarGroup';
+import SearchModal from '../SearchModal';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -60,16 +59,15 @@ const Sidebar: FC = () => {
     return () => document.removeEventListener('mousedown', checkOutsideClick);
   }, [checkOutsideClick]);
 
-  //Modal: create collection
-  const [open, setOpen] = useState(false);
-  const closeModal = () => setOpen(false);
-  const openModal = () => setOpen(true);
+  //Modals
+  const createCollectionModal = useModal();
+  const createGroupModal = useModal();
+  const searchModal = useModal();
 
+  //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
-
-  const createGroupModal = useModal();
 
   return (
     <div
@@ -80,12 +78,14 @@ const Sidebar: FC = () => {
       <div className='flex flex-col py-2  space-y-1 '>
         {/* Top section aka search  */}
         <div className='flex justify-between items-center space-x-1 px-2'>
-          <button className='w-full space-x-2 flex items-center rounded p-1 bg-gray-300 dark:bg-gray-700'>
+          <button
+            onClick={searchModal.openModal}
+            className='w-full space-x-2 flex items-center rounded p-1
+             bg-gray-300 dark:bg-gray-700'>
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
-
-          <SidebarUserOptions />
+          <SidebarUserMenu />
         </div>
 
         <SidebarLink
@@ -101,47 +101,25 @@ const Sidebar: FC = () => {
           url='/collections'
           active={router.pathname === '/collections'}
         />
+
+        {/* Display groups */}
         <div className='space-y-2 px-2'>
-          {groups?.map((group) => (
-            <Disclosure
-              defaultOpen
-              as='div'
-              className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
-              {({ open }) => (
-                <>
-                  <div className='flex justify-between py-0.5 pr-2'>
-                    <Disclosure.Button className='flex items-center w-full p-0.5'>
-                      <ChevronRightIcon
-                        className={`${
-                          open ? 'rotate-90 transform' : ''
-                        } icon-xs`}
+          {groups &&
+            groups.map((group, idx) => (
+              <SidebarGroup key={idx} group={group}>
+                {/**Display group collections */}
+                {group.collections.map(
+                  (collectionId) =>
+                    group._id && (
+                      <SidebarCollection
+                        key={collectionId}
+                        collectionId={collectionId}
+                        groupId={group._id}
                       />
-                      <span> {group.name}</span>
-                    </Disclosure.Button>
-                    <button
-                      className='flex items-center justify-center px-1 
-                    rounded hover:bg-gray-300 dark:hover:bg-gray-600'>
-                      <DotsVerticalIcon className='icon-xs' />
-                    </button>
-                  </div>
-                  {group.collections.length > 0 && (
-                    <Disclosure.Panel className='py-1 text-sm'>
-                      {group.collections.map(
-                        (collectionId) =>
-                          group._id && (
-                            <SidebarCollection
-                              key={collectionId}
-                              collectionId={collectionId}
-                              groupId={group._id}
-                            />
-                          )
-                      )}
-                    </Disclosure.Panel>
-                  )}
-                </>
-              )}
-            </Disclosure>
-          ))}
+                    )
+                )}
+              </SidebarGroup>
+            ))}
         </div>
 
         {/* Bottom section  */}
@@ -151,8 +129,10 @@ const Sidebar: FC = () => {
           <ThemeBtn />
           <div className='col-span-5 flex  border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
             <button
-              onClick={openModal}
-              className='w-full space-x-1 btn btn-secondary'>
+              onClick={createCollectionModal.openModal}
+              disabled={groups?.length === 0}
+              className='w-full space-x-1 btn btn-secondary 
+              disabled:cursor-no-drop disabled:invisible'>
               <span className='icon-sm'>
                 <PlusIcon />
               </span>
@@ -166,10 +146,10 @@ const Sidebar: FC = () => {
         </div>
       </div>
       <Toaster />
-      {open && groups && (
-        <NewCollectionModal
-          open={open}
-          handleClose={closeModal}
+      {groups && createCollectionModal.isOpen && (
+        <CreateCollectionModal
+          open={createCollectionModal.isOpen}
+          handleClose={createCollectionModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           groups={groups}
@@ -182,6 +162,13 @@ const Sidebar: FC = () => {
           handleClose={createGroupModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
+        />
+      )}
+      {searchModal.isOpen && (
+        <SearchModal
+          open={searchModal.isOpen}
+          handleClose={searchModal.closeModal}
+          onEnter={() => console.log('fn')}
         />
       )}
     </div>

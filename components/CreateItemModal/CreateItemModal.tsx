@@ -2,15 +2,19 @@ import React, { FC, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { addItemToCollection } from '../../fetch/collections';
 import { createItem } from '../../fetch/item';
-import { ICollection, IItemProperty, ModalProps } from '../../interfaces';
+import { ICollection, IItemProperty } from '../../interfaces';
 import Modal from '../Frontstate/Modal';
-import PropertyInput from '../PropertyInput';
+import PropertyInput from './PropertyInput';
 
-interface NewItemModalProps extends ModalProps {
+interface CreateItemModalProps {
   collection: ICollection;
+  open: boolean;
+  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
+  positiveFeedback: (value: string) => void;
+  negativeFeedback: () => void;
 }
 
-const NewItemModal: FC<NewItemModalProps> = (props) => {
+const CreateItemModal: FC<CreateItemModalProps> = (props) => {
   const { open, handleClose, positiveFeedback, negativeFeedback, collection } =
     props;
 
@@ -103,11 +107,13 @@ const NewItemModal: FC<NewItemModalProps> = (props) => {
           <button onClick={handleClose} className='modal-neutral-btn'>
             Cancel
           </button>
-          <button className='modal-positive-btn'>Create</button>
+          <button disabled={name.length === 0} className='modal-positive-btn'>
+            Create
+          </button>
         </div>
       </form>
     </Modal>
   );
 };
 
-export default NewItemModal;
+export default CreateItemModal;

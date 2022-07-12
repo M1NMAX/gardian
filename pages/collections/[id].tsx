@@ -14,6 +14,7 @@ import {
   deleteItem,
   getItem,
   removePropertyFromItem,
+  renameItem,
   updateItemProperty,
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
@@ -21,14 +22,13 @@ import ItemOverview from '../../components/ItemOverview';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
   PlusIcon,
-  TableIcon,
   TrashIcon,
   ViewGridIcon,
   ViewListIcon,
 } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import NewItemModal from '../../components/NewItemModal';
+import CreateItemModal from '../../components/CreateItemModal';
 import {
   addPropertyToCollection,
   removePropertyFromCollection,
@@ -41,8 +41,6 @@ import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
-import ItemRow from '../../components/ItemRow';
-import { DotsVerticalIcon } from '@heroicons/react/solid';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -67,7 +65,7 @@ const Collections: NextPage<
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //Modals
-  const newItemModal = useModal();
+  const createItemModal = useModal();
   const deleteModal = useModal();
   const descriptionModal = useModal();
 
@@ -98,12 +96,32 @@ const Collections: NextPage<
 
   useEffect(() => {
     refetch();
-    closeDetails();
+    closeDrawer();
   }, [id]);
 
   //Mutations
 
-  //Handle delete item mutation
+  //Handle rename item mutation
+  const renameItemMutation = useMutation(
+    async (name: string) => {
+      if (name === '') return;
+      if (!selectedItemId) return;
+      await renameItem(selectedItemId, name);
+    },
+    {
+      onSuccess: async () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+        if (!selectedItemId) throw 'CurrentItemId is undefined';
+
+        queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //Handle update item mutation
   const updateItemPropertyMutation = useMutation(updateItemProperty, {
     onSuccess: async () => {
       if (!collectionId) throw 'CollectionId is undefined';
@@ -127,7 +145,7 @@ const Collections: NextPage<
       queryClient.removeQueries(['items', collectionId, selectedItemId]);
 
       positiveFeedback('Item deleted');
-      closeDetails();
+      closeDrawer();
     },
     onError: () => {
       negativeFeedback();
@@ -215,9 +233,12 @@ const Collections: NextPage<
   );
 
   // handle Drawer
-  const [showDetails, setShowDetails] = useState(false);
-  const openDetails = () => setShowDetails(true);
-  const closeDetails = () => setShowDetails(false);
+  const [showDrawer, setShowDrawer] = useState(false);
+  const openDetails = () => setShowDrawer(true);
+  const closeDrawer = () => {
+    setShowDrawer(false);
+    setSelectedItemId(null);
+  };
 
   const handleOnClickItem = (id: number) => {
     setSelectedItemId(id);
@@ -225,13 +246,14 @@ const Collections: NextPage<
   };
 
   //Handle selected item
-  const [selectedItemId, setSelectedItemId] = useState<number>();
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
   const [selectedItemName, setSelectedItemName] = useState<string>('');
   const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
   const [selectedItemPorperties, setSelectedItemPorperties] = useState<
     IItemProperty[]
   >([]);
 
+  //Fetch the selected item data
   useEffect(() => {
     const fetchItem = async () => {
       if (!selectedItemId) return;
@@ -278,7 +300,7 @@ const Collections: NextPage<
   };
 
   //Util function that add the lastest collection property
-  //to all collection's items
+  //to all collection items
   const addPorpertyToAllItem = (collection: ICollection) => {
     //get id of the lastest collection's property
     const { _id } = collection.properties[collection.properties.length - 1];
@@ -296,8 +318,7 @@ const Collections: NextPage<
       property: {
         name: 'Property',
         type: 'text',
-        values: [''],
-        color: '#991b1b',
+        values: [],
       },
     });
   };
@@ -334,13 +355,16 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } flex h-screen space-x-2 dark:bg-gray-900 dark:text-white`}>
-        <div className={`${showDetails ? 'w-2/3' : 'w-full'} py-2 px-4`}>
+        } flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white`}>
+        <div
+          className={`${
+            showDrawer ? 'w-0 md:w-2/3 md:px-2' : 'w-full px-4'
+          } py-2`}>
           {collection && (
             <Collection>
               <Collection.Header
                 collection={collection}
-                openNewItemModal={newItemModal.openModal}
+                openNewItemModal={createItemModal.openModal}
                 onClickAddDescription={descriptionModal.openModal}>
                 <h1 className='font-medium text-3xl'>{collection.name}</h1>
               </Collection.Header>
@@ -356,7 +380,7 @@ const Collections: NextPage<
                     className='mt-4 py-1 flex justify-center border-dotted 
                   border-t-2 border-gray-200 dark:border-gray-700'>
                     <button
-                      onClick={newItemModal.openModal}
+                      onClick={createItemModal.openModal}
                       className='w-full py-1 flex items-center justify-center 
                       rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
                       <span className='icon-sm'>
@@ -425,34 +449,11 @@ const Collections: NextPage<
                                 </RadioGroup.Label>
                               )}
                             </RadioGroup.Option>
-
-                            <RadioGroup.Option
-                              value='table'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1 font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <TableIcon className='icon-sm' />
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
                           </div>
                         </RadioGroup>
                       </div>
                       <button
-                        onClick={newItemModal.openModal}
+                        onClick={createItemModal.openModal}
                         className='btn btn-primary'>
                         <span className='icon-sm'>
                           <PlusIcon />
@@ -464,7 +465,7 @@ const Collections: NextPage<
                     {/*Dispay all collection's item */}
                     <div
                       className={` 
-                  ${selectedView === 'list' && 'flex flex-col space-y-1.5'}
+                  ${selectedView === 'list' && 'flex flex-col space-y-2'}
                   ${
                     selectedView === 'grid' &&
                     'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
@@ -472,72 +473,24 @@ const Collections: NextPage<
                   
                   pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
                    dark:scrollbar-thumb-gray-600 `}>
-                      {/* Table view is selected  */}
-                      {selectedView === 'table' && (
-                        <table
-                          className='w-full border-separate border-spacing-2 
-                 border-gray-300 dark:border-gray-600'>
-                          <thead>
-                            <tr>
-                              <th className='rounded-tl border-2 border-gray-300 dark:border-gray-600'>
-                                Name
-                              </th>
-                              {collection.properties.map((property) => (
-                                <th
-                                  key={property._id}
-                                  className='last:rounded-tr border-2 border-gray-300 dark:border-gray-600'>
-                                  {property.name}
-                                </th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {itemsQueries.map(({ data: item, isLoading }) =>
-                              isLoading ? (
-                                <tr className='h-7 cursor-pointer animate-pulse'>
-                                  <td
-                                    className='border-2 border-gray-300 dark:border-gray-600 
-                                  bg-gray-300 dark:bg-gray-600'></td>
-
-                                  {collection.properties.map((property) => (
-                                    <td
-                                      key={property._id}
-                                      className='border-2 border-gray-300 dark:border-gray-600 
-                                  bg-gray-300 dark:bg-gray-600'></td>
-                                  ))}
-                                </tr>
-                              ) : (
-                                item && (
-                                  <ItemRow
-                                    key={item._id}
-                                    item={item}
-                                    collectionProperties={collection.properties}
-                                    onItemClick={handleOnClickItem}
-                                  />
-                                )
-                              )
-                            )}
-                          </tbody>
-                        </table>
-                      )}
-                      {selectedView !== 'table' &&
-                        itemsQueries.map(({ data: item, isLoading }) =>
-                          isLoading ? (
-                            <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
-                              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                              <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                            </div>
-                          ) : (
-                            item && (
-                              <ItemOverview
-                                key={item._id}
-                                item={item}
-                                collectionProperty={collection.properties}
-                                onItemClick={handleOnClickItem}
-                              />
-                            )
+                      {itemsQueries.map(({ data: item, isLoading }) =>
+                        isLoading ? (
+                          <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                            <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                            <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                          </div>
+                        ) : (
+                          item && (
+                            <ItemOverview
+                              key={item._id}
+                              item={item}
+                              active={selectedItemId === item._id}
+                              collectionProperty={collection.properties}
+                              onItemClick={handleOnClickItem}
+                            />
                           )
-                        )}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -547,15 +500,27 @@ const Collections: NextPage<
         </div>
 
         {selectedItemId && (
-          <Drawer opened={showDetails} onClose={closeDetails}>
-            <Drawer.Title>{selectedItemName}</Drawer.Title>
+          <Drawer opened={showDrawer} onClose={closeDrawer}>
+            <Drawer.Title>
+              <label
+                className='block mt-1 mr-8 p-1 rounded-sm 
+              border border-dashed border-gray-300 dark:border-gray-600'>
+                <span className='text-sm'>Name</span>
+                <input
+                  value={selectedItemName}
+                  onChange={(e) => setSelectedItemName(e.target.value)}
+                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                  className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
+                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary'
+                />
+              </label>
+            </Drawer.Title>
             <Drawer.Body>
               <div className='space-y-2'>
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (
                       <Property
-                        itemProperty={property}
                         collectionProperty={getCollectionPropertyById(
                           property._id
                         )}
@@ -594,11 +559,11 @@ const Collections: NextPage<
           </Drawer>
         )}
       </main>
-      {/* New item modal  */}
-      {collection && newItemModal.isOpen && (
-        <NewItemModal
-          open={newItemModal.isOpen}
-          handleClose={newItemModal.closeModal}
+      {/* create item modal  */}
+      {collection && createItemModal.isOpen && (
+        <CreateItemModal
+          open={createItemModal.isOpen}
+          handleClose={createItemModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
           collection={collection}

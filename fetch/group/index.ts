@@ -20,7 +20,7 @@ export async function getGroup(id: number): Promise<IGroup> {
 }
 
 export async function updateGroup(id: number, group: IGroup): Promise<boolean> {
-  const res = await fetch(baseUrl + id, getRequestOptions('PUT', { group }));
+  const res = await fetch(baseUrl + id, getRequestOptions('PUT', group));
   return res.json().then((response) => response.isSuccess);
 }
 

@@ -1,5 +1,4 @@
 import {
-  EmojiHappyIcon,
   InformationCircleIcon,
   MenuAlt2Icon,
   StarIcon as StarIconOutline,
@@ -205,25 +204,17 @@ const Header: FC<HeaderProps> = (props) => {
       </div>
       {/* Bottom section AKA collection name  */}
       <div className='group'>
-        <div className='flex space-x-1'>
+        {/* only render the follow btn if colllection does not have description */}
+        {collection.description === '' && (
           <button
+            onClick={onClickAddDescription}
             className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
               invisible group-hover:visible'>
-            <EmojiHappyIcon className='icon-xs' />
-            <span>Add Icon</span>
+            <InformationCircleIcon className='icon-xs' />
+            <span>Add Description </span>
           </button>
+        )}
 
-          {/* only render the follow btn if colllection does not have description */}
-          {collection.description === '' && (
-            <button
-              onClick={onClickAddDescription}
-              className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
-              invisible group-hover:visible'>
-              <InformationCircleIcon className='icon-xs' />
-              <span>Add Description </span>
-            </button>
-          )}
-        </div>
         {children}
       </div>
 

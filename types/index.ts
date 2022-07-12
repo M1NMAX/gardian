@@ -12,5 +12,4 @@ export type PropertyTypes =
   | 'checkbox'
   | 'url'
   | 'date'
-  | 'number'
-  | 'file';
+  | 'number';
