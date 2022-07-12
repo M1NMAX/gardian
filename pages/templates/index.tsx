@@ -134,18 +134,18 @@ const TemplatesPage: NextPage<
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } transition-all duration-200 ease-linear 
-        flex h-screen   space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
+        flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
         <div
-          className={`${showDrawer ? 'w-2/3' : 'w-full'} py-2 px-4 space-y-2`}>
+          className={`${
+            showDrawer ? 'w-0  md:w-2/3 md:px-2' : 'w-full px-4'
+          } py-2 space-y-2`}>
           {/* Header  */}
-          <div className='flex items-center space-x-2'>
-            {!sidebar && (
-              <ActionIcon
-                icon={<MenuAlt2Icon />}
-                onClick={() => setSidebar(true)}
-              />
-            )}
-          </div>
+          {!sidebar && (
+            <ActionIcon
+              icon={<MenuAlt2Icon />}
+              onClick={() => setSidebar(true)}
+            />
+          )}
 
           {/* Title  */}
           <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-bright'>
@@ -155,7 +155,7 @@ const TemplatesPage: NextPage<
           {/*Filter */}
           <div className='flex justify-between items-center'>
             <Listbox value={selectedSort} onChange={setSelectedSort}>
-              <div className='relative  mt-1 flex flex-col'>
+              <div className='relative mt-1 flex flex-col'>
                 <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
                 <Listbox.Button
                   className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
