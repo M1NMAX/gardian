@@ -15,8 +15,8 @@ const Home: NextPage = () => {
         <title>Gardian</title>
       </Head>
       <Header />
-      <main className='space-y-4 dark:bg-gray-700'>
-        <div className='w-screen md:max-w-5xl mx-auto py-8 flex items-center'>
+      <main className='space-y-4  dark:bg-gray-700'>
+        <div className='w-screen md:max-w-5xl mx-auto px-2 py-8 flex items-center'>
           <div className='basis-1/2 space-y-4 flex flex-col'>
             <p className='text-3xl font-bold uppercase dark:text-white'>
               Home <br /> for all &nbsp;
@@ -39,7 +39,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className='w-screen md:max-w-lg mx-auto my-8 flex flex-col items-center'>
+        <div className='w-screen md:max-w-lg mx-auto px-2 my-8 flex flex-col items-center'>
           <div>
             <p className='text-2xl font-bold dark:text-gray-100'>
               No need to start from scratch.
