@@ -310,12 +310,12 @@ const TemplatesPage: NextPage<
                               {item.name}
                             </span>
                             {currentTemplate.properties.map(
-                              (templateProperty) =>
+                              (templateProperty, idx) =>
                                 getPropertyValue(
                                   item,
                                   templateProperty._id || -1
                                 ) != '' && (
-                                  <span className='space-x-1'>
+                                  <span key={idx} className='space-x-1'>
                                     <span>{templateProperty.name}</span>
                                     <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
                                       {getPropertyValue(

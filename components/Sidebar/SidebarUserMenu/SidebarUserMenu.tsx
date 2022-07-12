@@ -23,6 +23,7 @@ const SidebarUserMenu: FC = () => {
               layout='fill'
               objectFit='contain'
               className=' p-2 rounded-full border-2 border-white'
+              alt='user profile picture'
             />
           </div>
         )}
@@ -51,6 +52,7 @@ const SidebarUserMenu: FC = () => {
                       layout='fill'
                       objectFit='contain'
                       className='rounded-full'
+                      alt='user profile picture'
                     />
                   </div>
                   <div className='flex flex-col items-start font-medium '>
