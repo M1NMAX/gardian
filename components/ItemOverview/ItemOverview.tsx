@@ -30,7 +30,9 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
         active && 'border-r-2 border-green-500'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
-      <span className=' font-semibold text-lg'>{item.name}</span>
+      <span className='w-full font-semibold text-lg truncate '>
+        {item.name}
+      </span>
       <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
           (property) =>

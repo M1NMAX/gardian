@@ -355,8 +355,11 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } flex h-screen space-x-2 dark:bg-gray-900 dark:text-white`}>
-        <div className={`${showDrawer ? 'w-2/3' : 'w-full'} py-2 px-4`}>
+        } flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white`}>
+        <div
+          className={`${
+            showDrawer ? 'w-0 md:w-2/3 md:px-2' : 'w-full px-4'
+          } py-2`}>
           {collection && (
             <Collection>
               <Collection.Header
