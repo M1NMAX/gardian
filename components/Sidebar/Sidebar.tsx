@@ -23,6 +23,7 @@ import CreateGroupModal from '../CreateGroupModal';
 import { IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import SidebarGroup from './SidebarGroup';
+import SearchModal from '../SearchModal';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -61,6 +62,7 @@ const Sidebar: FC = () => {
   //Modals
   const createCollectionModal = useModal();
   const createGroupModal = useModal();
+  const searchModal = useModal();
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -76,7 +78,10 @@ const Sidebar: FC = () => {
       <div className='flex flex-col py-2  space-y-1 '>
         {/* Top section aka search  */}
         <div className='flex justify-between items-center space-x-1 px-2'>
-          <button className='w-full space-x-2 flex items-center rounded p-1 bg-gray-300 dark:bg-gray-700'>
+          <button
+            onClick={searchModal.openModal}
+            className='w-full space-x-2 flex items-center rounded p-1
+             bg-gray-300 dark:bg-gray-700'>
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
@@ -157,6 +162,13 @@ const Sidebar: FC = () => {
           handleClose={createGroupModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
+        />
+      )}
+      {searchModal.isOpen && (
+        <SearchModal
+          open={searchModal.isOpen}
+          handleClose={searchModal.closeModal}
+          onEnter={() => console.log('fn')}
         />
       )}
     </div>
