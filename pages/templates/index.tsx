@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -67,15 +67,18 @@ const TemplatesPage: NextPage<
   );
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
-  const getTemplate = (id: number) => {
-    const template = templates.find((template) => template._id === id);
-    return template;
-  };
+  const getTemplate = useCallback(
+    (id: number) => {
+      const template = templates.find((template) => template._id === id);
+      return template;
+    },
+    [templates]
+  );
 
   useEffect(() => {
     if (!currentTemplateId) return;
     setCurrentTemplate(getTemplate(currentTemplateId));
-  }, [currentTemplateId]);
+  }, [templates, currentTemplateId]);
 
   const handleOnClickTemplateOverview = (id: number) => {
     setCurrentTemplateId(id);
@@ -347,8 +350,8 @@ const TemplatesPage: NextPage<
                       </tr>
                     </thead>
                     <tbody>
-                      {currentTemplate.properties.map((property) => (
-                        <tr>
+                      {currentTemplate.properties.map((property, idx) => (
+                        <tr key={idx}>
                           <td className='border-2 border-gray-300 dark:border-gray-600'>
                             {property.name}
                           </td>
