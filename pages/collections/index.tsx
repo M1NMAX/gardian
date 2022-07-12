@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -10,10 +10,8 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import {
-  CheckIcon,
   MenuAlt2Icon,
   PlusIcon,
-  SelectorIcon,
   ViewGridIcon,
   ViewListIcon,
 } from '@heroicons/react/outline';
@@ -22,14 +20,7 @@ import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
-import { Listbox, RadioGroup, Transition } from '@headlessui/react';
-
-const sortOptions = [
-  { name: 'Name Ascending', alias: 'name+asc' },
-  { name: 'Name Descending', alias: 'name+des' },
-  { name: 'Recently Added', alias: 'createdAt+asc' },
-  { name: 'Oldest Added', alias: 'createdAt+des' },
-];
+import { RadioGroup } from '@headlessui/react';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -51,7 +42,6 @@ const Collections: NextPage<
     toast.success('Something went wrong, try later');
 
   const [selectedView, setSelectedView] = useState('grid');
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   return (
     <>
@@ -74,83 +64,14 @@ const Collections: NextPage<
         </div>
 
         {/* Title  */}
-        <div className='flex items-end justify-between'>
-          <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-bright'>
-            My Collections
-          </h1>
-          <button
-            onClick={createCollectionModal.openModal}
-            className='btn btn-primary'>
-            <span className='icon-sm'>
-              <PlusIcon />
-            </span>
-            <span>New</span>
-          </button>
-        </div>
+        <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-bright'>
+          My Collections
+        </h1>
 
         {/*Filter */}
-        <div className='flex justify-between items-center'>
-          <Listbox value={selectedSort} onChange={setSelectedSort}>
-            <div className='relative mt-1 flex flex-col'>
-              <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
-              <Listbox.Button
-                className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
-              py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
-              focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
-              focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
-              focus-visible:ring-offset-orange-300 sm:text-sm'>
-                <span className='block truncate'>{selectedSort.name}</span>
-                <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                  <SelectorIcon
-                    className='h-5 w-5 text-gray-400'
-                    aria-hidden='true'
-                  />
-                </span>
-              </Listbox.Button>
-              <Transition
-                as={Fragment}
-                leave='transition ease-in duration-100'
-                leaveFrom='opacity-100'
-                leaveTo='opacity-0'>
-                <Listbox.Options
-                  className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
-                  bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
-                focus:outline-none sm:text-sm'>
-                  {sortOptions.map((option, optionIdx) => (
-                    <Listbox.Option
-                      key={optionIdx}
-                      className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                          active
-                            ? 'bg-green-100 text-green-800'
-                            : 'text-gray-900 dark:text-white'
-                        }`
-                      }
-                      value={option}>
-                      {({ selected }) => (
-                        <>
-                          <span
-                            className={`block truncate ${
-                              selected ? 'font-medium' : 'font-normal'
-                            }`}>
-                            {option.name}
-                          </span>
-                          {selected ? (
-                            <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
-                              <CheckIcon
-                                className='icon-sm'
-                                aria-hidden='true'
-                              />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
-            </div>
-          </Listbox>
+        <div
+          className='flex justify-between items-center py-1 border-dotted 
+                border-b-2 border-gray-200 dark:border-gray-700'>
           <RadioGroup
             value={selectedView}
             onChange={(e) => {
@@ -201,6 +122,14 @@ const Collections: NextPage<
               </RadioGroup.Option>
             </div>
           </RadioGroup>
+          <button
+            onClick={createCollectionModal.openModal}
+            className='btn btn-primary'>
+            <span className='icon-sm'>
+              <PlusIcon />
+            </span>
+            <span>New</span>
+          </button>
         </div>
 
         {/* Collections  */}
