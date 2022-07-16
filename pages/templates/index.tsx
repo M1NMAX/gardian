@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
 import { Listbox, RadioGroup, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
+import ViewRadioGroup from '../../components/ViewRadioGroup';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -157,6 +158,8 @@ const TemplatesPage: NextPage<
 
           {/*Filter */}
           <div className='flex justify-between items-center'>
+            {/* VIEW  */}
+            <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
             <Listbox value={selectedSort} onChange={setSelectedSort}>
               <div className='relative mt-1 flex flex-col'>
                 <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
@@ -218,56 +221,6 @@ const TemplatesPage: NextPage<
                 </Transition>
               </div>
             </Listbox>
-            <RadioGroup
-              value={selectedView}
-              onChange={(e) => {
-                setSelectedView(e);
-                close();
-              }}>
-              <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
-                <RadioGroup.Option
-                  value='grid'
-                  className={({ checked }) =>
-                    `${
-                      checked
-                        ? 'bg-green-500  text-white'
-                        : 'bg-gray-100 dark:bg-gray-800'
-                    }
-                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
-                  }>
-                  {({ checked }) => (
-                    <RadioGroup.Label
-                      as='p'
-                      className={`flex items-center space-x-1  font-medium ${
-                        checked ? 'text-white' : 'text-black dark:text-gray-50'
-                      }`}>
-                      <ViewGridIcon className='icon-xs' />
-                    </RadioGroup.Label>
-                  )}
-                </RadioGroup.Option>
-
-                <RadioGroup.Option
-                  value='list'
-                  className={({ checked }) =>
-                    `${
-                      checked
-                        ? 'bg-green-500  text-white'
-                        : 'bg-gray-100 dark:bg-gray-800'
-                    }
-                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
-                  }>
-                  {({ checked }) => (
-                    <RadioGroup.Label
-                      as='p'
-                      className={`flex items-center space-x-1 font-medium ${
-                        checked ? 'text-white' : 'text-black dark:text-gray-50'
-                      }`}>
-                      <ViewListIcon className='icon-xs' />
-                    </RadioGroup.Label>
-                  )}
-                </RadioGroup.Option>
-              </div>
-            </RadioGroup>
           </div>
 
           {/* Templates  */}

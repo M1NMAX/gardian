@@ -21,6 +21,7 @@ import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import { RadioGroup } from '@headlessui/react';
+import ViewRadioGroup from '../../components/ViewRadioGroup';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -72,56 +73,7 @@ const Collections: NextPage<
         <div
           className='flex justify-between items-center py-1 border-dotted 
                 border-b-2 border-gray-200 dark:border-gray-700'>
-          <RadioGroup
-            value={selectedView}
-            onChange={(e) => {
-              setSelectedView(e);
-              close();
-            }}>
-            <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
-              <RadioGroup.Option
-                value='grid'
-                className={({ checked }) =>
-                  `${
-                    checked
-                      ? 'bg-green-500  text-white'
-                      : 'bg-gray-100 dark:bg-gray-800'
-                  }
-                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
-                }>
-                {({ checked }) => (
-                  <RadioGroup.Label
-                    as='p'
-                    className={`flex items-center space-x-1  font-medium ${
-                      checked ? 'text-white' : 'text-black dark:text-gray-50'
-                    }`}>
-                    <ViewGridIcon className='icon-xs' />
-                  </RadioGroup.Label>
-                )}
-              </RadioGroup.Option>
-
-              <RadioGroup.Option
-                value='list'
-                className={({ checked }) =>
-                  `${
-                    checked
-                      ? 'bg-green-500  text-white'
-                      : 'bg-gray-100 dark:bg-gray-800'
-                  }
-                                 relative rounded shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
-                }>
-                {({ checked }) => (
-                  <RadioGroup.Label
-                    as='p'
-                    className={`flex items-center space-x-1 font-medium ${
-                      checked ? 'text-white' : 'text-black dark:text-gray-50'
-                    }`}>
-                    <ViewListIcon className='icon-xs' />
-                  </RadioGroup.Label>
-                )}
-              </RadioGroup.Option>
-            </div>
-          </RadioGroup>
+          <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
           <button
             onClick={createCollectionModal.openModal}
             className='btn btn-primary'>

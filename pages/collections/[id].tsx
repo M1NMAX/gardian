@@ -41,6 +41,7 @@ import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
+import ViewRadioGroup from '../../components/ViewRadioGroup';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -396,62 +397,12 @@ const Collections: NextPage<
                       className='flex justify-between items-center py-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
                       {/*Views */}
-                      <div className='flex justify-between items-center'>
-                        <RadioGroup
-                          value={selectedView}
-                          onChange={(e) => {
-                            setSelectedView(e);
-                            close();
-                          }}>
-                          <div className='max-w-fit flex space-x-1 rounded p-0.5 bg-gray-50 dark:bg-gray-700'>
-                            <RadioGroup.Option
-                              value='grid'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md px-1 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1  font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <ViewGridIcon className='icon-sm' />
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
 
-                            <RadioGroup.Option
-                              value='list'
-                              className={({ checked }) =>
-                                `${
-                                  checked
-                                    ? 'bg-green-500  text-white'
-                                    : 'bg-gray-100 dark:bg-gray-800'
-                                }
-                                 relative rounded shadow-md p-0.5 cursor-pointer flex focus:outline-none`
-                              }>
-                              {({ checked }) => (
-                                <RadioGroup.Label
-                                  as='p'
-                                  className={`flex items-center space-x-1 font-medium ${
-                                    checked
-                                      ? 'text-white'
-                                      : 'text-black dark:text-gray-50'
-                                  }`}>
-                                  <ViewListIcon className='icon-sm' />
-                                </RadioGroup.Label>
-                              )}
-                            </RadioGroup.Option>
-                          </div>
-                        </RadioGroup>
-                      </div>
+                      <ViewRadioGroup
+                        value={selectedView}
+                        setValue={setSelectedView}
+                      />
+
                       <button
                         onClick={createItemModal.openModal}
                         className='btn btn-primary'>
