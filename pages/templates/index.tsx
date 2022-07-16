@@ -10,8 +10,6 @@ import {
   CheckIcon,
   MenuAlt2Icon,
   SelectorIcon,
-  ViewGridIcon,
-  ViewListIcon,
 } from '@heroicons/react/outline';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
@@ -19,7 +17,7 @@ import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate } from '../../interfaces';
-import { Listbox, RadioGroup, Transition } from '@headlessui/react';
+import { Listbox, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 
@@ -131,7 +129,7 @@ const TemplatesPage: NextPage<
   return (
     <>
       <Head>
-        <title>Collections</title>
+        <title>Templates</title>
       </Head>
       <Sidebar />
       <main
@@ -157,12 +155,14 @@ const TemplatesPage: NextPage<
           </h1>
 
           {/*Filter */}
-          <div className='flex justify-between items-center'>
+          <div
+            className='flex justify-between items-center py-1 border-dotted 
+                      border-b-2 border-gray-200 dark:border-gray-700'>
             {/* VIEW  */}
             <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
             <Listbox value={selectedSort} onChange={setSelectedSort}>
-              <div className='relative mt-1 flex flex-col'>
-                <Listbox.Label className='text-xs'>Sort by</Listbox.Label>
+              <div className='relative mt-1 flex items-center space-x-1.5'>
+                <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
                 <Listbox.Button
                   className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
               py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
