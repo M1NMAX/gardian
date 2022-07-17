@@ -34,6 +34,9 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
             value={getValue(property._id)}
             onChange={(e) => setValue(e.target.value, property._id)}
             className='modal-input'>
+            <option value='' selected disabled hidden>
+              choose one option
+            </option>
             {property.values.map((value, idx) => (
               <option key={idx} value={value}>
                 {value}
