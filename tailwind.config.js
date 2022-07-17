@@ -8,17 +8,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        //Primary: green
-        //primary: { 100: '#4ade80', 200: '#22c55e', 300: '#16a34a', 400: '#15803d' },
-        //Secodary: gray
-        //secondary: { 100: '#4ade80', 200: '#22c55e', 300: '#16a34a', 400: '#15803d' },
-
-        'primary-bright': '#4ade80',
-        'primary': '#22c55e',
-        'primary-dark': '#16a34a',
-        'secondary-bright': '#fde047',
-        'secondary': '#facc15',
-        'secondary-dark': '#eab308',
+        //Primary: green 400-700
+        primary: { 100: '#4ade80', 200: '#22c55e', 300: '#16a34a', 400: '#15803d' },
+        //Danger: red 400-700
+        danger: { 100: '#f87171', 200: '#ef4444', 300: '#dc2626', 400: '#b91c1c' },
+        //Warnign: yellow 400-500
+        warning: { 100: '#facc15', 200: '#eab308' },
       },
     },
   },

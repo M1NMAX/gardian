@@ -324,7 +324,7 @@ const TemplatesPage: NextPage<
               <button
                 onClick={createCollectionBasedOnTemplate}
                 className='w-full flex items-center justify-center p-1 rounded 
-                  bg-primary hover:bg-primary-dark'>
+                  bg-primary-200 hover:bg-primary-300'>
                 Use this template
               </button>
 

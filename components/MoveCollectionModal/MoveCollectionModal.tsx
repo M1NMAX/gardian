@@ -37,7 +37,7 @@ const MoveCollectionModal: FC<MoveCollectionModalProps> = (props) => {
                     className={({ checked }) =>
                       `${
                         checked
-                          ? 'bg-primary  text-white'
+                          ? 'bg-primary-200  text-white'
                           : 'bg-gray-300 dark:bg-gray-700'
                       } relative rounded-md shadow-md px-2 py-1 cursor-pointer flex focus:outline-none`
                     }>

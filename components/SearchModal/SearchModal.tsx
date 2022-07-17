@@ -45,7 +45,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
             onChange={(e) => setQuery(e.target.value)}
             className='pl-8 w-full h-10 text-lg font-medium rounded border-0
              bg-gray-100 dark:bg-gray-800
-            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary '
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200 '
             placeholder='Search'
           />
         </div>

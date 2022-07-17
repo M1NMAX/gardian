@@ -462,7 +462,7 @@ const Collections: NextPage<
                   onChange={(e) => setSelectedItemName(e.target.value)}
                   onBlur={(e) => renameItemMutation.mutate(e.target.value)}
                   className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
-                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary'
+                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
                 />
               </label>
             </Drawer.Title>

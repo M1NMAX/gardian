@@ -65,7 +65,7 @@ const Collections: NextPage<
         </div>
 
         {/* Title  */}
-        <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-bright'>
+        <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-100'>
           My Collections
         </h1>
 
