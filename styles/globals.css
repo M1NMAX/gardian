@@ -4,6 +4,9 @@
 
 @layer components {
   /* ICON   */
+  .icon-xxs {
+    @apply w-4 h-4;
+  }
   .icon-xs {
     @apply w-5 h-5;
   }

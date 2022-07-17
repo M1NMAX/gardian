@@ -1,7 +1,6 @@
-import { AnnotationIcon, CalendarIcon } from '@heroicons/react/outline';
-import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import React, { FC } from 'react';
 import { IItem, IProperty } from '../../interfaces';
+import ItemOverviewProperty from './ItemOverviewProperty';
 
 interface ItemOverviewProps {
   item: IItem;
@@ -40,51 +39,16 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
               <span
                 key={idx}
                 className='px-0.5 rounded bg-white dark:bg-gray-600'>
-                <MiniProperty property={property} getValue={getValueById} />
+                <ItemOverviewProperty
+                  property={property}
+                  getValue={getValueById}
+                />
               </span>
             )
         )}
       </span>
     </button>
   );
-};
-
-interface MiniPropertyProps {
-  property: IProperty;
-  getValue: (id?: number) => string;
-}
-
-const MiniProperty: FC<MiniPropertyProps> = (props) => {
-  const { property, getValue } = props;
-  switch (property.type) {
-    case 'checkbox':
-      return (
-        <span className='flex items-center space-x-0.5'>
-          {getValue(property._id) === 'true' ? (
-            <CheckIcon className='w-4 h-4' />
-          ) : (
-            <XIcon className='w-4 h-4' />
-          )}
-          <span>{property.name}</span>
-        </span>
-      );
-    case 'date':
-      return (
-        <span className='flex items-center space-x-0.5'>
-          <CalendarIcon className='icon-xs' />
-          <span>{new Date(getValue(property._id)).toLocaleDateString()}</span>
-        </span>
-      );
-    case 'textarea':
-      return (
-        <span className='flex items-center space-x-0.5'>
-          <AnnotationIcon className='icon-xs' />
-          <span>{property.name}</span>
-        </span>
-      );
-    default:
-      return <>{getValue(property._id)}</>;
-  }
 };
 
 export default ItemOverview;
