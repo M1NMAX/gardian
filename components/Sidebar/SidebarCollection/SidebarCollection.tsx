@@ -176,7 +176,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
       <div
         className={`${
           collectionId === urlId &&
-          'border-r-2 border-primary-bright bg-gray-300 dark:bg-gray-600'
+          'border-r-2 border-primary-200 bg-gray-300 dark:bg-gray-600'
         } 
         flex items-center justify-between w-full h-8 px-2 mb-1
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 

@@ -1,5 +1,5 @@
 import { ChevronRightIcon, SearchIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
 import { getCollections } from '../../fetch/collections';
@@ -14,6 +14,8 @@ interface SearchModalProps {
 
 const SearchModal: FC<SearchModalProps> = (props) => {
   const { open, handleClose, onEnter } = props;
+
+  const router = useRouter();
 
   const [query, setQuery] = useState<string>('');
 
@@ -32,6 +34,11 @@ const SearchModal: FC<SearchModalProps> = (props) => {
             .replace(/\s+/g, '')
             .includes(query.toLowerCase().replace(/\s+/g, ''))
         );
+
+  const onClickCollection = (id: number) => {
+    router.push('/collections/' + id);
+    handleClose();
+  };
 
   return (
     <Modal open={open} onHide={handleClose} title='' withCloseBtn={false}>
@@ -60,15 +67,14 @@ const SearchModal: FC<SearchModalProps> = (props) => {
           filteredCollections.map(
             ({ _id: id, name }) =>
               id && (
-                <Link href={`/collections/${id}`}>
-                  <a
-                    key={id}
-                    className='flex justify-between items-center p-2 rounded 
+                <button
+                  onClick={() => onClickCollection(id)}
+                  key={id}
+                  className='flex justify-between items-center p-2 rounded 
                     bg-gray-200 dark:bg-gray-700 hover:bg-green-400 dark:hover:bg-green-600'>
-                    <span>{name}</span>
-                    <ChevronRightIcon className='icon-xs' />
-                  </a>
-                </Link>
+                  <span>{name}</span>
+                  <ChevronRightIcon className='icon-xs' />
+                </button>
               )
           )
         )}
