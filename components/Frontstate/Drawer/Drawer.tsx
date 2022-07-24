@@ -58,7 +58,7 @@ const Footer: FC<FooterProps> = (props) => {
   const { children } = props;
 
   return (
-    <div className='mt-auto pt-1 border-dashed border-t border-green-200'>
+    <div className='mt-2 pt-1 border-dashed border-t border-green-200'>
       {children}
     </div>
   );

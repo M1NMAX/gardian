@@ -359,7 +359,9 @@ const Collections: NextPage<
         } flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white`}>
         <div
           className={`${
-            showDrawer ? 'w-0 md:w-2/3 md:px-2' : 'w-full px-4'
+            showDrawer
+              ? 'overflow-y-hidden w-0 md:w-2/3 md:px-2'
+              : 'w-full px-4'
           } py-2`}>
           {collection && (
             <Collection>
@@ -452,22 +454,20 @@ const Collections: NextPage<
 
         {selectedItemId && (
           <Drawer opened={showDrawer} onClose={closeDrawer}>
-            <Drawer.Title>
-              <label
-                className='block mt-1 mr-8 p-1 rounded-sm 
-              border border-dashed border-gray-300 dark:border-gray-600'>
-                <span className='text-sm'>Name</span>
-                <input
-                  value={selectedItemName}
-                  onChange={(e) => setSelectedItemName(e.target.value)}
-                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
-                  className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
-                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
-                />
-              </label>
-            </Drawer.Title>
             <Drawer.Body>
               <div className='space-y-2'>
+                <label
+                  className='block mt-1 mr-8 p-1 rounded-sm 
+              border border-dashed border-gray-300 dark:border-gray-600'>
+                  <span>Name</span>
+                  <input
+                    value={selectedItemName}
+                    onChange={(e) => setSelectedItemName(e.target.value)}
+                    onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                    className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
+                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
+                  />
+                </label>
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (
@@ -495,7 +495,7 @@ const Collections: NextPage<
             <Drawer.Footer>
               <div className='flex justify-between items-center space-x-2'>
                 <div className='font-light'>
-                  Last update{' '}
+                  Last update &nbsp;
                   {selectedItemUpdateTs
                     ? new Date(selectedItemUpdateTs).toDateString()
                     : 'Loading'}
