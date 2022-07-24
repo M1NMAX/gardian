@@ -9,19 +9,14 @@ import CollectionOverview from '../../components/CollectionOverview/CollectionOv
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import {
-  MenuAlt2Icon,
-  PlusIcon,
-  ViewGridIcon,
-  ViewListIcon,
-} from '@heroicons/react/outline';
+import { MenuAlt2Icon, PlusIcon } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
-import { RadioGroup } from '@headlessui/react';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
+import { group } from 'console';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
