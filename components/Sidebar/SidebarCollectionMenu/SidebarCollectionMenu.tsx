@@ -32,7 +32,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
     <Menu as='div' className='relative'>
       <Menu.Button
         className={`flex items-center p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600`}>
-        <DotsVerticalIcon className='icon-sm' />
+        <DotsVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -45,7 +45,9 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
         <div className='fixed z-10'>
           <Menu.Items
             as='ul'
-            className='absolute z-10 w-52 p-1 rounded-r-lg rounded-bl-lg rounded-tl   origin-top-right bg-gray-200 dark:bg-gray-800'>
+            className='absolute -right-2.5  -top-2.5 md:right-auto md:left-2.5
+             z-10 w-52 p-1  rounded-b-lg rounded-tl-lg md:rounded-tl-none md:rounded-tr-lg
+              origin-top-right bg-gray-200 dark:bg-gray-800'>
             <Menu.Item as='li'>
               <button
                 onClick={onClickDelete}

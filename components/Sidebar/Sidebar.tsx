@@ -10,7 +10,6 @@ import {
 import SidebarLink from './SidebarLink';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './SidebarCollection';
-import SidebarUserMenu from './SidebarUserMenu';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
@@ -24,6 +23,7 @@ import { IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import SidebarGroup from './SidebarGroup';
 import SearchModal from '../SearchModal';
+import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -85,7 +85,7 @@ const Sidebar: FC = () => {
             <SearchIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
-          <SidebarUserMenu />
+          <SidebarUserPopoverMenu />
         </div>
 
         <SidebarLink
