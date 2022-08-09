@@ -87,11 +87,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
                 <span> {name}</span>
               </Disclosure.Button>
               {/* Only show delete btn if group empty */}
-              <span className='flex items-center mr-2 md:group-hover:hidden md:group-focus-within:hidden'>
-                <span className='text-xs font-light italic'>
-                  {group.collections.length}
-                </span>
-              </span>
+
               <span className='block md:hidden md:group-hover:block md:group-focus-within:block'>
                 <SidebarGroupMenu
                   showDelete={group.collections.length === 0}
