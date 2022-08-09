@@ -79,25 +79,26 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
         className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
         {({ open }) => (
           <>
-            <div className='flex items-center justify-between py-0.5 pr-2'>
+            <div className='group flex items-center justify-between py-0.5 pr-2'>
               <Disclosure.Button className='flex items-center space-x-0.5 w-full p-0.5'>
                 <ChevronRightIcon
                   className={`${open ? 'rotate-90 transform' : ''} icon-xs`}
                 />
                 <span> {name}</span>
-                <span className='mt-0.5 flex items-center space-x-0.5'>
-                  <LightningBoltIcon className='w-4 h-4' />
-                  <span className='text-xs font-light italic'>
-                    {group.collections.length}
-                  </span>
-                </span>
               </Disclosure.Button>
               {/* Only show delete btn if group empty */}
-              <SidebarGroupMenu
-                showDelete={group.collections.length === 0}
-                onClickRename={renameGroupModal.openModal}
-                onClickDelete={deleteGroupModal.openModal}
-              />
+              <span className='flex items-center mr-2 md:group-hover:hidden md:group-focus-within:hidden'>
+                <span className='text-xs font-light italic'>
+                  {group.collections.length}
+                </span>
+              </span>
+              <span className='block md:hidden md:group-hover:block md:group-focus-within:block'>
+                <SidebarGroupMenu
+                  showDelete={group.collections.length === 0}
+                  onClickRename={renameGroupModal.openModal}
+                  onClickDelete={deleteGroupModal.openModal}
+                />
+              </span>
             </div>
             {/*Display group collections */}
             {group.collections.length > 0 && (
