@@ -42,6 +42,7 @@ import Property from '../../components/Property';
 import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
+import ItemMenu from '../../components/ItemMenu';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -360,7 +361,7 @@ const Collections: NextPage<
         <div
           className={`${
             showDrawer
-              ? 'overflow-y-hidden w-0 md:w-2/3 md:px-2'
+              ? 'overflow-y-hidden w-0 md:w-3/5 md:px-2'
               : 'w-full px-4'
           } py-2`}>
           {collection && (
@@ -453,21 +454,26 @@ const Collections: NextPage<
         </div>
 
         {selectedItemId && (
-          <Drawer opened={showDrawer} onClose={closeDrawer}>
+          <Drawer
+            opened={showDrawer}
+            onClose={closeDrawer}
+            menu={
+              <ItemMenu
+                onClickAddProperty={handleOnClickAddProperty}
+                onClickDelete={deleteModal.openModal}
+              />
+            }>
             <Drawer.Body>
-              <div className='space-y-2'>
-                <label
-                  className='block mt-1 mr-8 p-1 rounded-sm 
-              border border-dashed border-gray-300 dark:border-gray-600'>
-                  <span>Name</span>
-                  <input
-                    value={selectedItemName}
-                    onChange={(e) => setSelectedItemName(e.target.value)}
-                    onBlur={(e) => renameItemMutation.mutate(e.target.value)}
-                    className='w-full h-10 px-2 cursor-default rounded  border-0  bg-gray-300 dark:bg-gray-700 
+              <div className='space-y-2 p-0.5'>
+                <input
+                  value={selectedItemName}
+                  onChange={(e) => setSelectedItemName(e.target.value)}
+                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                  className='w-full p-2 text-xl font-semibold cursor-default rounded-sm   border-0 
+                   bg-gray-100 dark:bg-gray-800 
                 focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
-                  />
-                </label>
+                />
+
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (
@@ -483,30 +489,8 @@ const Collections: NextPage<
                       />
                     )
                 )}
-
-                <button
-                  onClick={handleOnClickAddProperty}
-                  className='btn btn-primary'>
-                  <PlusIcon className='icon-sm' />
-                  <span>Add property</span>
-                </button>
               </div>
             </Drawer.Body>
-            <Drawer.Footer>
-              <div className='flex justify-between items-center space-x-2'>
-                <div className='font-light'>
-                  Last update &nbsp;
-                  {selectedItemUpdateTs
-                    ? new Date(selectedItemUpdateTs).toDateString()
-                    : 'Loading'}
-                </div>
-                <ActionIcon
-                  icon={<TrashIcon />}
-                  variant='filled'
-                  onClick={deleteModal.openModal}
-                />
-              </div>
-            </Drawer.Footer>
           </Drawer>
         )}
       </main>
