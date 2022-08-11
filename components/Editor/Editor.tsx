@@ -171,8 +171,8 @@ const Editor: FC<EditorProps> = (props) => {
         className={`${
           showToolbar ? 'block' : 'hidden'
         } rounded bg-black text-white z-50 p-0.5 absolute 
-        left-[${toolbarCoordinates.x}px]
-        top-[${toolbarCoordinates.y}px]
+        left-0
+        top-0
         `}>
         <Toolbar editorState={editorState} onToggle={toggleToolbar} />
       </div>
