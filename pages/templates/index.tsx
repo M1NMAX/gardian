@@ -243,9 +243,12 @@ const TemplatesPage: NextPage<
         </div>
         {/* Drawer  */}
         {currentTemplate && (
-          <Drawer opened={showDrawer} onClose={closeDrawer}>
-            <Drawer.Title>{currentTemplate.name}</Drawer.Title>
-
+          <Drawer
+            opened={showDrawer}
+            onClose={closeDrawer}
+            title={
+              <h1 className='font-semibold text-2xl'>{currentTemplate.name}</h1>
+            }>
             <Drawer.Description>
               <h3 className='font-medium'>About this template</h3>
               <p>{currentTemplate.description}</p>

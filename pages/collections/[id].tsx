@@ -441,6 +441,16 @@ const Collections: NextPage<
           <Drawer
             opened={showDrawer}
             onClose={closeDrawer}
+            title={
+              <input
+                value={selectedItemName}
+                onChange={(e) => setSelectedItemName(e.target.value)}
+                onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                className='w-full p-1 font-semibold cursor-default rounded-sm border-0 
+               bg-gray-100 dark:bg-gray-800 
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
+              />
+            }
             menu={
               <ItemMenu
                 onClickAddProperty={handleOnClickAddProperty}
@@ -448,16 +458,13 @@ const Collections: NextPage<
               />
             }>
             <Drawer.Body>
-              <div className='space-y-2 p-0.5'>
-                <input
-                  value={selectedItemName}
-                  onChange={(e) => setSelectedItemName(e.target.value)}
-                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
-                  className='w-full p-2 text-xl font-semibold cursor-default rounded-sm   border-0 
-                   bg-gray-100 dark:bg-gray-800 
-                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
-                />
-
+              <div
+                className='space-y-2 pt-1 px-0.5 border-dotted 
+                      border-t-2 border-gray-200 dark:border-gray-700'>
+                <button className='btn btn-primary'>
+                  <PlusIcon className='icon-sm' />
+                  <span>Add Property</span>
+                </button>
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (
