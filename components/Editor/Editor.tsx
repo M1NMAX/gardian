@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import Toolbar from './Toolbar';
 import {
   Editor as DraftEditor,
@@ -6,24 +6,39 @@ import {
   RichUtils,
   convertToRaw,
   convertFromRaw,
-  RawDraftContentState,
 } from 'draft-js';
 
-const Editor = () => {
+interface EditorProps {
+  initialText: string;
+  onSave: (data: string) => void;
+}
+const Editor: FC<EditorProps> = (props) => {
+  const { initialText, onSave } = props;
+
   const [editorState, setEditorState] = useState<EditorState>(
-    EditorState.createWithContent(convertFromRaw(initialData))
+    EditorState.createEmpty()
   );
   const [showToolbar, setShowToolbar] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
-  const [showRawData, setShowRawData] = useState(false);
   const [toolbarMeasures, setToolbarMeasures] = useState({ w: 0, h: 0 });
+  const [toolbarCoordinates, setToolbarCoordinates] = useState({ x: 0, y: 0 });
   const [selectionMeasures, setSelectionMeasures] = useState({ w: 0, h: 0 });
-
   const [selectionCoordinates, setSelectionCoordinates] = useState({
     x: 0,
     y: 0,
   });
-  const [toolbarCoordinates, setToolbarCoordinates] = useState({ x: 0, y: 0 });
+
+  useEffect(
+    () =>
+      setEditorState(
+        initialText === ''
+          ? EditorState.createEmpty()
+          : EditorState.createWithContent(
+              convertFromRaw(JSON.parse(initialText))
+            )
+      ),
+    [initialText]
+  );
 
   const editorRef = useRef<DraftEditor | null>(null);
 
@@ -141,6 +156,11 @@ const Editor = () => {
     return () => document.removeEventListener('resize', checkSelectedText);
   }, [checkSelectedText]);
 
+  //convert to json before save the editor content
+  const handleOnSave = () => {
+    onSave(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
+  };
+
   return (
     <div>
       <div
@@ -158,6 +178,7 @@ const Editor = () => {
       </div>
       <div onClick={onClickEditor} onBlur={checkSelectedText}>
         <DraftEditor
+          onBlur={handleOnSave}
           customStyleMap={styleMap}
           editorState={editorState}
           handleKeyCommand={(command, _, __) => handleKeyCommand(command)}
@@ -169,14 +190,6 @@ const Editor = () => {
             editorRef.current = element;
           }}
         />
-      </div>
-      <div style={{ marginTop: 40 }}>
-        <button onClick={() => setShowRawData(!showRawData)}>
-          {!showRawData ? 'Show' : 'Hide'} Raw Data
-        </button>
-        <br />
-        {showRawData &&
-          JSON.stringify(convertToRaw(editorState.getCurrentContent()))}
       </div>
     </div>
   );
@@ -195,65 +208,4 @@ const styleMap = {
   BOLD: {
     fontWeight: 'bold',
   },
-  ANYCUSTOMSTYLE: {
-    color: '#00e400',
-  },
-};
-
-const initialData: RawDraftContentState = {
-  blocks: [
-    {
-      key: '16d0k',
-      text: 'You can edit this text.',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [{ offset: 0, length: 23, style: 'BOLD' }],
-      entityRanges: [],
-      data: {},
-    },
-    {
-      key: '98peq',
-      text: '',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-    {
-      key: 'ecmnc',
-      text: 'Luke Skywalker has vanished. In his absence, the sinister FIRST ORDER has risen from the ashes of the Empire and will not rest until Skywalker, the last Jedi, has been destroyed.',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [
-        { offset: 0, length: 14, style: 'BOLD' },
-        { offset: 133, length: 9, style: 'BOLD' },
-      ],
-      entityRanges: [],
-      data: {},
-    },
-    {
-      key: 'fe2gn',
-      text: '',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [],
-      entityRanges: [],
-      data: {},
-    },
-    {
-      key: '4481k',
-      text: 'With the support of the REPUBLIC, General Leia Organa leads a brave RESISTANCE. She is desperate to find her brother Luke and gain his help in restoring peace and justice to the galaxy.',
-      type: 'unstyled',
-      depth: 0,
-      inlineStyleRanges: [
-        { offset: 34, length: 19, style: 'BOLD' },
-        { offset: 117, length: 4, style: 'BOLD' },
-        { offset: 68, length: 10, style: 'STRIKETHROUGH' },
-      ],
-      entityRanges: [],
-      data: {},
-    },
-  ],
-  entityMap: {},
 };
