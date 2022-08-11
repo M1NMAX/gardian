@@ -95,7 +95,6 @@ const Editor: FC<EditorProps> = (props) => {
   // 4- The toolbar was hidden until now
   const measureToolbar = () => {
     // 4-a Define the toolbar width and height, as it is now visible
-
     setToolbarMeasures({ w: elemWidth.current, h: elemHeight.current });
     setToolbarXY();
   };
@@ -170,10 +169,12 @@ const Editor: FC<EditorProps> = (props) => {
         }}
         className={`${
           showToolbar ? 'block' : 'hidden'
-        } rounded bg-black text-white z-50 p-0.5 absolute 
-        left-0
-        top-0
-        `}>
+        } rounded bg-black text-white z-50 p-0.5`}
+        style={{
+          position: 'absolute',
+          left: toolbarCoordinates.x,
+          top: toolbarCoordinates.y,
+        }}>
         <Toolbar editorState={editorState} onToggle={toggleToolbar} />
       </div>
       <div onClick={onClickEditor} onBlur={checkSelectedText}>
