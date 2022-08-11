@@ -25,6 +25,9 @@ import SidebarGroup from './SidebarGroup';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 
+// tailwind ´md´ screen
+const MD_SCREEN_SIZE: number = 768;
+
 const Sidebar: FC = () => {
   const router = useRouter();
 
@@ -33,9 +36,9 @@ const Sidebar: FC = () => {
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  //Menu is open if window width > 768px, tailwind ´md´
+  //Sidebar is open if window width > 768px, tailwind ´md´
   useEffect(() => {
-    if (width > 768) setSidebar(true);
+    if (width > MD_SCREEN_SIZE) setSidebar(true);
   }, [width]);
 
   const wrapper = useRef<HTMLDivElement>(null);
@@ -46,7 +49,7 @@ const Sidebar: FC = () => {
         sidebar &&
         wrapper.current &&
         !wrapper.current.contains(event.target) &&
-        width <= 768
+        width <= MD_SCREEN_SIZE
       ) {
         setSidebar(false);
       }
@@ -58,6 +61,17 @@ const Sidebar: FC = () => {
     document.addEventListener('mousedown', checkOutsideClick);
     return () => document.removeEventListener('mousedown', checkOutsideClick);
   }, [checkOutsideClick]);
+
+  // Click handle for sidebar elements
+  const onClickSidebarCollection = (id: string) => {
+    router.push('/collections/' + id);
+    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+  };
+
+  const onClickSiderLink = (url: string) => {
+    router.push(url);
+    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+  };
 
   //Modals
   const createCollectionModal = useModal();
@@ -91,15 +105,15 @@ const Sidebar: FC = () => {
         <SidebarLink
           icon={<TemplateIcon />}
           text='Templates'
-          url='/templates'
           active={router.pathname === '/templates'}
+          onClick={() => onClickSiderLink('/templates')}
         />
 
         <SidebarLink
           icon={<CollectionIcon />}
           text='My Collections'
-          url='/collections'
           active={router.pathname === '/collections'}
+          onClick={() => onClickSiderLink('/collections')}
         />
 
         {/* Display groups */}
@@ -115,6 +129,7 @@ const Sidebar: FC = () => {
                         key={collectionId}
                         collectionId={collectionId}
                         groupId={group._id}
+                        onClick={() => onClickSidebarCollection(collectionId)}
                       />
                     )
                 )}
