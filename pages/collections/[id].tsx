@@ -43,6 +43,7 @@ import EditDescriptionModal from '../../components/EditDescriptionModal';
 import { RadioGroup } from '@headlessui/react';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import ItemMenu from '../../components/ItemMenu';
+import Editor from '../../components/Editor';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -446,6 +447,7 @@ const Collections: NextPage<
                         )
                       )}
                     </div>
+                    <Editor />
                   </div>
                 )}
               </Collection.Body>
