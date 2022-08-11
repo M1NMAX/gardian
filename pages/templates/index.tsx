@@ -150,16 +150,14 @@ const TemplatesPage: NextPage<
           )}
 
           {/* Title  */}
-          <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-bright'>
+          <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-100'>
             Templates
           </h1>
 
           {/*Filter */}
           <div
-            className='flex justify-between items-center py-1 border-dotted 
-                      border-b-2 border-gray-200 dark:border-gray-700'>
-            {/* VIEW  */}
-            <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
+            className='flex justify-between items-center pt-1 border-dotted 
+                      border-t-2 border-gray-200 dark:border-gray-700'>
             <Listbox value={selectedSort} onChange={setSelectedSort}>
               <div className='relative mt-1 flex items-center space-x-1.5'>
                 <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
@@ -221,6 +219,8 @@ const TemplatesPage: NextPage<
                 </Transition>
               </div>
             </Listbox>
+            {/* VIEW  */}
+            <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
           </div>
 
           {/* Templates  */}

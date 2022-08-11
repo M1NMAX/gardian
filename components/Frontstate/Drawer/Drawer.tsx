@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/outline';
+import { DotsVerticalIcon, XIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import ActionIcon from '../ActionIcon';
 
@@ -14,6 +14,7 @@ interface BodyProps extends IProps {}
 interface FooterProps extends IProps {}
 
 interface DrawerProps extends IProps {
+  menu?: ReactNode;
   opened: boolean;
   onClose: () => void;
 }
@@ -24,17 +25,22 @@ type DrawerComponent = FC<DrawerProps> & {
 } & { Body: FC<BodyProps> } & { Footer: FC<FooterProps> };
 
 const Drawer: DrawerComponent = (props) => {
-  const { children, opened, onClose } = props;
+  const { children, menu, opened, onClose } = props;
   return (
     <div
       className={`${
-        opened ? 'w-full z-10 md:w-1/3 py-2 px-1.5' : 'w-0'
+        opened ? 'h-screen w-full z-10 md:w-2/5 py-2 px-1.5' : 'w-0'
       } transition-all duration-200 ease-in-out flex flex-col
   rounded bg-gray-100 dark:bg-gray-800 overflow-hidden`}>
-      <div className='flex justify-end'>
+      <div className='flex justify-between'>
         <ActionIcon icon={<XIcon />} variant='filled' onClick={onClose} />
+        {menu}
       </div>
-      <div>{children}</div>
+      <div
+        className='pt-2 grow overflow-y-auto scrollbar-none scrollbar-thumb-gray-300
+                   dark:scrollbar-thumb-gray-600'>
+        {children}
+      </div>
     </div>
   );
 };

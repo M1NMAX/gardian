@@ -178,16 +178,24 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           collectionId === urlId &&
           'border-r-2 border-primary-200 bg-gray-300 dark:bg-gray-600'
         } 
-        flex items-center justify-between w-full h-8 px-2 mb-1
+        group flex items-center justify-between w-full h-8 px-1.5 mb-1
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
         <Link href={`/collections/${collectionId}`}>
-          <a className='flex items-center space-x-1 w-9/12'>
+          <a className='flex items-center space-x-1 grow'>
             <span className='truncate'>{collection.name}</span>
           </a>
         </Link>
 
-        <div>
+        {collection.items.length !== 0 && (
+          <span className='flex items-center  md:group-hover:hidden md:group-focus-within:hidden'>
+            <span className='text-xs font-light italic'>
+              {collection.items.length}
+            </span>
+          </span>
+        )}
+
+        <div className='block md:hidden md:group-hover:block md:group-focus-within:block'>
           <SidebarCollectionMenu
             isFavourite={collection.isFavourite}
             onClickDelete={deleteCollectionModal.openModal}
