@@ -170,7 +170,7 @@ const Editor: FC<EditorProps> = (props) => {
         }}
         className={`${
           showToolbar ? 'block' : 'hidden'
-        } bg-black text-white z-50 p-2.5 absolute 
+        } rounded bg-black text-white z-50 p-0.5 absolute 
         left-[${toolbarCoordinates.x}px]
         top-[${toolbarCoordinates.y}px]
         `}>

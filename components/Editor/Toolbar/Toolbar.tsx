@@ -1,13 +1,16 @@
 import { EditorState } from 'draft-js';
 import React, { FC } from 'react';
+import Bold from '../Icons/Bold';
+import Code from '../Icons/Code';
+import Italic from '../Icons/Italic';
+import Underline from '../Icons/Underline';
 import ToolbarBtn from '../ToolbarBtn';
 
 const toolbarItems = [
-  { label: 'Bold', style: 'BOLD' },
-  { label: 'Italic', style: 'ITALIC' },
-  { label: 'Underline', style: 'UNDERLINE' },
-  { label: 'Code', style: 'CODE' },
-  { label: 'Surprise', style: 'STRIKETHROUGH' },
+  { label: 'Bold', style: 'BOLD', icon: <Bold /> },
+  { label: 'Italic', style: 'ITALIC', icon: <Italic /> },
+  { label: 'Underline', style: 'UNDERLINE', icon: <Underline /> },
+  { label: 'Code', style: 'CODE', icon: <Code /> },
 ];
 
 interface ToolBarProps {
@@ -20,12 +23,13 @@ const Toolbar: FC<ToolBarProps> = (props) => {
   let currentStyle = editorState.getCurrentInlineStyle();
 
   return (
-    <div>
+    <div className='flex space-x-2'>
       {toolbarItems.map((toolbarItem) => (
         <ToolbarBtn
           key={toolbarItem.label}
-          active={currentStyle.has(toolbarItem.style)}
+          icon={toolbarItem.icon}
           label={toolbarItem.label}
+          active={currentStyle.has(toolbarItem.style)}
           style={toolbarItem.style}
           onToggle={onToggle}
         />
