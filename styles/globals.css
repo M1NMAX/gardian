@@ -31,7 +31,7 @@
   }
 
   .btn-primary {
-    @apply p-1 font-semibold text-gray-900 bg-primary-200 hover:bg-primary-300;
+    @apply p-1 font-semibold text-primary-200 hover:bg-primary-100 hover:bg-opacity-30;
   }
   .btn-secondary {
     @apply p-1 hover:bg-gray-300 dark:hover:bg-gray-600;
