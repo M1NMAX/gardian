@@ -19,13 +19,7 @@ import {
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
 import ItemOverview from '../../components/ItemOverview';
-import ActionIcon from '../../components/Frontstate/ActionIcon';
-import {
-  PlusIcon,
-  TrashIcon,
-  ViewGridIcon,
-  ViewListIcon,
-} from '@heroicons/react/outline';
+import { PlusIcon } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import CreateItemModal from '../../components/CreateItemModal';
@@ -39,8 +33,6 @@ import {
 } from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
-import EditDescriptionModal from '../../components/EditDescriptionModal';
-import { RadioGroup } from '@headlessui/react';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import ItemMenu from '../../components/ItemMenu';
 import Editor from '../../components/Editor';
@@ -70,7 +62,6 @@ const Collections: NextPage<
   //Modals
   const createItemModal = useModal();
   const deleteModal = useModal();
-  const descriptionModal = useModal();
 
   //Query and cache
   const queryClient = useQueryClient();
@@ -203,8 +194,6 @@ const Collections: NextPage<
         if (!collectionId) throw 'CollectionId is undefined';
 
         queryClient.invalidateQueries(['collection', collectionId]);
-
-        positiveFeedback('Description updated');
       },
       onError: () => {
         negativeFeedback();
@@ -358,25 +347,23 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white`}>
+        } flex h-screen  dark:bg-gray-900 dark:text-white`}>
         <div
           className={`${
-            showDrawer
-              ? 'overflow-y-hidden w-0 md:w-3/5 md:px-2'
-              : 'w-full px-4'
-          } py-2`}>
+            showDrawer ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
+          } pb-2`}>
           {collection && (
             <Collection>
               <Collection.Header
                 collection={collection}
-                openNewItemModal={createItemModal.openModal}
-                onClickAddDescription={descriptionModal.openModal}>
-                <h1 className='font-medium text-3xl'>{collection.name}</h1>
+                openNewItemModal={createItemModal.openModal}>
+                <h1 className='font-medium text-2xl'>{collection.name}</h1>
               </Collection.Header>
-              <Collection.Description
-                hidden={collection.isDescriptionHidden}
-                onClickEditDescription={descriptionModal.openModal}>
-                {collection.description}
+              <Collection.Description hidden={collection.isDescriptionHidden}>
+                <Editor
+                  initialText={collection.description}
+                  onSave={updateCollectioDescriptionMutation.mutate}
+                />
               </Collection.Description>
               <Collection.Body>
                 {!isLoading && collection && collection.items.length === 0 ? (
@@ -423,11 +410,10 @@ const Collections: NextPage<
                   ${selectedView === 'list' && 'flex flex-col space-y-2'}
                   ${
                     selectedView === 'grid' &&
-                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
                   } 
                   
-                  pt-2 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300
-                   dark:scrollbar-thumb-gray-600 `}>
+                  py-2 `}>
                       {itemsQueries.map(({ data: item, isLoading }) =>
                         isLoading ? (
                           <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
@@ -447,7 +433,6 @@ const Collections: NextPage<
                         )
                       )}
                     </div>
-                    <Editor />
                   </div>
                 )}
               </Collection.Body>
@@ -513,15 +498,6 @@ const Collections: NextPage<
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
           onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
-        />
-      )}
-      {/* Edit description */}
-      {collection && descriptionModal.isOpen && (
-        <EditDescriptionModal
-          description={collection.description}
-          open={descriptionModal.isOpen}
-          handleClose={descriptionModal.closeModal}
-          onSave={updateCollectioDescriptionMutation.mutate}
         />
       )}
     </>

@@ -27,13 +27,11 @@ interface HeaderProps {
   children: ReactNode;
   collection: ICollection;
   openNewItemModal: () => void;
-  onClickAddDescription: () => void;
 }
 
 interface DescriptionProps {
-  children: string;
+  children: ReactNode;
   hidden?: boolean;
-  onClickEditDescription: () => void;
 }
 
 interface BodyProps {
@@ -49,16 +47,17 @@ type CollectionComponent = FC<CollectionProps> & { Header: FC<HeaderProps> } & {
 
 const Collection: CollectionComponent = ({ children }) => {
   return (
-    <>
+    <div
+      className='h-full overflow-y-scroll scrollbar-thin 
+      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
       {children}
       <Toaster />
-    </>
+    </div>
   );
 };
 
 const Header: FC<HeaderProps> = (props) => {
-  const { children, collection, openNewItemModal, onClickAddDescription } =
-    props;
+  const { children, collection, openNewItemModal } = props;
 
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -166,7 +165,7 @@ const Header: FC<HeaderProps> = (props) => {
   );
 
   return (
-    <div>
+    <div className='sticky top-0 px-4 py-2 dark:bg-gray-900'>
       {/* Top section  */}
       <div className='flex justify-between items-center'>
         <div className='flex items-center space-x-2'>
@@ -175,6 +174,20 @@ const Header: FC<HeaderProps> = (props) => {
               icon={<MenuAlt2Icon />}
               onClick={() => setSidebar(true)}
             />
+          )}
+        </div>
+        {/* Bottom section AKA collection name  */}
+        <div className='group relative'>
+          {children}
+          {/* only render the follow btn if colllection does not have description */}
+          {collection.description === '' && collection.isDescriptionHidden && (
+            <button
+              onClick={handleDescriptionState}
+              className='absolute top-0 right-0 flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
+              invisible group-hover:visible'>
+              <InformationCircleIcon className='icon-xs' />
+              <span>Add Description </span>
+            </button>
           )}
         </div>
         <div className='flex items-center space-x-1'>
@@ -202,21 +215,6 @@ const Header: FC<HeaderProps> = (props) => {
           />
         </div>
       </div>
-      {/* Bottom section AKA collection name  */}
-      <div className='group'>
-        {/* only render the follow btn if colllection does not have description */}
-        {collection.description === '' && (
-          <button
-            onClick={onClickAddDescription}
-            className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
-              invisible group-hover:visible'>
-            <InformationCircleIcon className='icon-xs' />
-            <span>Add Description </span>
-          </button>
-        )}
-
-        {children}
-      </div>
 
       {/* Modals  */}
 
@@ -242,27 +240,14 @@ const Header: FC<HeaderProps> = (props) => {
 };
 
 const Description: FC<DescriptionProps> = (props) => {
-  const { children, hidden = false, onClickEditDescription } = props;
-  return (
-    <div className={`${hidden && 'hidden'} group`}>
-      {children !== '' && (
-        <button
-          onClick={onClickEditDescription}
-          className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
-              invisible group-hover:visible'>
-          <InformationCircleIcon className='icon-xs' />
-          <span>Edit Description</span>
-        </button>
-      )}
-      <p>{children}</p>
-    </div>
-  );
+  const { children, hidden = false } = props;
+  return <div className={`${hidden && 'hidden'} px-4`}>{children}</div>;
 };
 
 const Body: FC<BodyProps> = (props) => {
   const { children } = props;
 
-  return <div>{children}</div>;
+  return <div className='px-4'>{children}</div>;
 };
 
 Collection.Header = Header;
