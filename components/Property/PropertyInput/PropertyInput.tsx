@@ -1,13 +1,14 @@
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { IProperty } from '../../../interfaces';
 
 interface PropertyInputProps {
   property: IProperty;
+  menu: ReactNode;
   getValue: (id: number) => string;
   setValue: (id: number, value: string) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
-  const { property, getValue, setValue } = props;
+  const { property, menu, getValue, setValue } = props;
 
   if (!property._id) return <></>;
 
@@ -31,7 +32,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
     case 'select':
       return (
         <label className='property-within-drawer'>
-          <span className='w-full'> {property.name}</span>
+          <span className='w-full flex items-center justify-between'>
+            <span className='grow'> {property.name} </span>
+            {menu}
+          </span>
           <select
             name={property.name}
             value={getValue(property._id)}
