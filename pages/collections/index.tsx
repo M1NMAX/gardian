@@ -20,7 +20,6 @@ import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
-import { group } from 'console';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -70,9 +69,9 @@ const Collections: NextPage<
 
         {/*Filter */}
         <div
-          className='flex justify-between items-center py-1 border-dotted 
-                border-b-2 border-gray-200 dark:border-gray-700'>
-          <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
+          className='flex justify-between items-center pt-1 border-dotted 
+                border-t-2 border-gray-200 dark:border-gray-700'>
+          {/** add collection btn */}
           <button
             onClick={createCollectionModal.openModal}
             className='btn btn-primary'>
@@ -81,6 +80,8 @@ const Collections: NextPage<
             </span>
             <span>New</span>
           </button>
+          {/* views  */}
+          <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
         </div>
 
         {/* Collections  */}

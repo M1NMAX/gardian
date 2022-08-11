@@ -385,15 +385,9 @@ const Collections: NextPage<
                   //  collection has at leat one item
                   <div>
                     <div
-                      className='flex justify-between items-center py-1 border-dotted 
-                      border-b-2 border-gray-200 dark:border-gray-700'>
-                      {/*Views */}
-
-                      <ViewRadioGroup
-                        value={selectedView}
-                        setValue={setSelectedView}
-                      />
-
+                      className='flex justify-between items-center pt-1 border-dotted 
+                      border-t-2 border-gray-200 dark:border-gray-700'>
+                      {/* new item btn  */}
                       <button
                         onClick={createItemModal.openModal}
                         className='btn btn-primary'>
@@ -402,18 +396,21 @@ const Collections: NextPage<
                         </span>
                         <span>New</span>
                       </button>
+                      {/*Views */}
+                      <ViewRadioGroup
+                        value={selectedView}
+                        setValue={setSelectedView}
+                      />
                     </div>
 
                     {/*Dispay all collection's item */}
                     <div
-                      className={` 
+                      className={`
                   ${selectedView === 'list' && 'flex flex-col space-y-2'}
                   ${
                     selectedView === 'grid' &&
                     'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
-                  } 
-                  
-                  py-2 `}>
+                  } py-2 `}>
                       {itemsQueries.map(({ data: item, isLoading }) =>
                         isLoading ? (
                           <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
