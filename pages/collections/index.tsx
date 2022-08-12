@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { getCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
@@ -17,9 +17,10 @@ import {
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
-import { createGroup, getGroups } from '../../fetch/group';
+import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
+import Group from '../../backend/models/Group';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -33,17 +34,6 @@ const Collections: NextPage<
     getCollections
   );
 
-  const queryClient = useQueryClient();
-
-  const createGroupMutation = useMutation(createGroup, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['groups']);
-    },
-    onError: () => {
-      negativeFeedback();
-    },
-  });
-
   //Modal: create collection
   const createCollectionModal = useModal();
 
@@ -52,12 +42,6 @@ const Collections: NextPage<
     toast.success('Something went wrong, try later');
 
   const [selectedView, setSelectedView] = useState('grid');
-
-  const onClickNewCollectionBtn = () => {
-    // Create a group if there none
-    if (groups && groups.length === 0) createGroupMutation.mutate('My group');
-    createCollectionModal.openModal();
-  };
 
   return (
     <>
@@ -99,7 +83,7 @@ const Collections: NextPage<
             border-dotted border-t-2 border-gray-200 dark:border-gray-700'>
             {/** add collection btn */}
             <button
-              onClick={onClickNewCollectionBtn}
+              onClick={createCollectionModal.openModal}
               className={`${
                 !isLoading &&
                 collections &&
@@ -120,7 +104,7 @@ const Collections: NextPage<
             <div className='flex justify-between items-center'>
               {/** add collection btn */}
               <button
-                onClick={onClickNewCollectionBtn}
+                onClick={createCollectionModal.openModal}
                 className='btn btn-primary'>
                 <span className='icon-sm'>
                   <PlusIcon />
@@ -165,4 +149,24 @@ const Collections: NextPage<
 
 export default Collections;
 
-export const getServerSideProps = withPageAuthRequired();
+export const getServerSideProps = withPageAuthRequired({
+  returnTo: '/',
+  async getServerSideProps(ctx) {
+    const session = getSession(ctx.req, ctx.res);
+    if (session) {
+      const user = session.user;
+      // fecth db for group
+      const groups = await Group.find({ userId: user.sub });
+
+      //create group if there is no
+      if (groups.length === 0) {
+        await Group.create({
+          name: 'My Group',
+          userId: user.sub,
+        });
+      }
+    }
+
+    return { props: {} as never };
+  },
+});
