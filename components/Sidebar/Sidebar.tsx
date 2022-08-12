@@ -7,7 +7,7 @@ import {
   TemplateIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-import SidebarLink from './SidebarLink';
+import SidebarBtn from './SidebarBtn';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './SidebarCollection';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -105,14 +105,14 @@ const Sidebar: FC = () => {
           <SidebarUserPopoverMenu />
         </div>
 
-        <SidebarLink
+        <SidebarBtn
           icon={<TemplateIcon />}
           text='Templates'
           active={router.pathname === '/templates'}
           onClick={() => onClickSiderLink('/templates')}
         />
 
-        <SidebarLink
+        <SidebarBtn
           icon={<CollectionIcon />}
           text='My Collections'
           active={router.pathname === '/collections'}

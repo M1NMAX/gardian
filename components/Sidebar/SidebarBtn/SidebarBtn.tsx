@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
 
-interface SidebarLinkProps {
+interface SidebarBtnProps {
   icon: JSX.Element;
   text: string;
   active: boolean;
   onClick: () => void;
 }
 
-const SidebarLink: FC<SidebarLinkProps> = (props) => {
+const SidebarBtn: FC<SidebarBtnProps> = (props) => {
   const { icon, text, active, onClick } = props;
 
   return (
@@ -22,4 +22,4 @@ const SidebarLink: FC<SidebarLinkProps> = (props) => {
     </button>
   );
 };
-export default SidebarLink;
+export default SidebarBtn;
