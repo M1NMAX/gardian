@@ -3,7 +3,7 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { getCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
@@ -17,7 +17,7 @@ import {
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
-import { getGroups } from '../../fetch/group';
+import { createGroup, getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 
@@ -33,6 +33,17 @@ const Collections: NextPage<
     getCollections
   );
 
+  const queryClient = useQueryClient();
+
+  const createGroupMutation = useMutation(createGroup, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['groups']);
+    },
+    onError: () => {
+      negativeFeedback();
+    },
+  });
+
   //Modal: create collection
   const createCollectionModal = useModal();
 
@@ -41,6 +52,12 @@ const Collections: NextPage<
     toast.success('Something went wrong, try later');
 
   const [selectedView, setSelectedView] = useState('grid');
+
+  const onClickNewCollectionBtn = () => {
+    // Create a group if there none
+    if (groups && groups.length === 0) createGroupMutation.mutate('My group');
+    createCollectionModal.openModal();
+  };
 
   return (
     <>
@@ -67,48 +84,66 @@ const Collections: NextPage<
           My Collections
         </h1>
 
-        {/*Filter */}
-        <div
-          className='flex justify-between items-center pt-1 border-dotted 
-                border-t-2 border-gray-200 dark:border-gray-700'>
-          {/** add collection btn */}
-          <button
-            onClick={createCollectionModal.openModal}
-            className='btn btn-primary'>
-            <span className='icon-sm'>
-              <PlusIcon />
-            </span>
-            <span>New</span>
-          </button>
-          {/* views  */}
-          <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
-        </div>
+        {/* Is loading  */}
+        {isLoading && (
+          <div className='col-span-full flex flex-col justify-center items-center space-y-4 h-32'>
+            <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
+            <span className='font-medium'> Loading ...</span>
+          </div>
+        )}
 
-        {/* Collections  */}
-        <div
-          className={`${
-            selectedView === 'grid'
-              ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
-              : 'flex flex-col space-y-2'
-          }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
-          {isLoading ? (
-            <div className='col-span-full flex flex-col justify-center items-center space-y-4 h-32'>
-              <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
-              <span className='font-medium'> Loading ...</span>
-            </div>
-          ) : (
-            collections &&
-            collections.map((collection, idx) => (
-              <CollectionOverview key={idx} collection={collection} />
-            ))
-          )}
-        </div>
-
+        {/* loading state is finish and there are no collection  */}
         {!isLoading && collections && collections.length === 0 && (
-          <div className='flex justify-center'>
-            <p className='text-lg  p-2 rounded-md bg-gray-100 dark:bg-gray-800 '>
-              Wow, such empty &#58;&#41;
-            </p>
+          <div
+            className='flex justify-between items-center space-y-4 pt-1 
+            border-dotted border-t-2 border-gray-200 dark:border-gray-700'>
+            {/** add collection btn */}
+            <button
+              onClick={onClickNewCollectionBtn}
+              className={`${
+                !isLoading &&
+                collections &&
+                collections.length === 0 &&
+                'w-full justify-center'
+              } btn btn-primary`}>
+              <span className='icon-sm'>
+                <PlusIcon />
+              </span>
+              <span>New Collection</span>
+            </button>
+          </div>
+        )}
+
+        {/* loading state is finished and there are collection */}
+        {!isLoading && collections && collections.length > 0 && (
+          <div className='space-y-1.5 pt-1 border-dotted border-t-2 border-gray-200 dark:border-gray-700'>
+            <div className='flex justify-between items-center'>
+              {/** add collection btn */}
+              <button
+                onClick={onClickNewCollectionBtn}
+                className='btn btn-primary'>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span>New Collection</span>
+              </button>
+
+              {/* views  */}
+              <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
+            </div>
+
+            {/* Collections  */}
+            <div
+              className={`${
+                selectedView === 'grid'
+                  ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                  : 'flex flex-col space-y-2'
+              }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
+              {collections &&
+                collections.map((collection, idx) => (
+                  <CollectionOverview key={idx} collection={collection} />
+                ))}
+            </div>
           </div>
         )}
       </main>
