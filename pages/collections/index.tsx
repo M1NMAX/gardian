@@ -26,10 +26,10 @@ const Collections: NextPage<
 > = () => {
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const { data: groups } = useQuery<IGroup[]>('groups', getGroups);
+  const { data: groups } = useQuery<IGroup[]>(['groups'], getGroups);
 
   const { data: collections, isLoading } = useQuery<ICollection[], Error>(
-    'collections',
+    ['collections'],
     getCollections
   );
 
