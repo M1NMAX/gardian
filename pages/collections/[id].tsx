@@ -461,7 +461,9 @@ const Collections: NextPage<
               <div
                 className='space-y-2 pt-1 px-0.5 border-dotted 
                       border-t-2 border-gray-200 dark:border-gray-700'>
-                <button className='btn btn-primary'>
+                <button
+                  onClick={handleOnClickAddProperty}
+                  className='btn btn-primary'>
                   <PlusIcon className='icon-sm' />
                   <span>Add Property</span>
                 </button>
