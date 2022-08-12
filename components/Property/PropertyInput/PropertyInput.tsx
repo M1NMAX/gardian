@@ -15,18 +15,21 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
   switch (property.type) {
     case 'checkbox':
       return (
-        <label className='flex items-center space-x-2 property-within-drawer'>
-          <input
-            type='checkbox'
-            name={property.name}
-            checked={getValue(property._id) === 'true'}
-            onChange={(e) => {
-              if (!property._id) return;
-              setValue(property._id, e.target.checked ? 'true' : 'false');
-            }}
-            className='modal-checkbox'
-          />
-          <span>{property.name}</span>
+        <label className='flex items-center  property-within-drawer'>
+          <span className='w-full flex items-center space-x-1.5'>
+            <input
+              type='checkbox'
+              name={property.name}
+              checked={getValue(property._id) === 'true'}
+              onChange={(e) => {
+                if (!property._id) return;
+                setValue(property._id, e.target.checked ? 'true' : 'false');
+              }}
+              className='modal-checkbox'
+            />
+            <span className='grow'>{property.name}</span>
+          </span>
+          {menu}
         </label>
       );
     case 'select':
@@ -56,7 +59,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
     case 'textarea':
       return (
         <label className='property-within-drawer'>
-          <span className='w-full'>{property.name}</span>
+          <span className='w-full flex items-center justify-between'>
+            <span className='grow'> {property.name} </span>
+            {menu}
+          </span>
           <textarea
             name={property.name}
             value={getValue(property._id)}
@@ -74,7 +80,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
     default:
       return (
         <label className='property-within-drawer'>
-          <span className='w-full'>{property.name}</span>
+          <span className='w-full flex items-center justify-between'>
+            <span className='grow'> {property.name} </span>
+            {menu}
+          </span>
           <input
             type={property.type}
             name={property.name}
