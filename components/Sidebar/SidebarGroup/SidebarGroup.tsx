@@ -76,7 +76,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
       <Disclosure
         defaultOpen
         as='div'
-        className='rounded bg-gray-200  dark:bg-gray-700 mt-2'>
+        className='rounded bg-gray-200  dark:bg-gray-700'>
         {({ open }) => (
           <>
             <div className='group flex items-center justify-between py-0.5 pr-2'>
