@@ -31,7 +31,10 @@ const MD_SCREEN_SIZE: number = 768;
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const { data: groups } = useQuery<IGroup[], Error>(['groups'], getGroups);
+  const { data: groups, isLoading } = useQuery<IGroup[], Error>(
+    ['groups'],
+    getGroups
+  );
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -118,7 +121,18 @@ const Sidebar: FC = () => {
 
         {/* Display groups */}
         <div className='space-y-2 px-2'>
-          {groups &&
+          {isLoading && (
+            <div
+              className='flex flex-col space-y-1 mt-2 animate-pulse rounded
+             bg-gray-100 dark:bg-gray-800'>
+              <div className='w-full h-8  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+            </div>
+          )}
+
+          {/* Loading state is finished  */}
+          {!isLoading &&
+            groups &&
             groups.map((group, idx) => (
               <SidebarGroup key={idx} group={group}>
                 {/**Display group collections */}
