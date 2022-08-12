@@ -369,7 +369,7 @@ const Collections: NextPage<
                 {!isLoading && collection && collection.items.length === 0 ? (
                   // if collection has no items
                   <div
-                    className='mt-4 py-1 flex justify-center border-dotted 
+                    className='py-1 flex justify-center border-dotted 
                   border-t-2 border-gray-200 dark:border-gray-700'>
                     <button
                       onClick={createItemModal.openModal}

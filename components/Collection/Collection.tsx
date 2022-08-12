@@ -176,14 +176,16 @@ const Header: FC<HeaderProps> = (props) => {
             />
           )}
         </div>
-        {/* Bottom section AKA collection name  */}
-        <div className='group relative'>
+        {/* Middle AKA collection name  */}
+        <div
+          className='group flex items-center justify-between space-x-2 
+            first:grow first:truncate '>
           {children}
           {/* only render the follow btn if colllection does not have description */}
           {collection.description === '' && collection.isDescriptionHidden && (
             <button
               onClick={handleDescriptionState}
-              className='absolute top-0 right-0 flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
+              className='flex items-center px-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 
               invisible group-hover:visible'>
               <InformationCircleIcon className='icon-xs' />
               <span>Add Description </span>
