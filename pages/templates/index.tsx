@@ -135,110 +135,117 @@ const TemplatesPage: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } transition-all duration-200 ease-linear 
-        flex h-screen md:space-x-2 dark:bg-gray-900 dark:text-white -z-10`}>
+        } main-content flex  md:space-x-2  -z-10`}>
         <div
           className={`${
-            showDrawer ? 'w-0  md:w-2/3 md:px-2' : 'w-full px-4'
-          } py-2 space-y-2`}>
+            showDrawer ? 'w-0 md:w-2/3' : 'w-full'
+          } h-full flex flex-col space-y-2`}>
           {/* Header  */}
-          {!sidebar && (
-            <ActionIcon
-              icon={<MenuAlt2Icon />}
-              onClick={() => setSidebar(true)}
-            />
-          )}
+          <div className='sticky top-0 pt-2 px-4 bg-white dark:bg-gray-900 dark:text-white'>
+            <div className='pb-1 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
+              {/* Menu btn  */}
+              {!sidebar && (
+                <ActionIcon
+                  icon={<MenuAlt2Icon />}
+                  onClick={() => setSidebar(true)}
+                />
+              )}
 
-          {/* Title  */}
-          <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-100'>
-            Templates
-          </h1>
+              {/* Title  */}
+              <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-100'>
+                Templates
+              </h1>
+            </div>
+          </div>
 
-          {/*Filter */}
+          {/* body  */}
           <div
-            className='flex justify-between items-center pt-1 border-dotted 
-                      border-t-2 border-gray-200 dark:border-gray-700'>
-            <Listbox value={selectedSort} onChange={setSelectedSort}>
-              <div className='relative mt-1 flex items-center space-x-1.5'>
-                <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
-                <Listbox.Button
-                  className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
+            className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+             scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
+            {/*Filter */}
+            <div className='flex justify-between items-center'>
+              <Listbox value={selectedSort} onChange={setSelectedSort}>
+                <div className='relative mt-1 flex items-center space-x-1.5'>
+                  <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
+                  <Listbox.Button
+                    className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
               py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
               focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
               focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
               focus-visible:ring-offset-orange-300 sm:text-sm'>
-                  <span className='block truncate'>{selectedSort.name}</span>
-                  <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                    <SelectorIcon
-                      className='h-5 w-5 text-gray-400'
-                      aria-hidden='true'
-                    />
-                  </span>
-                </Listbox.Button>
-                <Transition
-                  as={Fragment}
-                  leave='transition ease-in duration-100'
-                  leaveFrom='opacity-100'
-                  leaveTo='opacity-0'>
-                  <Listbox.Options
-                    className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
+                    <span className='block truncate'>{selectedSort.name}</span>
+                    <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                      <SelectorIcon
+                        className='h-5 w-5 text-gray-400'
+                        aria-hidden='true'
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave='transition ease-in duration-100'
+                    leaveFrom='opacity-100'
+                    leaveTo='opacity-0'>
+                    <Listbox.Options
+                      className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
                   bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
                 focus:outline-none sm:text-sm'>
-                    {sortOptions.map((option, optionIdx) => (
-                      <Listbox.Option
-                        key={optionIdx}
-                        className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                            active
-                              ? 'bg-green-100 text-green-800'
-                              : 'text-gray-900 dark:text-white'
-                          }`
-                        }
-                        value={option}>
-                        {({ selected }) => (
-                          <>
-                            <span
-                              className={`block truncate ${
-                                selected ? 'font-medium' : 'font-normal'
-                              }`}>
-                              {option.name}
-                            </span>
-                            {selected ? (
-                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
-                                <CheckIcon
-                                  className='icon-sm'
-                                  aria-hidden='true'
-                                />
+                      {sortOptions.map((option, optionIdx) => (
+                        <Listbox.Option
+                          key={optionIdx}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                              active
+                                ? 'bg-green-100 text-green-800'
+                                : 'text-gray-900 dark:text-white'
+                            }`
+                          }
+                          value={option}>
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? 'font-medium' : 'font-normal'
+                                }`}>
+                                {option.name}
                               </span>
-                            ) : null}
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </Listbox>
-            {/* VIEW  */}
-            <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
-          </div>
+                              {selected ? (
+                                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
+                                  <CheckIcon
+                                    className='icon-sm'
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+              {/* VIEW  */}
+              <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
+            </div>
 
-          {/* Templates  */}
-          <div
-            className={`${
-              selectedView === 'grid'
-                ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
-                : 'flex flex-col space-y-2'
-            }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
-            {templates &&
-              templates.map((template, idx) => (
-                <TemplateOverview
-                  key={idx}
-                  active={currentTemplateId === template._id}
-                  template={template}
-                  onTemplateClick={handleOnClickTemplateOverview}
-                />
-              ))}
+            {/* Templates  */}
+            <div
+              className={`${
+                selectedView === 'grid'
+                  ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
+                  : 'flex flex-col space-y-2'
+              } `}>
+              {templates &&
+                templates.map((template, idx) => (
+                  <TemplateOverview
+                    key={idx}
+                    active={currentTemplateId === template._id}
+                    template={template}
+                    onTemplateClick={handleOnClickTemplateOverview}
+                  />
+                ))}
+            </div>
           </div>
         </div>
         {/* Drawer  */}

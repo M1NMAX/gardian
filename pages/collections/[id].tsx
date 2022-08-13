@@ -347,7 +347,7 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } flex h-screen  dark:bg-gray-900 dark:text-white`}>
+        } main-content flex `}>
         <div
           className={`${
             showDrawer ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'

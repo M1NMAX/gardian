@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -57,25 +57,28 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } main-content`}>
+        } main-content  flex flex-col space-y-2 -z-10`}>
         {/* Header  */}
-        <div className='flex items-center space-x-2'>
-          {!sidebar && (
-            <ActionIcon
-              icon={<MenuAlt2Icon />}
-              onClick={() => setSidebar(true)}
-            />
-          )}
-        </div>
+        <div className='sticky top-0 pt-2 px-4 bg-white dark:bg-gray-900 dark:text-white'>
+          <div className='pb-1  border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
+            {/* Menu btn  */}
+            {!sidebar && (
+              <ActionIcon
+                icon={<MenuAlt2Icon />}
+                onClick={() => setSidebar(true)}
+              />
+            )}
 
-        {/* Title  */}
-        <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-100'>
-          My Collections
-        </h1>
+            {/* Title  */}
+            <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-100'>
+              My Collections
+            </h1>
+          </div>
+        </div>
 
         {/* Is loading  */}
         {isLoading && (
-          <div className='col-span-full flex flex-col justify-center items-center space-y-4 h-32'>
+          <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
             <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
             <span className='font-medium'> Loading ...</span>
           </div>
@@ -83,9 +86,7 @@ const Collections: NextPage<
 
         {/* loading state is finish and there are no collection  */}
         {!isLoading && collections && collections.length === 0 && (
-          <div
-            className='flex justify-between items-center space-y-4 pt-1 
-            border-dotted border-t-2 border-gray-200 dark:border-gray-700'>
+          <div className='flex justify-between items-center space-y-4 px-4'>
             {/** add collection btn */}
             <button
               onClick={createCollectionModal.openModal}
@@ -105,7 +106,9 @@ const Collections: NextPage<
 
         {/* loading state is finished and there are collection */}
         {!isLoading && collections && collections.length > 0 && (
-          <div className='space-y-1.5 pt-1 border-dotted border-t-2 border-gray-200 dark:border-gray-700'>
+          <div
+            className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+             scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
             <div className='flex justify-between items-center'>
               {/** add collection btn */}
               <button
@@ -127,7 +130,7 @@ const Collections: NextPage<
                 selectedView === 'grid'
                   ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
-              }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
+              }  `}>
               {collections &&
                 collections.map((collection, idx) => (
                   <CollectionOverview key={idx} collection={collection} />
