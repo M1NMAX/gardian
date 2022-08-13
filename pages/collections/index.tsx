@@ -21,6 +21,7 @@ import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import Group from '../../backend/models/Group';
+import dbConnect from '../../backend/database/dbConnect';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -150,20 +151,29 @@ const Collections: NextPage<
 export default Collections;
 
 export const getServerSideProps = withPageAuthRequired({
-  returnTo: '/',
+  returnTo: '/collections',
   async getServerSideProps(ctx) {
     const session = getSession(ctx.req, ctx.res);
+
     if (session) {
       const user = session.user;
-      // fecth db for group
-      const groups = await Group.find({ userId: user.sub });
 
-      //create group if there is no
-      if (groups.length === 0) {
-        await Group.create({
-          name: 'My Group',
-          userId: user.sub,
-        });
+      try {
+        // connect to db
+        await dbConnect();
+
+        // fecth db for group
+        const groups = await Group.find({ userId: user.sub });
+
+        //create group if there is no
+        if (groups.length === 0) {
+          await Group.create({
+            name: 'My Group',
+            userId: user.sub,
+          });
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
 
