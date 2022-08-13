@@ -52,7 +52,7 @@ const Collections: NextPage<
   const sidebar = useRecoilValue(sidebarState);
 
   //View mode
-  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedView, setSelectedView] = useState<string>('grid');
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   //Feedback
@@ -394,7 +394,7 @@ const Collections: NextPage<
                         <span className='icon-sm'>
                           <PlusIcon />
                         </span>
-                        <span>New</span>
+                        <span>New Item</span>
                       </button>
                       {/*Views */}
                       <ViewRadioGroup

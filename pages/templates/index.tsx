@@ -20,6 +20,7 @@ import { IItem, ITemplate } from '../../interfaces';
 import { Listbox, Transition } from '@headlessui/react';
 import { templates as rawTemplates } from '../../data/templates';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -39,7 +40,10 @@ const TemplatesPage: NextPage<
     setCurrentTemplateId(null);
   };
 
-  const [selectedView, setSelectedView] = useState<string>('grid');
+  const [selectedView, setSelectedView] = useLocalStorage<string>(
+    'templateView',
+    'grid'
+  );
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [templates, setTemplates] = useState(rawTemplates);
 
@@ -225,6 +229,7 @@ const TemplatesPage: NextPage<
                   </Transition>
                 </div>
               </Listbox>
+
               {/* VIEW  */}
               <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
             </div>
