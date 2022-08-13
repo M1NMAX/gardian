@@ -22,6 +22,7 @@ import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';
+import useLocalStorage from '../../hooks/useLocalStorage';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -42,7 +43,10 @@ const Collections: NextPage<
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedView, setSelectedView] = useLocalStorage<string>(
+    'myCollectionView',
+    'grid'
+  );
 
   return (
     <>
