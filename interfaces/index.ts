@@ -50,11 +50,3 @@ export interface SortOption {
   name: string;
   alias: string;
 }
-
-//Components props
-export interface ModalProps {
-  open: boolean;
-  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
-  positiveFeedback: (value: string) => void;
-  negativeFeedback: () => void;
-}
