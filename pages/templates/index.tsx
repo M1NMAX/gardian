@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -6,23 +6,19 @@ import Head from 'next/head';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
-import {
-  CheckIcon,
-  MenuAlt2Icon,
-  SelectorIcon,
-} from '@heroicons/react/outline';
+import { MenuAlt2Icon } from '@heroicons/react/outline';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
-import { IItem, ITemplate } from '../../interfaces';
-import { Listbox, Transition } from '@headlessui/react';
+import { IItem, ITemplate, SortOption } from '../../interfaces';
 import { templates as rawTemplates } from '../../data/templates';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import SortOptionsListbox from '../../components/SortOptionsListbox';
 
-const sortOptions = [
+const sortOptions: SortOption[] = [
   { name: 'Name Ascending', alias: 'name+asc' },
   { name: 'Name Descending', alias: 'name+des' },
 ];
@@ -166,69 +162,14 @@ const TemplatesPage: NextPage<
           <div
             className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
-            {/*Filter */}
+            {/*sortlist and views */}
             <div className='flex justify-between items-center'>
-              <Listbox value={selectedSort} onChange={setSelectedSort}>
-                <div className='relative mt-1 flex items-center space-x-1.5'>
-                  <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
-                  <Listbox.Button
-                    className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
-              py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
-              focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
-              focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
-              focus-visible:ring-offset-orange-300 sm:text-sm'>
-                    <span className='block truncate'>{selectedSort.name}</span>
-                    <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                      <SelectorIcon
-                        className='h-5 w-5 text-gray-400'
-                        aria-hidden='true'
-                      />
-                    </span>
-                  </Listbox.Button>
-                  <Transition
-                    as={Fragment}
-                    leave='transition ease-in duration-100'
-                    leaveFrom='opacity-100'
-                    leaveTo='opacity-0'>
-                    <Listbox.Options
-                      className='absolute mt-1 max-h-60 w-full overflow-auto rounded 
-                  bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
-                focus:outline-none sm:text-sm'>
-                      {sortOptions.map((option, optionIdx) => (
-                        <Listbox.Option
-                          key={optionIdx}
-                          className={({ active }) =>
-                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                              active
-                                ? 'bg-green-100 text-green-800'
-                                : 'text-gray-900 dark:text-white'
-                            }`
-                          }
-                          value={option}>
-                          {({ selected }) => (
-                            <>
-                              <span
-                                className={`block truncate ${
-                                  selected ? 'font-medium' : 'font-normal'
-                                }`}>
-                                {option.name}
-                              </span>
-                              {selected ? (
-                                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
-                                  <CheckIcon
-                                    className='icon-sm'
-                                    aria-hidden='true'
-                                  />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Transition>
-                </div>
-              </Listbox>
+              {/*SORT */}
+              <SortOptionsListbox
+                sortOptions={sortOptions}
+                value={selectedSort}
+                setValue={setSelectedSort}
+              />
 
               {/* VIEW  */}
               <ViewRadioGroup value={selectedView} setValue={setSelectedView} />

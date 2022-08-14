@@ -1,7 +1,8 @@
 import { PropertyTypes } from '../types';
 
-//Base schema
+//SCHEMA
 interface IBase {
+  //used a base for all schema
   _id?: number;
   name: string;
   createdAt?: Date;
@@ -42,6 +43,12 @@ export interface ITemplate extends IBase {
   properties: IProperty[];
   description: string;
   items: IItem[];
+}
+
+//UI
+export interface SortOption {
+  name: string;
+  alias: string;
 }
 
 //Components props
