@@ -23,6 +23,7 @@ import ViewRadioGroup from '../../components/ViewRadioGroup';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import Header from '../../components/Header';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -59,22 +60,11 @@ const Collections: NextPage<
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content  flex flex-col space-y-2 -z-10`}>
         {/* Header  */}
-        <div className='sticky top-0 pt-2 px-4 bg-white dark:bg-gray-900 dark:text-white'>
-          <div className='pb-1  border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
-            {/* Menu btn  */}
-            {!sidebar && (
-              <ActionIcon
-                icon={<MenuAlt2Icon />}
-                onClick={() => setSidebar(true)}
-              />
-            )}
-
-            {/* Title  */}
-            <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-100'>
-              My Collections
-            </h1>
-          </div>
-        </div>
+        <Header
+          title='My Collections'
+          sidebar={sidebar}
+          onClickMenuBtn={() => setSidebar(true)}
+        />
 
         {/* Is loading  */}
         {isLoading && (

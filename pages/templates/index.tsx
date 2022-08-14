@@ -17,6 +17,7 @@ import { templates as rawTemplates } from '../../data/templates';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
+import Header from '../../components/Header';
 
 const sortOptions: SortOption[] = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -141,22 +142,11 @@ const TemplatesPage: NextPage<
             showDrawer ? 'w-0 md:w-2/3' : 'w-full'
           } h-full flex flex-col space-y-2`}>
           {/* Header  */}
-          <div className='sticky top-0 pt-2 px-4 bg-white dark:bg-gray-900 dark:text-white'>
-            <div className='pb-1 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
-              {/* Menu btn  */}
-              {!sidebar && (
-                <ActionIcon
-                  icon={<MenuAlt2Icon />}
-                  onClick={() => setSidebar(true)}
-                />
-              )}
-
-              {/* Title  */}
-              <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-100'>
-                Templates
-              </h1>
-            </div>
-          </div>
+          <Header
+            title='Templates'
+            sidebar={sidebar}
+            onClickMenuBtn={() => setSidebar(true)}
+          />
 
           {/* body  */}
           <div
@@ -170,7 +160,6 @@ const TemplatesPage: NextPage<
                 value={selectedSort}
                 setValue={setSelectedSort}
               />
-
               {/* VIEW  */}
               <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
             </div>
