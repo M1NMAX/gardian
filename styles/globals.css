@@ -31,7 +31,7 @@
   }
 
   .btn-primary {
-    @apply p-1 font-semibold text-gray-900 bg-primary-200 hover:bg-primary-300;
+    @apply p-1 font-semibold text-primary-200 hover:bg-primary-100 hover:bg-opacity-30;
   }
   .btn-secondary {
     @apply p-1 hover:bg-gray-300 dark:hover:bg-gray-600;
@@ -53,8 +53,8 @@
   }
 
   .main-content {
-    @apply transition-all duration-200 ease-linear 
-      flex flex-col h-screen py-2 px-4 space-y-2 dark:bg-gray-900 dark:text-white -z-10;
+    @apply transition-all duration-200 ease-linear
+     h-screen dark:bg-gray-900 dark:text-white;
   }
 
   .sidebarCollections-height {
@@ -92,7 +92,8 @@
 
   .modal-text-area {
     @apply w-full px-2 resize-none rounded  border-0 bg-gray-300 dark:bg-gray-700
-    focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-100;
+    focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-100
+    scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600;
   }
   .modal-checkbox {
     @apply w-5 h-5 appearance-none rounded-sm border-0 bg-gray-200 dark:bg-gray-700 

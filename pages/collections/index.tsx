@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
@@ -20,16 +20,20 @@ import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
+import Group from '../../backend/models/Group';
+import dbConnect from '../../backend/database/dbConnect';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import Header from '../../components/Header';
 
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const { data: groups } = useQuery<IGroup[]>('groups', getGroups);
+  const { data: groups } = useQuery<IGroup[]>(['groups'], getGroups);
 
   const { data: collections, isLoading } = useQuery<ICollection[], Error>(
-    'collections',
+    ['collections'],
     getCollections
   );
 
@@ -40,7 +44,10 @@ const Collections: NextPage<
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedView, setSelectedView] = useLocalStorage<string>(
+    'myCollectionView',
+    'grid'
+  );
 
   return (
     <>
@@ -51,64 +58,74 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } main-content`}>
+        } main-content  flex flex-col space-y-2 -z-10`}>
         {/* Header  */}
-        <div className='flex items-center space-x-2'>
-          {!sidebar && (
-            <ActionIcon
-              icon={<MenuAlt2Icon />}
-              onClick={() => setSidebar(true)}
-            />
-          )}
-        </div>
+        <Header
+          title='My Collections'
+          sidebar={sidebar}
+          onClickMenuBtn={() => setSidebar(true)}
+        />
 
-        {/* Title  */}
-        <h1 className='font-semibold text-3xl  pl-1 border-l-4 border-primary-100'>
-          My Collections
-        </h1>
+        {/* Is loading  */}
+        {isLoading && (
+          <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
+            <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
+            <span className='font-medium'> Loading ...</span>
+          </div>
+        )}
 
-        {/*Filter */}
-        <div
-          className='flex justify-between items-center pt-1 border-dotted 
-                border-t-2 border-gray-200 dark:border-gray-700'>
-          {/** add collection btn */}
-          <button
-            onClick={createCollectionModal.openModal}
-            className='btn btn-primary'>
-            <span className='icon-sm'>
-              <PlusIcon />
-            </span>
-            <span>New</span>
-          </button>
-          {/* views  */}
-          <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
-        </div>
-
-        {/* Collections  */}
-        <div
-          className={`${
-            selectedView === 'grid'
-              ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
-              : 'flex flex-col space-y-2'
-          }  overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 `}>
-          {isLoading ? (
-            <div className='col-span-full flex flex-col justify-center items-center space-y-4 h-32'>
-              <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
-              <span className='font-medium'> Loading ...</span>
-            </div>
-          ) : (
-            collections &&
-            collections.map((collection, idx) => (
-              <CollectionOverview key={idx} collection={collection} />
-            ))
-          )}
-        </div>
-
+        {/* loading state is finish and there are no collection  */}
         {!isLoading && collections && collections.length === 0 && (
-          <div className='flex justify-center'>
-            <p className='text-lg  p-2 rounded-md bg-gray-100 dark:bg-gray-800 '>
-              Wow, such empty &#58;&#41;
-            </p>
+          <div className='flex justify-between items-center space-y-4 px-4'>
+            {/** add collection btn */}
+            <button
+              onClick={createCollectionModal.openModal}
+              className={`${
+                !isLoading &&
+                collections &&
+                collections.length === 0 &&
+                'w-full justify-center'
+              } btn btn-primary`}>
+              <span className='icon-sm'>
+                <PlusIcon />
+              </span>
+              <span>New Collection</span>
+            </button>
+          </div>
+        )}
+
+        {/* loading state is finished and there are collection */}
+        {!isLoading && collections && collections.length > 0 && (
+          <div
+            className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+             scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
+            <div className='flex justify-between items-center'>
+              {/** add collection btn */}
+              <button
+                onClick={createCollectionModal.openModal}
+                className='btn btn-primary'>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span>New Collection</span>
+              </button>
+
+              {/* views  */}
+              <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
+            </div>
+
+            {/* Collections  */}
+            <div
+              className={`${
+                selectedView === 'grid'
+                  ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                  : 'flex flex-col space-y-2'
+              }  `}>
+              {collections &&
+                collections.map((collection, idx) => (
+                  <CollectionOverview key={idx} collection={collection} />
+                ))}
+            </div>
           </div>
         )}
       </main>
@@ -130,4 +147,33 @@ const Collections: NextPage<
 
 export default Collections;
 
-export const getServerSideProps = withPageAuthRequired();
+export const getServerSideProps = withPageAuthRequired({
+  returnTo: '/collections',
+  async getServerSideProps(ctx) {
+    const session = getSession(ctx.req, ctx.res);
+
+    if (session) {
+      const user = session.user;
+
+      try {
+        // connect to db
+        await dbConnect();
+
+        // fecth db for group
+        const groups = await Group.find({ userId: user.sub });
+
+        //create group if there is no
+        if (groups.length === 0) {
+          await Group.create({
+            name: 'My Group',
+            userId: user.sub,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    return { props: {} as never };
+  },
+});

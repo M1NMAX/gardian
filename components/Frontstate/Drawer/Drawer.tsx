@@ -1,12 +1,13 @@
-import { DotsVerticalIcon, XIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import ActionIcon from '../ActionIcon';
+import { XIcon } from '@heroicons/react/outline';
+import { title } from 'process';
 
 interface IProps {
   children: ReactNode;
 }
 
-interface TitleProps {
+interface HeaderProps {
   children: ReactNode;
 }
 interface DescriptionProps extends IProps {}
@@ -14,18 +15,19 @@ interface BodyProps extends IProps {}
 interface FooterProps extends IProps {}
 
 interface DrawerProps extends IProps {
+  title?: ReactNode;
   menu?: ReactNode;
   opened: boolean;
   onClose: () => void;
 }
 type DrawerComponent = FC<DrawerProps> & {
-  Title: FC<TitleProps>;
+  Header: FC<HeaderProps>;
 } & {
   Description: FC<DescriptionProps>;
 } & { Body: FC<BodyProps> } & { Footer: FC<FooterProps> };
 
 const Drawer: DrawerComponent = (props) => {
-  const { children, menu, opened, onClose } = props;
+  const { children, title, menu, opened, onClose } = props;
   return (
     <div
       className={`${
@@ -34,6 +36,7 @@ const Drawer: DrawerComponent = (props) => {
   rounded bg-gray-100 dark:bg-gray-800 overflow-hidden`}>
       <div className='flex justify-between'>
         <ActionIcon icon={<XIcon />} variant='filled' onClick={onClose} />
+        <span className='grow px-1.5'>{title}</span>
         {menu}
       </div>
       <div
@@ -45,7 +48,7 @@ const Drawer: DrawerComponent = (props) => {
   );
 };
 
-const Title: FC<TitleProps> = (props) => {
+const Header: FC<HeaderProps> = (props) => {
   const { children } = props;
 
   return <h1 className='font-semibold text-xl'>{children}</h1>;
@@ -70,7 +73,7 @@ const Footer: FC<FooterProps> = (props) => {
   );
 };
 
-Drawer.Title = Title;
+Drawer.Header = Header;
 Drawer.Description = Description;
 Drawer.Body = Body;
 Drawer.Footer = Footer;

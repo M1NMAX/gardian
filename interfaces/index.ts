@@ -1,7 +1,8 @@
 import { PropertyTypes } from '../types';
 
-//Base schema
+//SCHEMA
 interface IBase {
+  //used a base for all schema
   _id?: number;
   name: string;
   createdAt?: Date;
@@ -44,10 +45,8 @@ export interface ITemplate extends IBase {
   items: IItem[];
 }
 
-//Components props
-export interface ModalProps {
-  open: boolean;
-  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
-  positiveFeedback: (value: string) => void;
-  negativeFeedback: () => void;
+//UI
+export interface SortOption {
+  name: string;
+  alias: string;
 }

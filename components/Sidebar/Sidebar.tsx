@@ -7,7 +7,7 @@ import {
   TemplateIcon,
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
-import SidebarLink from './SidebarLink';
+import SidebarBtn from './SidebarBtn';
 import ActionIcon from '../Frontstate/ActionIcon';
 import SidebarCollection from './SidebarCollection';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -25,17 +25,23 @@ import SidebarGroup from './SidebarGroup';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 
+// tailwind ´md´ screen
+const MD_SCREEN_SIZE: number = 768;
+
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const { data: groups } = useQuery<IGroup[], Error>(['groups'], getGroups);
+  const { data: groups, isLoading } = useQuery<IGroup[], Error>(
+    ['groups'],
+    getGroups
+  );
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  //Menu is open if window width > 768px, tailwind ´md´
+  //Sidebar is open if window width > 768px, tailwind ´md´
   useEffect(() => {
-    if (width > 768) setSidebar(true);
+    if (width > MD_SCREEN_SIZE) setSidebar(true);
   }, [width]);
 
   const wrapper = useRef<HTMLDivElement>(null);
@@ -46,7 +52,7 @@ const Sidebar: FC = () => {
         sidebar &&
         wrapper.current &&
         !wrapper.current.contains(event.target) &&
-        width <= 768
+        width <= MD_SCREEN_SIZE
       ) {
         setSidebar(false);
       }
@@ -59,6 +65,17 @@ const Sidebar: FC = () => {
     return () => document.removeEventListener('mousedown', checkOutsideClick);
   }, [checkOutsideClick]);
 
+  // Click handle for sidebar elements
+  const onClickSidebarCollection = (id: string) => {
+    router.push('/collections/' + id);
+    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+  };
+
+  const onClickSiderLink = (url: string) => {
+    router.push(url);
+    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+  };
+
   //Modals
   const createCollectionModal = useModal();
   const createGroupModal = useModal();
@@ -70,14 +87,14 @@ const Sidebar: FC = () => {
     toast.success('Something went wrong, try later');
 
   return (
-    <div
-      ref={wrapper}
-      className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
+    <>
+      <div
+        ref={wrapper}
+        className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
-        bg-gray-100 dark:bg-gray-800 dark:text-white`}>
-      <div className='flex flex-col py-2  space-y-1 '>
+        bg-gray-100 dark:bg-gray-800 dark:text-white flex flex-col py-1.5  space-y-1 `}>
         {/* Top section aka search  */}
-        <div className='flex justify-between items-center space-x-1 px-2'>
+        <div className=' flex justify-between items-center space-x-1 px-2'>
           <button
             onClick={searchModal.openModal}
             className='w-full space-x-2 flex items-center rounded p-1
@@ -88,23 +105,36 @@ const Sidebar: FC = () => {
           <SidebarUserPopoverMenu />
         </div>
 
-        <SidebarLink
+        <SidebarBtn
           icon={<TemplateIcon />}
           text='Templates'
-          url='/templates'
           active={router.pathname === '/templates'}
+          onClick={() => onClickSiderLink('/templates')}
         />
 
-        <SidebarLink
+        <SidebarBtn
           icon={<CollectionIcon />}
           text='My Collections'
-          url='/collections'
           active={router.pathname === '/collections'}
+          onClick={() => onClickSiderLink('/collections')}
         />
 
         {/* Display groups */}
-        <div className='space-y-2 px-2'>
-          {groups &&
+        <div
+          className='grow space-y-2 pl-2 pr-2.5 py-2 overflow-y-auto 
+        scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+          {isLoading && (
+            <div
+              className='flex flex-col space-y-1 animate-pulse rounded
+             bg-gray-100 dark:bg-gray-800'>
+              <div className='w-full h-8  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+            </div>
+          )}
+
+          {/* Loading state is finished  */}
+          {!isLoading &&
+            groups &&
             groups.map((group, idx) => (
               <SidebarGroup key={idx} group={group}>
                 {/**Display group collections */}
@@ -115,6 +145,7 @@ const Sidebar: FC = () => {
                         key={collectionId}
                         collectionId={collectionId}
                         groupId={group._id}
+                        onClick={() => onClickSidebarCollection(collectionId)}
                       />
                     )
                 )}
@@ -123,11 +154,9 @@ const Sidebar: FC = () => {
         </div>
 
         {/* Bottom section  */}
-        <div
-          className='absolute left-0 right-0 bottom-1 w-full px-1 
-        grid grid-cols-6 gap-2  '>
+        <div className='w-full px-1 grid grid-cols-6 gap-2'>
           <ThemeBtn />
-          <div className='col-span-5 flex  border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
+          <div className='col-span-5 flex border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
             <button
               onClick={createCollectionModal.openModal}
               disabled={groups?.length === 0}
@@ -171,7 +200,7 @@ const Sidebar: FC = () => {
           onEnter={() => console.log('fn')}
         />
       )}
-    </div>
+    </>
   );
 };
 

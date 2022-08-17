@@ -48,11 +48,13 @@ const Property: FC<PropertyProps> = (props) => {
           property={collectionProperty}
           getValue={getValue}
           setValue={setValue}
-        />
-        <PropertyMenu
-          onClickEdit={editPropertyModal.openModal}
-          onClickDuplicate={handleDuplicate}
-          onClickDelete={deletePropertyModal.openModal}
+          menu={
+            <PropertyMenu
+              onClickEdit={editPropertyModal.openModal}
+              onClickDuplicate={handleDuplicate}
+              onClickDelete={deletePropertyModal.openModal}
+            />
+          }
         />
       </div>
       {/* Modal  */}

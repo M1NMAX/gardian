@@ -8,6 +8,7 @@ import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import Label from '../Label';
 import { addCollectionToGroup } from '../../fetch/group';
 import { useMutation, useQueryClient } from 'react-query';
+import { useRouter } from 'next/router';
 
 interface NewCollectionModalProps {
   groups: IGroup[];
@@ -20,44 +21,42 @@ interface NewCollectionModalProps {
 const NewCollectionModal: FC<NewCollectionModalProps> = (props) => {
   const { open, handleClose, positiveFeedback, negativeFeedback, groups } =
     props;
+
+  const router = useRouter();
+
   const [name, setName] = useState('');
   const [selectedGroup, setSelectedGroup] = useState(groups[0]._id);
 
   const queryClient = useQueryClient();
 
-  const createCollectionMutation = useMutation(
-    async (name: string) => {
-      if (!selectedGroup) return;
-
-      const collection = await createCollection({
-        name,
-        description: '',
-        isDescriptionHidden: false,
-        isFavourite: false,
-        properties: [],
-        items: [],
-      });
-      if (!collection._id) throw true;
-      await addCollectionToGroup(selectedGroup, collection._id);
+  const createCollectionMutation = useMutation(createCollection, {
+    onSuccess: async ({ _id: collectionId }) => {
+      if (!collectionId) throw 'CollectionId is undefined';
+      if (!selectedGroup) throw 'SelectedGroupId is undefined';
+      await addCollectionToGroup(selectedGroup, collectionId);
+      queryClient.invalidateQueries(['groups']);
+      queryClient.invalidateQueries(['collections']);
+      positiveFeedback('Collection created');
+      router.push('/collections/' + collectionId);
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['groups']);
-
-        positiveFeedback('Collection created');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-      onSettled: () => {
-        handleClose();
-      },
-    }
-  );
+    onError: () => {
+      negativeFeedback();
+    },
+    onSettled: () => {
+      handleClose();
+    },
+  });
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    createCollectionMutation.mutate(name);
+    createCollectionMutation.mutate({
+      name,
+      description: '',
+      isDescriptionHidden: true,
+      isFavourite: false,
+      properties: [],
+      items: [],
+    });
   };
 
   return (

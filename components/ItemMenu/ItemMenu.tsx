@@ -1,22 +1,18 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
   DotsVerticalIcon,
-  DuplicateIcon,
-  InformationCircleIcon,
-  PencilIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/outline';
 import React, { FC, Fragment } from 'react';
 
 interface ItemMenuProps {
-  onClickAddProperty?: () => void;
-  onClickDuplicate?: () => void;
-  onClickDelete?: () => void;
+  onClickAddProperty: () => void;
+  onClickDelete: () => void;
 }
 
 const ItemMenu: FC<ItemMenuProps> = (props) => {
-  const { onClickAddProperty, onClickDuplicate, onClickDelete } = props;
+  const { onClickAddProperty, onClickDelete } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -43,21 +39,12 @@ const ItemMenu: FC<ItemMenuProps> = (props) => {
             </button>
           </Menu.Item>
 
-          <Menu.Item as='li'>
-            <button
-              onClick={onClickDuplicate}
-              className='collection-menu-item-btn'>
-              <DuplicateIcon className='icon-sm' />
-              <span>Duplicate</span>
-            </button>
-          </Menu.Item>
-
           <Menu.Item>
             <button
               onClick={onClickDelete}
               className='collection-menu-item-btn'>
               <TrashIcon className='icon-sm' />
-              <span> Delete </span>
+              <span> Delete Item </span>
             </button>
           </Menu.Item>
         </Menu.Items>

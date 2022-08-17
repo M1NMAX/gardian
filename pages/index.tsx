@@ -3,10 +3,12 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '../components/Header';
 import collecting from '../public/undraw_collecting.svg';
 import template from '../public/undraw_wireframing.svg';
 import nextjsLogo from '../public/next-js-logo.png';
+import Logo from '../components/Logo';
+import ThemeBtn from '../components/ThemeBtn';
+import { LoginIcon } from '@heroicons/react/outline';
 
 const Home: NextPage = () => {
   return (
@@ -14,7 +16,23 @@ const Home: NextPage = () => {
       <Head>
         <title>Gardian</title>
       </Head>
-      <Header />
+      {/* Header  */}
+      <div
+        className='flex justify-between items-center h-12  
+    bg-gray-100 dark:bg-gray-800 dark:text-white px-4'>
+        <Logo />
+        <div className='flex items-center space-x-2'>
+          <ThemeBtn />
+          <Link href='/api/auth/login'>
+            <a
+              className='flex items-center space-x-1 p-1 rounded 
+            bg-green-500 hover:bg-green-400 text-gray-100'>
+              <LoginIcon className='icon-xs' />
+              <span className='font-medium'>Log in</span>
+            </a>
+          </Link>
+        </div>
+      </div>
       <main className='space-y-4  dark:bg-gray-700'>
         <div className='w-screen md:max-w-5xl mx-auto px-2 py-8 flex items-center'>
           <div className='basis-1/2 space-y-4 flex flex-col'>

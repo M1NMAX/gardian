@@ -52,7 +52,7 @@ const Collections: NextPage<
   const sidebar = useRecoilValue(sidebarState);
 
   //View mode
-  const [selectedView, setSelectedView] = useState('grid');
+  const [selectedView, setSelectedView] = useState<string>('grid');
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
   //Feedback
@@ -347,7 +347,7 @@ const Collections: NextPage<
       <main
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } flex h-screen  dark:bg-gray-900 dark:text-white`}>
+        } main-content flex `}>
         <div
           className={`${
             showDrawer ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
@@ -369,7 +369,7 @@ const Collections: NextPage<
                 {!isLoading && collection && collection.items.length === 0 ? (
                   // if collection has no items
                   <div
-                    className='mt-4 py-1 flex justify-center border-dotted 
+                    className='py-1 flex justify-center border-dotted 
                   border-t-2 border-gray-200 dark:border-gray-700'>
                     <button
                       onClick={createItemModal.openModal}
@@ -394,7 +394,7 @@ const Collections: NextPage<
                         <span className='icon-sm'>
                           <PlusIcon />
                         </span>
-                        <span>New</span>
+                        <span>New Item</span>
                       </button>
                       {/*Views */}
                       <ViewRadioGroup
@@ -441,6 +441,16 @@ const Collections: NextPage<
           <Drawer
             opened={showDrawer}
             onClose={closeDrawer}
+            title={
+              <input
+                value={selectedItemName}
+                onChange={(e) => setSelectedItemName(e.target.value)}
+                onBlur={(e) => renameItemMutation.mutate(e.target.value)}
+                className='w-full p-1 font-semibold cursor-default rounded-sm border-0 
+               bg-gray-100 dark:bg-gray-800 
+            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
+              />
+            }
             menu={
               <ItemMenu
                 onClickAddProperty={handleOnClickAddProperty}
@@ -448,16 +458,15 @@ const Collections: NextPage<
               />
             }>
             <Drawer.Body>
-              <div className='space-y-2 p-0.5'>
-                <input
-                  value={selectedItemName}
-                  onChange={(e) => setSelectedItemName(e.target.value)}
-                  onBlur={(e) => renameItemMutation.mutate(e.target.value)}
-                  className='w-full p-2 text-xl font-semibold cursor-default rounded-sm   border-0 
-                   bg-gray-100 dark:bg-gray-800 
-                focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
-                />
-
+              <div
+                className='space-y-2 pt-1 px-0.5 border-dotted 
+                      border-t-2 border-gray-200 dark:border-gray-700'>
+                <button
+                  onClick={handleOnClickAddProperty}
+                  className='btn btn-primary'>
+                  <PlusIcon className='icon-sm' />
+                  <span>Add Property</span>
+                </button>
                 {selectedItemPorperties.map(
                   (property) =>
                     property._id && (

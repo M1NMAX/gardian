@@ -3,7 +3,6 @@ import dbConnect from '../../../backend/database/dbConnect';
 import Group from '../../../backend/models/Group';
 import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { Response } from '../../../types';
-import Collection from '../../../backend/models/Collection';
 
 dbConnect();
 

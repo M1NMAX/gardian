@@ -25,10 +25,11 @@ import { createItem, getItem } from '../../../fetch/item';
 interface SidebarCollectionProps {
   collectionId: string;
   groupId: number;
+  onClick: () => void;
 }
 
 const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
-  const { collectionId, groupId } = props;
+  const { collectionId, groupId, onClick } = props;
 
   //Fetch collection
   const { data: collection } = useQuery(
@@ -181,11 +182,9 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         group flex items-center justify-between w-full h-8 px-1.5 mb-1
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
-        <Link href={`/collections/${collectionId}`}>
-          <a className='flex items-center space-x-1 grow'>
-            <span className='truncate'>{collection.name}</span>
-          </a>
-        </Link>
+        <button className='flex items-center grow' onClick={onClick}>
+          <span className='truncate'>{collection.name}</span>
+        </button>
 
         {collection.items.length !== 0 && (
           <span className='flex items-center  md:group-hover:hidden md:group-focus-within:hidden'>

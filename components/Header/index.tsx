@@ -1,25 +1,27 @@
-import { LoginIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
+import { MenuAlt2Icon } from '@heroicons/react/outline';
 import React, { FC } from 'react';
-import Logo from '../Logo';
-import ThemeBtn from '../ThemeBtn';
+import ActionIcon from '../Frontstate/ActionIcon';
 
-const Header: FC = () => {
+interface HeaderProps {
+  title: string;
+  sidebar: boolean;
+  onClickMenuBtn: () => void;
+}
+
+const Header: FC<HeaderProps> = (props) => {
+  const { title, sidebar, onClickMenuBtn } = props;
   return (
-    <div
-      className='flex justify-between items-center h-12  
-    bg-gray-100 dark:bg-gray-800 dark:text-white px-4'>
-      <Logo />
-      <div className='flex items-center space-x-2'>
-        <ThemeBtn />
-        <Link href='/api/auth/login'>
-          <a
-            className='flex items-center space-x-1 p-1 rounded 
-            bg-green-500 hover:bg-green-400 text-gray-100'>
-            <LoginIcon className='icon-xs' />
-            <span className='font-medium'>Log in</span>
-          </a>
-        </Link>
+    <div className='sticky top-0 pt-2 px-4 bg-white dark:bg-gray-900 dark:text-white'>
+      <div className='space-y-1 pb-1 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
+        {/* Menu btn  */}
+        {!sidebar && (
+          <ActionIcon icon={<MenuAlt2Icon />} onClick={onClickMenuBtn} />
+        )}
+
+        {/* Title  */}
+        <h1 className='font-semibold text-3xl pl-1 border-l-4 border-primary-100'>
+          {title}
+        </h1>
       </div>
     </div>
   );
