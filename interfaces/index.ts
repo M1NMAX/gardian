@@ -3,7 +3,7 @@ import { PropertyTypes } from '../types';
 //SCHEMA
 interface IBase {
   //used a base for all schema
-  _id?: number;
+  _id?: string;
   name: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -21,7 +21,7 @@ export interface IProperty extends IBase {
 }
 
 export interface IItemProperty {
-  _id?: number;
+  _id?: string;
   value: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -31,7 +31,7 @@ export interface IItem extends IBase {
 }
 
 export interface ICollection extends IBase {
-  userId?: string | null;
+  userId?: string;
   description: string;
   isDescriptionHidden: boolean;
   properties: IProperty[];
