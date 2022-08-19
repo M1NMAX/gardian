@@ -8,12 +8,7 @@ import { getCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import ActionIcon from '../../components/Frontstate/ActionIcon';
-import {
-  CubeTransparentIcon,
-  MenuAlt2Icon,
-  PlusIcon,
-} from '@heroicons/react/outline';
+import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
@@ -36,6 +31,14 @@ const Collections: NextPage<
     ['collections'],
     getCollections
   );
+
+  const getCollectionGroupName = (id?: string) => {
+    if (!id) return '';
+    if (!groups || !collections) return '';
+    const group = groups.find((group) => group.collections.includes(id));
+    if (!group) return '';
+    return group.name;
+  };
 
   //Modal: create collection
   const createCollectionModal = useModal();
@@ -123,7 +126,11 @@ const Collections: NextPage<
               }  `}>
               {collections &&
                 collections.map((collection, idx) => (
-                  <CollectionOverview key={idx} collection={collection} />
+                  <CollectionOverview
+                    key={idx}
+                    collection={collection}
+                    groupName={getCollectionGroupName(collection._id)}
+                  />
                 ))}
             </div>
           </div>
