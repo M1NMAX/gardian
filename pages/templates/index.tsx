@@ -5,8 +5,6 @@ import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import ActionIcon from '../../components/Frontstate/ActionIcon';
-import { MenuAlt2Icon } from '@heroicons/react/outline';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
@@ -62,13 +60,13 @@ const TemplatesPage: NextPage<
     [selectedSort]
   );
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<number | null>(
+  const [currentTemplateId, setCurrentTemplateId] = useState<string | null>(
     null
   );
   const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
 
   const getTemplate = useCallback(
-    (id: number) => {
+    (id: string) => {
       const template = templates.find((template) => template._id === id);
       return template;
     },
@@ -80,14 +78,11 @@ const TemplatesPage: NextPage<
     setCurrentTemplate(getTemplate(currentTemplateId));
   }, [templates, currentTemplateId]);
 
-  const handleOnClickTemplateOverview = (id: number) => {
+  const handleOnClickTemplateOverview = (id: string) => {
     setCurrentTemplateId(id);
     openDrawer();
   };
 
-  const isIItem = (obj: any): obj is IItem => {
-    return 'name' in obj && 'properties' in obj;
-  };
   const createCollectionBasedOnTemplate = async () => {
     if (!currentTemplateId) return;
 
@@ -120,8 +115,9 @@ const TemplatesPage: NextPage<
       console.log(error);
     }
   };
-  const getPropertyValue = (item: IItem, id: number): string => {
-    if (!id) return '';
+
+  const getPropertyValue = (item: IItem, id: string): string => {
+    if (id === '') return '';
     const property = item.properties.find((property) => property._id === id);
     if (!property) return '';
     return property.value;
@@ -177,7 +173,8 @@ const TemplatesPage: NextPage<
                     key={idx}
                     active={currentTemplateId === template._id}
                     template={template}
-                    onTemplateClick={handleOnClickTemplateOverview}
+                    view={selectedView}
+                    onClickTemplate={handleOnClickTemplateOverview}
                   />
                 ))}
             </div>
@@ -201,35 +198,32 @@ const TemplatesPage: NextPage<
                 <div>
                   <p>Example of item </p>
                   <div className='flex flex-col space-y-2'>
-                    {currentTemplate.items.map(
-                      (item, idx) =>
-                        isIItem(item) && (
-                          <span
-                            key={idx}
-                            className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
-                            <span className='font-semibold text-lg'>
-                              {item.name}
-                            </span>
-                            {currentTemplate.properties.map(
-                              (templateProperty, idx) =>
-                                getPropertyValue(
-                                  item,
-                                  templateProperty._id || -1
-                                ) != '' && (
-                                  <span key={idx} className='space-x-1'>
-                                    <span>{templateProperty.name}</span>
-                                    <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
-                                      {getPropertyValue(
-                                        item,
-                                        templateProperty._id || -1
-                                      )}
-                                    </span>
-                                  </span>
-                                )
-                            )}
-                          </span>
-                        )
-                    )}
+                    {currentTemplate.items.map((item, idx) => (
+                      <span
+                        key={idx}
+                        className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
+                        <span className='font-semibold text-lg'>
+                          {item.name}
+                        </span>
+                        {currentTemplate.properties.map(
+                          (templateProperty, idx) =>
+                            getPropertyValue(
+                              item,
+                              templateProperty._id || ''
+                            ) != '' && (
+                              <span key={idx} className='space-x-1'>
+                                <span>{templateProperty.name}</span>
+                                <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                  {getPropertyValue(
+                                    item,
+                                    templateProperty._id || ''
+                                  )}
+                                </span>
+                              </span>
+                            )
+                        )}
+                      </span>
+                    ))}
                   </div>
                 </div>
                 <div>

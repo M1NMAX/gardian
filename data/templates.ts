@@ -2,14 +2,14 @@ import { ITemplate } from '../interfaces';
 
 export const templates: ITemplate[] = [
   {
-    _id: 1,
+    _id: '1',
     name: 'Events',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
-      { _id: 1, name: 'Date', type: 'date', values: [] },
+      { _id: '1', name: 'Date', type: 'date', values: [] },
       {
-        _id: 2,
+        _id: '2',
         name: 'Notes',
         type: 'textarea',
         values: [],
@@ -19,39 +19,39 @@ export const templates: ITemplate[] = [
       {
         name: 'Apple WWDC',
         properties: [
-          { _id: 1, value: '2022-06-24' },
-          { _id: 2, value: '06:00 PM' },
+          { _id: '1', value: '2022-06-24' },
+          { _id: '2', value: '06:00 PM' },
         ],
       },
       {
         name: 'S birthdate',
         properties: [
-          { _id: 1, value: '2022-08-25' },
-          { _id: 2, value: 'I need to buy a chocolate cake' },
+          { _id: '1', value: '2022-08-25' },
+          { _id: '2', value: 'I need to buy a chocolate cake' },
         ],
       },
     ],
   },
   {
-    _id: 2,
+    _id: '2',
     name: 'Tasks',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
       {
-        _id: 1,
+        _id: '1',
         name: 'Done',
         type: 'checkbox',
         values: [],
       },
       {
-        _id: 2,
+        _id: '2',
         name: 'Conclusion date',
         type: 'date',
         values: [],
       },
       {
-        _id: 3,
+        _id: '3',
         name: 'Notes',
         type: 'textarea',
         values: [],
@@ -61,33 +61,33 @@ export const templates: ITemplate[] = [
       {
         name: 'Organize the agenda',
         properties: [
-          { _id: 1, value: 'true' },
-          { _id: 2, value: '2022-06-24' },
-          { _id: 3, value: 'Start from september' },
+          { _id: '1', value: 'true' },
+          { _id: '2', value: '2022-06-24' },
+          { _id: '3', value: 'Start from september' },
         ],
       },
       {
         name: 'Change battery of smoke detecter',
         properties: [
-          { _id: 1, value: '' },
-          { _id: 2, value: '2022-08-25' },
-          { _id: 3, value: 'I John for help' },
+          { _id: '1', value: '' },
+          { _id: '2', value: '2022-08-25' },
+          { _id: '3', value: 'I John for help' },
         ],
       },
     ],
   },
   {
-    _id: 3,
+    _id: '3',
     name: 'Links',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [{ _id: 1, name: 'URL', type: 'url', values: [''] }],
+    properties: [{ _id: '1', name: 'URL', type: 'url', values: [''] }],
     items: [
       {
         name: 'Static data forum',
         properties: [
           {
-            _id: 1,
+            _id: '1',
             value:
               'https://laracasts.com/discuss/channels/general-discussion/is-it-best-to-use-json-or-db-for-static-data?page=1',
           },
@@ -97,7 +97,7 @@ export const templates: ITemplate[] = [
         name: 'Headless ui',
         properties: [
           {
-            _id: 1,
+            _id: '1',
             value: 'https://headlessui.dev',
           },
         ],
@@ -106,19 +106,19 @@ export const templates: ITemplate[] = [
   },
 
   {
-    _id: 5,
+    _id: '5',
     name: 'Movies',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
       {
-        _id: 1,
+        _id: '1',
         name: 'Status',
         type: 'select',
         values: ['Plan to watch', 'Watching', 'Watched'],
       },
       {
-        _id: 2,
+        _id: '2',
         name: 'Score',
         type: 'select',
         values: [
@@ -135,7 +135,7 @@ export const templates: ITemplate[] = [
         ],
       },
       {
-        _id: 3,
+        _id: '3',
         name: 'Plataform',
         type: 'select',
         values: ['Netflix', 'Vizer.tv', 'Stremio'],
@@ -145,17 +145,17 @@ export const templates: ITemplate[] = [
       {
         name: 'Taken',
         properties: [
-          { _id: 1, value: 'Plan to watch' },
-          { _id: 2, value: '' },
-          { _id: 3, value: 'Vizer.tv' },
+          { _id: '1', value: 'Plan to watch' },
+          { _id: '2', value: '' },
+          { _id: '3', value: 'Vizer.tv' },
         ],
       },
       {
         name: 'The accountant',
         properties: [
-          { _id: 1, value: 'Watched' },
-          { _id: 2, value: '7-Good' },
-          { _id: 3, value: 'Stremio' },
+          { _id: '1', value: 'Watched' },
+          { _id: '2', value: '7-Good' },
+          { _id: '3', value: 'Stremio' },
         ],
       },
     ],

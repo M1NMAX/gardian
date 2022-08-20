@@ -14,29 +14,29 @@ export async function getGroups(): Promise<IGroup[]> {
   const res = await fetch(baseUrl);
   return res.json().then((response) => response.data);
 }
-export async function getGroup(id: number): Promise<IGroup> {
+export async function getGroup(id: string): Promise<IGroup> {
   const res = await fetch(baseUrl + id);
   return res.json().then((response) => response.data);
 }
 
-export async function updateGroup(id: number, group: IGroup): Promise<boolean> {
+export async function updateGroup(id: string, group: IGroup): Promise<boolean> {
   const res = await fetch(baseUrl + id, getRequestOptions('PUT', group));
   return res.json().then((response) => response.isSuccess);
 }
 
-export async function deleteGroup(id: number): Promise<boolean> {
+export async function deleteGroup(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);
 }
 
-export async function renameGroup(id: number, name: string): Promise<boolean> {
+export async function renameGroup(id: string, name: string): Promise<boolean> {
   const group = await getGroup(id);
   return updateGroup(id, { ...group, name });
 }
 
 export async function addCollectionToGroup(
-  groupId: number,
-  collectionId: number | string
+  groupId: string,
+  collectionId: string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'PATCH',
@@ -46,7 +46,7 @@ export async function addCollectionToGroup(
 
 export async function removeCollectionFromGroup(
   groupId: number,
-  collectionId: number | string
+  collectionId: string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {
     method: 'DELETE',
