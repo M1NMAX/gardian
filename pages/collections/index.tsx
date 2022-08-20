@@ -130,6 +130,7 @@ const Collections: NextPage<
                     key={idx}
                     collection={collection}
                     groupName={getCollectionGroupName(collection._id)}
+                    view={selectedView}
                   />
                 ))}
             </div>

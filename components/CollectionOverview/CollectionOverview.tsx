@@ -2,43 +2,60 @@ import React, { FC } from 'react';
 import {
   CollectionIcon,
   HashtagIcon,
-  StarIcon as StarIconOutline,
   ViewBoardsIcon,
 } from '@heroicons/react/outline';
-import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { ICollection } from '../../interfaces';
 
 interface CollectionOverviewProps {
   collection: ICollection;
   groupName: string;
+  view: string;
 }
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
-  const { collection, groupName } = props;
-  const {
-    _id: id,
-    name,
-    isFavourite,
-    properties,
-    items,
-    createdAt,
-  } = collection;
+  const { collection, groupName, view } = props;
+  const { _id: id, name, properties, items, createdAt } = collection;
 
   return (
     <Link href={`/collections/${id}`}>
-      <a className='flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 '>
-        <span className='flex items-center space-x-1'>
-          <CollectionIcon className='icon-xs' />
-          <span className='grow font-semibold text-lg'>{name}</span>
-          {isFavourite ? (
-            <StarIconFilled className='icon-xs text-primary-200' />
-          ) : (
-            <StarIconOutline className='icon-xs' />
-          )}
+      <a className='flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800'>
+        <span
+          className={`${view === 'grid' ? 'space-y-[1px]' : 'flex space-1'}`}>
+          {/** Collection name */}
+          <span className='grow flex items-center space-x-1'>
+            <CollectionIcon className='icon-xs' />
+            <span className='grow font-semibold text-lg'>{name}</span>
+          </span>
+
+          {/** Extra information */}
+          <span className='flex space-x-1.5'>
+            {/* number of item */}
+            {items.length !== 0 && ( //Show number of items a collections has if diff zero
+              <>
+                <span className='flex items-center space-x-0.5'>
+                  <HashtagIcon className='icon-xs' />
+                  <span>{items.length}</span>
+                </span>
+                <span aria-hidden='true'>&middot;</span>
+              </>
+            )}
+
+            <span className='flex items-center space-x-0.5'>
+              <ViewBoardsIcon className='icon-xs' />
+              <span>{groupName}</span>
+            </span>
+            <span aria-hidden='true' className='hidden md:block'>
+              &middot;
+            </span>
+
+            <span className='hidden md:block'>
+              {createdAt ? new Date(createdAt).toLocaleDateString() : 'Loading'}
+            </span>
+          </span>
         </span>
 
-        {/** Collection properties */}
+        {/**  Properties */}
         <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm overflow-x-auto scrollbar-none'>
           {properties.map((property, idx) => (
             <span
@@ -48,29 +65,6 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
             </span>
           ))}
           {properties.length === 0 && 'N/A'}
-        </span>
-
-        <span className='flex space-x-1.5'>
-          {items.length !== 0 && (
-            <>
-              <span className='flex items-center space-x-0.5'>
-                <HashtagIcon className='icon-xs' />
-                <span>{items.length}</span>
-              </span>
-              <span aria-hidden='true'>&middot;</span>
-            </>
-          )}
-
-          <span className='flex items-center space-x-0.5'>
-            <ViewBoardsIcon className='icon-xs' />
-            <span>{groupName}</span>
-          </span>
-          <span aria-hidden='true'>&middot;</span>
-          {/* number of item */}
-
-          <span>
-            {createdAt ? new Date(createdAt).toLocaleDateString() : 'Loading'}
-          </span>
         </span>
       </a>
     </Link>
