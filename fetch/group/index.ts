@@ -45,7 +45,7 @@ export async function addCollectionToGroup(
 }
 
 export async function removeCollectionFromGroup(
-  groupId: number,
+  groupId: string,
   collectionId: string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + groupId + '/collections/' + collectionId, {

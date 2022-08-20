@@ -7,10 +7,10 @@ import { IGroup } from '../../interfaces';
 import Modal from '../Frontstate/Modal';
 
 interface MoveCollectionModalProps {
-  currentGroupId: number;
+  currentGroupId: string;
   open: boolean;
   handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
-  onMove: (gruopId: number) => void;
+  onMove: (gruopId: string) => void;
 }
 
 const MoveCollectionModal: FC<MoveCollectionModalProps> = (props) => {
@@ -18,7 +18,7 @@ const MoveCollectionModal: FC<MoveCollectionModalProps> = (props) => {
 
   const { data: groups } = useQuery<IGroup[]>('groups', getGroups);
   const [selectedGroupId, setSelectedGroupId] =
-    useState<number>(currentGroupId);
+    useState<string>(currentGroupId);
 
   return (
     <Modal title='Move' open={open} onHide={handleClose}>

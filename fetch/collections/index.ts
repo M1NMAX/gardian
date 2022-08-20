@@ -5,18 +5,18 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
 //Types
 type RemovePropertyFromCollectionArg = {
-  collectionId: number;
-  propertyId: number;
+  collectionId: string;
+  propertyId: string;
 };
 
 type UpdateCollectionPropertyArg = {
-  collectionId: number;
-  propertyId: number;
+  collectionId: string;
+  propertyId: string;
   property: IProperty;
 };
 
 type AddPropertyFromCollectionArg = {
-  collectionId: number;
+  collectionId: string;
   property: IProperty;
 };
 
@@ -26,7 +26,7 @@ export async function getCollections(): Promise<ICollection[]> {
   return res.json().then((response) => response.data);
 }
 
-export async function getCollection(id: number | string): Promise<ICollection> {
+export async function getCollection(id: string): Promise<ICollection> {
   const res = await fetch(baseUrl + id);
   return res.json().then((response) => response.data);
 }
@@ -39,7 +39,7 @@ export async function createCollection(
 }
 
 export async function updateCollection(
-  collectionId: number | string,
+  collectionId: string,
   collection: ICollection
 ): Promise<boolean> {
   const res = await fetch(
@@ -50,7 +50,7 @@ export async function updateCollection(
 }
 
 export async function renameCollection(
-  id: number | string,
+  id: string,
   name: string
 ): Promise<boolean> {
   const collection = await getCollection(id);
@@ -58,7 +58,7 @@ export async function renameCollection(
 }
 
 export async function toggleCollectionIsFavourite(
-  id: number | string
+  id: string
 ): Promise<boolean> {
   const collection = await getCollection(id);
   return updateCollection(id, {
@@ -68,7 +68,7 @@ export async function toggleCollectionIsFavourite(
 }
 
 export async function toggleCollectionDescriptionState(
-  id: number | string
+  id: string
 ): Promise<boolean> {
   const collection = await getCollection(id);
   return updateCollection(id, {
@@ -78,7 +78,7 @@ export async function toggleCollectionDescriptionState(
 }
 
 export async function updateCollectionDescription(
-  id: number | string,
+  id: string,
   description: string
 ): Promise<boolean> {
   const collection = await getCollection(id);
@@ -92,8 +92,8 @@ export async function deleteCollection(id: string): Promise<boolean> {
 
 //ITEM
 export async function addItemToCollection(
-  collectionId: number,
-  itemId: number
+  collectionId: string,
+  itemId: string
 ) {
   const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
     method: 'PATCH',
@@ -102,8 +102,8 @@ export async function addItemToCollection(
 }
 
 export async function removeItemFromCollection(
-  collectionId: number,
-  itemId: number
+  collectionId: string,
+  itemId: string
 ): Promise<boolean> {
   const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
     method: 'DELETE',
@@ -129,7 +129,7 @@ export async function updateCollectionProperty({
   property,
 }: UpdateCollectionPropertyArg): Promise<{
   status: boolean;
-  propertyId: number;
+  propertyId: string;
 }> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,
@@ -146,7 +146,7 @@ export async function removePropertyFromCollection({
   propertyId,
 }: RemovePropertyFromCollectionArg): Promise<{
   status: boolean;
-  propertyId: number;
+  propertyId: string;
 }> {
   const res = await fetch(
     baseUrl + collectionId + '/properties/' + propertyId,

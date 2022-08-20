@@ -24,7 +24,7 @@ import { createItem, getItem } from '../../../fetch/item';
 
 interface SidebarCollectionProps {
   collectionId: string;
-  groupId: number;
+  groupId: string;
   onClick: () => void;
 }
 
@@ -156,7 +156,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
   //handle move collection to another group and its mutation
   const moveCollectionMutation = useMutation(
-    async (desGroupId: number) => {
+    async (desGroupId: string) => {
       await removeCollectionFromGroup(groupId, collectionId);
       await addCollectionToGroup(desGroupId, collectionId);
     },
