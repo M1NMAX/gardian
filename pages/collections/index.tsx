@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -8,18 +8,30 @@ import { getCollections } from '../../fetch/collections';
 import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/outline';
+import {
+  CubeTransparentIcon,
+  PlusIcon,
+  ViewBoardsIcon,
+  ViewGridIcon,
+} from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
-import { ICollection, IGroup } from '../../interfaces';
+import { ICollection, IGroup, SortOption } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
-import ViewRadioGroup from '../../components/ViewRadioGroup';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Header from '../../components/Header';
+import SortOptionsListbox from '../../components/SortOptionsListbox';
+import ActionIcon from '../../components/Frontstate/ActionIcon';
 
+const sortOptions: SortOption[] = [
+  { name: 'Name', alias: 'name+asc' },
+  { name: 'Name', alias: 'name+des' },
+  { name: 'Date', alias: 'date+asc' },
+  { name: 'Date', alias: 'date+des' },
+];
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
@@ -47,9 +59,11 @@ const Collections: NextPage<
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  const [selectedView, setSelectedView] = useLocalStorage<string>(
+  // sort and views
+  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+  const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'myCollectionView',
-    'grid'
+    false
   );
 
   return (
@@ -66,8 +80,34 @@ const Collections: NextPage<
         <Header
           title='My Collections'
           sidebar={sidebar}
-          onClickMenuBtn={() => setSidebar(true)}
-        />
+          onClickMenuBtn={() => setSidebar(true)}>
+          <button
+            onClick={createCollectionModal.openModal}
+            className='btn btn-primary'>
+            <span className=' icon-sm'>
+              <PlusIcon />
+            </span>
+            <span className='hidden md:block'>New Collection</span>
+          </button>
+
+          {/*SORT */}
+          <SortOptionsListbox
+            sortOptions={sortOptions}
+            value={selectedSort}
+            setValue={setSelectedSort}
+          />
+          {/* views  */}
+          <ActionIcon
+            icon={
+              isGridView ? (
+                <ViewGridIcon className='icon-sm' />
+              ) : (
+                <ViewBoardsIcon className='icon-sm rotate-90' />
+              )
+            }
+            onClick={() => setIsGridView(!isGridView)}
+          />
+        </Header>
 
         {/* Is loading  */}
         {isLoading && (
@@ -102,25 +142,10 @@ const Collections: NextPage<
           <div
             className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
-            <div className='flex justify-between items-center'>
-              {/** add collection btn */}
-              <button
-                onClick={createCollectionModal.openModal}
-                className='btn btn-primary'>
-                <span className='icon-sm'>
-                  <PlusIcon />
-                </span>
-                <span>New Collection</span>
-              </button>
-
-              {/* views  */}
-              <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
-            </div>
-
             {/* Collections  */}
             <div
               className={`${
-                selectedView === 'grid'
+                isGridView
                   ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
               }  `}>
@@ -130,7 +155,7 @@ const Collections: NextPage<
                     key={idx}
                     collection={collection}
                     groupName={getCollectionGroupName(collection._id)}
-                    view={selectedView}
+                    isGridView={isGridView}
                   />
                 ))}
             </div>

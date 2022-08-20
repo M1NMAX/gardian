@@ -1,5 +1,12 @@
 import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/outline';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CheckIcon,
+  SelectorIcon,
+  SortAscendingIcon,
+  SortDescendingIcon,
+} from '@heroicons/react/outline';
 import React, { Dispatch, FC, Fragment } from 'react';
 import { SortOption } from '../../interfaces';
 
@@ -13,21 +20,16 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
   const { sortOptions, value, setValue } = props;
   return (
     <Listbox value={value} onChange={setValue}>
-      <div className='relative mt-1 flex items-center space-x-1.5'>
-        <Listbox.Label className='font-medium'>Sort by</Listbox.Label>
+      <div className='relative '>
         <Listbox.Button
-          className='relative w-52 cursor-default rounded bg-gray-100 dark:bg-gray-700 
-  py-2 pl-3 pr-10 text-left shadow-md focus:outline-none 
-  focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white 
-  focus-visible:ring-opacity-75 focus-visible:ring-offset-2 
-  focus-visible:ring-offset-orange-300 sm:text-sm'>
+          className='relative max-w-fit flex items-center space-x-1 p-1  
+          cursor-default rounded bg-gray-100 dark:bg-gray-700 text-left shadow-md '>
           <span className='block truncate'>{value.name}</span>
-          <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-            <SelectorIcon
-              className='h-5 w-5 text-gray-400'
-              aria-hidden='true'
-            />
-          </span>
+          {value.alias.split('+')[1] === 'asc' ? (
+            <ArrowUpIcon className='icon-xxs' />
+          ) : (
+            <ArrowDownIcon className='icon-xxs' />
+          )}
         </Listbox.Button>
         <Transition
           as={Fragment}
@@ -35,7 +37,7 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'>
           <Listbox.Options
-            className='absolute top-10 right-0  max-h-60 w-52 overflow-auto rounded 
+            className='absolute top-10 right-0  max-h-60 max-w-fit overflow-auto rounded 
       bg-gray-200 dark:bg-gray-700  py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 
     focus:outline-none sm:text-sm'>
             {sortOptions.map((option, optionIdx) => (
@@ -51,11 +53,18 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
                 value={option}>
                 {({ selected }) => (
                   <>
-                    <span
-                      className={`block truncate ${
-                        selected ? 'font-medium' : 'font-normal'
-                      }`}>
-                      {option.name}
+                    <span className='flex items-center space-x-1'>
+                      <span
+                        className={`block truncate ${
+                          selected ? 'font-medium' : 'font-normal'
+                        }`}>
+                        {option.name}
+                      </span>
+                      {option.alias.split('+')[1] === 'asc' ? (
+                        <SortAscendingIcon className='icon-xs' />
+                      ) : (
+                        <SortDescendingIcon className='icon-xs' />
+                      )}
                     </span>
                     {selected ? (
                       <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>

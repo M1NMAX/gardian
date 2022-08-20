@@ -10,18 +10,17 @@ import { ICollection } from '../../interfaces';
 interface CollectionOverviewProps {
   collection: ICollection;
   groupName: string;
-  view: string;
+  isGridView: boolean;
 }
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
-  const { collection, groupName, view } = props;
+  const { collection, groupName, isGridView } = props;
   const { _id: id, name, properties, items, createdAt } = collection;
 
   return (
     <Link href={`/collections/${id}`}>
       <a className='flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800'>
-        <span
-          className={`${view === 'grid' ? 'space-y-[1px]' : 'flex space-1'}`}>
+        <span className={`${isGridView ? 'space-y-[1px]' : 'flex space-1'}`}>
           {/** Collection name */}
           <span className='grow flex items-center space-x-1'>
             <CollectionIcon className='icon-xs' />
