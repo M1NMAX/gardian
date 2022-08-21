@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import CreateCollectionModal from '../../components/CreateCollectionModal';
-import { ICollection, IGroup, SortOption } from '../../interfaces';
+import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
 import Group from '../../backend/models/Group';
@@ -25,13 +25,19 @@ import useLocalStorage from '../../hooks/useLocalStorage';
 import Header from '../../components/Header';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
+import sortFun, {
+  SortOptionType,
+  SORT_ASCENDING,
+  SORT_DESCENDING,
+} from '../../utils/sort';
 
-const sortOptions: SortOption[] = [
-  { name: 'Name', alias: 'name+asc' },
-  { name: 'Name', alias: 'name+des' },
-  { name: 'Date', alias: 'date+asc' },
-  { name: 'Date', alias: 'date+des' },
+const sortOptions: SortOptionType[] = [
+  { field: 'name', order: SORT_ASCENDING },
+  { field: 'name', order: SORT_DESCENDING },
+  { field: 'createdAt', order: SORT_ASCENDING },
+  { field: 'createdAt', order: SORT_DESCENDING },
 ];
+
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
@@ -60,11 +66,27 @@ const Collections: NextPage<
     toast.success('Something went wrong, try later');
 
   // sort and views
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+  const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]);
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'myCollectionView',
     false
   );
+
+  const [sortedCollections, setSortedCollections] = useState<ICollection[]>([]);
+  useEffect(() => {
+    if (!collections) return;
+    setSortedCollections(
+      collections.sort(
+        sortFun(selectedSortOption.order, selectedSortOption.field)
+      )
+    );
+  }, [collections]);
+
+  const handleOnChangeSortOption = (option: SortOptionType) => {
+    const data = sortedCollections.sort(sortFun(option.order, option.field));
+    setSortedCollections(data);
+    setSelectedSortOption(option);
+  };
 
   return (
     <>
@@ -81,32 +103,36 @@ const Collections: NextPage<
           title='My Collections'
           sidebar={sidebar}
           onClickMenuBtn={() => setSidebar(true)}>
-          <button
-            onClick={createCollectionModal.openModal}
-            className='btn btn-primary'>
-            <span className=' icon-sm'>
-              <PlusIcon />
-            </span>
-            <span className='hidden md:block'>New Collection</span>
-          </button>
+          {!isLoading && sortedCollections.length >= 0 && (
+            <>
+              <button
+                onClick={createCollectionModal.openModal}
+                className='btn btn-primary'>
+                <span className=' icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span className='hidden md:block'>New Collection</span>
+              </button>
 
-          {/*SORT */}
-          <SortOptionsListbox
-            sortOptions={sortOptions}
-            value={selectedSort}
-            setValue={setSelectedSort}
-          />
-          {/* views  */}
-          <ActionIcon
-            icon={
-              isGridView ? (
-                <ViewGridIcon className='icon-sm' />
-              ) : (
-                <ViewBoardsIcon className='icon-sm rotate-90' />
-              )
-            }
-            onClick={() => setIsGridView(!isGridView)}
-          />
+              {/*SORT */}
+              <SortOptionsListbox
+                sortOptions={sortOptions}
+                selectedOption={selectedSortOption}
+                onChangeOption={handleOnChangeSortOption}
+              />
+              {/* views  */}
+              <ActionIcon
+                icon={
+                  isGridView ? (
+                    <ViewGridIcon className='icon-sm' />
+                  ) : (
+                    <ViewBoardsIcon className='icon-sm rotate-90' />
+                  )
+                }
+                onClick={() => setIsGridView(!isGridView)}
+              />
+            </>
+          )}
         </Header>
 
         {/* Is loading  */}
@@ -118,7 +144,7 @@ const Collections: NextPage<
         )}
 
         {/* loading state is finish and there are no collection  */}
-        {!isLoading && collections && collections.length === 0 && (
+        {!isLoading && sortedCollections.length === 0 && (
           <div className='flex justify-between items-center space-y-4 px-4'>
             {/** add collection btn */}
             <button
@@ -138,7 +164,7 @@ const Collections: NextPage<
         )}
 
         {/* loading state is finished and there are collection */}
-        {!isLoading && collections && collections.length > 0 && (
+        {!isLoading && sortedCollections.length > 0 && (
           <div
             className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
@@ -149,8 +175,8 @@ const Collections: NextPage<
                   ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
               }  `}>
-              {collections &&
-                collections.map((collection, idx) => (
+              {sortedCollections &&
+                sortedCollections.map((collection, idx) => (
                   <CollectionOverview
                     key={idx}
                     collection={collection}

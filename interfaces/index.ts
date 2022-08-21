@@ -43,9 +43,3 @@ export interface ITemplate extends IBase {
   description: string;
   items: IItem[];
 }
-
-//UI
-export interface ISortOption {
-  field: 'name' | 'createdAt';
-  order: 'asc' | 'desc';
-}
