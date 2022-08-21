@@ -22,6 +22,7 @@ import sortFun, {
   SORT_ASCENDING,
   SORT_DESCENDING,
 } from '../../utils/sort';
+import useDrawer from '../../hooks/useDrawer';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -34,12 +35,7 @@ const TemplatesPage: NextPage<
   const router = useRouter();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
 
-  const [showDrawer, setShowDrawer] = useState(false);
-  const openDrawer = () => setShowDrawer(true);
-  const closeDrawer = () => {
-    setShowDrawer(false);
-    setSelectedTemplateId(null);
-  };
+  const drawer = useDrawer(() => setSelectedTemplateId(null));
 
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'templateView',
@@ -78,7 +74,7 @@ const TemplatesPage: NextPage<
 
   const handleOnClickTemplateOverview = (id: string) => {
     setSelectedTemplateId(id);
-    openDrawer();
+    drawer.openDrawer();
   };
 
   const createCollectionBasedOnTemplate = async () => {
@@ -131,7 +127,7 @@ const TemplatesPage: NextPage<
         } main-content flex  md:space-x-2  -z-10`}>
         <div
           className={`${
-            showDrawer ? 'w-0 md:w-2/3' : 'w-full'
+            drawer.isOpen ? 'w-0 md:w-2/3' : 'w-full'
           } h-full flex flex-col space-y-2`}>
           {/* Header  */}
           <Header
@@ -184,8 +180,8 @@ const TemplatesPage: NextPage<
         {/* Drawer  */}
         {selectedTemplate && (
           <Drawer
-            opened={showDrawer}
-            onClose={closeDrawer}
+            opened={drawer.isOpen}
+            onClose={drawer.closeDrawer}
             title={
               <h1 className='font-semibold text-2xl'>
                 {selectedTemplate.name}
