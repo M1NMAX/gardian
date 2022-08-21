@@ -1,8 +1,8 @@
 import { ICollection, IItem, ITemplate } from '../interfaces';
 
-type OrderType = 'asc' | 'desc';
-type FieldType = 'name' | 'createdAt';
 type ABTypes = ITemplate | ICollection | IItem;
+type FieldType = 'name' | 'createdAt';
+export type OrderType = 'asc' | 'desc';
 
 export type SortOptionType = { field: FieldType; order: OrderType };
 

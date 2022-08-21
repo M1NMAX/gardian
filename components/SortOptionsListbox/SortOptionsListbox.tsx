@@ -1,17 +1,25 @@
-import React, { Dispatch, FC, Fragment } from 'react';
+import React, { FC, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
   CheckIcon,
 } from '@heroicons/react/outline';
-import { ISortOption } from '../../interfaces';
+
+import { OrderType, SortOptionType } from '../../utils/sort';
 
 interface SortOptionsListboxProps {
-  sortOptions: ISortOption[];
-  selectedOption: ISortOption;
-  onChangeOption: (option: ISortOption) => void;
+  sortOptions: SortOptionType[];
+  selectedOption: SortOptionType;
+  onChangeOption: (option: SortOptionType) => void;
 }
+
+const SortIcon = ({ order }: { order: OrderType }) =>
+  order === 'asc' ? (
+    <ArrowUpIcon className='icon-xxs' />
+  ) : (
+    <ArrowDownIcon className='icon-xxs' />
+  );
 
 const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
   const { sortOptions, selectedOption, onChangeOption } = props;
@@ -21,12 +29,10 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
         <Listbox.Button
           className='relative max-w-fit flex items-center space-x-1 p-1  
           cursor-default rounded bg-gray-100 dark:bg-gray-700 text-left shadow-md '>
-          <span className='block truncate'>{selectedOption.field}</span>
-          {selectedOption.order === 'asc' ? (
-            <ArrowUpIcon className='icon-xxs' />
-          ) : (
-            <ArrowDownIcon className='icon-xxs' />
-          )}
+          <span className='block truncate first-letter:uppercase'>
+            {selectedOption.field}
+          </span>
+          <SortIcon order={selectedOption.order} />
         </Listbox.Button>
         <Transition
           as={Fragment}
@@ -52,16 +58,12 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
                   <>
                     <span className='flex items-center space-x-1'>
                       <span
-                        className={`block truncate ${
+                        className={`block truncate first-letter:uppercase ${
                           selected ? 'font-medium' : 'font-normal'
                         }`}>
                         {option.field}
                       </span>
-                      {option.order === 'asc' ? (
-                        <ArrowUpIcon className='icon-xs' />
-                      ) : (
-                        <ArrowDownIcon className='icon-xs' />
-                      )}
+                      <SortIcon order={option.order} />
                     </span>
                     {selected ? (
                       <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-green-500'>
