@@ -5,11 +5,11 @@ import { ITemplate } from '../../interfaces';
 interface TemplateOverviewProps {
   template: ITemplate;
   active: boolean;
-  view: string;
+  isGridView: boolean;
   onClickTemplate: (id: string) => void;
 }
 const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
-  const { template, active, view, onClickTemplate } = props;
+  const { template, active, isGridView, onClickTemplate } = props;
   const { _id: id, name, description, properties } = template;
 
   const handleClick = () => {
@@ -38,7 +38,7 @@ const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
           </span>
         ))}
       </span>
-      {view === 'list' && <span className='text-left'>{description}</span>}
+      {!isGridView && <span className='text-left'>{description}</span>}
     </button>
   );
 };

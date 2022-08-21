@@ -12,14 +12,15 @@ import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
 import { IItem, ITemplate, SortOption } from '../../interfaces';
 import { templates as rawTemplates } from '../../data/templates';
-import ViewRadioGroup from '../../components/ViewRadioGroup';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
 import Header from '../../components/Header';
+import ActionIcon from '../../components/Frontstate/ActionIcon';
+import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 
 const sortOptions: SortOption[] = [
-  { name: 'Name Ascending', alias: 'name+asc' },
-  { name: 'Name Descending', alias: 'name+des' },
+  { name: 'Name', alias: 'name+asc' },
+  { name: 'Name', alias: 'name+des' },
 ];
 
 const TemplatesPage: NextPage<
@@ -35,9 +36,9 @@ const TemplatesPage: NextPage<
     setCurrentTemplateId(null);
   };
 
-  const [selectedView, setSelectedView] = useLocalStorage<string>(
+  const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'templateView',
-    'grid'
+    false
   );
   const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
   const [templates, setTemplates] = useState(rawTemplates);
@@ -141,29 +142,34 @@ const TemplatesPage: NextPage<
           <Header
             title='Templates'
             sidebar={sidebar}
-            onClickMenuBtn={() => setSidebar(true)}
-          />
+            onClickMenuBtn={() => setSidebar(true)}>
+            {/*SORT */}
+            <SortOptionsListbox
+              sortOptions={sortOptions}
+              value={selectedSort}
+              setValue={setSelectedSort}
+            />
+            {/* views  */}
+            <ActionIcon
+              icon={
+                isGridView ? (
+                  <ViewGridIcon className='icon-sm' />
+                ) : (
+                  <ViewBoardsIcon className='icon-sm rotate-90' />
+                )
+              }
+              onClick={() => setIsGridView(!isGridView)}
+            />
+          </Header>
 
           {/* body  */}
           <div
             className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
-            {/*sortlist and views */}
-            <div className='flex justify-between items-center'>
-              {/*SORT */}
-              <SortOptionsListbox
-                sortOptions={sortOptions}
-                value={selectedSort}
-                setValue={setSelectedSort}
-              />
-              {/* VIEW  */}
-              <ViewRadioGroup value={selectedView} setValue={setSelectedView} />
-            </div>
-
             {/* Templates  */}
             <div
               className={`${
-                selectedView === 'grid'
+                isGridView
                   ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
               } `}>
@@ -173,7 +179,7 @@ const TemplatesPage: NextPage<
                     key={idx}
                     active={currentTemplateId === template._id}
                     template={template}
-                    view={selectedView}
+                    isGridView={isGridView}
                     onClickTemplate={handleOnClickTemplateOverview}
                   />
                 ))}
