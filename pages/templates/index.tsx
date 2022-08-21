@@ -10,20 +10,24 @@ import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
-import { IItem, ISortOption, ITemplate } from '../../interfaces';
+import { IItem, ITemplate } from '../../interfaces';
 import { templates } from '../../data/templates';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
 import Header from '../../components/Header';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
+import sortFun, {
+  SortOptionType,
+  SORT_ASCENDING,
+  SORT_DESCENDING,
+} from '../../utils/sort';
 
-const SORT_ASCENDING = 'asc';
-const SORT_DESCENDING = 'desc';
-const sortOptions: ISortOption[] = [
+const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
   { field: 'name', order: SORT_DESCENDING },
 ];
+
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
@@ -42,51 +46,8 @@ const TemplatesPage: NextPage<
     false
   );
 
-  const sortFun = (
-    order: 'asc' | 'desc' = 'asc',
-    field: 'name' | 'createdAt'
-  ) => {
-    return (a: ITemplate, b: ITemplate) => {
-      if (a[field] === b[field]) return 0;
-
-      let typeOfField = typeof a[field];
-
-      const result =
-        typeOfField === 'string'
-          ? sortString(a, b, 'name')
-          : a[field] instanceof Date
-          ? sortDate(a, b, 'createdAt')
-          : null;
-      if (result == null) return 0;
-      return order === SORT_ASCENDING ? +result : -result;
-    };
-  };
-
-  function sortDate(a: ITemplate, b: ITemplate, field: 'createdAt') {
-    const l = a[field];
-    const r = b[field];
-
-    if (!l) return 1;
-    else if (!r) return -1;
-
-    const lx = l.getTime();
-    const rx = r.getTime();
-
-    return lx < rx ? -1 : lx > rx ? 1 : 0;
-  }
-
-  function sortString(a: ITemplate, b: ITemplate, field: 'name') {
-    const l = field ? a[field] : a;
-    const r = field ? b[field] : b;
-
-    if (!l) return 1;
-    else if (!r) return -1;
-
-    return l < r ? -1 : l > r ? 1 : 0;
-  }
-
-  const [selectedSortOption, setSelectedSortOption] = useState<ISortOption>(
-    sortOptions[1]
+  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionType>(
+    sortOptions[0]
   );
   const [sortedTemplates, setSortedTemplates] = useState<ITemplate[]>([]);
 
@@ -107,7 +68,7 @@ const TemplatesPage: NextPage<
     [templates, selectedTemplateId]
   );
 
-  const handleOnChangeSortParam = (option: ISortOption) => {
+  const handleOnChangeSortParam = (option: SortOptionType) => {
     const data = sortedTemplates
       .slice()
       .sort(sortFun(option.order, option.field));
