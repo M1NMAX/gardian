@@ -3,7 +3,7 @@ import { getRequestOptions } from '../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/items/';
 
-export async function getItem(id: number): Promise<IItem> {
+export async function getItem(id: string): Promise<IItem> {
   const res = await fetch(baseUrl + id);
   return res.json().then((response) => response.data);
 }
@@ -13,39 +13,33 @@ export async function createItem(item: IItem): Promise<IItem> {
   return res.json().then((response) => response.data);
 }
 
-export async function updateItem(
-  itemId: number,
-  item: IItem
-): Promise<boolean> {
-  const res = await fetch(baseUrl + itemId, getRequestOptions('PUT', item));
+export async function updateItem(id: string, item: IItem): Promise<boolean> {
+  const res = await fetch(baseUrl + id, getRequestOptions('PUT', item));
   return res.json().then((response) => response.isSuccess);
 }
 
-export async function renameItem(id: number, name: string): Promise<boolean> {
+export async function renameItem(id: string, name: string): Promise<boolean> {
   const item = await getItem(id);
   return updateItem(id, { ...item, name });
 }
 
-export async function deleteItem(id: number): Promise<boolean> {
+export async function deleteItem(id: string): Promise<boolean> {
   const res = await fetch(baseUrl + id, { method: 'DELETE' });
   return res.json().then((response) => response.isSuccess);
 }
 
 // PROPERTY
-export async function addPropertyToItem(
-  itemId: number,
-  property: IItemProperty
-) {
+export async function addPropertyToItem(id: string, property: IItemProperty) {
   const res = await fetch(
-    baseUrl + itemId + '/properties/',
+    baseUrl + id + '/properties/',
     getRequestOptions('POST', { property })
   );
   return res.json().then((response) => response.data);
 }
 
 type UpdateItemPropertyArg = {
-  itemId: number;
-  propertyId: number;
+  itemId: string;
+  propertyId: string;
   property: IItemProperty;
 };
 export async function updateItemProperty({
@@ -61,8 +55,8 @@ export async function updateItemProperty({
 }
 
 export async function removePropertyFromItem(
-  itemId: number,
-  propertyId: number
+  itemId: string,
+  propertyId: string
 ) {
   const res = await fetch(baseUrl + itemId + '/properties/' + propertyId, {
     method: 'DELETE',

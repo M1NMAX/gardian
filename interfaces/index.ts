@@ -14,6 +14,14 @@ export interface IGroup extends IBase {
   userId: string;
 }
 
+export interface ICollection extends IBase {
+  userId?: string;
+  description: string;
+  isDescriptionHidden: boolean;
+  properties: IProperty[];
+  items: string[];
+  isFavourite: boolean;
+}
 export interface IProperty extends IBase {
   name: string;
   type: PropertyTypes;
@@ -28,15 +36,6 @@ export interface IItemProperty {
 }
 export interface IItem extends IBase {
   properties: IItemProperty[];
-}
-
-export interface ICollection extends IBase {
-  userId?: string;
-  description: string;
-  isDescriptionHidden: boolean;
-  properties: IProperty[];
-  items: number[];
-  isFavourite: boolean;
 }
 
 export interface ITemplate extends IBase {

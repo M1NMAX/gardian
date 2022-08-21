@@ -9,7 +9,7 @@ import { IProperty } from '../../../interfaces';
 
 interface ItemOverviewPropertyProps {
   property: IProperty;
-  getValue: (id?: number) => string;
+  getValue: (id?: string) => string;
 }
 const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
   const { property, getValue } = props;

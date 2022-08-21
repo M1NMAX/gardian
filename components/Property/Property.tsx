@@ -7,11 +7,11 @@ import DeleteModal from '../DeleteModal';
 import PropertyInput from './PropertyInput';
 interface PropertyProps {
   collectionProperty: IProperty;
-  getValue: (id: number) => string;
-  setValue: (id: number, value: string) => void;
+  getValue: (id: string) => string;
+  setValue: (id: string, value: string) => void;
   onPropertyUpdate: (property: IProperty) => void;
   onPropertyDuplicate: (property: IProperty) => void;
-  onPropertyDelete: (id: number) => void;
+  onPropertyDelete: (id: string) => void;
 }
 
 const Property: FC<PropertyProps> = (props) => {

@@ -232,13 +232,13 @@ const Collections: NextPage<
     setSelectedItemId(null);
   };
 
-  const handleOnClickItem = (id: number) => {
+  const handleOnClickItem = (id: string) => {
     setSelectedItemId(id);
     openDetails();
   };
 
   //Handle selected item
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [selectedItemName, setSelectedItemName] = useState<string>('');
   const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
   const [selectedItemPorperties, setSelectedItemPorperties] = useState<
@@ -257,7 +257,7 @@ const Collections: NextPage<
     fetchItem();
   }, [collection, selectedItemId]);
 
-  const getCollectionPropertyById = (id: number) => {
+  const getCollectionPropertyById = (id: string) => {
     if (!id || !collection) return {} as IProperty;
 
     const property = collection.properties.find(
@@ -267,7 +267,7 @@ const Collections: NextPage<
     return property || ({} as IProperty);
   };
 
-  const setPropertyValue = (id: number, value: string): void => {
+  const setPropertyValue = (id: string, value: string): void => {
     if (!id || !selectedItemId) return;
 
     setSelectedItemPorperties(
@@ -282,7 +282,7 @@ const Collections: NextPage<
     });
   };
 
-  const getPropertyValue = (id: number): string => {
+  const getPropertyValue = (id: string): string => {
     if (!id) return '';
     const property = selectedItemPorperties.find(
       (property) => property._id === id
@@ -333,7 +333,7 @@ const Collections: NextPage<
     });
   };
 
-  const handleDeleteProperty = async (propertyId: number) => {
+  const handleDeleteProperty = async (propertyId: string) => {
     if (!collection || !collectionId) return;
     deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
   };
@@ -503,7 +503,7 @@ const Collections: NextPage<
           name={selectedItemName}
           open={deleteModal.isOpen}
           handleClose={deleteModal.closeModal}
-          onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
+          onDelete={() => deleteItemMutation.mutate(selectedItemId)}
         />
       )}
     </>

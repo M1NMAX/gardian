@@ -6,7 +6,7 @@ interface ItemOverviewProps {
   item: IItem;
   active: boolean;
   collectionProperty: IProperty[];
-  onItemClick: (id: number) => void;
+  onItemClick: (id: string) => void;
 }
 const ItemOverview: FC<ItemOverviewProps> = (props) => {
   const { item, active, collectionProperty, onItemClick } = props;
@@ -15,7 +15,7 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
     onItemClick(item._id);
   };
 
-  const getValueById = (id?: number): string => {
+  const getValueById = (id?: string): string => {
     if (!id) return '';
     const property = item.properties.find((property) => property._id === id);
     if (!property) return '';
