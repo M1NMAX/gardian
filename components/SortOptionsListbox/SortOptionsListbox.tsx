@@ -1,31 +1,28 @@
+import React, { Dispatch, FC, Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
   CheckIcon,
-  SelectorIcon,
-  SortAscendingIcon,
-  SortDescendingIcon,
 } from '@heroicons/react/outline';
-import React, { Dispatch, FC, Fragment } from 'react';
-import { SortOption } from '../../interfaces';
+import { ISortOption } from '../../interfaces';
 
 interface SortOptionsListboxProps {
-  sortOptions: SortOption[];
-  value: SortOption;
-  setValue: Dispatch<React.SetStateAction<SortOption>>;
+  sortOptions: ISortOption[];
+  selectedOption: ISortOption;
+  onChangeOption: (option: ISortOption) => void;
 }
 
 const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
-  const { sortOptions, value, setValue } = props;
+  const { sortOptions, selectedOption, onChangeOption } = props;
   return (
-    <Listbox value={value} onChange={setValue}>
+    <Listbox value={selectedOption} onChange={onChangeOption}>
       <div className='relative '>
         <Listbox.Button
           className='relative max-w-fit flex items-center space-x-1 p-1  
           cursor-default rounded bg-gray-100 dark:bg-gray-700 text-left shadow-md '>
-          <span className='block truncate'>{value.name}</span>
-          {value.alias.split('+')[1] === 'asc' ? (
+          <span className='block truncate'>{selectedOption.field}</span>
+          {selectedOption.order === 'asc' ? (
             <ArrowUpIcon className='icon-xxs' />
           ) : (
             <ArrowDownIcon className='icon-xxs' />
@@ -58,12 +55,12 @@ const SortOptionsListbox: FC<SortOptionsListboxProps> = (props) => {
                         className={`block truncate ${
                           selected ? 'font-medium' : 'font-normal'
                         }`}>
-                        {option.name}
+                        {option.field}
                       </span>
-                      {option.alias.split('+')[1] === 'asc' ? (
-                        <SortAscendingIcon className='icon-xs' />
+                      {option.order === 'asc' ? (
+                        <ArrowUpIcon className='icon-xs' />
                       ) : (
-                        <SortDescendingIcon className='icon-xs' />
+                        <ArrowDownIcon className='icon-xs' />
                       )}
                     </span>
                     {selected ? (

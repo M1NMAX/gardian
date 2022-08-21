@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -10,19 +10,20 @@ import Drawer from '../../components/Frontstate/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
-import { IItem, ITemplate, SortOption } from '../../interfaces';
-import { templates as rawTemplates } from '../../data/templates';
+import { IItem, ISortOption, ITemplate } from '../../interfaces';
+import { templates } from '../../data/templates';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
 import Header from '../../components/Header';
 import ActionIcon from '../../components/Frontstate/ActionIcon';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 
-const sortOptions: SortOption[] = [
-  { name: 'Name', alias: 'name+asc' },
-  { name: 'Name', alias: 'name+des' },
+const SORT_ASCENDING = 'asc';
+const SORT_DESCENDING = 'desc';
+const sortOptions: ISortOption[] = [
+  { field: 'name', order: SORT_ASCENDING },
+  { field: 'name', order: SORT_DESCENDING },
 ];
-
 const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
@@ -33,64 +34,97 @@ const TemplatesPage: NextPage<
   const openDrawer = () => setShowDrawer(true);
   const closeDrawer = () => {
     setShowDrawer(false);
-    setCurrentTemplateId(null);
+    setSelectedTemplateId(null);
   };
 
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'templateView',
     false
   );
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
-  const [templates, setTemplates] = useState(rawTemplates);
 
-  const dynamicSort = (par: string) => {
-    const [property, order] = par.split('+');
-
-    const sortOrder = order === 'asc' ? 1 : -1;
-
+  const sortFun = (
+    order: 'asc' | 'desc' = 'asc',
+    field: 'name' | 'createdAt'
+  ) => {
     return (a: ITemplate, b: ITemplate) => {
-      const aPorperty = a[property as keyof typeof a] || a.name;
-      const bPorperty = b[property as keyof typeof b] || b.name;
-      let result = aPorperty < bPorperty ? -1 : aPorperty > bPorperty ? 1 : 0;
-      return result * sortOrder;
+      if (a[field] === b[field]) return 0;
+
+      let typeOfField = typeof a[field];
+
+      const result =
+        typeOfField === 'string'
+          ? sortString(a, b, 'name')
+          : a[field] instanceof Date
+          ? sortDate(a, b, 'createdAt')
+          : null;
+      if (result == null) return 0;
+      return order === SORT_ASCENDING ? +result : -result;
     };
   };
 
-  useEffect(
-    () => setTemplates(templates.sort(dynamicSort(selectedSort.alias))),
-    [selectedSort]
-  );
+  function sortDate(a: ITemplate, b: ITemplate, field: 'createdAt') {
+    const l = a[field];
+    const r = b[field];
 
-  const [currentTemplateId, setCurrentTemplateId] = useState<string | null>(
-    null
-  );
-  const [currentTemplate, setCurrentTemplate] = useState<ITemplate>();
+    if (!l) return 1;
+    else if (!r) return -1;
 
-  const getTemplate = useCallback(
-    (id: string) => {
-      const template = templates.find((template) => template._id === id);
-      return template;
-    },
-    [templates]
+    const lx = l.getTime();
+    const rx = r.getTime();
+
+    return lx < rx ? -1 : lx > rx ? 1 : 0;
+  }
+
+  function sortString(a: ITemplate, b: ITemplate, field: 'name') {
+    const l = field ? a[field] : a;
+    const r = field ? b[field] : b;
+
+    if (!l) return 1;
+    else if (!r) return -1;
+
+    return l < r ? -1 : l > r ? 1 : 0;
+  }
+
+  const [selectedSortOption, setSelectedSortOption] = useState<ISortOption>(
+    sortOptions[1]
   );
+  const [sortedTemplates, setSortedTemplates] = useState<ITemplate[]>([]);
 
   useEffect(() => {
-    if (!currentTemplateId) return;
-    setCurrentTemplate(getTemplate(currentTemplateId));
-  }, [templates, currentTemplateId]);
+    setSortedTemplates(
+      templates.sort(
+        sortFun(selectedSortOption.order, selectedSortOption.field)
+      )
+    );
+  }, []);
+
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  );
+
+  const selectedTemplate = useMemo(
+    () => templates.find((template) => template._id === selectedTemplateId),
+    [templates, selectedTemplateId]
+  );
+
+  const handleOnChangeSortParam = (option: ISortOption) => {
+    const data = sortedTemplates
+      .slice()
+      .sort(sortFun(option.order, option.field));
+    setSortedTemplates(data);
+    setSelectedSortOption(option);
+  };
 
   const handleOnClickTemplateOverview = (id: string) => {
-    setCurrentTemplateId(id);
+    setSelectedTemplateId(id);
     openDrawer();
   };
 
   const createCollectionBasedOnTemplate = async () => {
-    if (!currentTemplateId) return;
+    if (!selectedTemplateId || selectedTemplateId === '') return;
+    if (!selectedTemplate) return;
 
-    const template = getTemplate(currentTemplateId);
-    if (!template) return;
-
-    const { name, properties } = template;
+    const { name, properties } = selectedTemplate;
     try {
       const groups = await getGroups();
       //make sure that the first group id is not null
@@ -146,8 +180,8 @@ const TemplatesPage: NextPage<
             {/*SORT */}
             <SortOptionsListbox
               sortOptions={sortOptions}
-              value={selectedSort}
-              setValue={setSelectedSort}
+              selectedOption={selectedSortOption}
+              onChangeOption={handleOnChangeSortParam}
             />
             {/* views  */}
             <ActionIcon
@@ -173,11 +207,11 @@ const TemplatesPage: NextPage<
                   ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
               } `}>
-              {templates &&
-                templates.map((template, idx) => (
+              {sortedTemplates &&
+                sortedTemplates.map((template, idx) => (
                   <TemplateOverview
                     key={idx}
-                    active={currentTemplateId === template._id}
+                    active={selectedTemplateId === template._id}
                     template={template}
                     isGridView={isGridView}
                     onClickTemplate={handleOnClickTemplateOverview}
@@ -187,16 +221,18 @@ const TemplatesPage: NextPage<
           </div>
         </div>
         {/* Drawer  */}
-        {currentTemplate && (
+        {selectedTemplate && (
           <Drawer
             opened={showDrawer}
             onClose={closeDrawer}
             title={
-              <h1 className='font-semibold text-2xl'>{currentTemplate.name}</h1>
+              <h1 className='font-semibold text-2xl'>
+                {selectedTemplate.name}
+              </h1>
             }>
             <Drawer.Description>
               <h3 className='font-medium'>About this template</h3>
-              <p>{currentTemplate.description}</p>
+              <p>{selectedTemplate.description}</p>
             </Drawer.Description>
 
             <Drawer.Body>
@@ -204,14 +240,14 @@ const TemplatesPage: NextPage<
                 <div>
                   <p>Example of item </p>
                   <div className='flex flex-col space-y-2'>
-                    {currentTemplate.items.map((item, idx) => (
+                    {selectedTemplate.items.map((item, idx) => (
                       <span
                         key={idx}
                         className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
                         <span className='font-semibold text-lg'>
                           {item.name}
                         </span>
-                        {currentTemplate.properties.map(
+                        {selectedTemplate.properties.map(
                           (templateProperty, idx) =>
                             getPropertyValue(
                               item,
@@ -248,7 +284,7 @@ const TemplatesPage: NextPage<
                       </tr>
                     </thead>
                     <tbody>
-                      {currentTemplate.properties.map((property, idx) => (
+                      {selectedTemplate.properties.map((property, idx) => (
                         <tr key={idx}>
                           <td className='border-2 border-gray-300 dark:border-gray-600'>
                             {property.name}

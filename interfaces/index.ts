@@ -45,7 +45,7 @@ export interface ITemplate extends IBase {
 }
 
 //UI
-export interface SortOption {
-  name: string;
-  alias: string;
+export interface ISortOption {
+  field: 'name' | 'createdAt';
+  order: 'asc' | 'desc';
 }
