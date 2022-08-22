@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import { addItemToCollection } from '../../../../fetch/collections';
 import { createItem } from '../../../../fetch/item';
 import { ICollection, IItemProperty } from '../../../../interfaces';
-import Modal from '../../../../components/Frontstate/Modal';
+import { Modal } from '../../../../components/frontstate-ui';
 import PropertyInput from './PropertyInput';
 
 interface CreateItemModalProps {

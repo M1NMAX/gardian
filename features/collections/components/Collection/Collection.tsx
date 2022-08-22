@@ -9,7 +9,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../../../atoms/sidebarAtom';
 import { ICollection } from '../../../../interfaces';
-import ActionIcon from '../../../../components/Frontstate/ActionIcon';
+import { ActionIcon } from '../../../../components/frontstate-ui/';
 import CollectionMenu from '../CollectionMenu';
 import useModal from '../../../../hooks/useModal';
 import {

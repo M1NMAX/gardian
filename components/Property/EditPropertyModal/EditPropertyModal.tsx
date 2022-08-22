@@ -1,9 +1,8 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
 import { IProperty } from '../../../interfaces';
-import Modal from '../../Frontstate/Modal';
 import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
-import ActionIcon from '../../Frontstate/ActionIcon';
+import { ActionIcon, Modal } from '../../frontstate-ui';
 
 const types = [
   'text',

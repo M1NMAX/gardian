@@ -5,7 +5,10 @@ import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
 import { getCollections } from '../../fetch/collections';
-import { CollectionOverview } from '../../features/collections';
+import {
+  CreateCollectionModal,
+  CollectionOverview,
+} from '../../features/collections';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import {
@@ -15,7 +18,6 @@ import {
   ViewGridIcon,
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
-import CreateCollectionModal from '../../features/collections/components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';
@@ -24,7 +26,7 @@ import dbConnect from '../../backend/database/dbConnect';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Header from '../../components/Header';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
-import ActionIcon from '../../components/Frontstate/ActionIcon';
+import { ActionIcon } from '../../components/frontstate-ui';
 import sortFun, {
   SortOptionType,
   SORT_ASCENDING,

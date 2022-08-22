@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
 import { getGroups } from '../../../../fetch/group';
 import { IGroup } from '../../../../interfaces';
-import Modal from '../../../../components/Frontstate/Modal';
+import { Modal } from '../../../../components/frontstate-ui';
 
 interface MoveCollectionModalProps {
   currentGroupId: string;

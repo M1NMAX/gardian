@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
 import { getCollections } from '../../fetch/collections';
 import { ICollection } from '../../interfaces';
-import Modal from '../Frontstate/Modal';
+import { Modal } from '../frontstate-ui';
 
 interface SearchModalProps {
   open: boolean;
@@ -35,7 +35,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
             .includes(query.toLowerCase().replace(/\s+/g, ''))
         );
 
-  const onClickCollection = (id: number) => {
+  const onClickCollection = (id: string) => {
     router.push('/collections/' + id);
     handleClose();
   };

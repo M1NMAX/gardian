@@ -1,6 +1,6 @@
 import { MenuAlt2Icon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
-import ActionIcon from '../Frontstate/ActionIcon';
+import { ActionIcon } from '../frontstate-ui';
 
 interface HeaderProps {
   title: string;

@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import TemplateOverview from '../../components/TemplateOverview';
-import Drawer from '../../components/Frontstate/Drawer';
+import Drawer from '../../components/frontstate-ui/Drawer';
 import { createCollection } from '../../fetch/collections';
 import { addCollectionToGroup, getGroups } from '../../fetch/group';
 import { useRouter } from 'next/router';
@@ -15,7 +15,7 @@ import { templates } from '../../data/templates';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
 import Header from '../../components/Header';
-import ActionIcon from '../../components/Frontstate/ActionIcon';
+import { ActionIcon } from '../../components/frontstate-ui';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 import sortFun, {
   SortOptionType,

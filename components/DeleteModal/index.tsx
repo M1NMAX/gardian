@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import Modal from '../Frontstate/Modal';
+import { Modal } from '../frontstate-ui';
 
 interface DeleteModalProps {
   open: boolean;

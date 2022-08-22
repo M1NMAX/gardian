@@ -8,7 +8,7 @@ import {
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
 import SidebarBtn from './SidebarBtn';
-import ActionIcon from '../Frontstate/ActionIcon';
+import { ActionIcon } from '../frontstate-ui';
 import SidebarCollection from './SidebarCollection';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';

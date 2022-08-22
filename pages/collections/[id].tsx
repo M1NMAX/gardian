@@ -17,7 +17,7 @@ import {
   renameItem,
   updateItemProperty,
 } from '../../fetch/item';
-import Drawer from '../../components/Frontstate/Drawer';
+import { Drawer } from '../../components/frontstate-ui';
 import { CreateItemModal, ItemOverview, ItemMenu } from '../../features/items';
 import { PlusIcon } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
