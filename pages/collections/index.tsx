@@ -5,7 +5,7 @@ import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
 import { getCollections } from '../../fetch/collections';
-import CollectionOverview from '../../components/CollectionOverview/CollectionOverview';
+import { CollectionOverview } from '../../features/collections';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import {
@@ -15,7 +15,7 @@ import {
   ViewGridIcon,
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
-import CreateCollectionModal from '../../components/CreateCollectionModal';
+import CreateCollectionModal from '../../features/collections/components/CreateCollectionModal';
 import { ICollection, IGroup } from '../../interfaces';
 import { getGroups } from '../../fetch/group';
 import useModal from '../../hooks/useModal';

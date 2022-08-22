@@ -7,20 +7,20 @@ import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, ReactNode } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useRecoilState } from 'recoil';
-import { sidebarState } from '../../atoms/sidebarAtom';
-import { ICollection } from '../../interfaces';
-import ActionIcon from '../Frontstate/ActionIcon';
+import { sidebarState } from '../../../../atoms/sidebarAtom';
+import { ICollection } from '../../../../interfaces';
+import ActionIcon from '../../../../components/Frontstate/ActionIcon';
 import CollectionMenu from '../CollectionMenu';
-import useModal from '../../hooks/useModal';
+import useModal from '../../../../hooks/useModal';
 import {
   deleteCollection,
   renameCollection,
   toggleCollectionDescriptionState,
   toggleCollectionIsFavourite,
-} from '../../fetch/collections';
+} from '../../../../fetch/collections';
 import { useRouter } from 'next/router';
-import RenameModal from '../RenameModal';
-import DeleteModal from '../DeleteModal';
+import RenameModal from '../../../../components/RenameModal';
+import DeleteModal from '../../../../components/DeleteModal';
 import { useMutation, useQueryClient } from 'react-query';
 
 interface HeaderProps {

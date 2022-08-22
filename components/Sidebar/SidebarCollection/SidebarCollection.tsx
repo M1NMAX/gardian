@@ -15,12 +15,12 @@ import DeleteModal from '../../DeleteModal';
 import useModal from '../../../hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import MoveCollectionModal from '../../MoveCollectionModal';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
 } from '../../../fetch/group';
 import { createItem, getItem } from '../../../fetch/item';
+import { MoveCollectionModal } from '../../../features/collections';
 
 interface SidebarCollectionProps {
   collectionId: string;

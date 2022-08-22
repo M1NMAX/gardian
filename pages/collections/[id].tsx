@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
 import { ICollection, IItemProperty, IProperty } from '../../interfaces';
-import Collection from '../../components/Collection';
+import { Collection } from '../../features/collections';
 import {
   addPropertyToItem,
   deleteItem,

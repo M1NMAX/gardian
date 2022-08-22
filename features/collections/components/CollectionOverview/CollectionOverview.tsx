@@ -5,7 +5,7 @@ import {
   ViewBoardsIcon,
 } from '@heroicons/react/outline';
 import Link from 'next/link';
-import { ICollection } from '../../interfaces';
+import { ICollection } from '../../../../interfaces';
 
 interface CollectionOverviewProps {
   collection: ICollection;

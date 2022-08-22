@@ -2,9 +2,9 @@ import { RadioGroup } from '@headlessui/react';
 import { CheckCircleIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
-import { getGroups } from '../../fetch/group';
-import { IGroup } from '../../interfaces';
-import Modal from '../Frontstate/Modal';
+import { getGroups } from '../../../../fetch/group';
+import { IGroup } from '../../../../interfaces';
+import Modal from '../../../../components/Frontstate/Modal';
 
 interface MoveCollectionModalProps {
   currentGroupId: string;

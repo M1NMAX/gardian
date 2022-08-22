@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react';
-import Modal from '../Frontstate/Modal';
+import Modal from '../../../../components/Frontstate/Modal';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
-import { IGroup } from '../../interfaces';
-import { createCollection } from '../../fetch/collections';
+import { IGroup } from '../../../../interfaces';
+import { createCollection } from '../../../../fetch/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import Label from '../Label';
-import { addCollectionToGroup } from '../../fetch/group';
+import Label from '../../../../components/Label';
+import { addCollectionToGroup } from '../../../../fetch/group';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 
