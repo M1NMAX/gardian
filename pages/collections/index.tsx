@@ -9,7 +9,7 @@ import {
   CreateCollectionModal,
   CollectionOverview,
 } from '../../features/collections';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import {
   CubeTransparentIcon,
@@ -43,7 +43,7 @@ const sortOptions: SortOptionType[] = [
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
-  const [sidebar, setSidebar] = useRecoilState(sidebarState);
+  const sidebar = useRecoilValue(sidebarState);
 
   const { data: groups } = useQuery<IGroup[]>(['groups'], getGroups);
 
@@ -101,10 +101,7 @@ const Collections: NextPage<
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content  flex flex-col space-y-2 -z-10`}>
         {/* Header  */}
-        <Header
-          title='My Collections'
-          sidebar={sidebar}
-          onClickMenuBtn={() => setSidebar(true)}>
+        <Header title='My Collections'>
           {!isLoading && sortedCollections.length >= 0 && (
             <>
               <button

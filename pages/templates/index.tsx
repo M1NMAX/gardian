@@ -3,7 +3,7 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/frontstate-ui/Drawer';
@@ -33,7 +33,7 @@ const TemplatesPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
   const router = useRouter();
-  const [sidebar, setSidebar] = useRecoilState(sidebarState);
+  const sidebar = useRecoilValue(sidebarState);
 
   const drawer = useDrawer(() => setSelectedTemplateId(null));
 
@@ -130,10 +130,7 @@ const TemplatesPage: NextPage<
             drawer.isOpen ? 'w-0 md:w-2/3' : 'w-full'
           } h-full flex flex-col space-y-2`}>
           {/* Header  */}
-          <Header
-            title='Templates'
-            sidebar={sidebar}
-            onClickMenuBtn={() => setSidebar(true)}>
+          <Header title='Templates'>
             {/*SORT */}
             <SortOptionsListbox
               sortOptions={sortOptions}
