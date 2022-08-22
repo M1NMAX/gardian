@@ -1,7 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import ActionIcon from '../ActionIcon';
 import { XIcon } from '@heroicons/react/outline';
-import { title } from 'process';
 
 interface IProps {
   children: ReactNode;
@@ -35,7 +34,9 @@ const Drawer: DrawerComponent = (props) => {
       } transition-all duration-200 ease-in-out flex flex-col
   rounded bg-gray-100 dark:bg-gray-800 overflow-hidden`}>
       <div className='flex justify-between'>
-        <ActionIcon icon={<XIcon />} variant='filled' onClick={onClose} />
+        <ActionIcon variant='filled' onClick={onClose}>
+          <XIcon />
+        </ActionIcon>
         <span className='grow px-1.5'>{title}</span>
         {menu}
       </div>

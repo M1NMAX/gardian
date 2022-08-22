@@ -120,16 +120,13 @@ const Collections: NextPage<
                 onChangeOption={handleOnChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon
-                icon={
-                  isGridView ? (
-                    <ViewGridIcon className='icon-sm' />
-                  ) : (
-                    <ViewBoardsIcon className='icon-sm rotate-90' />
-                  )
-                }
-                onClick={() => setIsGridView(!isGridView)}
-              />
+              <ActionIcon onClick={() => setIsGridView(!isGridView)}>
+                {isGridView ? (
+                  <ViewGridIcon />
+                ) : (
+                  <ViewBoardsIcon className='rotate-90' />
+                )}
+              </ActionIcon>
             </>
           )}
         </Header>

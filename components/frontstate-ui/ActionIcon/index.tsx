@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 type ActionIconVariants = 'hover' | 'filled';
 interface ActionIconProps {
-  icon: JSX.Element;
+  children: ReactNode;
   type?: 'button' | 'submit' | 'reset';
   variant?: ActionIconVariants;
   rounded?: boolean;
@@ -18,7 +18,7 @@ const getVariantStyle = (variant: ActionIconVariants) => {
 
 const ActionIcon: FC<ActionIconProps> = (props) => {
   const {
-    icon,
+    children,
     type = 'button',
     variant = 'hover',
     rounded = true,
@@ -32,7 +32,7 @@ const ActionIcon: FC<ActionIconProps> = (props) => {
       className={`flex items-center ${rounded && 'rounded'} ${getVariantStyle(
         variant
       )}`}>
-      <span className='icon-sm'>{icon}</span>
+      <span className='icon-sm'>{children}</span>
     </button>
   );
 };

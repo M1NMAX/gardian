@@ -20,7 +20,9 @@ const Header: FC<HeaderProps> = (props) => {
       <div className='space-y-1 pb-1 border-dotted border-b-2 border-gray-200 dark:border-gray-700'>
         {/* Menu btn  */}
         {!sidebar && (
-          <ActionIcon icon={<MenuAlt2Icon />} onClick={openSidebar} />
+          <ActionIcon onClick={openSidebar}>
+            <MenuAlt2Icon />
+          </ActionIcon>
         )}
 
         {/* Title   */}

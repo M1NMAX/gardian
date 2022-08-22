@@ -170,10 +170,9 @@ const Header: FC<HeaderProps> = (props) => {
       <div className='flex justify-between items-center'>
         <div className='flex items-center space-x-2'>
           {!sidebar && (
-            <ActionIcon
-              icon={<MenuAlt2Icon />}
-              onClick={() => setSidebar(true)}
-            />
+            <ActionIcon onClick={() => setSidebar(true)}>
+              <MenuAlt2Icon />
+            </ActionIcon>
           )}
         </div>
         {/* Middle AKA collection name  */}
@@ -194,19 +193,17 @@ const Header: FC<HeaderProps> = (props) => {
         </div>
         <div className='flex items-center space-x-1'>
           <ActionIcon
-            icon={
-              collection.isFavourite ? (
-                <StarIconFilled className='text-green-500' />
-              ) : (
-                <StarIconOutline />
-              )
-            }
             variant='filled'
             onClick={() => {
               if (!collection._id) return;
               toggleCollectionIsFavouriteMutation.mutate(collection._id);
-            }}
-          />
+            }}>
+            {collection.isFavourite ? (
+              <StarIconFilled className='text-green-500' />
+            ) : (
+              <StarIconOutline />
+            )}
+          </ActionIcon>
 
           <CollectionMenu
             isDescriptionHidden={collection.isDescriptionHidden}
