@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import Toolbar from './Toolbar';
+import Toolbar from '../Toolbar';
 import {
   Editor as DraftEditor,
   EditorState,

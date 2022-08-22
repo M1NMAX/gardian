@@ -33,7 +33,7 @@ import {
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
-import Editor from '../../components/Editor';
+import { Editor } from '../../features/Editor';
 import useDrawer from '../../hooks/useDrawer';
 
 const sortOptions = [

@@ -1,9 +1,6 @@
 import { EditorState } from 'draft-js';
 import React, { FC } from 'react';
-import Bold from '../Icons/Bold';
-import Code from '../Icons/Code';
-import Italic from '../Icons/Italic';
-import Underline from '../Icons/Underline';
+import { Bold, Code, Italic, Underline } from '../Icons';
 import ToolbarBtn from '../ToolbarBtn';
 
 const toolbarItems = [

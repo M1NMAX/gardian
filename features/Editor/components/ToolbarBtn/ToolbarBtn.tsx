@@ -1,5 +1,4 @@
 import React, { FC, ReactNode } from 'react';
-import Bold from '../Icons/Bold';
 
 interface ToolbarBtnProps {
   icon: ReactNode;
