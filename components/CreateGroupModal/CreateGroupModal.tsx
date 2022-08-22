@@ -2,8 +2,7 @@ import { ViewGridAddIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { createGroup } from '../../fetch/group';
-import { Modal } from '../frontstate-ui';
-import Label from '../Label';
+import { Label, Modal } from '../frontstate-ui';
 
 interface CreateGroupModalProps {
   open: boolean;
