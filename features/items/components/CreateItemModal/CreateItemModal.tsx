@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { addItemToCollection } from '../../../../fetch/collections';
-import { createItem } from '../../../../fetch/item';
+import { addItemToCollection } from '../../../../services/collections';
+import { createItem } from '../../../../services/item';
 import { ICollection, IItemProperty } from '../../../../interfaces';
 import { Modal } from '../../../../components/frontstate-ui';
 import PropertyInput from './PropertyInput';

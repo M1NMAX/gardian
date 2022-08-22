@@ -3,9 +3,9 @@ import { Label, Modal } from '../../../../components/frontstate-ui';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
 import { IGroup } from '../../../../interfaces';
-import { createCollection } from '../../../../fetch/collections';
+import { createCollection } from '../../../../services/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { addCollectionToGroup } from '../../../../fetch/group';
+import { addCollectionToGroup } from '../../../../services/group';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 

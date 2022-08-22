@@ -4,7 +4,7 @@ import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getCollections } from '../../fetch/collections';
+import { getCollections } from '../../services/collections';
 import {
   CreateCollectionModal,
   CollectionOverview,
@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import { ICollection, IGroup } from '../../interfaces';
-import { getGroups } from '../../fetch/group';
+import { getGroups } from '../../services/group';
 import useModal from '../../hooks/useModal';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';

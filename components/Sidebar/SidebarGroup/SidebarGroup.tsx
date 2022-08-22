@@ -3,7 +3,7 @@ import { ChevronRightIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
 import toast from 'react-hot-toast';
 import { useMutation, useQueryClient } from 'react-query';
-import { deleteGroup, renameGroup } from '../../../fetch/group';
+import { deleteGroup, renameGroup } from '../../../services/group';
 import useModal from '../../../hooks/useModal';
 import { IGroup } from '../../../interfaces';
 import DeleteModal from '../../DeleteModal';

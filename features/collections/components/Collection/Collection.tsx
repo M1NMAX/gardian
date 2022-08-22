@@ -17,7 +17,7 @@ import {
   renameCollection,
   toggleCollectionDescriptionState,
   toggleCollectionIsFavourite,
-} from '../../../../fetch/collections';
+} from '../../../../services/collections';
 import { useRouter } from 'next/router';
 import RenameModal from '../../../../components/RenameModal';
 import DeleteModal from '../../../../components/DeleteModal';

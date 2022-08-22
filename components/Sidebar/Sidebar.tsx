@@ -20,7 +20,7 @@ import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
 import CreateGroupModal from '../CreateGroupModal';
 import { IGroup } from '../../interfaces';
-import { getGroups } from '../../fetch/group';
+import { getGroups } from '../../services/group';
 import SidebarGroup from './SidebarGroup';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
@@ -167,10 +167,9 @@ const Sidebar: FC = () => {
               </span>
               <span>New Collection</span>
             </button>
-            <ActionIcon
-              icon={<ViewGridAddIcon />}
-              onClick={() => createGroupModal.openModal()}
-            />
+            <ActionIcon onClick={() => createGroupModal.openModal()}>
+              <ViewGridAddIcon />
+            </ActionIcon>
           </div>
         </div>
       </div>

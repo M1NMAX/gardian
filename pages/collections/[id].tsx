@@ -16,7 +16,7 @@ import {
   removePropertyFromItem,
   renameItem,
   updateItemProperty,
-} from '../../fetch/item';
+} from '../../services/item';
 import { Drawer } from '../../components/frontstate-ui';
 import { CreateItemModal, ItemOverview, ItemMenu } from '../../features/items';
 import { PlusIcon } from '@heroicons/react/outline';
@@ -29,7 +29,7 @@ import {
   updateCollectionProperty,
   getCollection,
   updateCollectionDescription,
-} from '../../fetch/collections';
+} from '../../services/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import ViewRadioGroup from '../../components/ViewRadioGroup';

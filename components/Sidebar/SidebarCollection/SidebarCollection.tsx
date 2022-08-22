@@ -8,7 +8,7 @@ import {
   getCollection,
   renameCollection,
   toggleCollectionIsFavourite,
-} from '../../../fetch/collections';
+} from '../../../services/collections';
 import RenameModal from '../../RenameModal';
 import DeleteModal from '../../DeleteModal';
 import useModal from '../../../hooks/useModal';
@@ -17,8 +17,8 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
-} from '../../../fetch/group';
-import { createItem, getItem } from '../../../fetch/item';
+} from '../../../services/group';
+import { createItem, getItem } from '../../../services/item';
 import { MoveCollectionModal } from '../../../features/collections';
 
 interface SidebarCollectionProps {
