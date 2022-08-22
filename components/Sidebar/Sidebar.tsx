@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useRef } from 'react';
-import ThemeBtn from '../ThemeBtn';
+import { ThemeBtn } from '../../features/theme';
 import {
   CollectionIcon,
   PlusIcon,

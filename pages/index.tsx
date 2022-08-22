@@ -7,7 +7,7 @@ import collecting from '../public/undraw_collecting.svg';
 import template from '../public/undraw_wireframing.svg';
 import nextjsLogo from '../public/next-js-logo.png';
 import Logo from '../components/Logo';
-import ThemeBtn from '../components/ThemeBtn';
+import { ThemeBtn } from '../features/theme';
 import { LoginIcon } from '@heroicons/react/outline';
 
 const Home: NextPage = () => {
