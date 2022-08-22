@@ -36,6 +36,7 @@ import Property from '../../components/Property';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
 import ItemMenu from '../../components/ItemMenu';
 import Editor from '../../components/Editor';
+import useDrawer from '../../hooks/useDrawer';
 
 const sortOptions = [
   { name: 'Name Ascending', alias: 'name+asc' },
@@ -50,6 +51,9 @@ const Collections: NextPage<
   const router = useRouter();
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
+
+  //Drawer
+  const drawer = useDrawer(() => setSelectedItemId(null));
 
   //View mode
   const [selectedView, setSelectedView] = useState<string>('grid');
@@ -90,7 +94,7 @@ const Collections: NextPage<
 
   useEffect(() => {
     refetch();
-    closeDrawer();
+    drawer.closeDrawer();
   }, [id]);
 
   //Mutations
@@ -139,7 +143,7 @@ const Collections: NextPage<
       queryClient.removeQueries(['items', collectionId, selectedItemId]);
 
       positiveFeedback('Item deleted');
-      closeDrawer();
+      drawer.closeDrawer();
     },
     onError: () => {
       negativeFeedback();
@@ -224,17 +228,10 @@ const Collections: NextPage<
     }
   );
 
-  // handle Drawer
-  const [showDrawer, setShowDrawer] = useState(false);
-  const openDetails = () => setShowDrawer(true);
-  const closeDrawer = () => {
-    setShowDrawer(false);
-    setSelectedItemId(null);
-  };
-
   const handleOnClickItem = (id: string) => {
     setSelectedItemId(id);
-    openDetails();
+
+    drawer.openDrawer();
   };
 
   //Handle selected item
@@ -350,7 +347,7 @@ const Collections: NextPage<
         } main-content flex `}>
         <div
           className={`${
-            showDrawer ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
+            drawer.isOpen ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
           } pb-2`}>
           {collection && (
             <Collection>
@@ -439,8 +436,8 @@ const Collections: NextPage<
 
         {selectedItemId && (
           <Drawer
-            opened={showDrawer}
-            onClose={closeDrawer}
+            opened={drawer.isOpen}
+            onClose={drawer.closeDrawer}
             title={
               <input
                 value={selectedItemName}
