@@ -18,11 +18,10 @@ import {
   updateItemProperty,
 } from '../../fetch/item';
 import Drawer from '../../components/Frontstate/Drawer';
-import ItemOverview from '../../components/ItemOverview';
+import { CreateItemModal, ItemOverview, ItemMenu } from '../../features/items';
 import { PlusIcon } from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import CreateItemModal from '../../components/CreateItemModal';
 import {
   addPropertyToCollection,
   removePropertyFromCollection,
@@ -34,7 +33,6 @@ import {
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
 import ViewRadioGroup from '../../components/ViewRadioGroup';
-import ItemMenu from '../../components/ItemMenu';
 import Editor from '../../components/Editor';
 import useDrawer from '../../hooks/useDrawer';
 

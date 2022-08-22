@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { IItem, IProperty } from '../../interfaces';
+import { IItem, IProperty } from '../../../../interfaces';
 import ItemOverviewProperty from './ItemOverviewProperty';
 
 interface ItemOverviewProps {

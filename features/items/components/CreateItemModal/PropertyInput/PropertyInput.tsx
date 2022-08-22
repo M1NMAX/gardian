@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { IProperty } from '../../../interfaces';
+import { IProperty } from '../../../../../interfaces';
 
 interface PropertyInputProps {
   property: IProperty;
-  getValue: (id?: number) => string;
-  setValue: (value: string, id?: number) => void;
+  getValue: (id?: string) => string;
+  setValue: (value: string, id?: string) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, getValue, setValue } = props;

@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { addItemToCollection } from '../../fetch/collections';
-import { createItem } from '../../fetch/item';
-import { ICollection, IItemProperty } from '../../interfaces';
-import Modal from '../Frontstate/Modal';
+import { addItemToCollection } from '../../../../fetch/collections';
+import { createItem } from '../../../../fetch/item';
+import { ICollection, IItemProperty } from '../../../../interfaces';
+import Modal from '../../../../components/Frontstate/Modal';
 import PropertyInput from './PropertyInput';
 
 interface CreateItemModalProps {
@@ -30,14 +30,14 @@ const CreateItemModal: FC<CreateItemModalProps> = (props) => {
     );
   }, [collection.properties]);
 
-  const getValueById = (id?: number): string => {
+  const getValueById = (id?: string): string => {
     if (!id || !properties) return '';
     const property = properties.find((property) => property._id === id);
 
     return property ? property.value : '';
   };
 
-  const setValueById = (value: string, id?: number) => {
+  const setValueById = (value: string, id?: string) => {
     if (!id || !properties) return;
     setProperties(
       properties.map((property) =>

@@ -5,7 +5,7 @@ import {
   CheckIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import { IProperty } from '../../../interfaces';
+import { IProperty } from '../../../../../interfaces';
 
 interface ItemOverviewPropertyProps {
   property: IProperty;
