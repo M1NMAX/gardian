@@ -462,42 +462,47 @@ const Collections: NextPage<
           } pb-2 h-full overflow-y-scroll scrollbar-thin
           scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth`}>
           {/* Header  */}
-          <Header title={collection ? collection.name : 'Loading'}>
-            {/* new item btn  */}
-            <button
-              onClick={createItemModal.openModal}
-              className='btn btn-primary'>
-              <span className='icon-sm'>
-                <PlusIcon />
-              </span>
-              <span className='hidden md:block'>New Item</span>
-            </button>
-            {/*SORT */}
-            <SortOptionsListbox
-              sortOptions={sortOptions}
-              selectedOption={selectedSortOption}
-              onChangeOption={handleOnChangeSortParam}
-            />
-            {/* views  */}
-            <ActionIcon
-              variant='filled'
-              onClick={() => setIsGridView(!isGridView)}>
-              {isGridView ? (
-                <ViewGridIcon />
-              ) : (
-                <ViewBoardsIcon className='rotate-90' />
-              )}
-            </ActionIcon>
-
-            {collection && (
-              <CollectionMenu
-                isDescriptionHidden={collection.isDescriptionHidden}
-                onClickNewItem={createItemModal.openModal}
-                onClickDesctiption={handleDescriptionState}
-                onClickRename={openRenameModal}
-                onClickDelete={openDeleteModal}
+          <Header>
+            <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
+              {collection ? collection.name : 'Loading'}
+            </h1>
+            <div className='flex items-center space-x-1.5'>
+              {/* new item btn  */}
+              <button
+                onClick={createItemModal.openModal}
+                className='btn btn-primary'>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span className='hidden md:block'>New Item</span>
+              </button>
+              {/*SORT */}
+              <SortOptionsListbox
+                sortOptions={sortOptions}
+                selectedOption={selectedSortOption}
+                onChangeOption={handleOnChangeSortParam}
               />
-            )}
+              {/* views  */}
+              <ActionIcon
+                variant='filled'
+                onClick={() => setIsGridView(!isGridView)}>
+                {isGridView ? (
+                  <ViewGridIcon />
+                ) : (
+                  <ViewBoardsIcon className='rotate-90' />
+                )}
+              </ActionIcon>
+
+              {collection && (
+                <CollectionMenu
+                  isDescriptionHidden={collection.isDescriptionHidden}
+                  onClickNewItem={createItemModal.openModal}
+                  onClickDesctiption={handleDescriptionState}
+                  onClickRename={openRenameModal}
+                  onClickDelete={openDeleteModal}
+                />
+              )}
+            </div>
           </Header>
           <div className='grow px-4 space-y-1.5 '>
             {collection && (

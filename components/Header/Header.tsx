@@ -5,12 +5,11 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { ActionIcon } from '../frontstate-ui';
 
 interface HeaderProps {
-  title: string;
   children: ReactNode;
 }
 
 const Header: FC<HeaderProps> = (props) => {
-  const { title, children } = props;
+  const { children } = props;
 
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
   const openSidebar = () => setSidebar(true);
@@ -26,12 +25,7 @@ const Header: FC<HeaderProps> = (props) => {
         )}
 
         {/* Title   */}
-        <div className='flex items-center space-x-1'>
-          <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
-            {title}
-          </h1>
-          <div className='flex items-center space-x-1.5'>{children}</div>
-        </div>
+        <div className='flex items-center space-x-1'>{children}</div>
       </div>
     </div>
   );

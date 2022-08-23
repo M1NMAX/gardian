@@ -130,21 +130,27 @@ const TemplatesPage: NextPage<
             drawer.isOpen ? 'w-0 md:w-2/3' : 'w-full'
           } h-full flex flex-col space-y-2`}>
           {/* Header  */}
-          <Header title='Templates'>
-            {/*SORT */}
-            <SortOptionsListbox
-              sortOptions={sortOptions}
-              selectedOption={selectedSortOption}
-              onChangeOption={handleOnChangeSortParam}
-            />
-            {/* views  */}
-            <ActionIcon onClick={() => setIsGridView(!isGridView)}>
-              {isGridView ? (
-                <ViewGridIcon />
-              ) : (
-                <ViewBoardsIcon className='rotate-90' />
-              )}
-            </ActionIcon>
+          <Header>
+            <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
+              Templates
+            </h1>
+
+            <div className='flex items-center space-x-1.5'>
+              {/*SORT */}
+              <SortOptionsListbox
+                sortOptions={sortOptions}
+                selectedOption={selectedSortOption}
+                onChangeOption={handleOnChangeSortParam}
+              />
+              {/* views  */}
+              <ActionIcon onClick={() => setIsGridView(!isGridView)}>
+                {isGridView ? (
+                  <ViewGridIcon />
+                ) : (
+                  <ViewBoardsIcon className='rotate-90' />
+                )}
+              </ActionIcon>
+            </div>
           </Header>
 
           {/* body  */}

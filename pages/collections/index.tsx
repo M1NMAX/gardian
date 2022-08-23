@@ -101,9 +101,13 @@ const Collections: NextPage<
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content  flex flex-col space-y-2 -z-10`}>
         {/* Header  */}
-        <Header title='My Collections'>
+        <Header>
+          <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
+            My Collections
+          </h1>
+
           {!isLoading && sortedCollections.length >= 0 && (
-            <>
+            <div className='flex items-center space-x-1.5'>
               <button
                 onClick={createCollectionModal.openModal}
                 className='btn btn-primary'>
@@ -127,7 +131,7 @@ const Collections: NextPage<
                   <ViewBoardsIcon className='rotate-90' />
                 )}
               </ActionIcon>
-            </>
+            </div>
           )}
         </Header>
 
