@@ -8,7 +8,12 @@ import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
-import { CollectionMenu } from '../../features/collections';
+import {
+  CollectionMenu,
+  useUpdateCollectionMutation,
+  useToggleCollectionProperty,
+  useDeleteCollectionMutation,
+} from '../../features/collections';
 import {
   addPropertyToItem,
   deleteItem,
@@ -37,6 +42,7 @@ import {
   renameCollection,
   deleteCollection,
   toggleCollectionDescriptionState,
+  toggleCollectionIsFavourite,
 } from '../../services/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
@@ -51,6 +57,7 @@ import sortFun, {
 } from '../../utils/sort';
 import RenameModal from '../../components/RenameModal';
 
+const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
   { field: 'name', order: SORT_DESCENDING },
@@ -72,7 +79,6 @@ const Collections: NextPage<
   const [isGridView, setIsGridView] = useState<boolean>(false);
 
   //Fetch and cache
-
   const queryClient = useQueryClient();
   //Fetch collection and its items
   const {
@@ -125,89 +131,76 @@ const Collections: NextPage<
   //Modals
   const createItemModal = useModal();
   const deleteItemModal = useModal();
-  //Rename Collection Modal
-  const {
-    isOpen: renameModal,
-    openModal: openRenameModal,
-    closeModal: closeRenameModal,
-  } = useModal();
-
-  //Delete Collection Modal
-  const {
-    isOpen: deleteModal,
-    openModal: openDeleteModal,
-    closeModal: closeDeleteModal,
-  } = useModal();
+  const renameCollectionModal = useModal();
+  const deleteCollectionModal = useModal();
 
   //Mutations
-
-  //Collection Mutation
+  //Collection mutation
   //handle rename collection and its mutation
-  const renameCollectionMutation = useMutation(
-    async (name: string) => {
+  const renameCollectionMut = useUpdateCollectionMutation(
+    collectionId || rand,
+    async (value) => {
       if (!collectionId) return;
-      await renameCollection(collectionId, name);
+      await renameCollection(collectionId, value);
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
-        queryClient.invalidateQueries(['collection', collectionId]);
-        positiveFeedback('Success');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-      onSettled: () => {
-        closeRenameModal();
-      },
-    }
+    () => positiveFeedback('Renamed'),
+    () => negativeFeedback()
   );
 
-  const handleDescriptionState = () => {
-    if (!collectionId) return;
-    toggleCollectionDescriptionMutation.mutate(collectionId);
+  const handleRenameCollection = (name: string) => {
+    renameCollectionMut(name);
+    renameCollectionModal.closeModal();
   };
-  //handle toggle collection description state mutation
-  const toggleCollectionDescriptionMutation = useMutation(
-    toggleCollectionDescriptionState,
-    {
-      onSuccess: () => {
-        if (!collectionId) throw 'CollectionId is undefined';
 
-        queryClient.invalidateQueries(['collection', collectionId]);
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
+  //handle toggle collection description state mutation
+  const toggleCollectionDescState = useToggleCollectionProperty(
+    collectionId || rand,
+    async () => {
+      if (!collectionId) return;
+      await toggleCollectionDescriptionState(collectionId);
+    },
+    () => {},
+    () => negativeFeedback()
+  );
+
+  //handle toggle collection favourite state mutation
+  const toggleCollectionFavState = useToggleCollectionProperty(
+    collectionId || rand,
+    async () => {
+      if (!collectionId) return;
+      await toggleCollectionIsFavourite(collectionId);
+    },
+    () => {},
+    () => negativeFeedback()
+  );
+
+  //handle update collection description and its mutation
+  const updateCollectionDescMutation = useUpdateCollectionMutation(
+    collectionId || rand,
+    async (value) => {
+      if (!collectionId) return;
+      await updateCollectionDescription(collectionId, value);
+    },
+    () => {},
+    () => negativeFeedback()
   );
 
   //handle delete collection and its mutation
-  const deleteCollectionMutation = useMutation(
-    async () => {
-      if (!collectionId) return;
-      await deleteCollection(collectionId);
+  const deleteCollection = useDeleteCollectionMutation(
+    collectionId || rand,
+    () => {
+      positiveFeedback('Collection deleted');
+      router.push('/collections');
     },
-    {
-      onSuccess: () => {
-        if (!collectionId) return;
-
-        queryClient.removeQueries(['sidebarCollection', collectionId]);
-        queryClient.removeQueries(['collection', collectionId]);
-
-        positiveFeedback('Collection deleted');
-        //send user to My Collection page after delete
-        router.push('/collections');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-      onSettled: () => {
-        closeDeleteModal();
-      },
-    }
+    () => negativeFeedback()
   );
 
+  const handleDeleteCollection = () => {
+    if (!collectionId) return;
+
+    deleteCollection.mutate(collectionId);
+    deleteCollectionModal.closeModal();
+  };
   //End Collection mutation
 
   //Handle rename item mutation
@@ -298,24 +291,6 @@ const Collections: NextPage<
     }
   );
 
-  //handle update collection property mutation
-  const updateCollectioDescriptionMutation = useMutation(
-    async (description: string) => {
-      if (!collectionId) return;
-      await updateCollectionDescription(collectionId, description);
-    },
-    {
-      onSuccess: () => {
-        if (!collectionId) throw 'CollectionId is undefined';
-
-        queryClient.invalidateQueries(['collection', collectionId]);
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
   //handle delete collection property mutation
   const deleteCollectioPropertyMutation = useMutation(
     removePropertyFromCollection,
@@ -341,7 +316,6 @@ const Collections: NextPage<
 
   const handleOnClickItem = (id: string) => {
     setSelectedItemId(id);
-
     drawer.openDrawer();
   };
 
@@ -497,9 +471,9 @@ const Collections: NextPage<
                 <CollectionMenu
                   isDescriptionHidden={collection.isDescriptionHidden}
                   onClickNewItem={createItemModal.openModal}
-                  onClickDesctiption={handleDescriptionState}
-                  onClickRename={openRenameModal}
-                  onClickDelete={openDeleteModal}
+                  onClickDesctiption={toggleCollectionDescState}
+                  onClickRename={renameCollectionModal.openModal}
+                  onClickDelete={deleteCollectionModal.openModal}
                 />
               )}
             </div>
@@ -509,7 +483,7 @@ const Collections: NextPage<
               <div className={`${collection.isDescriptionHidden && 'hidden'}`}>
                 <Editor
                   initialText={collection.description}
-                  onSave={updateCollectioDescriptionMutation.mutate}
+                  onSave={updateCollectionDescMutation}
                 />
               </div>
             )}
@@ -632,22 +606,22 @@ const Collections: NextPage<
       )}
 
       {/* rename Collection modal  */}
-      {collection && renameModal && (
+      {collection && renameCollectionModal.isOpen && (
         <RenameModal
-          open={renameModal}
-          handleClose={closeRenameModal}
+          open={renameCollectionModal.isOpen}
+          handleClose={renameCollectionModal.closeModal}
           name={collection.name}
-          onRename={renameCollectionMutation.mutate}
+          onRename={handleRenameCollection}
         />
       )}
 
       {/* delete Collection modal  */}
-      {collection && deleteModal && (
+      {collection && deleteCollectionModal.isOpen && (
         <DeleteModal
-          open={deleteModal}
-          handleClose={closeDeleteModal}
+          open={deleteCollectionModal.isOpen}
+          handleClose={deleteCollectionModal.closeModal}
           name={collection.name}
-          onDelete={deleteCollectionMutation.mutate}
+          onDelete={handleDeleteCollection}
         />
       )}
     </>
