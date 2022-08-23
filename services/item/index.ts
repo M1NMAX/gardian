@@ -8,6 +8,17 @@ export async function getItem(id: string): Promise<IItem> {
   return res.json().then((response) => response.data);
 }
 
+export async function getItems(ids: string[]): Promise<IItem[]> {
+  const itemsPromise = ids.map(async (id: string) => await getItem(id));
+  let items: IItem[] = [];
+  for (const ip of itemsPromise) {
+    const item = await ip;
+    items.push(item);
+  }
+
+  return Promise.resolve(items);
+}
+
 export async function createItem(item: IItem): Promise<IItem> {
   const res = await fetch(baseUrl, getRequestOptions('POST', { item }));
   return res.json().then((response) => response.data);

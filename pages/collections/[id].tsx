@@ -6,20 +6,25 @@ import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItemProperty, IProperty } from '../../interfaces';
-import { Collection } from '../../features/collections';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { ICollection, IItem, IItemProperty, IProperty } from '../../interfaces';
+import { CollectionMenu } from '../../features/collections';
 import {
   addPropertyToItem,
   deleteItem,
   getItem,
+  getItems,
   removePropertyFromItem,
   renameItem,
   updateItemProperty,
 } from '../../services/item';
-import { Drawer } from '../../components/frontstate-ui';
+import { ActionIcon, Drawer } from '../../components/frontstate-ui';
 import { CreateItemModal, ItemOverview, ItemMenu } from '../../features/items';
-import { PlusIcon } from '@heroicons/react/outline';
+import {
+  PlusIcon,
+  ViewBoardsIcon,
+  ViewGridIcon,
+} from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
 import {
@@ -29,18 +34,28 @@ import {
   updateCollectionProperty,
   getCollection,
   updateCollectionDescription,
+  renameCollection,
+  deleteCollection,
+  toggleCollectionDescriptionState,
 } from '../../services/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
-import ViewRadioGroup from '../../components/ViewRadioGroup';
 import { Editor } from '../../features/Editor';
 import useDrawer from '../../hooks/useDrawer';
+import Header from '../../components/Header';
+import SortOptionsListbox from '../../components/SortOptionsListbox';
+import sortFun, {
+  SortOptionType,
+  SORT_ASCENDING,
+  SORT_DESCENDING,
+} from '../../utils/sort';
+import RenameModal from '../../components/RenameModal';
 
-const sortOptions = [
-  { name: 'Name Ascending', alias: 'name+asc' },
-  { name: 'Name Descending', alias: 'name+des' },
-  { name: 'Recently Added', alias: 'createdAt+asc' },
-  { name: 'Oldest Added', alias: 'createdAt+des' },
+const sortOptions: SortOptionType[] = [
+  { field: 'name', order: SORT_ASCENDING },
+  { field: 'name', order: SORT_DESCENDING },
+  { field: 'createdAt', order: SORT_ASCENDING },
+  { field: 'createdAt', order: SORT_DESCENDING },
 ];
 
 const Collections: NextPage<
@@ -53,19 +68,11 @@ const Collections: NextPage<
   //Drawer
   const drawer = useDrawer(() => setSelectedItemId(null));
 
-  //View mode
-  const [selectedView, setSelectedView] = useState<string>('grid');
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+  //View
+  const [isGridView, setIsGridView] = useState<boolean>(false);
 
-  //Feedback
-  const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () => toast.error('Something went wrong, try later');
+  //Fetch and cache
 
-  //Modals
-  const createItemModal = useModal();
-  const deleteModal = useModal();
-
-  //Query and cache
   const queryClient = useQueryClient();
   //Fetch collection and its items
   const {
@@ -73,21 +80,7 @@ const Collections: NextPage<
     isLoading,
     refetch,
   } = useQuery<ICollection>(['collection', id], () =>
-    getCollection(!id || Array.isArray(id) ? '22' : id)
-  );
-
-  const collectionId = collection?._id;
-  //Fetch collection items
-  const itemsQueries = useQueries(
-    !collection
-      ? []
-      : collection.items.map((item) => {
-          return {
-            queryKey: ['items', collectionId, item],
-            queryFn: () => getItem(item),
-            enabled: !!collectionId,
-          };
-        })
+    id && !Array.isArray(id) ? getCollection(id) : ({} as ICollection)
   );
 
   useEffect(() => {
@@ -95,7 +88,127 @@ const Collections: NextPage<
     drawer.closeDrawer();
   }, [id]);
 
+  const collectionId = collection?._id;
+
+  //Fetch collection items
+  const { data: items, isLoading: isItemsLoading } = useQuery(
+    ['items', collectionId],
+    () => (collection ? getItems(collection.items) : []),
+    { enabled: !!collectionId }
+  );
+
+  //Sort items
+  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionType>(
+    sortOptions[0]
+  );
+  const [sortedItems, setSortedItems] = useState<IItem[]>([]);
+
+  useEffect(() => {
+    if (!items) return;
+    setSortedItems(
+      items.sort(sortFun(selectedSortOption.order, selectedSortOption.field))
+    );
+  }, [items]);
+
+  const handleOnChangeSortParam = (option: SortOptionType) => {
+    const data = sortedItems
+      .slice()
+      .sort(sortFun(selectedSortOption.order, selectedSortOption.field));
+    setSortedItems(data);
+    setSelectedSortOption(option);
+  };
+
+  //Feedback
+  const positiveFeedback = (msg: string) => toast.success(msg);
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
+
+  //Modals
+  const createItemModal = useModal();
+  const deleteItemModal = useModal();
+  //Rename Collection Modal
+  const {
+    isOpen: renameModal,
+    openModal: openRenameModal,
+    closeModal: closeRenameModal,
+  } = useModal();
+
+  //Delete Collection Modal
+  const {
+    isOpen: deleteModal,
+    openModal: openDeleteModal,
+    closeModal: closeDeleteModal,
+  } = useModal();
+
   //Mutations
+
+  //Collection Mutation
+  //handle rename collection and its mutation
+  const renameCollectionMutation = useMutation(
+    async (name: string) => {
+      if (!collectionId) return;
+      await renameCollection(collectionId, name);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
+        queryClient.invalidateQueries(['collection', collectionId]);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        closeRenameModal();
+      },
+    }
+  );
+
+  const handleDescriptionState = () => {
+    if (!collectionId) return;
+    toggleCollectionDescriptionMutation.mutate(collectionId);
+  };
+  //handle toggle collection description state mutation
+  const toggleCollectionDescriptionMutation = useMutation(
+    toggleCollectionDescriptionState,
+    {
+      onSuccess: () => {
+        if (!collectionId) throw 'CollectionId is undefined';
+
+        queryClient.invalidateQueries(['collection', collectionId]);
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  //handle delete collection and its mutation
+  const deleteCollectionMutation = useMutation(
+    async () => {
+      if (!collectionId) return;
+      await deleteCollection(collectionId);
+    },
+    {
+      onSuccess: () => {
+        if (!collectionId) return;
+
+        queryClient.removeQueries(['sidebarCollection', collectionId]);
+        queryClient.removeQueries(['collection', collectionId]);
+
+        positiveFeedback('Collection deleted');
+        //send user to My Collection page after delete
+        router.push('/collections');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        closeDeleteModal();
+      },
+    }
+  );
+
+  //End Collection mutation
 
   //Handle rename item mutation
   const renameItemMutation = useMutation(
@@ -147,7 +260,7 @@ const Collections: NextPage<
       negativeFeedback();
     },
     onSettled: () => {
-      deleteModal.closeModal();
+      deleteItemModal.closeModal();
     },
   });
 
@@ -345,91 +458,102 @@ const Collections: NextPage<
         } main-content flex `}>
         <div
           className={`${
-            drawer.isOpen ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
-          } pb-2`}>
-          {collection && (
-            <Collection>
-              <Collection.Header
-                collection={collection}
-                openNewItemModal={createItemModal.openModal}>
-                <h1 className='font-medium text-2xl'>{collection.name}</h1>
-              </Collection.Header>
-              <Collection.Description hidden={collection.isDescriptionHidden}>
+            drawer.isOpen ? 'w-0 md:w-3/5' : 'w-full'
+          } pb-2 h-full overflow-y-scroll scrollbar-thin
+          scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth`}>
+          {/* Header  */}
+          <Header title={collection ? collection.name : 'Loading'}>
+            {/* new item btn  */}
+            <button
+              onClick={createItemModal.openModal}
+              className='btn btn-primary'>
+              <span className='icon-sm'>
+                <PlusIcon />
+              </span>
+              <span className='hidden md:block'>New Item</span>
+            </button>
+            {/*SORT */}
+            <SortOptionsListbox
+              sortOptions={sortOptions}
+              selectedOption={selectedSortOption}
+              onChangeOption={handleOnChangeSortParam}
+            />
+            {/* views  */}
+            <ActionIcon
+              variant='filled'
+              onClick={() => setIsGridView(!isGridView)}>
+              {isGridView ? (
+                <ViewGridIcon />
+              ) : (
+                <ViewBoardsIcon className='rotate-90' />
+              )}
+            </ActionIcon>
+
+            {collection && (
+              <CollectionMenu
+                isDescriptionHidden={collection.isDescriptionHidden}
+                onClickNewItem={createItemModal.openModal}
+                onClickDesctiption={handleDescriptionState}
+                onClickRename={openRenameModal}
+                onClickDelete={openDeleteModal}
+              />
+            )}
+          </Header>
+          <div className='grow px-4 space-y-1.5 '>
+            {collection && (
+              <div className={`${collection.isDescriptionHidden && 'hidden'}`}>
                 <Editor
                   initialText={collection.description}
                   onSave={updateCollectioDescriptionMutation.mutate}
                 />
-              </Collection.Description>
-              <Collection.Body>
-                {!isLoading && collection && collection.items.length === 0 ? (
-                  // if collection has no items
-                  <div
-                    className='py-1 flex justify-center border-dotted 
-                  border-t-2 border-gray-200 dark:border-gray-700'>
-                    <button
-                      onClick={createItemModal.openModal}
-                      className='w-full py-1 flex items-center justify-center 
-                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
-                      <span className='icon-sm'>
-                        <PlusIcon />
-                      </span>
-                      <span>New Item</span>
-                    </button>
-                  </div>
-                ) : (
-                  //  collection has at leat one item
-                  <div>
-                    <div
-                      className='flex justify-between items-center pt-1 border-dotted 
-                      border-t-2 border-gray-200 dark:border-gray-700'>
-                      {/* new item btn  */}
-                      <button
-                        onClick={createItemModal.openModal}
-                        className='btn btn-primary'>
-                        <span className='icon-sm'>
-                          <PlusIcon />
-                        </span>
-                        <span>New Item</span>
-                      </button>
-                      {/*Views */}
-                      <ViewRadioGroup
-                        value={selectedView}
-                        setValue={setSelectedView}
-                      />
-                    </div>
+              </div>
+            )}
 
-                    {/*Dispay all collection's item */}
-                    <div
-                      className={`
-                  ${selectedView === 'list' && 'flex flex-col space-y-2'}
-                  ${
-                    selectedView === 'grid' &&
-                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
-                  } py-2 `}>
-                      {itemsQueries.map(({ data: item, isLoading }) =>
-                        isLoading ? (
-                          <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
-                            <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                            <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                          </div>
-                        ) : (
-                          item && (
-                            <ItemOverview
-                              key={item._id}
-                              item={item}
-                              active={selectedItemId === item._id}
-                              collectionProperty={collection.properties}
-                              onItemClick={handleOnClickItem}
-                            />
-                          )
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-              </Collection.Body>
-            </Collection>
-          )}
+            {isItemsLoading &&
+              collection &&
+              collection.items.map((_) => (
+                <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                  <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                </div>
+              ))}
+
+            {!isLoading && collection && collection.items.length === 0 && (
+              <div
+                className='py-1 flex justify-center border-dotted 
+                  border-t-2 border-gray-200 dark:border-gray-700'>
+                <button
+                  onClick={createItemModal.openModal}
+                  className='w-full py-1 flex items-center justify-center 
+                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                  <span className='icon-sm'>
+                    <PlusIcon />
+                  </span>
+                  <span>New Item</span>
+                </button>
+              </div>
+            )}
+
+            {/*Dispay all collection's item */}
+            {!isItemsLoading && collection && sortedItems.length >= 0 && (
+              <div
+                className={`${
+                  isGridView
+                    ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
+                    : 'flex flex-col space-y-2'
+                } py-2 `}>
+                {sortedItems.map((item) => (
+                  <ItemOverview
+                    key={item._id}
+                    item={item}
+                    active={selectedItemId === item._id}
+                    collectionProperty={collection.properties}
+                    onItemClick={handleOnClickItem}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {selectedItemId && (
@@ -449,7 +573,7 @@ const Collections: NextPage<
             menu={
               <ItemMenu
                 onClickAddProperty={handleOnClickAddProperty}
-                onClickDelete={deleteModal.openModal}
+                onClickDelete={deleteItemModal.openModal}
               />
             }>
             <Drawer.Body>
@@ -493,12 +617,32 @@ const Collections: NextPage<
         />
       )}
       {/* Delete item modal  */}
-      {selectedItemId && deleteModal.isOpen && (
+      {selectedItemId && deleteItemModal.isOpen && (
         <DeleteModal
           name={selectedItemName}
-          open={deleteModal.isOpen}
-          handleClose={deleteModal.closeModal}
+          open={deleteItemModal.isOpen}
+          handleClose={deleteItemModal.closeModal}
           onDelete={() => deleteItemMutation.mutate(selectedItemId)}
+        />
+      )}
+
+      {/* rename Collection modal  */}
+      {collection && renameModal && (
+        <RenameModal
+          open={renameModal}
+          handleClose={closeRenameModal}
+          name={collection.name}
+          onRename={renameCollectionMutation.mutate}
+        />
+      )}
+
+      {/* delete Collection modal  */}
+      {collection && deleteModal && (
+        <DeleteModal
+          open={deleteModal}
+          handleClose={closeDeleteModal}
+          name={collection.name}
+          onDelete={deleteCollectionMutation.mutate}
         />
       )}
     </>
