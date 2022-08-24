@@ -500,19 +500,15 @@ const Collections: NextPage<
               ))}
 
             {!isLoading && collection && collection.items.length === 0 && (
-              <div
-                className='py-1 flex justify-center border-dotted 
-                  border-t-2 border-gray-200 dark:border-gray-700'>
-                <button
-                  onClick={createItemModal.openModal}
-                  className='w-full py-1 flex items-center justify-center 
+              <button
+                onClick={createItemModal.openModal}
+                className='w-full py-1 flex items-center justify-center 
                       rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
-                  <span className='icon-sm'>
-                    <PlusIcon />
-                  </span>
-                  <span>New Item</span>
-                </button>
-              </div>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span>New Item</span>
+              </button>
             )}
 
             {/*Dispay all collection's item */}
