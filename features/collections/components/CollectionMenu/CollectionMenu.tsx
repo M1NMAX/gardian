@@ -4,23 +4,29 @@ import {
   InformationCircleIcon,
   PencilIcon,
   PlusIcon,
+  StarIcon as StarIconOutline,
   TrashIcon,
 } from '@heroicons/react/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
 
 interface CollectionMenuProps {
+  isFavourite: boolean;
   isDescriptionHidden: boolean;
   onClickNewItem: () => void;
   onClickDesctiption: () => void;
+  onClickFavourite: () => void;
   onClickRename: () => void;
   onClickDelete: () => void;
 }
 
 const CollectionMenu: FC<CollectionMenuProps> = (props) => {
   const {
+    isFavourite,
     isDescriptionHidden,
     onClickRename,
     onClickDesctiption,
+    onClickFavourite,
     onClickNewItem,
     onClickDelete,
   } = props;
@@ -56,6 +62,21 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
               className='collection-menu-item-btn'>
               <InformationCircleIcon className='icon-sm' />
               <span>{isDescriptionHidden ? 'Show' : 'Hide'} Description</span>
+            </button>
+          </Menu.Item>
+
+          <Menu.Item as='li'>
+            <button
+              onClick={onClickFavourite}
+              className='collection-menu-item-btn'>
+              {isFavourite ? (
+                <StarIconFilled className='icon-sm text-green-500' />
+              ) : (
+                <StarIconOutline className='icon-sm' />
+              )}
+              <span className='text-left'>
+                {isFavourite ? 'Remove from Favourites' : 'Add to Favoutires'}
+              </span>
             </button>
           </Menu.Item>
 

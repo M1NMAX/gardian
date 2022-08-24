@@ -469,9 +469,11 @@ const Collections: NextPage<
 
               {collection && (
                 <CollectionMenu
+                  isFavourite={collection.isFavourite}
                   isDescriptionHidden={collection.isDescriptionHidden}
                   onClickNewItem={createItemModal.openModal}
                   onClickDesctiption={toggleCollectionDescState}
+                  onClickFavourite={toggleCollectionFavState}
                   onClickRename={renameCollectionModal.openModal}
                   onClickDelete={deleteCollectionModal.openModal}
                 />
