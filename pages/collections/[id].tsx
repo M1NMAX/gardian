@@ -169,7 +169,7 @@ const Collections: NextPage<
     collection.deleteCollectionMutateFun(collectionId, {
       onSuccess: () => {
         positiveFeedback('DELETE');
-        router.push('collections');
+        router.push('/collections');
       },
       onError: () => {
         negativeFeedback();
@@ -180,8 +180,8 @@ const Collections: NextPage<
   //End Collection mutation
 
   //Handle selected item
-  //selected item hold the data and some utils function
-  //secondSelected item hold all selected item mutate fun
+  //selectedItem hold item data and some utils function
+  //secondSelectedItem hold all selected item mutate fun
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const selectedItem = useGetItem(selectedItemId || rand);
   const secondSelectedItem = useItem(

@@ -4,22 +4,21 @@ import toast from 'react-hot-toast';
 import {
   addItemToCollection,
   createCollection,
-  deleteCollection,
-  getCollection,
-  renameCollection,
-  toggleCollectionIsFavourite,
 } from '../../../services/collections';
 import RenameModal from '../../RenameModal';
 import DeleteModal from '../../DeleteModal';
 import useModal from '../../../hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
 } from '../../../services/group';
 import { createItem, getItem } from '../../../services/item';
-import { MoveCollectionModal } from '../../../features/collections';
+import {
+  MoveCollectionModal,
+  useCollection,
+} from '../../../features/collections';
 
 interface SidebarCollectionProps {
   collectionId: string;
@@ -29,12 +28,6 @@ interface SidebarCollectionProps {
 
 const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const { collectionId, groupId, onClick } = props;
-
-  //Fetch collection
-  const { data: collection } = useQuery(
-    ['sidebarCollection', collectionId],
-    () => getCollection(collectionId)
-  );
 
   const router = useRouter();
   const { id: urlId } = router.query;
@@ -51,98 +44,15 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
   const queryClient = useQueryClient();
 
-  //handle delete collection and its mutation
-  const deleteCollectionMutation = useMutation(
-    async () => {
-      await deleteCollection(collectionId);
-    },
-    {
-      onSuccess: () => {
-        positiveFeedback('Collection deleted');
-        queryClient.removeQueries(['sidebarCollection', collectionId]);
-        queryClient.removeQueries(['collection', collectionId]);
-
-        if (collectionId === urlId) router.push('/collections');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-      onSettled: () => {
-        deleteCollectionModal.closeModal();
-      },
-    }
-  );
-
-  //handle toggle collection favourite state and its mutation
-  const handleToggleFavourite = () =>
-    toggleCollectionIsFavouriteMutation.mutate(collectionId);
-
-  const toggleCollectionIsFavouriteMutation = useMutation(
-    toggleCollectionIsFavourite,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
-        positiveFeedback('Success');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
-  //handle collection duplication and its mutation
-  const duplicateCollectionMutation = useMutation(
-    async () => {
-      if (!collection) return;
-      const {
-        name,
-        description,
-        properties,
-        isDescriptionHidden,
-        isFavourite,
-      } = collection;
-      //Create a collection's copy
-      const duplicatedCollection = await createCollection({
-        name: name + '(copy)',
-        description,
-        isDescriptionHidden,
-        isFavourite,
-        properties,
-        items: [],
-      });
-
-      collection.items.map(async (itemId) => {
-        const { name, properties } = await getItem(itemId);
-
-        const newItem = await createItem({ name, properties });
-
-        if (!newItem._id || !duplicatedCollection._id) return;
-
-        await addItemToCollection(duplicatedCollection._id, newItem._id);
-        await addCollectionToGroup(groupId, duplicatedCollection._id);
-      });
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['groups']);
-        positiveFeedback('Success');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
+  //Fetch collection
+  const collection = useCollection(collectionId, 'sidebarCollection');
+  const collectionData = collection.query.data;
 
   //handle rename collection and its mutation
-  const renameCollectionMutation = useMutation(
-    async (name: string) => {
-      await renameCollection(collectionId, name);
-    },
-    {
+  const handleRenameCollection = (name: string) => {
+    collection.renameCollectionMutateFun(name, {
       onSuccess: () => {
-        queryClient.invalidateQueries(['sidebarCollection', collectionId]);
-        queryClient.invalidateQueries(['collection', collectionId]);
-        positiveFeedback('Success');
+        positiveFeedback('Collection renamed');
       },
       onError: () => {
         negativeFeedback();
@@ -150,18 +60,55 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
       onSettled: () => {
         renameCollectionModal.closeModal();
       },
-    }
-  );
+    });
+  };
 
-  //handle move collection to another group and its mutation
-  const moveCollectionMutation = useMutation(
-    async (desGroupId: string) => {
-      await removeCollectionFromGroup(groupId, collectionId);
-      await addCollectionToGroup(desGroupId, collectionId);
-    },
-    {
+  //handle delete collection and its mutation
+  const handleDeleteCollection = () => {
+    collection.deleteCollectionMutateFun(collectionId, {
+      onSuccess: async () => {
+        await removeCollectionFromGroup(groupId, collectionId);
+        positiveFeedback('Collection deleted');
+        if (collectionId === urlId) router.push('/collections');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    });
+  };
+
+  //handle toggle collection favourite state and its mutation
+  const handleCollectionIsFavState = () => {
+    collection.toggleIsFavStateMutateFun(collectionId, {
       onSuccess: () => {
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    });
+  };
+
+  //handle collection duplication and its mutation
+  const { mutate: duplicateCollectionMutateFun } = useMutation(
+    createCollection,
+    {
+      onSuccess: async ({ _id: duplicatedCid }) => {
+        if (!duplicatedCid) throw 'Duplicated collection id is undefined';
+        if (!collectionData) throw 'Collection is undefined';
+        await addCollectionToGroup(groupId, duplicatedCid);
+
+        //duplicate all collection item
+        collectionData.items.map(async (itemId) => {
+          const { name, properties } = await getItem(itemId);
+          const { _id: newItemId } = await createItem({ name, properties });
+
+          if (!newItemId) return 'New item id is undefined';
+          await addItemToCollection(duplicatedCid, newItemId);
+        });
+
         queryClient.invalidateQueries(['groups']);
+        queryClient.invalidateQueries(['collections']);
         positiveFeedback('Success');
       },
       onError: () => {
@@ -170,7 +117,44 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     }
   );
 
-  if (!collection) return <></>;
+  const handleDuplicateCollection = () => {
+    if (!collectionData) return;
+    const { name, description, properties, isDescriptionHidden, isFavourite } =
+      collectionData;
+
+    duplicateCollectionMutateFun({
+      name: name + '(copy)',
+      description,
+      properties,
+      isDescriptionHidden,
+      isFavourite,
+      items: [],
+    });
+  };
+
+  //handle move collection to another group and its mutation
+  const { mutate: moveCollectionMutateFun } = useMutation(
+    async (desGroupId: string) => {
+      await removeCollectionFromGroup(groupId, collectionId);
+      await addCollectionToGroup(desGroupId, collectionId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+        queryClient.invalidateQueries(['collections']);
+        positiveFeedback('Success');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    }
+  );
+
+  const handleMoveCollection = (desGroupId: string) => {
+    moveCollectionMutateFun(desGroupId);
+  };
+
+  if (!collectionData) return <></>;
   return (
     <>
       <div
@@ -182,23 +166,23 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
         <button className='flex items-center grow' onClick={onClick}>
-          <span className='truncate'>{collection.name}</span>
+          <span className='truncate'>{collectionData.name}</span>
         </button>
 
-        {collection.items.length !== 0 && (
+        {collectionData.items.length !== 0 && (
           <span className='flex items-center  md:group-hover:hidden md:group-focus-within:hidden'>
             <span className='text-xs font-light italic'>
-              {collection.items.length}
+              {collectionData.items.length}
             </span>
           </span>
         )}
 
         <div className='block md:hidden md:group-hover:block md:group-focus-within:block'>
           <SidebarCollectionMenu
-            isFavourite={collection.isFavourite}
+            isFavourite={collectionData.isFavourite}
             onClickDelete={deleteCollectionModal.openModal}
-            onClickAddToFavourite={handleToggleFavourite}
-            onClickDuplicate={duplicateCollectionMutation.mutate}
+            onClickAddToFavourite={handleCollectionIsFavState}
+            onClickDuplicate={handleDuplicateCollection}
             onClickRename={renameCollectionModal.openModal}
             onClickMove={moveCollectionModal.openModal}
           />
@@ -209,8 +193,8 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <RenameModal
           open={renameCollectionModal.isOpen}
           handleClose={renameCollectionModal.closeModal}
-          name={collection.name}
-          onRename={renameCollectionMutation.mutate}
+          name={collectionData.name}
+          onRename={handleRenameCollection}
         />
       )}
 
@@ -219,7 +203,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
           currentGroupId={groupId}
           open={moveCollectionModal.isOpen}
           handleClose={moveCollectionModal.closeModal}
-          onMove={moveCollectionMutation.mutate}
+          onMove={handleMoveCollection}
         />
       )}
 
@@ -227,8 +211,8 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <DeleteModal
           open={deleteCollectionModal.isOpen}
           handleClose={deleteCollectionModal.closeModal}
-          name={collection.name}
-          onDelete={deleteCollectionMutation.mutate}
+          name={collectionData.name}
+          onDelete={handleDeleteCollection}
         />
       )}
     </>

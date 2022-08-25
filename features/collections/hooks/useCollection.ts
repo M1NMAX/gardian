@@ -13,7 +13,7 @@ import {
   updateCollectionProperty,
 } from '../../../services/collections';
 
-const useCollection = (cid: string) => {
+const useCollection = (cid: string, key: string = 'collection') => {
   const queryClient = useQueryClient();
 
   const invalidateCollectionQueries = useCallback(() => {
@@ -25,9 +25,7 @@ const useCollection = (cid: string) => {
     queryClient.invalidateQueries(['items', cid]);
   }, [cid]);
 
-  const query = useQuery<ICollection>(['collection', cid], () =>
-    getCollection(cid)
-  );
+  const query = useQuery<ICollection>([key, cid], () => getCollection(cid));
 
   const { mutate: toggleIsFavStateMutateFun } = useMutation(
     toggleCollectionIsFavourite,
