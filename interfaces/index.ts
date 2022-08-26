@@ -1,8 +1,8 @@
 import { PropertyTypes } from '../types';
 
 //SCHEMA
-interface IBase {
-  //used a base for all schema
+export interface IBase {
+  //used as base for all schema
   _id?: string;
   name: string;
   createdAt?: Date;

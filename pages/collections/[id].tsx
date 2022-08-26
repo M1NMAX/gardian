@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItem, IProperty } from '../../interfaces';
+import { ICollection, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
 import {
   addPropertyToItem,
@@ -35,14 +35,12 @@ import Property from '../../components/Property';
 import { Editor } from '../../features/Editor';
 import useDrawer from '../../hooks/useDrawer';
 import Header from '../../components/Header';
-import SortOptionsListbox from '../../components/SortOptionsListbox';
-import sortFun, {
-  SortOptionType,
-  SORT_ASCENDING,
-  SORT_DESCENDING,
-} from '../../utils/sort';
+import SortOptionsListbox from '../../features/sort/components/SortOptionsListbox';
 import RenameModal from '../../components/RenameModal';
 import { removeItemFromCollection } from '../../services/collections';
+import { useSort } from '../../features/sort';
+import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
+import { SortOptionType } from '../../types';
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
@@ -98,25 +96,11 @@ const Collections: NextPage<
   );
 
   //Sort items
-  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionType>(
-    sortOptions[0]
-  );
-  const [sortedItems, setSortedItems] = useState<IItem[]>([]);
-
-  useEffect(() => {
-    if (!items) return;
-    setSortedItems(
-      items.sort(sortFun(selectedSortOption.order, selectedSortOption.field))
-    );
-  }, [items]);
-
-  const handleOnChangeSortParam = (option: SortOptionType) => {
-    const data = sortedItems
-      .slice()
-      .sort(sortFun(selectedSortOption.order, selectedSortOption.field));
-    setSortedItems(data);
-    setSelectedSortOption(option);
-  };
+  const {
+    selectedSortOption,
+    sortedList: sortedItems,
+    onChangeSortOption,
+  } = useSort(sortOptions[0], items || []);
 
   //Collection mutation
   //handle rename collection and its mutation
@@ -371,7 +355,7 @@ const Collections: NextPage<
               <SortOptionsListbox
                 sortOptions={sortOptions}
                 selectedOption={selectedSortOption}
-                onChangeOption={handleOnChangeSortParam}
+                onChangeOption={onChangeSortOption}
               />
               {/* views  */}
               <ActionIcon

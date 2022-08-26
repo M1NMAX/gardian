@@ -1,15 +1,8 @@
-import { ICollection, IItem, ITemplate } from '../interfaces';
+import { SORT_ASCENDING } from '../../../constants';
+import { IBase } from '../../../interfaces';
+import { FieldType, OrderType } from '../../../types';
 
-type ABTypes = ITemplate | ICollection | IItem;
-type FieldType = 'name' | 'createdAt';
-export type OrderType = 'asc' | 'desc';
-
-export type SortOptionType = { field: FieldType; order: OrderType };
-
-export const SORT_ASCENDING: OrderType = 'asc';
-export const SORT_DESCENDING: OrderType = 'desc';
-
-const sortDate = (a: ABTypes, b: ABTypes, field: 'createdAt') => {
+const sortDate = <T extends IBase>(a: T, b: T, field: 'createdAt') => {
   const l = a[field];
   const r = b[field];
 
@@ -22,7 +15,7 @@ const sortDate = (a: ABTypes, b: ABTypes, field: 'createdAt') => {
   return lx < rx ? -1 : lx > rx ? 1 : 0;
 };
 
-const sortString = (a: ABTypes, b: ABTypes, field: 'name') => {
+const sortString = <T extends IBase>(a: T, b: T, field: 'name') => {
   const l = field ? a[field] : a;
   const r = field ? b[field] : b;
 
@@ -32,8 +25,8 @@ const sortString = (a: ABTypes, b: ABTypes, field: 'name') => {
   return l < r ? -1 : l > r ? 1 : 0;
 };
 
-const sortFun = (order: OrderType, field: FieldType) => {
-  return (a: ABTypes, b: ABTypes) => {
+const sortFun = (field: FieldType, order: OrderType) => {
+  return <T extends IBase>(a: T, b: T) => {
     if (a[field] === b[field]) return 0;
 
     let result: number = 0;

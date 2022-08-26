@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -10,19 +10,17 @@ import Drawer from '../../components/frontstate-ui/Drawer';
 import { createCollection } from '../../services/collections';
 import { addCollectionToGroup, getGroups } from '../../services/group';
 import { useRouter } from 'next/router';
-import { IItem, ITemplate } from '../../interfaces';
+import { IItem } from '../../interfaces';
 import { templates } from '../../data/templates';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import SortOptionsListbox from '../../components/SortOptionsListbox';
+import SortOptionsListbox from '../../features/sort/components/SortOptionsListbox';
 import Header from '../../components/Header';
 import { ActionIcon } from '../../components/frontstate-ui';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
-import sortFun, {
-  SortOptionType,
-  SORT_ASCENDING,
-  SORT_DESCENDING,
-} from '../../utils/sort';
 import useDrawer from '../../hooks/useDrawer';
+import { useSort } from '../../features/sort';
+import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
+import { SortOptionType } from '../../types';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -37,24 +35,20 @@ const TemplatesPage: NextPage<
 
   const drawer = useDrawer(() => setSelectedTemplateId(null));
 
+  //View
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'templateView',
     false
   );
 
-  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionType>(
-    sortOptions[0]
-  );
-  const [sortedTemplates, setSortedTemplates] = useState<ITemplate[]>([]);
+  //Sort templates
+  const {
+    selectedSortOption,
+    sortedList: sortedTemplates,
+    onChangeSortOption,
+  } = useSort(sortOptions[0], templates);
 
-  useEffect(() => {
-    setSortedTemplates(
-      templates.sort(
-        sortFun(selectedSortOption.order, selectedSortOption.field)
-      )
-    );
-  }, []);
-
+  //Selected template
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null
   );
@@ -63,15 +57,6 @@ const TemplatesPage: NextPage<
     () => templates.find((template) => template._id === selectedTemplateId),
     [templates, selectedTemplateId]
   );
-
-  const handleOnChangeSortParam = (option: SortOptionType) => {
-    const data = sortedTemplates
-      .slice()
-      .sort(sortFun(option.order, option.field));
-    setSortedTemplates(data);
-    setSelectedSortOption(option);
-  };
-
   const handleOnClickTemplateOverview = (id: string) => {
     setSelectedTemplateId(id);
     drawer.openDrawer();
@@ -140,7 +125,7 @@ const TemplatesPage: NextPage<
               <SortOptionsListbox
                 sortOptions={sortOptions}
                 selectedOption={selectedSortOption}
-                onChangeOption={handleOnChangeSortParam}
+                onChangeOption={onChangeSortOption}
               />
               {/* views  */}
               <ActionIcon onClick={() => setIsGridView(!isGridView)}>

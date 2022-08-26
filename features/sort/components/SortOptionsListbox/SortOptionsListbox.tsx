@@ -5,8 +5,8 @@ import {
   ArrowUpIcon,
   CheckIcon,
 } from '@heroicons/react/outline';
-
-import { OrderType, SortOptionType } from '../../utils/sort';
+import { OrderType, SortOptionType } from '../../../../types';
+import { SORT_ASCENDING } from '../../../../constants';
 
 interface SortOptionsListboxProps {
   sortOptions: SortOptionType[];
@@ -15,7 +15,7 @@ interface SortOptionsListboxProps {
 }
 
 const SortIcon = ({ order }: { order: OrderType }) =>
-  order === 'asc' ? (
+  order === SORT_ASCENDING ? (
     <ArrowUpIcon className='icon-xxs' />
   ) : (
     <ArrowDownIcon className='icon-xxs' />

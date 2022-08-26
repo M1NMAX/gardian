@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { InferGetServerSidePropsType, NextPage } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
@@ -25,13 +25,10 @@ import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Header from '../../components/Header';
-import SortOptionsListbox from '../../components/SortOptionsListbox';
+import { useSort, SortOptionsListbox } from '../../features/sort';
 import { ActionIcon, Button } from '../../components/frontstate-ui';
-import sortFun, {
-  SortOptionType,
-  SORT_ASCENDING,
-  SORT_DESCENDING,
-} from '../../utils/sort';
+import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
+import { SortOptionType } from '../../types';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -67,28 +64,18 @@ const Collections: NextPage<
   const negativeFeedback = () =>
     toast.success('Something went wrong, try later');
 
-  // sort and views
-  const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]);
+  //views
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
     'myCollectionView',
     false
   );
 
-  const [sortedCollections, setSortedCollections] = useState<ICollection[]>([]);
-  useEffect(() => {
-    if (!collections) return;
-    setSortedCollections(
-      collections.sort(
-        sortFun(selectedSortOption.order, selectedSortOption.field)
-      )
-    );
-  }, [collections]);
-
-  const handleOnChangeSortOption = (option: SortOptionType) => {
-    const data = sortedCollections.sort(sortFun(option.order, option.field));
-    setSortedCollections(data);
-    setSelectedSortOption(option);
-  };
+  //sort
+  const {
+    selectedSortOption,
+    sortedList: sortedCollections,
+    onChangeSortOption,
+  } = useSort(sortOptions[0], collections || []);
 
   return (
     <>
@@ -119,7 +106,7 @@ const Collections: NextPage<
               <SortOptionsListbox
                 sortOptions={sortOptions}
                 selectedOption={selectedSortOption}
-                onChangeOption={handleOnChangeSortOption}
+                onChangeOption={onChangeSortOption}
               />
               {/* views  */}
               <ActionIcon onClick={() => setIsGridView(!isGridView)}>
