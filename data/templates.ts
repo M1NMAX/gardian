@@ -1,3 +1,10 @@
+import {
+  PROPERTY_CHECKBOX,
+  PROPERTY_DATE,
+  PROPERTY_SELECT,
+  PROPERTY_TEXTAREA,
+  PROPERTY_URL,
+} from '../constants';
 import { ITemplate } from '../interfaces';
 
 export const templates: ITemplate[] = [
@@ -7,11 +14,11 @@ export const templates: ITemplate[] = [
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
-      { _id: '1', name: 'Date', type: 'date', values: [] },
+      { _id: '1', name: 'Date', type: PROPERTY_DATE, values: [] },
       {
         _id: '2',
         name: 'Notes',
-        type: 'textarea',
+        type: PROPERTY_TEXTAREA,
         values: [],
       },
     ],
@@ -41,19 +48,19 @@ export const templates: ITemplate[] = [
       {
         _id: '1',
         name: 'Done',
-        type: 'checkbox',
+        type: PROPERTY_CHECKBOX,
         values: [],
       },
       {
         _id: '2',
         name: 'Conclusion date',
-        type: 'date',
+        type: PROPERTY_DATE,
         values: [],
       },
       {
         _id: '3',
         name: 'Notes',
-        type: 'textarea',
+        type: PROPERTY_TEXTAREA,
         values: [],
       },
     ],
@@ -81,7 +88,7 @@ export const templates: ITemplate[] = [
     name: 'Links',
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [{ _id: '1', name: 'URL', type: 'url', values: [''] }],
+    properties: [{ _id: '1', name: PROPERTY_URL, type: 'url', values: [''] }],
     items: [
       {
         name: 'Static data forum',
@@ -114,13 +121,13 @@ export const templates: ITemplate[] = [
       {
         _id: '1',
         name: 'Status',
-        type: 'select',
+        type: PROPERTY_SELECT,
         values: ['Plan to watch', 'Watching', 'Watched'],
       },
       {
         _id: '2',
         name: 'Score',
-        type: 'select',
+        type: PROPERTY_SELECT,
         values: [
           '1-Appaling',
           '2-Horrible',
@@ -137,7 +144,7 @@ export const templates: ITemplate[] = [
       {
         _id: '3',
         name: 'Plataform',
-        type: 'select',
+        type: PROPERTY_SELECT,
         values: ['Netflix', 'Vizer.tv', 'Stremio'],
       },
     ],

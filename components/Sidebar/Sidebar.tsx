@@ -24,9 +24,7 @@ import { getGroups } from '../../services/group';
 import SidebarGroup from './SidebarGroup';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
-
-// tailwind ´md´ screen
-const MD_SCREEN_SIZE: number = 768;
+import { SCREEN_SIZE_MD } from '../../constants';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -41,7 +39,7 @@ const Sidebar: FC = () => {
 
   //Sidebar is open if window width > 768px, tailwind ´md´
   useEffect(() => {
-    if (width > MD_SCREEN_SIZE) setSidebar(true);
+    if (width > SCREEN_SIZE_MD) setSidebar(true);
   }, [width]);
 
   const wrapper = useRef<HTMLDivElement>(null);
@@ -52,7 +50,7 @@ const Sidebar: FC = () => {
         sidebar &&
         wrapper.current &&
         !wrapper.current.contains(event.target) &&
-        width <= MD_SCREEN_SIZE
+        width <= SCREEN_SIZE_MD
       ) {
         setSidebar(false);
       }
@@ -68,12 +66,12 @@ const Sidebar: FC = () => {
   // Click handle for sidebar elements
   const onClickSidebarCollection = (id: string) => {
     router.push('/collections/' + id);
-    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+    if (width <= SCREEN_SIZE_MD) setSidebar(false);
   };
 
   const onClickSiderLink = (url: string) => {
     router.push(url);
-    if (width <= MD_SCREEN_SIZE) setSidebar(false);
+    if (width <= SCREEN_SIZE_MD) setSidebar(false);
   };
 
   //Modals
