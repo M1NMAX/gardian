@@ -1,0 +1,31 @@
+.btn {
+  @apply flex items-center justify-center p-1 rounded;
+}
+
+.full {
+  @apply w-full;
+}
+
+.primary-filled {
+  @apply font-semibold text-white bg-primary-200 hover:bg-primary-300;
+}
+
+.primary-hover {
+  @apply font-semibold text-primary-200  hover:bg-primary-100 hover:bg-opacity-30;
+}
+
+.secondary-filled {
+  @apply bg-gray-100 hover:bg-gray-200;
+}
+
+:global(.dark) .secondary-filled {
+  @apply bg-gray-700 hover:bg-gray-600;
+}
+
+.secondary-hover {
+  @apply hover:bg-gray-300;
+}
+
+:global(.dark) .secondary-hover {
+  @apply hover:bg-gray-600;
+}

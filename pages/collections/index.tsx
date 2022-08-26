@@ -26,7 +26,7 @@ import dbConnect from '../../backend/database/dbConnect';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import Header from '../../components/Header';
 import SortOptionsListbox from '../../components/SortOptionsListbox';
-import { ActionIcon } from '../../components/frontstate-ui';
+import { ActionIcon, Button } from '../../components/frontstate-ui';
 import sortFun, {
   SortOptionType,
   SORT_ASCENDING,
@@ -75,14 +75,14 @@ const Collections: NextPage<
   );
 
   const [sortedCollections, setSortedCollections] = useState<ICollection[]>([]);
-  useEffect(() => {
-    if (!collections) return;
-    setSortedCollections(
-      collections.sort(
-        sortFun(selectedSortOption.order, selectedSortOption.field)
-      )
-    );
-  }, [collections]);
+  // useEffect(() => {
+  //   if (!collections) return;
+  //   setSortedCollections(
+  //     collections.sort(
+  //       sortFun(selectedSortOption.order, selectedSortOption.field)
+  //     )
+  //   );
+  // }, [collections]);
 
   const handleOnChangeSortOption = (option: SortOptionType) => {
     const data = sortedCollections.sort(sortFun(option.order, option.field));
@@ -106,16 +106,16 @@ const Collections: NextPage<
             My Collections
           </h1>
 
-          {!isLoading && sortedCollections.length >= 0 && (
+          {!isLoading && sortedCollections.length > 0 && (
             <div className='flex items-center space-x-1.5'>
-              <button
-                onClick={createCollectionModal.openModal}
-                className='btn btn-primary'>
-                <span className=' icon-sm'>
-                  <PlusIcon />
-                </span>
-                <span className='hidden md:block'>New Collection</span>
-              </button>
+              <span className='hidden md:block'>
+                <Button
+                  onClick={createCollectionModal.openModal}
+                  variant='primary-hover'>
+                  <PlusIcon className='icon-sm' />
+                  <span>New Collection</span>
+                </Button>
+              </span>
 
               {/*SORT */}
               <SortOptionsListbox
@@ -134,47 +134,39 @@ const Collections: NextPage<
             </div>
           )}
         </Header>
-
-        {/* Is loading  */}
-        {isLoading && (
-          <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
-            <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
-            <span className='font-medium'> Loading ...</span>
-          </div>
-        )}
-
-        {/* loading state is finish and there are no collection  */}
-        {!isLoading && sortedCollections.length === 0 && (
-          <div className='flex justify-between items-center space-y-4 px-4'>
-            {/** add collection btn */}
-            <button
-              onClick={createCollectionModal.openModal}
-              className={`${
-                !isLoading &&
-                collections &&
-                collections.length === 0 &&
-                'w-full justify-center'
-              } btn btn-primary`}>
-              <span className='icon-sm'>
-                <PlusIcon />
-              </span>
-              <span>New Collection</span>
-            </button>
-          </div>
-        )}
-
-        {/* loading state is finished and there are collection */}
-        {!isLoading && sortedCollections.length > 0 && (
-          <div
-            className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+        <div
+          className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
-            {/* Collections  */}
+          {/* Is loading  */}
+          {isLoading && (
+            <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
+              <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
+              <span className='font-medium'> Loading ...</span>
+            </div>
+          )}
+
+          {/* loading state is finish and there are no collection  */}
+          {!isLoading && sortedCollections.length === 0 && (
+            <span className='hidden md:block'>
+              <Button
+                onClick={createCollectionModal.openModal}
+                variant='primary-filled'
+                full>
+                <PlusIcon className='icon-sm' />
+                <span>New Collection</span>
+              </Button>
+            </span>
+          )}
+
+          {/* loading state is finished and there are collection */}
+          {!isLoading && sortedCollections.length > 0 && (
             <div
               className={`${
                 isGridView
                   ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
               }  `}>
+              {/* Collections  */}
               {sortedCollections &&
                 sortedCollections.map((collection, idx) => (
                   <CollectionOverview
@@ -185,8 +177,8 @@ const Collections: NextPage<
                   />
                 ))}
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
       <Toaster />
 
