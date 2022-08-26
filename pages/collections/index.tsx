@@ -75,14 +75,14 @@ const Collections: NextPage<
   );
 
   const [sortedCollections, setSortedCollections] = useState<ICollection[]>([]);
-  // useEffect(() => {
-  //   if (!collections) return;
-  //   setSortedCollections(
-  //     collections.sort(
-  //       sortFun(selectedSortOption.order, selectedSortOption.field)
-  //     )
-  //   );
-  // }, [collections]);
+  useEffect(() => {
+    if (!collections) return;
+    setSortedCollections(
+      collections.sort(
+        sortFun(selectedSortOption.order, selectedSortOption.field)
+      )
+    );
+  }, [collections]);
 
   const handleOnChangeSortOption = (option: SortOptionType) => {
     const data = sortedCollections.sort(sortFun(option.order, option.field));
@@ -107,15 +107,13 @@ const Collections: NextPage<
           </h1>
 
           {!isLoading && sortedCollections.length > 0 && (
-            <div className='flex items-center space-x-1.5'>
-              <span className='hidden md:block'>
-                <Button
-                  onClick={createCollectionModal.openModal}
-                  variant='primary-hover'>
-                  <PlusIcon className='icon-sm' />
-                  <span>New Collection</span>
-                </Button>
-              </span>
+            <div className='flex items-center space-x-2'>
+              <Button
+                onClick={createCollectionModal.openModal}
+                variant='primary-hover'>
+                <PlusIcon className='icon-md md:icon-sm ' />
+                <span className='hidden md:block'>New Collection</span>
+              </Button>
 
               {/*SORT */}
               <SortOptionsListbox
@@ -147,15 +145,13 @@ const Collections: NextPage<
 
           {/* loading state is finish and there are no collection  */}
           {!isLoading && sortedCollections.length === 0 && (
-            <span className='hidden md:block'>
-              <Button
-                onClick={createCollectionModal.openModal}
-                variant='primary-filled'
-                full>
-                <PlusIcon className='icon-sm' />
-                <span>New Collection</span>
-              </Button>
-            </span>
+            <Button
+              onClick={createCollectionModal.openModal}
+              variant='primary-filled'
+              full>
+              <PlusIcon className='icon-sm' />
+              <span>New Collection</span>
+            </Button>
           )}
 
           {/* loading state is finished and there are collection */}
