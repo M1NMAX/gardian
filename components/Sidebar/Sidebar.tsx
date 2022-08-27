@@ -166,7 +166,7 @@ const Sidebar: FC = () => {
               <span>New Collection</span>
             </button>
             <ActionIcon onClick={() => createGroupModal.openModal()}>
-              <ViewGridAddIcon />
+              <ViewGridAddIcon className='icon-sm' />
             </ActionIcon>
           </div>
         </div>

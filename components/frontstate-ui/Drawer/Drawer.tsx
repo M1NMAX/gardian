@@ -35,7 +35,7 @@ const Drawer: DrawerComponent = (props) => {
   rounded bg-gray-100 dark:bg-gray-800 overflow-hidden`}>
       <div className='flex justify-between'>
         <ActionIcon variant='filled' onClick={onClose}>
-          <XIcon />
+          <XIcon className='icon-sm' />
         </ActionIcon>
         <span className='grow px-1.5'>{title}</span>
         {menu}

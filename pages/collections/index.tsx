@@ -111,9 +111,9 @@ const Collections: NextPage<
               {/* views  */}
               <ActionIcon onClick={() => setIsGridView(!isGridView)}>
                 {isGridView ? (
-                  <ViewGridIcon />
+                  <ViewGridIcon className='icon-sm' />
                 ) : (
-                  <ViewBoardsIcon className='rotate-90' />
+                  <ViewBoardsIcon className='icon-sm rotate-90' />
                 )}
               </ActionIcon>
             </div>

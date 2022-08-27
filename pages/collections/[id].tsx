@@ -361,9 +361,9 @@ const Collections: NextPage<
                 variant='filled'
                 onClick={() => setIsGridView(!isGridView)}>
                 {isGridView ? (
-                  <ViewGridIcon />
+                  <ViewGridIcon className='icon-sm' />
                 ) : (
-                  <ViewBoardsIcon className='rotate-90' />
+                  <ViewBoardsIcon className='icon-sm rotate-90' />
                 )}
               </ActionIcon>
 
@@ -445,7 +445,7 @@ const Collections: NextPage<
               <div className='flex items-center space-x-2 font-semibold'>
                 <h1>{selectedItem.name}</h1>
                 <ActionIcon onClick={renameItemModal.openModal}>
-                  <PencilIcon />
+                  <PencilIcon className='icon-xs' />
                 </ActionIcon>
               </div>
             }

@@ -20,7 +20,7 @@ const Header: FC<HeaderProps> = (props) => {
         {/* Menu btn  */}
         {!sidebar && (
           <ActionIcon onClick={openSidebar}>
-            <MenuAlt2Icon />
+            <MenuAlt2Icon className='icon-sm' />
           </ActionIcon>
         )}
 

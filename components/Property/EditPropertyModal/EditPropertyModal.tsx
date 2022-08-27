@@ -98,10 +98,9 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
 
                 <span className='px-1'>{value}</span>
               </div>
-              <ActionIcon
-                icon={<TrashIcon />}
-                onClick={() => removeValue(idx)}
-              />
+              <ActionIcon onClick={() => removeValue(idx)}>
+                <TrashIcon className='icon-sm' />
+              </ActionIcon>
             </span>
           ))}
 
@@ -115,12 +114,9 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
                   onChange={(e) => setNewValue(e.target.value)}
                   className='modal-input'
                 />
-
-                <ActionIcon
-                  icon={<ArrowUpIcon />}
-                  onClick={() => addValue(newValue)}
-                  variant='filled'
-                />
+                <ActionIcon onClick={() => addValue(newValue)}>
+                  <ArrowUpIcon className='icon-sm' />
+                </ActionIcon>
               </div>
             </label>
           </div>
