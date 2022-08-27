@@ -4,21 +4,19 @@ import toast from 'react-hot-toast';
 import {
   addItemToCollection,
   createCollection,
-} from '../../../services/collections';
-import RenameModal from '../../RenameModal';
-import DeleteModal from '../../DeleteModal';
-import useModal from '../../../hooks/useModal';
+} from '../../../../services/collections';
+import RenameModal from '../../../../components/RenameModal';
+import DeleteModal from '../../../../components/DeleteModal';
+import useModal from '../../../../hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
 import { useMutation, useQueryClient } from 'react-query';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
-} from '../../../services/group';
-import { createItem, getItem } from '../../../services/item';
-import {
-  MoveCollectionModal,
-  useCollection,
-} from '../../../features/collections';
+} from '../../../../services/group';
+import { createItem, getItem } from '../../../../services/item';
+import MoveCollectionModal from '../MoveCollectionModal';
+import useCollection from '../../hooks/useCollection';
 
 interface SidebarCollectionProps {
   collectionId: string;

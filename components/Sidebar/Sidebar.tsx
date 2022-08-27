@@ -9,13 +9,15 @@ import {
 } from '@heroicons/react/outline';
 import SidebarBtn from './SidebarBtn';
 import { ActionIcon } from '../frontstate-ui';
-import SidebarCollection from './SidebarCollection';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
-import { CreateCollectionModal } from '../../features/collections';
+import {
+  CreateCollectionModal,
+  SidebarCollection,
+} from '../../features/collections';
 import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
 import { IGroup } from '../../interfaces';
