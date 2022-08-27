@@ -21,7 +21,7 @@ import {
 import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
 import { IGroup } from '../../interfaces';
-import { getGroups } from '../../services/group';
+import { getGroups } from '../../features/groups/services';
 import { CreateGroupModal, SidebarGroup } from '../../features/groups';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';

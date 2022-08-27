@@ -1,10 +1,7 @@
 import React, { FC } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
-import {
-  addItemToCollection,
-  createCollection,
-} from '../../../../features/collections';
+import { addItemToCollection, createCollection } from '../../services';
 import RenameModal from '../../../../components/RenameModal';
 import DeleteModal from '../../../../components/DeleteModal';
 import useModal from '../../../../hooks/useModal';
@@ -13,7 +10,7 @@ import { useMutation, useQueryClient } from 'react-query';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
-} from '../../../../services/group';
+} from '../../../groups/services';
 import { createItem, getItem } from '../../../../services/item';
 import MoveCollectionModal from '../MoveCollectionModal';
 import useCollection from '../../hooks/useCollection';

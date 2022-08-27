@@ -11,7 +11,7 @@ import {
   updateCollectionDescription,
   updateCollectionProperty,
 } from '../services';
-import { removeCollectionFromGroup } from '../../../services/group';
+import { removeCollectionFromGroup } from '../../groups/services';
 import {
   addPropertyToItem,
   deleteItem,

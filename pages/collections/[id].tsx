@@ -36,7 +36,7 @@ import { removeItemFromCollection } from '../../features/collections';
 import { useSort, SortOptionsListbox } from '../../features/sort';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';
-import { getGroupWithCid } from '../../services/group';
+import { getGroupWithCid } from '../../features/groups';
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [

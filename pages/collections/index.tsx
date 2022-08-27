@@ -19,7 +19,7 @@ import {
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import { ICollection, IGroup } from '../../interfaces';
-import { getGroups } from '../../services/group';
+import { getGroups } from '../../features/groups/services';
 import useModal from '../../hooks/useModal';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';

@@ -5,7 +5,7 @@ import { RadioGroup } from '@headlessui/react';
 import { IGroup } from '../../../../interfaces';
 import { createCollection } from '../../../../features/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { addCollectionToGroup } from '../../../../services/group';
+import { addCollectionToGroup } from '../../../groups';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 
