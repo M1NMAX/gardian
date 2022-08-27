@@ -33,9 +33,7 @@ const SidebarGroupMenu: FC<SidebarGroupMenuProps> = (props) => {
             as='ul'
             className='absolute z-10 w-52 p-1 rounded-r-lg rounded-bl-lg rounded-tl   origin-top-right bg-gray-200 dark:bg-gray-800'>
             <Menu.Item as='li'>
-              <button
-                onClick={onClickRename}
-                className='w-full space-x-1 btn btn-secondary'>
+              <button onClick={onClickRename} className='menu-item-btn'>
                 <PencilIcon className='icon-sm' />
                 <span>Rename</span>
               </button>
@@ -44,9 +42,7 @@ const SidebarGroupMenu: FC<SidebarGroupMenuProps> = (props) => {
             {/* Only show delete btn if group empty */}
             {showDelete && (
               <Menu.Item as='li'>
-                <button
-                  onClick={onClickDelete}
-                  className='w-full space-x-1 btn btn-secondary'>
+                <button onClick={onClickDelete} className='menu-item-btn'>
                   <TrashIcon className='icon-sm' />
                   <span> Delete </span>
                 </button>

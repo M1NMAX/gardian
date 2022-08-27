@@ -50,9 +50,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
              z-10 w-52 p-1  rounded-b-lg rounded-tl-lg md:rounded-tl-none md:rounded-tr-lg
               origin-top-right bg-gray-200 dark:bg-gray-800'>
             <Menu.Item as='li'>
-              <button
-                onClick={onClickDelete}
-                className='w-full space-x-1 btn btn-secondary'>
+              <button onClick={onClickDelete} className='menu-item-btn'>
                 <TrashIcon className='icon-sm' />
                 <span> Delete </span>
               </button>
@@ -80,9 +78,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button
-                onClick={onClickRename}
-                className='w-full space-x-1 btn btn-secondary'>
+              <button onClick={onClickRename} className='menu-item-btn'>
                 <PencilIcon className='icon-sm' />
                 <span>Rename</span>
               </button>
