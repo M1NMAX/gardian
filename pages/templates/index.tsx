@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import TemplateOverview from '../../components/TemplateOverview';
 import Drawer from '../../components/frontstate-ui/Drawer';
-import { createCollection } from '../../services/collections';
+import { createCollection } from '../../features/collections';
 import { addCollectionToGroup, getGroups } from '../../services/group';
 import { useRouter } from 'next/router';
 import { IItem } from '../../interfaces';

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { createCollection } from '../../../services/collections';
+import { createCollection } from '../../../features/collections';
 import {
   addCollectionToGroup,
   deleteGroup,

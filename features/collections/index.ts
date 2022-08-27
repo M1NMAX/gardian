@@ -5,3 +5,5 @@ export { default as CollectionOverview } from './components/CollectionOverview';
 export { default as SidebarCollection } from './components/SidebarCollection';
 
 export { default as useCollection } from './hooks/useCollection';
+
+export * from './services';

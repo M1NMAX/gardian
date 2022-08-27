@@ -32,7 +32,7 @@ import { Editor } from '../../features/Editor';
 import useDrawer from '../../hooks/useDrawer';
 import Header from '../../components/Header';
 import RenameModal from '../../components/RenameModal';
-import { removeItemFromCollection } from '../../services/collections';
+import { removeItemFromCollection } from '../../features/collections';
 import { useSort, SortOptionsListbox } from '../../features/sort';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';

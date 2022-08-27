@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { addItemToCollection } from '../../../../services/collections';
+import { addItemToCollection } from '../../../../features/collections';
 import { createItem } from '../../../../services/item';
 import { ICollection, IItemProperty } from '../../../../interfaces';
 import { Modal } from '../../../../components/frontstate-ui';

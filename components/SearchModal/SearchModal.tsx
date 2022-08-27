@@ -2,7 +2,7 @@ import { ChevronRightIcon, SearchIcon } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
-import { getCollections } from '../../services/collections';
+import { getCollections } from '../../features/collections';
 import { ICollection } from '../../interfaces';
 import { Modal } from '../frontstate-ui';
 

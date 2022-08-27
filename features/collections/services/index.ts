@@ -1,5 +1,5 @@
-import { ICollection, IProperty } from '../../interfaces';
-import { getRequestOptions } from '../utils';
+import { ICollection, IProperty } from '../../../interfaces';
+import { getRequestOptions } from '../../../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 

@@ -3,7 +3,7 @@ import { Label, Modal } from '../../../../components/frontstate-ui';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
 import { IGroup } from '../../../../interfaces';
-import { createCollection } from '../../../../services/collections';
+import { createCollection } from '../../../../features/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import { addCollectionToGroup } from '../../../../services/group';
 import { useMutation, useQueryClient } from 'react-query';

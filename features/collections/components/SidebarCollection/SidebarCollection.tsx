@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import {
   addItemToCollection,
   createCollection,
-} from '../../../../services/collections';
+} from '../../../../features/collections';
 import RenameModal from '../../../../components/RenameModal';
 import DeleteModal from '../../../../components/DeleteModal';
 import useModal from '../../../../hooks/useModal';

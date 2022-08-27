@@ -4,7 +4,7 @@ import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getCollections } from '../../services/collections';
+import { getCollections } from '../../features/collections';
 import {
   CreateCollectionModal,
   CollectionOverview,

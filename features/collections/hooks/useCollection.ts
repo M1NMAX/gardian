@@ -10,7 +10,7 @@ import {
   toggleCollectionIsFavourite,
   updateCollectionDescription,
   updateCollectionProperty,
-} from '../../../services/collections';
+} from '../services';
 import { removeCollectionFromGroup } from '../../../services/group';
 import {
   addPropertyToItem,
