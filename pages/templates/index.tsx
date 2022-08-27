@@ -128,7 +128,9 @@ const TemplatesPage: NextPage<
                 onChangeOption={onChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon onClick={() => setIsGridView(!isGridView)}>
+              <ActionIcon
+                variant='filled'
+                onClick={() => setIsGridView(!isGridView)}>
                 {isGridView ? (
                   <ViewGridIcon className='icon-sm' />
                 ) : (

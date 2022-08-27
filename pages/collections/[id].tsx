@@ -337,9 +337,14 @@ const Collections: NextPage<
           scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth`}>
           {/* Header  */}
           <Header>
-            <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
-              {collectionData ? collectionData.name : 'Loading'}
-            </h1>
+            <div className='grow flex items-center space-x-1 font-semibold'>
+              <h1 className='text-2xl'>
+                {collectionData ? collectionData.name : 'Loading'}
+              </h1>
+              <ActionIcon onClick={renameCollectionModal.openModal}>
+                <PencilIcon className='icon-xxs' />
+              </ActionIcon>
+            </div>
             <div className='flex items-center space-x-1.5'>
               {/* new item btn  */}
               <button
@@ -442,10 +447,10 @@ const Collections: NextPage<
             opened={drawer.isOpen}
             onClose={drawer.closeDrawer}
             title={
-              <div className='flex items-center space-x-2 font-semibold'>
-                <h1>{selectedItem.name}</h1>
+              <div className='flex items-center space-x-1 font-semibold'>
+                <h1 className='text-2xl'>{selectedItem.name}</h1>
                 <ActionIcon onClick={renameItemModal.openModal}>
-                  <PencilIcon className='icon-xs' />
+                  <PencilIcon className='icon-xxs' />
                 </ActionIcon>
               </div>
             }
