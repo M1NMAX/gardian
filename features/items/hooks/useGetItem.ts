@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IItemProperty } from '../../../interfaces';
 import { getItem } from '../services';
 
@@ -6,7 +6,7 @@ const useGetItem = (id: string) => {
   const [name, setName] = useState('');
   const [properties, setProperties] = useState<IItemProperty[]>([]);
 
-  const fetchItem = useCallback(async () => {
+  const fetchItem = async () => {
     try {
       const item = await getItem(id);
       setName(item.name);
@@ -14,13 +14,13 @@ const useGetItem = (id: string) => {
     } catch (error) {
       console.log(error);
     }
-  }, [id]);
+  };
 
   const refetch = () => fetchItem();
 
   useEffect(() => {
     fetchItem();
-  }, [fetchItem]);
+  }, [id]);
 
   const setPropertyValue = (pid: string, value: string) => {
     setProperties(

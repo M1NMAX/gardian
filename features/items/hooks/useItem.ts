@@ -1,18 +1,18 @@
-import { useCallback } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { removeItemFromCollection } from '../../collections';
 import { deleteItem, renameItem, updateItemProperty } from '../services';
 
 const useItem = (id: string, cid: string) => {
   const queryClient = useQueryClient();
 
-  const invalidateItemsQueries = useCallback(() => {
+  const invalidateItemsQueries = () => {
     queryClient.invalidateQueries(['items', cid]);
-  }, [cid]);
+  };
 
-  const invalidateCollectionQueries = useCallback(() => {
+  const invalidateCollectionQueries = () => {
     queryClient.invalidateQueries(['collection', cid]);
     queryClient.invalidateQueries(['sidebarCollection', cid]);
-  }, [id, cid]);
+  };
 
   const { mutate: renameItemMutateFun } = useMutation(
     async (name: string) => {
@@ -25,7 +25,8 @@ const useItem = (id: string, cid: string) => {
     }
   );
   const { mutate: deleteItemMutateFun } = useMutation(deleteItem, {
-    onSuccess: () => {
+    onSuccess: async () => {
+      await removeItemFromCollection(cid, id);
       invalidateCollectionQueries();
       invalidateItemsQueries();
     },
