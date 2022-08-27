@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICollection, IProperty } from '../../../interfaces';
 import {
@@ -12,18 +11,28 @@ import {
   updateCollectionDescription,
   updateCollectionProperty,
 } from '../../../services/collections';
+import { removeCollectionFromGroup } from '../../../services/group';
+import {
+  addPropertyToItem,
+  deleteItem,
+  removePropertyFromItem,
+} from '../../../services/item';
 
-const useCollection = (cid: string, key: string = 'collection') => {
+const useCollection = (
+  cid: string,
+  gid: string,
+  key: string = 'collection'
+) => {
   const queryClient = useQueryClient();
 
-  const invalidateCollectionQueries = useCallback(() => {
+  const invalidateCollectionQueries = () => {
     queryClient.invalidateQueries(['sidebarCollection', cid]);
     queryClient.invalidateQueries(['collection', cid]);
-  }, [cid]);
+  };
 
-  const invalidateItemsQueries = useCallback(() => {
+  const invalidateItemsQueries = () => {
     queryClient.invalidateQueries(['items', cid]);
-  }, [cid]);
+  };
 
   const query = useQuery<ICollection>([key, cid], () => getCollection(cid));
 
@@ -56,9 +65,17 @@ const useCollection = (cid: string, key: string = 'collection') => {
   );
 
   const { mutate: deleteCollectionMutateFun } = useMutation(deleteCollection, {
-    onSuccess: () => {
+    onSuccess: async () => {
+      if (!query.data) throw 'Collection is undefined';
+      const { items } = query.data;
+      //Delete all collection items
+      items.map(async (itemId) => await deleteItem(itemId));
+      await removeCollectionFromGroup(gid, cid);
+
       queryClient.removeQueries(['sidebarCollection', cid]);
       queryClient.removeQueries(['collection', cid]);
+      queryClient.invalidateQueries(['groups']);
+      queryClient.invalidateQueries(['collections']);
     },
   });
 
@@ -66,8 +83,26 @@ const useCollection = (cid: string, key: string = 'collection') => {
   const { mutate: addPropertyToCollectionMutateFun } = useMutation(
     addPropertyToCollection,
     {
-      onSuccess: () => {
+      onSuccess: async (data) => {
+        const { items, properties } = data;
+
+        //get the lastest Collection property base on creation date
+        const lastestProperty = properties.reduce((a, b) => {
+          const aDate = a.createdAt ? new Date(a.createdAt) : Date.now;
+          const bDate = b.createdAt ? new Date(b.createdAt) : Date.now;
+          return aDate > bDate ? a : b;
+        });
+
+        // add placeholder for this property into collection items
+        items.map(async (itemId) => {
+          await addPropertyToItem(itemId, {
+            _id: lastestProperty._id,
+            value: '',
+          });
+        });
+
         invalidateCollectionQueries();
+        invalidateItemsQueries();
       },
     }
   );
@@ -85,7 +120,13 @@ const useCollection = (cid: string, key: string = 'collection') => {
   const { mutate: deleteCollectionPropertyMutateFun } = useMutation(
     removePropertyFromCollection,
     {
-      onSuccess: () => {
+      onSuccess: ({ propertyId }) => {
+        if (!query.data) throw 'Collection is undefined';
+        const { items } = query.data;
+        //Remove property from collection items
+        items.map(async (itemId) => {
+          await removePropertyFromItem(itemId, propertyId);
+        });
         invalidateCollectionQueries();
         invalidateItemsQueries();
       },

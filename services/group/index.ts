@@ -53,3 +53,15 @@ export async function removeCollectionFromGroup(
   });
   return res.json().then((response) => response.isSuccess);
 }
+
+export async function getGroupWithCid(cid: string) {
+  try {
+    const groups = await getGroups();
+
+    const group = groups.find((group) => group.collections.includes(cid));
+    return group ? group : ({} as IGroup);
+  } catch (error) {
+    console.log(error);
+    return {} as IGroup;
+  }
+}

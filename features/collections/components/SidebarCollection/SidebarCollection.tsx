@@ -32,8 +32,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () =>
-    toast.success('Something went wrong, try later');
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //Modals
   const deleteCollectionModal = useModal();
@@ -43,7 +42,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const queryClient = useQueryClient();
 
   //Fetch collection
-  const collection = useCollection(collectionId, 'sidebarCollection');
+  const collection = useCollection(collectionId, groupId, 'sidebarCollection');
   const collectionData = collection.query.data;
 
   //handle rename collection and its mutation
@@ -64,8 +63,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   //handle delete collection and its mutation
   const handleDeleteCollection = () => {
     collection.deleteCollectionMutateFun(collectionId, {
-      onSuccess: async () => {
-        await removeCollectionFromGroup(groupId, collectionId);
+      onSuccess: () => {
         positiveFeedback('Collection deleted');
         if (collectionId === urlId) router.push('/collections');
       },

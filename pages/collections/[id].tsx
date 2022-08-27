@@ -6,14 +6,10 @@ import Head from 'next/head';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useQuery, useQueryClient } from 'react-query';
-import { ICollection, IProperty } from '../../interfaces';
+import { useQuery } from 'react-query';
+import { IGroup, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
-import {
-  addPropertyToItem,
-  getItems,
-  removePropertyFromItem,
-} from '../../services/item';
+import { getItems } from '../../services/item';
 import { ActionIcon, Drawer } from '../../components/frontstate-ui';
 import {
   CreateItemModal,
@@ -40,6 +36,7 @@ import { removeItemFromCollection } from '../../services/collections';
 import { useSort, SortOptionsListbox } from '../../features/sort';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';
+import { getGroupWithCid } from '../../services/group';
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
@@ -74,9 +71,24 @@ const Collections: NextPage<
   const [isGridView, setIsGridView] = useState<boolean>(false);
 
   //Fetch
-  const queryClient = useQueryClient();
+  //Fetch group information
+  const [groupInfo, setGroupInfo] = useState<IGroup>();
+  useEffect(() => {
+    if (!id || Array.isArray(id)) return;
+
+    const fetchGroupInfo = async (cid: string) => {
+      const result = await getGroupWithCid(cid);
+      setGroupInfo(result);
+    };
+
+    fetchGroupInfo(id);
+  }, [id]);
+
   //Fetch collection
-  const collection = useCollection(id && !Array.isArray(id) ? id : rand);
+  const collection = useCollection(
+    id && !Array.isArray(id) ? id : rand,
+    groupInfo && groupInfo._id ? groupInfo._id : rand
+  );
   const collectionData = collection.query.data;
   const isLoading = collection.query.isLoading;
 
@@ -164,10 +176,10 @@ const Collections: NextPage<
 
   //Handle selected item
   //selectedItem hold item data and some utils function
-  //secondSelectedItem hold all selected item mutate fun
+  //selectedItemMutations hold all selected item mutate fun
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const selectedItem = useGetItem(selectedItemId || rand);
-  const secondSelectedItem = useItem(
+  const selectedItemMutations = useItem(
     selectedItemId || rand,
     collectionId || rand
   );
@@ -180,7 +192,7 @@ const Collections: NextPage<
   //Item mutation
   //Handle rename item mutation
   const handleRenameItem = (name: string) => {
-    secondSelectedItem.renameItemMutateFun(name, {
+    selectedItemMutations.renameItemMutateFun(name, {
       onSuccess: () => {
         positiveFeedback('Item renamed');
         selectedItem.refetch();
@@ -199,7 +211,7 @@ const Collections: NextPage<
     if (!id || !selectedItemId) return;
 
     selectedItem.setPropertyValue(id, value);
-    secondSelectedItem.updateItemPropertyMutateFun(
+    selectedItemMutations.updateItemPropertyMutateFun(
       {
         itemId: selectedItemId,
         propertyId: id,
@@ -216,7 +228,7 @@ const Collections: NextPage<
   const handleDeleteItem = () => {
     if (!collectionId || !selectedItemId) return;
 
-    secondSelectedItem.deleteItemMutateFun(selectedItemId, {
+    selectedItemMutations.deleteItemMutateFun(selectedItemId, {
       onSuccess: async () => {
         await removeItemFromCollection(collectionId, selectedItemId);
         positiveFeedback('Item deleted');
@@ -231,17 +243,6 @@ const Collections: NextPage<
     });
   };
 
-  //Util
-  // add the lastest collection property to all collection items
-  const addPorpertyToAllItem = (collection: ICollection) => {
-    //get id of the lastest collection's property
-    const { _id } = collection.properties[collection.properties.length - 1];
-
-    collection.items.map((itemId) => {
-      addPropertyToItem(itemId, { _id, value: '' });
-    });
-  };
-
   //handle user interation with property menu
   const handleOnClickAddProperty = async () => {
     if (!collectionId) return;
@@ -251,9 +252,7 @@ const Collections: NextPage<
         property: { name: 'property', type: 'text', values: [] },
       },
       {
-        onSuccess(data) {
-          addPorpertyToAllItem(data);
-          queryClient.invalidateQueries(['items', collectionId]);
+        onSuccess: () => {
           selectedItem.refetch();
         },
         onError: () => {
@@ -266,14 +265,9 @@ const Collections: NextPage<
   const handleDuplicateProperty = async (property: IProperty) => {
     if (!collectionId) return;
     collection.addPropertyToCollectionMutateFun(
+      { collectionId, property },
       {
-        collectionId,
-        property,
-      },
-      {
-        onSuccess(data) {
-          addPorpertyToAllItem(data);
-          queryClient.invalidateQueries(['items', collectionId]);
+        onSuccess: () => {
           selectedItem.refetch();
         },
         onError: () => {
@@ -290,7 +284,7 @@ const Collections: NextPage<
       { collectionId, propertyId: property._id, property },
       {
         onSuccess: () => {
-          positiveFeedback('DID IT');
+          positiveFeedback('Property updated');
         },
         onError: () => {
           negativeFeedback();
@@ -305,12 +299,7 @@ const Collections: NextPage<
     collection.deleteCollectionPropertyMutateFun(
       { collectionId, propertyId },
       {
-        onSuccess: async ({ propertyId }) => {
-          if (!collection.query.data) return;
-          //Remove property from collection items
-          collection.query.data.items.map((itemId) =>
-            removePropertyFromItem(itemId, propertyId)
-          );
+        onSuccess: () => {
           positiveFeedback('Property removed');
         },
         onError: () => {
