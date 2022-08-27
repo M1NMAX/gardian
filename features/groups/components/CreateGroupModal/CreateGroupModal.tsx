@@ -1,8 +1,8 @@
 import { ViewGridAddIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { createGroup } from '../../services/group';
-import { Label, Modal } from '../frontstate-ui';
+import { createGroup } from '../../../../services/group';
+import { Label, Modal } from '../../../../components/frontstate-ui';
 
 interface CreateGroupModalProps {
   open: boolean;
@@ -21,7 +21,7 @@ const CreateGroupModal: FC<CreateGroupModalProps> = (props) => {
   const createGroupMutation = useMutation(createGroup, {
     onSuccess: () => {
       queryClient.invalidateQueries(['groups']);
-      positiveFeedback('Group dreated');
+      positiveFeedback('Group created');
     },
     onError: () => {
       negativeFeedback();

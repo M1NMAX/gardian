@@ -1,46 +1,39 @@
-import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon, LightningBoltIcon } from '@heroicons/react/outline';
 import React, { FC, ReactNode } from 'react';
+import { Disclosure } from '@headlessui/react';
+import { ChevronRightIcon } from '@heroicons/react/outline';
 import toast from 'react-hot-toast';
-import { useMutation, useQueryClient } from 'react-query';
-import { deleteGroup, renameGroup } from '../../../services/group';
-import useModal from '../../../hooks/useModal';
-import { IGroup } from '../../../interfaces';
-import DeleteModal from '../../DeleteModal';
-import RenameModal from '../../RenameModal';
+import useModal from '../../../../hooks/useModal';
+import { IGroup } from '../../../../interfaces';
+import DeleteModal from '../../../../components/DeleteModal';
+import RenameModal from '../../../../components/RenameModal';
 import SidebarGroupMenu from '../SidebarGroupMenu';
+import useGroup from '../../hooks/useGroup';
 
 interface SidebarGroupProps {
   children: ReactNode;
   group: IGroup;
 }
 
+const rand = 'random';
 const SidebarGroup: FC<SidebarGroupProps> = (props) => {
   const { children, group } = props;
   const { _id: id, name } = group;
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () =>
-    toast.success('Something went wrong, try later');
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //Modals
   const renameGroupModal = useModal();
   const deleteGroupModal = useModal();
 
-  const queryClient = useQueryClient();
+  const groupMutations = useGroup(id || rand);
 
   //handle rename Group and its mutation
-  const renameGroupMutation = useMutation(
-    async (name: string) => {
-      if (!id) return;
-      await renameGroup(id, name);
-    },
-    {
+  const handleRenameGroup = (name: string) => {
+    groupMutations.renameGroupMutateFun(name, {
       onSuccess: () => {
-        queryClient.invalidateQueries(['groups']);
-
-        positiveFeedback('Success');
+        positiveFeedback('Group renamed');
       },
       onError: () => {
         negativeFeedback();
@@ -48,19 +41,15 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
       onSettled: () => {
         renameGroupModal.closeModal();
       },
-    }
-  );
+    });
+  };
 
   //handle delete group and its mutation
-  const deleteGroupMutation = useMutation(
-    async () => {
-      if (!id) return;
-      await deleteGroup(id);
-    },
-    {
+  const handleDeleteGroup = () => {
+    if (!id) return;
+    groupMutations.deleteGroupMutateFun(id, {
       onSuccess: () => {
-        positiveFeedback('Success');
-        queryClient.invalidateQueries(['groups']);
+        positiveFeedback('Group deleted');
       },
       onError: () => {
         negativeFeedback();
@@ -68,8 +57,8 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
       onSettled: () => {
         deleteGroupModal.closeModal();
       },
-    }
-  );
+    });
+  };
 
   return (
     <>
@@ -111,7 +100,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
           open={renameGroupModal.isOpen}
           handleClose={renameGroupModal.closeModal}
           name={name}
-          onRename={renameGroupMutation.mutate}
+          onRename={handleRenameGroup}
         />
       )}
 
@@ -120,7 +109,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
           open={deleteGroupModal.isOpen}
           handleClose={deleteGroupModal.closeModal}
           name={name}
-          onDelete={deleteGroupMutation.mutate}
+          onDelete={handleDeleteGroup}
         />
       )}
     </>
