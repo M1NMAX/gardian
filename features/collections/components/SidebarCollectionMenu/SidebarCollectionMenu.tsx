@@ -31,7 +31,8 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
   return (
     <Menu as='div' className='relative'>
       <Menu.Button
-        className={`flex items-center p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600`}>
+        className='flex items-center p-0.5 rounded 
+      hover:bg-gray-300 dark:hover:bg-gray-600'>
         <DotsVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
@@ -58,9 +59,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button
-                onClick={onClickAddToFavourite}
-                className='collection-menu-item-btn'>
+              <button onClick={onClickAddToFavourite} className='menu-item-btn'>
                 {isFavourite ? (
                   <StarIconFilled className='icon-sm text-green-500' />
                 ) : (
@@ -74,9 +73,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button
-                onClick={onClickDuplicate}
-                className='collection-menu-item-btn'>
+              <button onClick={onClickDuplicate} className='menu-item-btn'>
                 <DuplicateIcon className='icon-sm' />
                 <span>Duplicate</span>
               </button>
@@ -92,9 +89,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
             </Menu.Item>
 
             <Menu.Item as='li'>
-              <button
-                onClick={onClickMove}
-                className='collection-menu-item-btn'>
+              <button onClick={onClickMove} className='menu-item-btn'>
                 <ReplyIcon className='icon-sm -scale-x-100' />
                 <span>Move to</span>
               </button>

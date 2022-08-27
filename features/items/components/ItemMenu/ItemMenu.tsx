@@ -16,7 +16,7 @@ const ItemMenu: FC<ItemMenuProps> = (props) => {
 
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='action-icon-filled-variant rounded'>
+      <Menu.Button className='menu-filled-variant'>
         <DotsVerticalIcon className='icon-sm' />
       </Menu.Button>
       <Transition
@@ -31,18 +31,14 @@ const ItemMenu: FC<ItemMenuProps> = (props) => {
           as='ul'
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
-            <button
-              onClick={onClickAddProperty}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickAddProperty} className='menu-item-btn'>
               <PlusIcon className='icon-sm' />
               <span>Add Property</span>
             </button>
           </Menu.Item>
 
           <Menu.Item>
-            <button
-              onClick={onClickDelete}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickDelete} className='menu-item-btn'>
               <TrashIcon className='icon-sm' />
               <span> Delete Item </span>
             </button>

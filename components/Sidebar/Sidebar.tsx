@@ -172,7 +172,7 @@ const Sidebar: FC = () => {
           </div>
         </div>
       </div>
-      <Toaster />
+      <Toaster position='bottom-center' />
       {groups && createCollectionModal.isOpen && (
         <CreateCollectionModal
           open={createCollectionModal.isOpen}

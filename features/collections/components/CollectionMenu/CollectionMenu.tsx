@@ -9,12 +9,13 @@ import {
 } from '@heroicons/react/outline';
 import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
 import React, { FC, Fragment } from 'react';
+import { Button } from '../../../../components/frontstate-ui';
 
 interface CollectionMenuProps {
   isFavourite: boolean;
   isDescriptionHidden: boolean;
   onClickNewItem: () => void;
-  onClickDesctiption: () => void;
+  onClickDescription: () => void;
   onClickFavourite: () => void;
   onClickRename: () => void;
   onClickDelete: () => void;
@@ -25,7 +26,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
     isFavourite,
     isDescriptionHidden,
     onClickRename,
-    onClickDesctiption,
+    onClickDescription,
     onClickFavourite,
     onClickNewItem,
     onClickDelete,
@@ -33,7 +34,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
 
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='action-icon-filled-variant rounded'>
+      <Menu.Button className='menu-filled-variant'>
         <DotsVerticalIcon className='icon-sm' />
       </Menu.Button>
       <Transition
@@ -48,27 +49,21 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
           as='ul'
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
-            <button
-              onClick={onClickNewItem}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickNewItem} className='menu-item-btn'>
               <PlusIcon className='icon-sm' />
               <span>New Item</span>
             </button>
           </Menu.Item>
 
           <Menu.Item as='li'>
-            <button
-              onClick={onClickDesctiption}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickDescription} className='menu-item-btn'>
               <InformationCircleIcon className='icon-sm' />
               <span>{isDescriptionHidden ? 'Show' : 'Hide'} Description</span>
             </button>
           </Menu.Item>
 
           <Menu.Item as='li'>
-            <button
-              onClick={onClickFavourite}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickFavourite} className='menu-item-btn'>
               {isFavourite ? (
                 <StarIconFilled className='icon-sm text-green-500' />
               ) : (
@@ -81,18 +76,14 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
           </Menu.Item>
 
           <Menu.Item as='li'>
-            <button
-              onClick={onClickRename}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickRename} className='menu-item-btn'>
               <PencilIcon className='icon-sm' />
               <span>Rename</span>
             </button>
           </Menu.Item>
 
           <Menu.Item>
-            <button
-              onClick={onClickDelete}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickDelete} className='menu-item-btn'>
               <TrashIcon className='icon-sm' />
               <span> Delete </span>
             </button>

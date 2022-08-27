@@ -118,7 +118,7 @@ const Collections: NextPage<
   const handleRenameCollection = (name: string) => {
     collection.renameCollectionMutateFun(name, {
       onSuccess: () => {
-        positiveFeedback('Success');
+        positiveFeedback('Collection renamed');
       },
       onError: () => {
         negativeFeedback();
@@ -366,7 +366,7 @@ const Collections: NextPage<
                   isFavourite={collectionData.isFavourite}
                   isDescriptionHidden={collectionData.isDescriptionHidden}
                   onClickNewItem={createItemModal.openModal}
-                  onClickDesctiption={handleCollectionDescState}
+                  onClickDescription={handleCollectionDescState}
                   onClickFavourite={handleCollectionIsFavState}
                   onClickRename={renameCollectionModal.openModal}
                   onClickDelete={deleteCollectionModal.openModal}
