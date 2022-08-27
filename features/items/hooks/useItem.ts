@@ -1,10 +1,6 @@
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import {
-  deleteItem,
-  renameItem,
-  updateItemProperty,
-} from '../../../services/item';
+import { deleteItem, renameItem, updateItemProperty } from '../services';
 
 const useItem = (id: string, cid: string) => {
   const queryClient = useQueryClient();

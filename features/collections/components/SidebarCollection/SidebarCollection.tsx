@@ -10,8 +10,8 @@ import { useMutation, useQueryClient } from 'react-query';
 import {
   addCollectionToGroup,
   removeCollectionFromGroup,
-} from '../../../groups/services';
-import { createItem, getItem } from '../../../../services/item';
+} from '../../../groups';
+import { createItem, getItem } from '../../../items/services';
 import MoveCollectionModal from '../MoveCollectionModal';
 import useCollection from '../../hooks/useCollection';
 

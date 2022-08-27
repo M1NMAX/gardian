@@ -16,7 +16,7 @@ import {
   addPropertyToItem,
   deleteItem,
   removePropertyFromItem,
-} from '../../../services/item';
+} from '../../items/services';
 
 const useCollection = (
   cid: string,

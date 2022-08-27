@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { IItemProperty } from '../../../interfaces';
-import { getItem } from '../../../services/item';
+import { getItem } from '../services';
 
 const useGetItem = (id: string) => {
   const [name, setName] = useState('');

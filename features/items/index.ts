@@ -4,3 +4,5 @@ export { default as ItemMenu } from './components/ItemMenu';
 
 export { default as useGetItem } from './hooks/useGetItem';
 export { default as useItem } from './hooks/useItem';
+
+export * from './services';

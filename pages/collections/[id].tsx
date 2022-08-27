@@ -9,7 +9,6 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { IGroup, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
-import { getItems } from '../../services/item';
 import { ActionIcon, Drawer } from '../../components/frontstate-ui';
 import {
   CreateItemModal,
@@ -17,6 +16,7 @@ import {
   ItemMenu,
   useGetItem,
   useItem,
+  getItems,
 } from '../../features/items';
 import {
   PencilIcon,

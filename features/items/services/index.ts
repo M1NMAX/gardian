@@ -1,5 +1,5 @@
-import { IItem, IItemProperty } from '../../interfaces';
-import { getRequestOptions } from '../../utils';
+import { IItem, IItemProperty } from '../../../interfaces';
+import { getRequestOptions } from '../../../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/items/';
 
