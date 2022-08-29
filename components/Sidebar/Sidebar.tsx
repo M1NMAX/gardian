@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef } from 'react';
+import React, { FC, useEffect } from 'react';
 import { ThemeBtn } from '../../features/theme';
 import {
   CollectionIcon,
@@ -43,36 +43,15 @@ const Sidebar: FC = () => {
     if (width > SCREEN_SIZE_MD) setSidebar(true);
   }, [width]);
 
-  const wrapper = useRef<HTMLDivElement>(null);
-  //handle outside click in small device
-  const checkOutsideClick = useCallback(
-    (event) => {
-      if (
-        sidebar &&
-        wrapper.current &&
-        !wrapper.current.contains(event.target) &&
-        width <= SCREEN_SIZE_MD
-      ) {
-        setSidebar(false);
-      }
-    },
-    [sidebar, wrapper, width]
-  );
-
-  useEffect(() => {
-    document.addEventListener('mousedown', checkOutsideClick);
-    return () => document.removeEventListener('mousedown', checkOutsideClick);
-  }, [checkOutsideClick]);
-
   // Click handle for sidebar elements
   const onClickSidebarCollection = (id: string) => {
+    if (sidebar && width <= SCREEN_SIZE_MD) setSidebar(false);
     router.push('/collections/' + id);
-    if (width <= SCREEN_SIZE_MD) setSidebar(false);
   };
 
   const onClickSiderLink = (url: string) => {
+    if (sidebar && width <= SCREEN_SIZE_MD) setSidebar(false);
     router.push(url);
-    if (width <= SCREEN_SIZE_MD) setSidebar(false);
   };
 
   //Modals
@@ -82,14 +61,12 @@ const Sidebar: FC = () => {
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () =>
-    toast.success('Something went wrong, try later');
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   return (
     <>
       <div
-        ref={wrapper}
-        className={`${sidebar ? 'w-3/4 sm:w-60' : 'w-0'} transition-all 
+        className={`${sidebar ? 'w-full sm:w-60' : 'w-0'} transition-all 
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white flex flex-col py-1.5  space-y-1 `}>
         {/* Top section aka search  */}
