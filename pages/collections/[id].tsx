@@ -9,7 +9,7 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { IGroup, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
-import { ActionIcon, Drawer } from '../../components/frontstate-ui';
+import { ActionIcon, Button, Drawer } from '../../components/frontstate-ui';
 import {
   CreateItemModal,
   ItemOverview,
@@ -447,33 +447,34 @@ const Collections: NextPage<
                 onClickDelete={deleteItemModal.openModal}
               />
             }>
-            <Drawer.Body>
-              <div
-                className='space-y-2 pt-1 px-0.5 border-dotted 
-                      border-t-2 border-gray-200 dark:border-gray-700'>
-                <button
-                  onClick={handleOnClickAddProperty}
-                  className='btn btn-primary'>
-                  <PlusIcon className='icon-sm' />
-                  <span>Add Property</span>
-                </button>
-                {selectedItem.properties.map(
-                  (property) =>
-                    property._id && (
-                      <Property
-                        collectionProperty={collection.getCollectionPropertyById(
-                          property._id
-                        )}
-                        getValue={selectedItem.getPropertyValue}
-                        setValue={handlePropertyValueChange}
-                        onPropertyUpdate={handleUpdateProperty}
-                        onPropertyDuplicate={handleDuplicateProperty}
-                        onPropertyDelete={handleDeleteProperty}
-                      />
-                    )
-                )}
-              </div>
-            </Drawer.Body>
+            <div
+              className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
+                      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+              {selectedItem.properties.map(
+                (property) =>
+                  property._id && (
+                    <Property
+                      collectionProperty={collection.getCollectionPropertyById(
+                        property._id
+                      )}
+                      getValue={selectedItem.getPropertyValue}
+                      setValue={handlePropertyValueChange}
+                      onPropertyUpdate={handleUpdateProperty}
+                      onPropertyDuplicate={handleDuplicateProperty}
+                      onPropertyDelete={handleDeleteProperty}
+                    />
+                  )
+              )}
+            </div>
+            <div>
+              <Button
+                onClick={handleOnClickAddProperty}
+                variant='primary-filled'
+                full>
+                <PlusIcon className='icon-sm' />
+                <span>Add Property</span>
+              </Button>
+            </div>
           </Drawer>
         )}
       </main>

@@ -172,12 +172,13 @@ const TemplatesPage: NextPage<
                 {selectedTemplate.name}
               </h1>
             }>
-            <Drawer.Description>
-              <h3 className='font-medium'>About this template</h3>
-              <p>{selectedTemplate.description}</p>
-            </Drawer.Description>
-
-            <Drawer.Body>
+            <div
+              className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
+                      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+              <div>
+                <h3 className='font-medium'>About this template</h3>
+                <p>{selectedTemplate.description}</p>
+              </div>
               <div className='space-y-2'>
                 <div>
                   <p>Example of item </p>
@@ -242,8 +243,8 @@ const TemplatesPage: NextPage<
                   </table>
                 </div>
               </div>
-            </Drawer.Body>
-            <Drawer.Footer>
+            </div>
+            <div>
               <button
                 onClick={createCollectionBasedOnTemplate}
                 className='w-full flex items-center justify-center p-1 rounded 
@@ -254,7 +255,7 @@ const TemplatesPage: NextPage<
               <span className='text-xs text-center'>
                 The collection will start empty
               </span>
-            </Drawer.Footer>
+            </div>
           </Drawer>
         )}
       </main>
