@@ -1,5 +1,5 @@
 .btn {
-  @apply flex items-center justify-center p-1 rounded;
+  @apply flex items-center justify-center p-1 rounded font-semibold;
 }
 
 .full {
@@ -7,11 +7,11 @@
 }
 
 .primary-filled {
-  @apply font-semibold text-white bg-primary-200 hover:bg-primary-300;
+  @apply text-white bg-primary-200 hover:bg-primary-300;
 }
 
 .primary-hover {
-  @apply font-semibold text-primary-200  hover:bg-primary-100 hover:bg-opacity-30;
+  @apply text-primary-200  hover:bg-primary-100 hover:bg-opacity-30;
 }
 
 .secondary-filled {
@@ -28,4 +28,9 @@
 
 :global(.dark) .secondary-hover {
   @apply hover:bg-gray-600;
+}
+
+.danger-filled {
+  @apply bg-danger-300 hover:bg-danger-400
+   disabled:hover:bg-danger-100 disabled:cursor-no-drop;
 }
