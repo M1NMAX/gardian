@@ -1,5 +1,6 @@
 .btn {
-  @apply flex items-center justify-center p-1 rounded font-semibold;
+  @apply flex items-center justify-center p-1 rounded font-semibold 
+  disabled:cursor-no-drop;
 }
 
 .full {
@@ -32,5 +33,5 @@
 
 .danger-filled {
   @apply bg-danger-300 hover:bg-danger-400
-   disabled:hover:bg-danger-100 disabled:cursor-no-drop;
+   disabled:hover:bg-danger-100;
 }
