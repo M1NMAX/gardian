@@ -501,11 +501,14 @@ const Collections: NextPage<
       {/* Delete item modal  */}
       {selectedItemId && deleteItemModal.isOpen && (
         <DeleteModal
-          name={selectedItem.name}
           open={deleteItemModal.isOpen}
           handleClose={deleteItemModal.closeModal}
-          onDelete={handleDeleteItem}
-        />
+          onDelete={handleDeleteItem}>
+          <h2>
+            Are you sure about delete item{' '}
+            <span className='italic'>{selectedItem.name}</span>?
+          </h2>
+        </DeleteModal>
       )}
 
       {/* rename Collection modal  */}
@@ -523,9 +526,14 @@ const Collections: NextPage<
         <DeleteModal
           open={deleteCollectionModal.isOpen}
           handleClose={deleteCollectionModal.closeModal}
-          name={collectionData.name}
-          onDelete={handleDeleteCollection}
-        />
+          onDelete={handleDeleteCollection}>
+          <h2>
+            Are you sure about delete collection{' '}
+            <span className='italic'>{collectionData.name}</span>? All{' '}
+            <span className='italic'>{collectionData.name}</span> items will be
+            deleted
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

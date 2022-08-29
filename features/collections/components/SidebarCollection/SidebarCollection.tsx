@@ -204,9 +204,14 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <DeleteModal
           open={deleteCollectionModal.isOpen}
           handleClose={deleteCollectionModal.closeModal}
-          name={collectionData.name}
-          onDelete={handleDeleteCollection}
-        />
+          onDelete={handleDeleteCollection}>
+          <h2>
+            Are you sure about delete collection{' '}
+            <span className='italic'>{collectionData.name}</span>? All{' '}
+            <span className='italic'>{collectionData.name}</span> items will be
+            deleted
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

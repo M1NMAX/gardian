@@ -70,9 +70,13 @@ const Property: FC<PropertyProps> = (props) => {
         <DeleteModal
           open={deletePropertyModal.isOpen}
           handleClose={deletePropertyModal.closeModal}
-          name={collectionProperty.name}
-          onDelete={handleDelete}
-        />
+          onDelete={handleDelete}>
+          <h2>
+            Are you sure about delete property{' '}
+            <span className='italic'>{collectionProperty.name}</span>? <br />
+            This property will be deleted from all items of this collection
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

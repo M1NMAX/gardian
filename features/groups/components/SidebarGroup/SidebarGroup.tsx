@@ -108,9 +108,12 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
         <DeleteModal
           open={deleteGroupModal.isOpen}
           handleClose={deleteGroupModal.closeModal}
-          name={name}
-          onDelete={handleDeleteGroup}
-        />
+          onDelete={handleDeleteGroup}>
+          <h2>
+            Are you sure about delete group{' '}
+            <span className='italic'>{name}</span>?
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

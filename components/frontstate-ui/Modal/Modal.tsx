@@ -1,11 +1,10 @@
-import React, { FC, Fragment } from 'react';
+import React, { FC, Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 
 type SizeType = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 interface ModalProps {
-  children: JSX.Element;
-  title: JSX.Element | string;
+  title: ReactNode;
   open: boolean;
   onHide: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void;
   size?: SizeType;
