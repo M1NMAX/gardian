@@ -7,7 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { IGroup, IProperty } from '../../interfaces';
+import { IGroup, IItemProperty, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
 import { ActionIcon, Button, Drawer } from '../../components/frontstate-ui';
 import {
@@ -113,6 +113,36 @@ const Collections: NextPage<
   } = useSort(sortOptions[0], items || []);
 
   //Collection mutation
+  const handleCreateItem = (name: string) => {
+    if (!collectionData) throw 'Collection is undefined';
+
+    //create placeholder for all collection properties inside of item
+    const properties: IItemProperty[] = collectionData.properties.map(
+      (property) => {
+        return { _id: property._id, value: '' };
+      }
+    );
+
+    collection.createItemMutateFun(
+      { name, properties },
+      {
+        onSuccess: async ({ _id: itemId }) => {
+          if (!itemId) throw 'Item id is undefined';
+          positiveFeedback('Item added');
+          collection.query.refetch();
+          setSelectedItemId(itemId);
+          drawer.openDrawer();
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+        onSettled: () => {
+          createItemModal.closeModal();
+        },
+      }
+    );
+  };
+
   //handle rename collection and its mutation
   const handleRenameCollection = (name: string) => {
     collection.renameCollectionMutateFun(name, {
@@ -483,9 +513,7 @@ const Collections: NextPage<
         <CreateItemModal
           open={createItemModal.isOpen}
           handleClose={createItemModal.closeModal}
-          positiveFeedback={positiveFeedback}
-          negativeFeedback={negativeFeedback}
-          collection={collectionData}
+          onCreateItem={handleCreateItem}
         />
       )}
 

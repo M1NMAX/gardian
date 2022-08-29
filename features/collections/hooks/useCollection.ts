@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { ICollection, IProperty } from '../../../interfaces';
 import {
+  addItemToCollection,
   addPropertyToCollection,
   deleteCollection,
   getCollection,
@@ -14,6 +15,7 @@ import {
 import { removeCollectionFromGroup } from '../../groups/services';
 import {
   addPropertyToItem,
+  createItem,
   deleteItem,
   removePropertyFromItem,
 } from '../../items/services';
@@ -35,6 +37,15 @@ const useCollection = (
   };
 
   const query = useQuery<ICollection>([key, cid], () => getCollection(cid));
+
+  const { mutate: createItemMutateFun } = useMutation(createItem, {
+    onSuccess: async ({ _id: itemId }) => {
+      if (!itemId) throw 'Item id is undefined';
+      await addItemToCollection(cid, itemId);
+      invalidateCollectionQueries();
+      invalidateItemsQueries();
+    },
+  });
 
   const { mutate: toggleIsFavStateMutateFun } = useMutation(
     toggleCollectionIsFavourite,
@@ -144,6 +155,7 @@ const useCollection = (
 
   return {
     query,
+    createItemMutateFun,
     getCollectionPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
