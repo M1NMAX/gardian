@@ -7,7 +7,10 @@ import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import TemplateOverview from '../../components/TemplateOverview';
 import { createCollection } from '../../features/collections';
-import { addCollectionToGroup, getGroups } from '../../features/groups';
+import {
+  addCollectionToGroup,
+  GroupPickerPopover,
+} from '../../features/groups';
 import { useRouter } from 'next/router';
 import { IItem } from '../../interfaces';
 import { templates } from '../../data/templates';
@@ -19,6 +22,7 @@ import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 import useDrawer from '../../hooks/useDrawer';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';
+import toast from 'react-hot-toast';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -30,6 +34,10 @@ const TemplatesPage: NextPage<
 > = () => {
   const router = useRouter();
   const sidebar = useRecoilValue(sidebarState);
+
+  //Feedback
+  const positiveFeedback = (msg: string) => toast.success(msg);
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   const drawer = useDrawer(() => setSelectedTemplateId(null));
 
@@ -60,42 +68,44 @@ const TemplatesPage: NextPage<
     drawer.openDrawer();
   };
 
-  const createCollectionBasedOnTemplate = async () => {
-    if (!selectedTemplateId || selectedTemplateId === '') return;
-    if (!selectedTemplate) return;
-
-    const { name, properties } = selectedTemplate;
-    try {
-      const groups = await getGroups();
-      //make sure that the first group id is not null
-      if (!groups[0]._id) throw 'There are not group available';
-      const collection = await createCollection({
-        name,
-        description: '',
-        isDescriptionHidden: false,
-        isFavourite: false,
-        items: [],
-        properties: properties.map(({ name, type, values }) => ({
-          name,
-          type,
-          values,
-        })),
-      });
-
-      if (!collection._id) throw 'Collection creation failed';
-      await addCollectionToGroup(groups[0]._id, collection._id);
-
-      router.push('/collections/' + collection._id);
-    } catch (error) {
-      console.log(error);
-    }
+  const getPropertyValue = (item: IItem, id: string): string => {
+    const property = item.properties.find((property) => property._id === id);
+    return property ? property.value : '';
   };
 
-  const getPropertyValue = (item: IItem, id: string): string => {
-    if (id === '') return '';
-    const property = item.properties.find((property) => property._id === id);
-    if (!property) return '';
-    return property.value;
+  const createCollectionBasedOnTemplate = async (groupId: string) => {
+    if (!selectedTemplateId || !selectedTemplate) return;
+
+    const { name, properties } = selectedTemplate;
+
+    const collection = await createCollection({
+      name,
+      description: '',
+      isDescriptionHidden: false,
+      isFavourite: false,
+      items: [],
+      properties: properties.map(({ name, type, values }) => ({
+        name,
+        type,
+        values,
+      })),
+    });
+
+    const { _id: cid } = collection;
+
+    if (!cid) throw 'Collection id undefined';
+    await addCollectionToGroup(groupId, cid);
+
+    router.push('/collections/' + cid);
+  };
+
+  const handleOnClickGroup = async (gid: string) => {
+    try {
+      await createCollectionBasedOnTemplate(gid);
+      positiveFeedback('Collection created');
+    } catch (error) {
+      negativeFeedback();
+    }
   };
 
   return (
@@ -245,12 +255,13 @@ const TemplatesPage: NextPage<
               </div>
             </div>
             <div>
-              <button
-                onClick={createCollectionBasedOnTemplate}
-                className='w-full flex items-center justify-center p-1 rounded 
-                  bg-primary-200 hover:bg-primary-300'>
-                Use this template
-              </button>
+              <GroupPickerPopover onClickGroup={handleOnClickGroup}>
+                <span
+                  className='w-full flex items-center justify-center p-1 text-white
+                rounded bg-primary-200 hover:bg-primary-300 font-semibold'>
+                  Use this template
+                </span>
+              </GroupPickerPopover>
 
               <span className='text-xs text-center'>
                 The collection will start empty

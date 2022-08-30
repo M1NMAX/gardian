@@ -118,9 +118,10 @@ const Collections: NextPage<
 
     //create placeholder for all collection properties inside of item
     const properties: IItemProperty[] = collectionData.properties.map(
-      (property) => {
-        return { _id: property._id, value: '' };
-      }
+      (property) => ({
+        _id: property._id,
+        value: '',
+      })
     );
 
     collection.createItemMutateFun(

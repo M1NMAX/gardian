@@ -8,7 +8,7 @@
 }
 
 .primary-filled {
-  @apply text-white bg-primary-200 hover:bg-primary-300;
+  @apply text-white bg-primary-200 hover:bg-primary-300 disabled:opacity-50;
 }
 
 .primary-hover {
