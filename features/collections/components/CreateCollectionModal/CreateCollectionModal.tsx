@@ -50,6 +50,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
     e.preventDefault();
     createCollectionMutateFun({
       name,
+      icon: '',
       description: '',
       isDescriptionHidden: true,
       isFavourite: false,

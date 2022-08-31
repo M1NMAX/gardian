@@ -14,6 +14,9 @@ import {
 import { createItem, getItem } from '../../../items/services';
 import MoveCollectionModal from '../MoveCollectionModal';
 import useCollection from '../../hooks/useCollection';
+import IconPickerModal from '../../../../components/IconPickerModal';
+import { FolderIcon } from '@heroicons/react/outline';
+import Image from 'next/image';
 
 interface SidebarCollectionProps {
   collectionId: string;
@@ -35,12 +38,29 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const deleteCollectionModal = useModal();
   const renameCollectionModal = useModal();
   const moveCollectionModal = useModal();
+  const changeCollectionIconModal = useModal();
 
   const queryClient = useQueryClient();
 
   //Fetch collection
   const collection = useCollection(collectionId, groupId, 'sidebarCollection');
   const collectionData = collection.query.data;
+
+  //handle change collection icon and its mutation
+  const handleChangeCollectionIcon = (icon: string) => {
+    console.log(icon);
+    collection.changeCollectionIconMutateFun(icon, {
+      onSuccess: () => {
+        positiveFeedback('Icon changed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        changeCollectionIconModal.closeModal();
+      },
+    });
+  };
 
   //handle rename collection and its mutation
   const handleRenameCollection = (name: string) => {
@@ -112,11 +132,18 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
   const handleDuplicateCollection = () => {
     if (!collectionData) return;
-    const { name, description, properties, isDescriptionHidden, isFavourite } =
-      collectionData;
+    const {
+      name,
+      icon,
+      description,
+      properties,
+      isDescriptionHidden,
+      isFavourite,
+    } = collectionData;
 
     duplicateCollectionMutateFun({
       name: name + '(copy)',
+      icon,
       description,
       properties,
       isDescriptionHidden,
@@ -158,8 +185,20 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         group flex items-center justify-between w-full h-8 px-1.5 mb-1
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
-        <button className='flex items-center grow' onClick={onClick}>
-          <span className='truncate'>{collectionData.name}</span>
+        <button className='flex items-center space-x-1.5' onClick={onClick}>
+          {collectionData.icon === '' ? (
+            <FolderIcon className='icon-xs' />
+          ) : (
+            <span className='relative icon-xs'>
+              <Image
+                src={`/icons/${collectionData.icon}.svg`}
+                alt={collectionData.icon}
+                layout='fill'
+                objectFit='contain'
+              />
+            </span>
+          )}
+          <span className='grow truncate'>{collectionData.name}</span>
         </button>
 
         {collectionData.items.length !== 0 && (
@@ -177,10 +216,19 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
             onClickAddToFavourite={handleCollectionIsFavState}
             onClickDuplicate={handleDuplicateCollection}
             onClickRename={renameCollectionModal.openModal}
+            onClickChangeIcon={changeCollectionIconModal.openModal}
             onClickMove={moveCollectionModal.openModal}
           />
         </div>
       </div>
+
+      {changeCollectionIconModal.isOpen && (
+        <IconPickerModal
+          open={changeCollectionIconModal.isOpen}
+          handleClose={changeCollectionIconModal.closeModal}
+          onClickIcon={handleChangeCollectionIcon}
+        />
+      )}
 
       {renameCollectionModal.isOpen && (
         <RenameModal

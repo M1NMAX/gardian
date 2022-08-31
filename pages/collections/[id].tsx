@@ -3,6 +3,7 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Image from 'next/image';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
@@ -19,6 +20,7 @@ import {
   getItems,
 } from '../../features/items';
 import {
+  FolderIcon,
   PencilIcon,
   PlusIcon,
   ViewBoardsIcon,
@@ -356,6 +358,21 @@ const Collections: NextPage<
           {/* Header  */}
           <Header>
             <div className='grow flex items-center space-x-1 font-semibold'>
+              {!collectionData ||
+                (collectionData.icon === '' && (
+                  <FolderIcon className='icon-sm' />
+                ))}
+              {collectionData && collectionData.icon !== '' && (
+                <span className='relative icon-sm'>
+                  <Image
+                    src={`/icons/${collectionData.icon}.svg`}
+                    alt={collectionData.icon}
+                    layout='fill'
+                    objectFit='contain'
+                  />
+                </span>
+              )}
+
               <h1 className='text-2xl'>
                 {collectionData ? collectionData.name : 'Loading'}
               </h1>

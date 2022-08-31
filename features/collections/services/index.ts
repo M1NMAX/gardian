@@ -49,6 +49,14 @@ export async function updateCollection(
   return res.json().then((response) => response.isSuccess);
 }
 
+export async function changeCollectionIcon(
+  id: string,
+  icon: string
+): Promise<boolean> {
+  const collection = await getCollection(id);
+  return updateCollection(id, { ...collection, icon });
+}
+
 export async function renameCollection(
   id: string,
   name: string

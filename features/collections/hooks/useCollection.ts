@@ -3,6 +3,7 @@ import { ICollection, IProperty } from '../../../interfaces';
 import {
   addItemToCollection,
   addPropertyToCollection,
+  changeCollectionIcon,
   deleteCollection,
   getCollection,
   removePropertyFromCollection,
@@ -59,6 +60,13 @@ const useCollection = (
     {
       onSuccess: () => invalidateCollectionQueries(),
     }
+  );
+
+  const { mutate: changeCollectionIconMutateFun } = useMutation(
+    async (icon: string) => {
+      await changeCollectionIcon(cid, icon);
+    },
+    { onSuccess: () => invalidateCollectionQueries() }
   );
 
   const { mutate: renameCollectionMutateFun } = useMutation(
@@ -159,6 +167,7 @@ const useCollection = (
     getCollectionPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
+    changeCollectionIconMutateFun,
     renameCollectionMutateFun,
     updCollectionDescrMutateFun,
     deleteCollectionMutateFun,

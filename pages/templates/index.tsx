@@ -80,6 +80,7 @@ const TemplatesPage: NextPage<
 
     const collection = await createCollection({
       name,
+      icon: '',
       description: '',
       isDescriptionHidden: false,
       isFavourite: false,

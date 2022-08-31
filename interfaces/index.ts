@@ -21,6 +21,7 @@ export interface ICollection extends IBase {
   properties: IProperty[];
   items: string[];
   isFavourite: boolean;
+  icon: string;
 }
 export interface IProperty extends IBase {
   name: string;

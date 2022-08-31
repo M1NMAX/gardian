@@ -1,5 +1,6 @@
 import { Menu, Transition } from '@headlessui/react';
 import {
+  CogIcon,
   DotsVerticalIcon,
   DuplicateIcon,
   PencilIcon,
@@ -14,6 +15,7 @@ interface CollectionMenuProps {
   isFavourite: boolean;
   onClickAddToFavourite: () => void;
   onClickDuplicate: () => void;
+  onClickChangeIcon: () => void;
   onClickRename: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickMove: (ev: React.MouseEvent<HTMLButtonElement>) => void;
   onClickDelete: (ev: React.MouseEvent<HTMLButtonElement>) => void;
@@ -26,6 +28,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
     onClickAddToFavourite,
     onClickDuplicate,
     onClickRename,
+    onClickChangeIcon,
     onClickMove,
   } = props;
   return (
@@ -81,6 +84,13 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
               <button onClick={onClickRename} className='menu-item-btn'>
                 <PencilIcon className='icon-sm' />
                 <span>Rename</span>
+              </button>
+            </Menu.Item>
+
+            <Menu.Item as='li'>
+              <button onClick={onClickChangeIcon} className='menu-item-btn'>
+                <CogIcon className='icon-sm' />
+                <span>Change Icon</span>
               </button>
             </Menu.Item>
 
