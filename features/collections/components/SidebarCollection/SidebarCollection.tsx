@@ -185,7 +185,9 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         group flex items-center justify-between w-full h-8 px-1.5 mb-1
        hover:bg-gray-300 dark:hover:bg-gray-500 space-x-1 
         font-semibold `}>
-        <button className='flex items-center space-x-1.5' onClick={onClick}>
+        <button
+          className='grow flex items-center space-x-1.5'
+          onClick={onClick}>
           {collectionData.icon === '' ? (
             <FolderIcon className='icon-xs' />
           ) : (
@@ -195,10 +197,11 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
                 alt={collectionData.icon}
                 layout='fill'
                 objectFit='contain'
+                className='fill-red-500'
               />
             </span>
           )}
-          <span className='grow truncate'>{collectionData.name}</span>
+          <span className='truncate'>{collectionData.name}</span>
         </button>
 
         {collectionData.items.length !== 0 && (
