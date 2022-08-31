@@ -8,7 +8,7 @@ import {
   ViewGridAddIcon,
 } from '@heroicons/react/outline';
 import SidebarBtn from './SidebarBtn';
-import { ActionIcon } from '../frontstate-ui';
+import { ActionIcon, Button } from '../frontstate-ui';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
 import useWindowDimensions from '../../hooks/useWindowDimensions';
@@ -130,19 +130,17 @@ const Sidebar: FC = () => {
         </div>
 
         {/* Bottom section  */}
-        <div className='w-full px-1 grid grid-cols-6 gap-2'>
+        <div className='w-full flex items-center px-1 space-x-2'>
           <ThemeBtn />
-          <div className='col-span-5 flex border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
-            <button
+          <div className='grow flex border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
+            <Button
               onClick={createCollectionModal.openModal}
-              disabled={groups?.length === 0}
-              className='w-full space-x-1 btn btn-secondary 
-              disabled:cursor-no-drop disabled:invisible'>
-              <span className='icon-sm'>
-                <PlusIcon />
-              </span>
+              variant='secondary-hover'
+              full
+              isDisabled={groups?.length === 0}>
+              <PlusIcon className='icon-sm' />
               <span>New Collection</span>
-            </button>
+            </Button>
             <ActionIcon onClick={() => createGroupModal.openModal()}>
               <ViewGridAddIcon className='icon-sm' />
             </ActionIcon>
