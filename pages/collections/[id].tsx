@@ -433,8 +433,10 @@ const Collections: NextPage<
 
             {isItemsLoading &&
               collectionData &&
-              collectionData.items.map((_) => (
-                <div className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+              collectionData.items.map((_, idx) => (
+                <div
+                  key={idx}
+                  className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
                   <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
                   <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
                 </div>
