@@ -1,4 +1,5 @@
 import { SearchIcon } from '@heroicons/react/outline';
+import Image from 'next/image';
 import React, { FC, useState } from 'react';
 import { Modal } from '../frontstate-ui';
 
@@ -72,9 +73,13 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
               <button
                 key={filename}
                 onClick={() => onClickIcon(filename)}
-                className='flex items-center p-1 rounded bg-gray-200 dark:bg-gray-700
-                 hover:bg-green-400 dark:hover:bg-green-600'>
-                <img src={`/icons/${filename}.svg`} />
+                className='relative icon-lg p-1 rounded bg-gray-200 dark:bg-gray-700 
+                hover:bg-green-400 dark:hover:bg-green-600'>
+                <Image
+                  src={`/icons/${filename}.svg`}
+                  layout='fill'
+                  objectFit='contain'
+                />
               </button>
             ))}
           </div>
