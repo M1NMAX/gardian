@@ -1,0 +1,18 @@
+.base {
+  @apply flex justify-center items-center rounded p-1;
+}
+
+.filled {
+  @apply bg-gray-200 hover:bg-gray-300;
+}
+
+:global(.dark) .filled {
+  @apply bg-gray-700 hover:bg-gray-600;
+}
+
+.subtle {
+  @apply hover:bg-gray-300;
+}
+:global(.dark) .subtle {
+  @apply hover:bg-gray-600;
+}

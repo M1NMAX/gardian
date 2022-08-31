@@ -12,7 +12,7 @@ function App({ Component, pageProps }: AppProps) {
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
           <Component {...pageProps} />
-          <ReactQueryDevtools position='bottom-right' />
+          {/* <ReactQueryDevtools position='top-left' /> */}
         </QueryClientProvider>
       </RecoilRoot>
     </UserProvider>

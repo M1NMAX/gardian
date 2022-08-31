@@ -7,11 +7,11 @@ import DeleteModal from '../DeleteModal';
 import PropertyInput from './PropertyInput';
 interface PropertyProps {
   collectionProperty: IProperty;
-  getValue: (id: number) => string;
-  setValue: (id: number, value: string) => void;
+  getValue: (id: string) => string;
+  setValue: (id: string, value: string) => void;
   onPropertyUpdate: (property: IProperty) => void;
   onPropertyDuplicate: (property: IProperty) => void;
-  onPropertyDelete: (id: number) => void;
+  onPropertyDelete: (id: string) => void;
 }
 
 const Property: FC<PropertyProps> = (props) => {
@@ -70,9 +70,13 @@ const Property: FC<PropertyProps> = (props) => {
         <DeleteModal
           open={deletePropertyModal.isOpen}
           handleClose={deletePropertyModal.closeModal}
-          name={collectionProperty.name}
-          onDelete={handleDelete}
-        />
+          onDelete={handleDelete}>
+          <h2>
+            Are you sure about delete property{' '}
+            <span className='italic'>{collectionProperty.name}</span>? <br />
+            This property will be deleted from all items of this collection
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

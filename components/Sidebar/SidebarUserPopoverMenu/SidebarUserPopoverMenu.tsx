@@ -11,7 +11,9 @@ const SidebarUserPopoverMenu = () => {
 
   return (
     <Popover className='relative'>
-      <Popover.Button className='action-icon-hover-variant rounded'>
+      <Popover.Button
+        className='p-1 rounded bg-gray-200 hover:bg-gray-300
+       dark:bg-gray-700 dark:hover:bg-gray-600'>
         {isLoading ? (
           <div
             className='h-6 w-6  animate-pulse rounded-full 
@@ -59,7 +61,7 @@ const SidebarUserPopoverMenu = () => {
               </div>
               <div className='p-1'>
                 <Link href='/api/auth/logout'>
-                  <a className='collection-menu-item-btn'>
+                  <a className='menu-item-btn'>
                     <LogoutIcon className='icon-sm' />
                     <span>Log out</span>
                   </a>

@@ -3,45 +3,48 @@ import { InferGetServerSidePropsType, NextPage } from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Image from 'next/image';
 import Sidebar from '../../components/Sidebar';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '../../atoms/sidebarAtom';
-import { useMutation, useQueries, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IItemProperty, IProperty } from '../../interfaces';
-import Collection from '../../components/Collection';
+import { useQuery } from 'react-query';
+import { IGroup, IItemProperty, IProperty } from '../../interfaces';
+import { CollectionMenu, useCollection } from '../../features/collections';
+import { ActionIcon, Button, Drawer } from '../../components/frontstate-ui';
 import {
-  addPropertyToItem,
-  deleteItem,
-  getItem,
-  removePropertyFromItem,
-  renameItem,
-  updateItemProperty,
-} from '../../fetch/item';
-import Drawer from '../../components/Frontstate/Drawer';
-import ItemOverview from '../../components/ItemOverview';
-import { PlusIcon } from '@heroicons/react/outline';
+  CreateItemModal,
+  ItemOverview,
+  ItemMenu,
+  useGetItem,
+  useItem,
+  getItems,
+} from '../../features/items';
+import {
+  FolderIcon,
+  PencilIcon,
+  PlusIcon,
+  ViewBoardsIcon,
+  ViewGridIcon,
+} from '@heroicons/react/outline';
 import useModal from '../../hooks/useModal';
 import toast from 'react-hot-toast';
-import CreateItemModal from '../../components/CreateItemModal';
-import {
-  addPropertyToCollection,
-  removePropertyFromCollection,
-  removeItemFromCollection,
-  updateCollectionProperty,
-  getCollection,
-  updateCollectionDescription,
-} from '../../fetch/collections';
 import DeleteModal from '../../components/DeleteModal';
 import Property from '../../components/Property';
-import ViewRadioGroup from '../../components/ViewRadioGroup';
-import ItemMenu from '../../components/ItemMenu';
-import Editor from '../../components/Editor';
+import { Editor } from '../../features/Editor';
+import useDrawer from '../../hooks/useDrawer';
+import Header from '../../components/Header';
+import RenameModal from '../../components/RenameModal';
+import { useSort, SortOptionsListbox } from '../../features/sort';
+import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
+import { SortOptionType } from '../../types';
+import { getGroupWithCid } from '../../features/groups';
 
-const sortOptions = [
-  { name: 'Name Ascending', alias: 'name+asc' },
-  { name: 'Name Descending', alias: 'name+des' },
-  { name: 'Recently Added', alias: 'createdAt+asc' },
-  { name: 'Oldest Added', alias: 'createdAt+des' },
+const rand = 'randomId';
+const sortOptions: SortOptionType[] = [
+  { field: 'name', order: SORT_ASCENDING },
+  { field: 'name', order: SORT_DESCENDING },
+  { field: 'createdAt', order: SORT_ASCENDING },
+  { field: 'createdAt', order: SORT_DESCENDING },
 ];
 
 const Collections: NextPage<
@@ -51,297 +54,296 @@ const Collections: NextPage<
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
 
-  //View mode
-  const [selectedView, setSelectedView] = useState<string>('grid');
-  const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
-
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //Modals
   const createItemModal = useModal();
-  const deleteModal = useModal();
+  const renameItemModal = useModal();
+  const deleteItemModal = useModal();
+  const renameCollectionModal = useModal();
+  const deleteCollectionModal = useModal();
 
-  //Query and cache
-  const queryClient = useQueryClient();
-  //Fetch collection and its items
-  const {
-    data: collection,
-    isLoading,
-    refetch,
-  } = useQuery<ICollection>(['collection', id], () =>
-    getCollection(!id || Array.isArray(id) ? '22' : id)
-  );
+  //Drawer
+  const drawer = useDrawer(() => setSelectedItemId(null));
 
-  const collectionId = collection?._id;
-  //Fetch collection items
-  const itemsQueries = useQueries(
-    !collection
-      ? []
-      : collection.items.map((item) => {
-          return {
-            queryKey: ['items', collectionId, item],
-            queryFn: () => getItem(item),
-            enabled: !!collectionId,
-          };
-        })
-  );
+  //View
+  const [isGridView, setIsGridView] = useState<boolean>(false);
 
+  //Fetch
+  //Fetch group information
+  const [groupInfo, setGroupInfo] = useState<IGroup>();
   useEffect(() => {
-    refetch();
-    closeDrawer();
+    if (!id || Array.isArray(id)) return;
+
+    const fetchGroupInfo = async (cid: string) => {
+      const result = await getGroupWithCid(cid);
+      setGroupInfo(result);
+    };
+
+    fetchGroupInfo(id);
   }, [id]);
 
-  //Mutations
+  //Fetch collection
+  const collection = useCollection(
+    id && !Array.isArray(id) ? id : rand,
+    groupInfo && groupInfo._id ? groupInfo._id : rand
+  );
+  const collectionData = collection.query.data;
+  const isLoading = collection.query.isLoading;
 
-  //Handle rename item mutation
-  const renameItemMutation = useMutation(
-    async (name: string) => {
-      if (name === '') return;
-      if (!selectedItemId) return;
-      await renameItem(selectedItemId, name);
-    },
-    {
-      onSuccess: async () => {
-        if (!collectionId) throw 'CollectionId is undefined';
-        if (!selectedItemId) throw 'CurrentItemId is undefined';
+  useEffect(() => {
+    collection.query.refetch();
+    drawer.closeDrawer();
+  }, [id]);
 
-        queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
+  const collectionId = collectionData?._id;
+
+  //Fetch collection items
+  const { data: items, isLoading: isItemsLoading } = useQuery(
+    ['items', collectionId],
+    () => (collectionData ? getItems(collectionData.items) : []),
+    { enabled: !!collectionId }
   );
 
-  //Handle update item mutation
-  const updateItemPropertyMutation = useMutation(updateItemProperty, {
-    onSuccess: async () => {
-      if (!collectionId) throw 'CollectionId is undefined';
-      if (!selectedItemId) throw 'CurrentItemId is undefined';
+  //Sort items
+  const {
+    selectedSortOption,
+    sortedList: sortedItems,
+    onChangeSortOption,
+  } = useSort(sortOptions[0], items || []);
 
-      queryClient.invalidateQueries(['items', collectionId, selectedItemId]);
-    },
-    onError: () => {
-      negativeFeedback();
-    },
-  });
-  //Handle delete item mutation
-  const deleteItemMutation = useMutation(deleteItem, {
-    onSuccess: async () => {
-      if (!collectionId) throw 'CollectionId is undefined';
-      if (!selectedItemId) throw 'CurrentItemId is undefined';
+  //Collection mutation
+  const handleCreateItem = (name: string) => {
+    if (!collectionData) throw 'Collection is undefined';
 
-      await removeItemFromCollection(collectionId, selectedItemId);
+    //create placeholder for all collection properties inside of item
+    const properties: IItemProperty[] = collectionData.properties.map(
+      (property) => ({
+        _id: property._id,
+        value: '',
+      })
+    );
 
-      queryClient.invalidateQueries(['collection', collectionId]);
-      queryClient.removeQueries(['items', collectionId, selectedItemId]);
-
-      positiveFeedback('Item deleted');
-      closeDrawer();
-    },
-    onError: () => {
-      negativeFeedback();
-    },
-    onSettled: () => {
-      deleteModal.closeModal();
-    },
-  });
-
-  //handle add collection property mutation
-  const addCollectioPropertyMutation = useMutation(addPropertyToCollection, {
-    onSuccess: (data) => {
-      if (!collectionId) throw 'CollectionId is undefined';
-
-      //adds Property to all items of collection
-      addPorpertyToAllItem(data);
-
-      queryClient.invalidateQueries(['collection', collectionId]);
-      queryClient.invalidateQueries(['items', collectionId]);
-    },
-    onError: () => {
-      negativeFeedback();
-    },
-  });
-
-  //handle update collection property mutation
-  const updateCollectioPropertyMutation = useMutation(
-    updateCollectionProperty,
-    {
-      onSuccess: () => {
-        if (!collectionId) throw 'CollectionId is undefined';
-
-        queryClient.invalidateQueries(['collection', collectionId]);
-        queryClient.invalidateQueries(['items', collectionId]);
-
-        positiveFeedback('Property updated');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
-  //handle update collection property mutation
-  const updateCollectioDescriptionMutation = useMutation(
-    async (description: string) => {
-      if (!collectionId) return;
-      await updateCollectionDescription(collectionId, description);
-    },
-    {
-      onSuccess: () => {
-        if (!collectionId) throw 'CollectionId is undefined';
-
-        queryClient.invalidateQueries(['collection', collectionId]);
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
-  //handle delete collection property mutation
-  const deleteCollectioPropertyMutation = useMutation(
-    removePropertyFromCollection,
-    {
-      onSuccess: async ({ propertyId }) => {
-        if (!collectionId) throw 'CollectionId is undefined';
-
-        // remove property form all collection's item
-        collection.items.map((itemId) =>
-          removePropertyFromItem(itemId, propertyId)
-        );
-
-        queryClient.invalidateQueries(['collection', collectionId]);
-        queryClient.invalidateQueries(['items', collectionId]);
-
-        positiveFeedback('Property removed');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
-  // handle Drawer
-  const [showDrawer, setShowDrawer] = useState(false);
-  const openDetails = () => setShowDrawer(true);
-  const closeDrawer = () => {
-    setShowDrawer(false);
-    setSelectedItemId(null);
+    collection.createItemMutateFun(
+      { name, properties },
+      {
+        onSuccess: async ({ _id: itemId }) => {
+          if (!itemId) throw 'Item id is undefined';
+          positiveFeedback('Item added');
+          collection.query.refetch();
+          setSelectedItemId(itemId);
+          drawer.openDrawer();
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+        onSettled: () => {
+          createItemModal.closeModal();
+        },
+      }
+    );
   };
 
-  const handleOnClickItem = (id: number) => {
-    setSelectedItemId(id);
-    openDetails();
+  //handle rename collection and its mutation
+  const handleRenameCollection = (name: string) => {
+    collection.renameCollectionMutateFun(name, {
+      onSuccess: () => {
+        positiveFeedback('Collection renamed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => renameCollectionModal.closeModal(),
+    });
   };
+
+  //handle toggle collection favourite state mutation
+  const handleCollectionIsFavState = () => {
+    if (!collectionId) return;
+    collection.toggleIsFavStateMutateFun(collectionId, {
+      onError: () => {
+        negativeFeedback();
+      },
+    });
+  };
+
+  //handle toggle collection description state mutation
+  const handleCollectionDescState = () => {
+    if (!collectionId) return;
+    collection.toggleDescrStateMutateFun(collectionId, {
+      onError: () => {
+        negativeFeedback();
+      },
+    });
+  };
+
+  //handle update collection description and its mutation
+  const handleUpdateCollectionDesc = (description: string) => {
+    if (!collectionId) return;
+    collection.updCollectionDescrMutateFun(description, {
+      onError: () => {
+        negativeFeedback();
+      },
+    });
+  };
+
+  //handle delete collection and its mutation
+  const handleDeleteCollection = () => {
+    if (!collectionId) return;
+
+    collection.deleteCollectionMutateFun(collectionId, {
+      onSuccess: () => {
+        positiveFeedback('DELETE');
+        router.push('/collections');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => deleteCollectionModal.closeModal(),
+    });
+  };
+  //End Collection mutation
 
   //Handle selected item
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null);
-  const [selectedItemName, setSelectedItemName] = useState<string>('');
-  const [selectedItemUpdateTs, setSelectedItemUpdateTs] = useState<Date>();
-  const [selectedItemPorperties, setSelectedItemPorperties] = useState<
-    IItemProperty[]
-  >([]);
+  //selectedItem hold item data and some utils function
+  //selectedItemMutations hold all selected item mutate fun
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const selectedItem = useGetItem(selectedItemId || rand);
+  const selectedItemMutations = useItem(
+    selectedItemId || rand,
+    collectionId || rand
+  );
 
-  //Fetch the selected item data
-  useEffect(() => {
-    const fetchItem = async () => {
-      if (!selectedItemId) return;
-      const item = await getItem(selectedItemId);
-      setSelectedItemName(item.name);
-      setSelectedItemUpdateTs(item.updatedAt);
-      setSelectedItemPorperties(item.properties);
-    };
-    fetchItem();
-  }, [collection, selectedItemId]);
-
-  const getCollectionPropertyById = (id: number) => {
-    if (!id || !collection) return {} as IProperty;
-
-    const property = collection.properties.find(
-      (property) => property._id === id
-    );
-
-    return property || ({} as IProperty);
+  const handleOnClickItem = (id: string) => {
+    setSelectedItemId(id);
+    drawer.openDrawer();
   };
 
-  const setPropertyValue = (id: number, value: string): void => {
-    if (!id || !selectedItemId) return;
-
-    setSelectedItemPorperties(
-      selectedItemPorperties.map((property) =>
-        property._id == id ? { ...property, value } : property
-      )
-    );
-    updateItemPropertyMutation.mutate({
-      itemId: selectedItemId,
-      propertyId: id,
-      property: { _id: id, value },
-    });
-  };
-
-  const getPropertyValue = (id: number): string => {
-    if (!id) return '';
-    const property = selectedItemPorperties.find(
-      (property) => property._id === id
-    );
-    if (!property) return '';
-    return property.value;
-  };
-
-  //Util function that add the lastest collection property
-  //to all collection items
-  const addPorpertyToAllItem = (collection: ICollection) => {
-    //get id of the lastest collection's property
-    const { _id } = collection.properties[collection.properties.length - 1];
-
-    collection.items.map((itemId) => {
-      addPropertyToItem(itemId, { _id, value: '' });
-    });
-  };
-
-  //handles that make user of mutations above
-  const handleOnClickAddProperty = async () => {
-    if (!collection || !collection._id) return;
-    addCollectioPropertyMutation.mutate({
-      collectionId: collection._id,
-      property: {
-        name: 'Property',
-        type: 'text',
-        values: [],
+  //Item mutation
+  //Handle rename item mutation
+  const handleRenameItem = (name: string) => {
+    selectedItemMutations.renameItemMutateFun(name, {
+      onSuccess: () => {
+        positiveFeedback('Item renamed');
+        selectedItem.refetch();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        renameItemModal.closeModal();
       },
     });
+  };
+
+  //Handle update item property
+  const handlePropertyValueChange = (id: string, value: string): void => {
+    if (!id || !selectedItemId) return;
+
+    selectedItem.setPropertyValue(id, value);
+    selectedItemMutations.updateItemPropertyMutateFun(
+      {
+        itemId: selectedItemId,
+        propertyId: id,
+        property: { _id: id, value },
+      },
+      {
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
+  };
+  //Handle delete item mutation
+  const handleDeleteItem = () => {
+    if (!collectionId || !selectedItemId) return;
+
+    selectedItemMutations.deleteItemMutateFun(selectedItemId, {
+      onSuccess: async () => {
+        positiveFeedback('Item deleted');
+        drawer.closeDrawer();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        deleteItemModal.closeModal();
+      },
+    });
+  };
+
+  //handle user interation with property menu
+  const handleOnClickAddProperty = async () => {
+    if (!collectionId) return;
+    collection.addPropertyToCollectionMutateFun(
+      {
+        collectionId,
+        property: { name: 'property', type: 'text', values: [] },
+      },
+      {
+        onSuccess: () => {
+          selectedItem.refetch();
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
   };
 
   const handleDuplicateProperty = async (property: IProperty) => {
-    if (!collection || !collection._id) return;
-    addCollectioPropertyMutation.mutate({
-      collectionId: collection._id,
-      property,
-    });
+    if (!collectionId) return;
+    collection.addPropertyToCollectionMutateFun(
+      { collectionId, property },
+      {
+        onSuccess: () => {
+          selectedItem.refetch();
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
   };
 
   const handleUpdateProperty = async (property: IProperty) => {
-    if (!property._id) return;
-    if (!collectionId) return;
-    updateCollectioPropertyMutation.mutate({
-      collectionId,
-      propertyId: property._id,
-      property,
-    });
+    if (!collectionId || !property._id) return;
+
+    collection.updateCollectionPropertyMutateFun(
+      { collectionId, propertyId: property._id, property },
+      {
+        onSuccess: () => {
+          positiveFeedback('Property updated');
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
   };
 
-  const handleDeleteProperty = async (propertyId: number) => {
-    if (!collection || !collectionId) return;
-    deleteCollectioPropertyMutation.mutate({ collectionId, propertyId });
+  const handleDeleteProperty = async (propertyId: string) => {
+    if (!collectionId) return;
+
+    collection.deleteCollectionPropertyMutateFun(
+      { collectionId, propertyId },
+      {
+        onSuccess: () => {
+          positiveFeedback('Property removed');
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
   };
 
   return (
     <>
       <Head>
-        <title> {collection ? collection.name : 'Loading...'}</title>
+        <title> {collectionData ? collectionData.name : 'Loading...'}</title>
       </Head>
       <Sidebar />
       <main
@@ -350,161 +352,236 @@ const Collections: NextPage<
         } main-content flex `}>
         <div
           className={`${
-            showDrawer ? 'overflow-y-hidden w-0 md:w-3/5' : 'w-full'
-          } pb-2`}>
-          {collection && (
-            <Collection>
-              <Collection.Header
-                collection={collection}
-                openNewItemModal={createItemModal.openModal}>
-                <h1 className='font-medium text-2xl'>{collection.name}</h1>
-              </Collection.Header>
-              <Collection.Description hidden={collection.isDescriptionHidden}>
-                <Editor
-                  initialText={collection.description}
-                  onSave={updateCollectioDescriptionMutation.mutate}
-                />
-              </Collection.Description>
-              <Collection.Body>
-                {!isLoading && collection && collection.items.length === 0 ? (
-                  // if collection has no items
-                  <div
-                    className='py-1 flex justify-center border-dotted 
-                  border-t-2 border-gray-200 dark:border-gray-700'>
-                    <button
-                      onClick={createItemModal.openModal}
-                      className='w-full py-1 flex items-center justify-center 
-                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
-                      <span className='icon-sm'>
-                        <PlusIcon />
-                      </span>
-                      <span>New Item</span>
-                    </button>
-                  </div>
+            drawer.isOpen ? 'w-0 md:w-3/5' : 'w-full'
+          } pb-2 h-full overflow-y-scroll scrollbar-thin
+          scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth`}>
+          {/* Header  */}
+          <Header>
+            <div className='grow flex items-center space-x-1 font-semibold'>
+              {!collectionData ||
+                (collectionData.icon === '' && (
+                  <FolderIcon className='icon-sm' />
+                ))}
+              {collectionData && collectionData.icon !== '' && (
+                <span className='relative icon-sm'>
+                  <Image
+                    src={`/icons/${collectionData.icon}.svg`}
+                    alt={collectionData.icon}
+                    layout='fill'
+                    objectFit='contain'
+                  />
+                </span>
+              )}
+
+              <h1 className='text-2xl'>
+                {collectionData ? collectionData.name : 'Loading'}
+              </h1>
+              <ActionIcon onClick={renameCollectionModal.openModal}>
+                <PencilIcon className='icon-xxs' />
+              </ActionIcon>
+            </div>
+            <div className='flex items-center space-x-1.5'>
+              {/* new item btn  */}
+              <button
+                onClick={createItemModal.openModal}
+                className='btn btn-primary'>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span className='hidden md:block'>New Item</span>
+              </button>
+              {/*SORT */}
+              <SortOptionsListbox
+                sortOptions={sortOptions}
+                selectedOption={selectedSortOption}
+                onChangeOption={onChangeSortOption}
+              />
+              {/* views  */}
+              <ActionIcon
+                variant='filled'
+                onClick={() => setIsGridView(!isGridView)}>
+                {isGridView ? (
+                  <ViewGridIcon className='icon-sm' />
                 ) : (
-                  //  collection has at leat one item
-                  <div>
-                    <div
-                      className='flex justify-between items-center pt-1 border-dotted 
-                      border-t-2 border-gray-200 dark:border-gray-700'>
-                      {/* new item btn  */}
-                      <button
-                        onClick={createItemModal.openModal}
-                        className='btn btn-primary'>
-                        <span className='icon-sm'>
-                          <PlusIcon />
-                        </span>
-                        <span>New Item</span>
-                      </button>
-                      {/*Views */}
-                      <ViewRadioGroup
-                        value={selectedView}
-                        setValue={setSelectedView}
-                      />
-                    </div>
-
-                    {/*Dispay all collection's item */}
-                    <div
-                      className={`
-                  ${selectedView === 'list' && 'flex flex-col space-y-2'}
-                  ${
-                    selectedView === 'grid' &&
-                    'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
-                  } py-2 `}>
-                      {itemsQueries.map(({ data: item, isLoading }) =>
-                        isLoading ? (
-                          <div className='flex flex-col space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
-                            <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                            <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                          </div>
-                        ) : (
-                          item && (
-                            <ItemOverview
-                              key={item._id}
-                              item={item}
-                              active={selectedItemId === item._id}
-                              collectionProperty={collection.properties}
-                              onItemClick={handleOnClickItem}
-                            />
-                          )
-                        )
-                      )}
-                    </div>
-                  </div>
+                  <ViewBoardsIcon className='icon-sm rotate-90' />
                 )}
-              </Collection.Body>
-            </Collection>
-          )}
-        </div>
+              </ActionIcon>
 
-        {selectedItemId && (
-          <Drawer
-            opened={showDrawer}
-            onClose={closeDrawer}
-            title={
-              <input
-                value={selectedItemName}
-                onChange={(e) => setSelectedItemName(e.target.value)}
-                onBlur={(e) => renameItemMutation.mutate(e.target.value)}
-                className='w-full p-1 font-semibold cursor-default rounded-sm border-0 
-               bg-gray-100 dark:bg-gray-800 
-            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200'
-              />
-            }
-            menu={
-              <ItemMenu
-                onClickAddProperty={handleOnClickAddProperty}
-                onClickDelete={deleteModal.openModal}
-              />
-            }>
-            <Drawer.Body>
+              {collectionData && (
+                <CollectionMenu
+                  isFavourite={collectionData.isFavourite}
+                  isDescriptionHidden={collectionData.isDescriptionHidden}
+                  onClickNewItem={createItemModal.openModal}
+                  onClickDescription={handleCollectionDescState}
+                  onClickFavourite={handleCollectionIsFavState}
+                  onClickRename={renameCollectionModal.openModal}
+                  onClickDelete={deleteCollectionModal.openModal}
+                />
+              )}
+            </div>
+          </Header>
+          <div className='grow px-4 space-y-1.5 '>
+            {collectionData && (
               <div
-                className='space-y-2 pt-1 px-0.5 border-dotted 
-                      border-t-2 border-gray-200 dark:border-gray-700'>
-                <button
-                  onClick={handleOnClickAddProperty}
-                  className='btn btn-primary'>
-                  <PlusIcon className='icon-sm' />
-                  <span>Add Property</span>
-                </button>
-                {selectedItemPorperties.map(
-                  (property) =>
-                    property._id && (
-                      <Property
-                        collectionProperty={getCollectionPropertyById(
-                          property._id
-                        )}
-                        getValue={getPropertyValue}
-                        setValue={setPropertyValue}
-                        onPropertyUpdate={handleUpdateProperty}
-                        onPropertyDuplicate={handleDuplicateProperty}
-                        onPropertyDelete={handleDeleteProperty}
+                className={`${collectionData.isDescriptionHidden && 'hidden'}`}>
+                <Editor
+                  initialText={collectionData.description}
+                  onSave={handleUpdateCollectionDesc}
+                />
+              </div>
+            )}
+
+            {isItemsLoading &&
+              collectionData &&
+              collectionData.items.map((_, idx) => (
+                <div
+                  key={idx}
+                  className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                  <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                  <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                </div>
+              ))}
+
+            {!isLoading && collectionData && collectionData.items.length === 0 && (
+              <button
+                onClick={createItemModal.openModal}
+                className='w-full py-1 flex items-center justify-center 
+                      rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600'>
+                <span className='icon-sm'>
+                  <PlusIcon />
+                </span>
+                <span>New Item</span>
+              </button>
+            )}
+
+            {/*Dispay all collection's item */}
+            {!isItemsLoading && collectionData && sortedItems.length >= 0 && (
+              <div
+                className={`${
+                  isGridView
+                    ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
+                    : 'flex flex-col space-y-2'
+                } py-2 `}>
+                {sortedItems.map(
+                  (item) =>
+                    item && (
+                      <ItemOverview
+                        key={item._id}
+                        item={item}
+                        active={selectedItemId === item._id}
+                        collectionProperty={collectionData.properties}
+                        onItemClick={handleOnClickItem}
                       />
                     )
                 )}
               </div>
-            </Drawer.Body>
+            )}
+          </div>
+        </div>
+
+        {selectedItemId && (
+          <Drawer
+            opened={drawer.isOpen}
+            onClose={drawer.closeDrawer}
+            title={
+              <div className='flex items-center space-x-1 font-semibold'>
+                <h1 className='text-2xl'>{selectedItem.name}</h1>
+                <ActionIcon onClick={renameItemModal.openModal}>
+                  <PencilIcon className='icon-xxs' />
+                </ActionIcon>
+              </div>
+            }
+            menu={
+              <ItemMenu
+                onClickAddProperty={handleOnClickAddProperty}
+                onClickDelete={deleteItemModal.openModal}
+              />
+            }>
+            <div
+              className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
+                      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
+              {selectedItem.properties.map(
+                (property) =>
+                  property._id && (
+                    <Property
+                      collectionProperty={collection.getCollectionPropertyById(
+                        property._id
+                      )}
+                      getValue={selectedItem.getPropertyValue}
+                      setValue={handlePropertyValueChange}
+                      onPropertyUpdate={handleUpdateProperty}
+                      onPropertyDuplicate={handleDuplicateProperty}
+                      onPropertyDelete={handleDeleteProperty}
+                    />
+                  )
+              )}
+            </div>
+            <div>
+              <Button
+                onClick={handleOnClickAddProperty}
+                variant='primary-filled'
+                full>
+                <PlusIcon className='icon-sm' />
+                <span>Add Property</span>
+              </Button>
+            </div>
           </Drawer>
         )}
       </main>
       {/* create item modal  */}
-      {collection && createItemModal.isOpen && (
+      {collectionData && createItemModal.isOpen && (
         <CreateItemModal
           open={createItemModal.isOpen}
           handleClose={createItemModal.closeModal}
-          positiveFeedback={positiveFeedback}
-          negativeFeedback={negativeFeedback}
-          collection={collection}
+          onCreateItem={handleCreateItem}
+        />
+      )}
+
+      {/* rename item modal  */}
+      {selectedItemId && renameItemModal.isOpen && (
+        <RenameModal
+          open={renameItemModal.isOpen}
+          handleClose={renameItemModal.closeModal}
+          name={selectedItem.name}
+          onRename={handleRenameItem}
         />
       )}
       {/* Delete item modal  */}
-      {selectedItemId && deleteModal.isOpen && (
+      {selectedItemId && deleteItemModal.isOpen && (
         <DeleteModal
-          name={selectedItemName}
-          open={deleteModal.isOpen}
-          handleClose={deleteModal.closeModal}
-          onDelete={() => deleteItemMutation.mutate(selectedItemId || -1)}
+          open={deleteItemModal.isOpen}
+          handleClose={deleteItemModal.closeModal}
+          onDelete={handleDeleteItem}>
+          <h2>
+            Are you sure about delete item{' '}
+            <span className='italic'>{selectedItem.name}</span>?
+          </h2>
+        </DeleteModal>
+      )}
+
+      {/* rename Collection modal  */}
+      {collectionData && renameCollectionModal.isOpen && (
+        <RenameModal
+          open={renameCollectionModal.isOpen}
+          handleClose={renameCollectionModal.closeModal}
+          name={collectionData.name}
+          onRename={handleRenameCollection}
         />
+      )}
+
+      {/* delete Collection modal  */}
+      {collectionData && deleteCollectionModal.isOpen && (
+        <DeleteModal
+          open={deleteCollectionModal.isOpen}
+          handleClose={deleteCollectionModal.closeModal}
+          onDelete={handleDeleteCollection}>
+          <h2>
+            Are you sure about delete collection{' '}
+            <span className='italic'>{collectionData.name}</span>? All{' '}
+            <span className='italic'>{collectionData.name}</span> items will be
+            deleted
+          </h2>
+        </DeleteModal>
       )}
     </>
   );

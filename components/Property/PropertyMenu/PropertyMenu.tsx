@@ -17,7 +17,7 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
   const { onClickEdit, onClickDuplicate, onClickDelete } = props;
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='action-icon-hover-variant rounded'>
+      <Menu.Button className='menu-filled-variant'>
         <DotsVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
@@ -32,25 +32,21 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
           as='ul'
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
-            <button onClick={onClickEdit} className='collection-menu-item-btn'>
+            <button onClick={onClickEdit} className='menu-item-btn'>
               <PencilAltIcon className='icon-sm' />
               <span>Edit property</span>
             </button>
           </Menu.Item>
 
           <Menu.Item as='li'>
-            <button
-              onClick={onClickDuplicate}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickDuplicate} className='menu-item-btn'>
               <DuplicateIcon className='icon-sm' />
               <span>Duplicate property</span>
             </button>
           </Menu.Item>
 
           <Menu.Item>
-            <button
-              onClick={onClickDelete}
-              className='collection-menu-item-btn'>
+            <button onClick={onClickDelete} className='menu-item-btn'>
               <TrashIcon className='icon-sm' />
               <span> Delete property</span>
             </button>

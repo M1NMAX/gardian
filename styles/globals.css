@@ -37,15 +37,13 @@
     @apply p-1 hover:bg-gray-300 dark:hover:bg-gray-600;
   }
 
-  .collection-menu-item-btn {
-    @apply w-full p-1 flex items-center space-x-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600;
+  .menu-filled-variant {
+    @apply p-1 rounded bg-gray-200 hover:bg-gray-300
+    dark:bg-gray-700 dark:hover:bg-gray-600;
   }
 
-  .action-icon-filled-variant {
-    @apply p-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600;
-  }
-  .action-icon-hover-variant {
-    @apply p-1 hover:bg-gray-300 dark:hover:bg-gray-600;
+  .menu-item-btn {
+    @apply w-full p-1 flex items-center space-x-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600;
   }
 
   .has-sidebar-width {

@@ -4,8 +4,8 @@ import { IProperty } from '../../../interfaces';
 interface PropertyInputProps {
   property: IProperty;
   menu: ReactNode;
-  getValue: (id: number) => string;
-  setValue: (id: number, value: string) => void;
+  getValue: (id: string) => string;
+  setValue: (id: string, value: string) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, menu, getValue, setValue } = props;

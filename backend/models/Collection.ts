@@ -13,6 +13,10 @@ const CollectionSchema = new Schema<ICollection>({
     type: String,
     required: true,
   },
+  icon: {
+    type: String,
+    default: '',
+  },
   description: {
     type: String,
     default: '',

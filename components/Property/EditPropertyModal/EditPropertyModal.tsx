@@ -1,9 +1,8 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
 import { IProperty } from '../../../interfaces';
-import Modal from '../../Frontstate/Modal';
 import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
-import ActionIcon from '../../Frontstate/ActionIcon';
+import { ActionIcon, Modal } from '../../frontstate-ui';
 
 const types = [
   'text',
@@ -99,10 +98,9 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
 
                 <span className='px-1'>{value}</span>
               </div>
-              <ActionIcon
-                icon={<TrashIcon />}
-                onClick={() => removeValue(idx)}
-              />
+              <ActionIcon onClick={() => removeValue(idx)}>
+                <TrashIcon className='icon-sm' />
+              </ActionIcon>
             </span>
           ))}
 
@@ -116,12 +114,9 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
                   onChange={(e) => setNewValue(e.target.value)}
                   className='modal-input'
                 />
-
-                <ActionIcon
-                  icon={<ArrowUpIcon />}
-                  onClick={() => addValue(newValue)}
-                  variant='filled'
-                />
+                <ActionIcon onClick={() => addValue(newValue)}>
+                  <ArrowUpIcon className='icon-sm' />
+                </ActionIcon>
               </div>
             </label>
           </div>

@@ -1,0 +1,37 @@
+.btn {
+  @apply flex items-center justify-center p-1 rounded font-semibold 
+  disabled:cursor-no-drop;
+}
+
+.full {
+  @apply w-full;
+}
+
+.primary-filled {
+  @apply text-white bg-primary-200 hover:bg-primary-300 disabled:opacity-50;
+}
+
+.primary-hover {
+  @apply text-primary-200  hover:bg-primary-100 hover:bg-opacity-30;
+}
+
+.secondary-filled {
+  @apply bg-gray-100 hover:bg-gray-200;
+}
+
+:global(.dark) .secondary-filled {
+  @apply bg-gray-700 hover:bg-gray-600;
+}
+
+.secondary-hover {
+  @apply hover:bg-gray-300;
+}
+
+:global(.dark) .secondary-hover {
+  @apply hover:bg-gray-600;
+}
+
+.danger-filled {
+  @apply bg-danger-300 hover:bg-danger-400
+   disabled:hover:bg-danger-100;
+}
