@@ -8,7 +8,6 @@ import { signOut } from 'next-auth/react';
 
 const SidebarUserPopoverMenu = () => {
   const { data: session, status } = useSession();
-  console.log(session);
 
   return (
     <Popover className='relative'>
