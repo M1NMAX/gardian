@@ -1,4 +1,4 @@
-import { getSession } from '@auth0/nextjs-auth0';
+import { getSession } from '@lib/auth/session';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -6,9 +6,14 @@ import Link from 'next/link';
 import collecting from '../public/undraw_collecting.svg';
 import template from '../public/undraw_wireframing.svg';
 import nextjsLogo from '../public/next-js-logo.png';
+import { ThemeBtn } from '@features/theme';
+
 import Logo from '../components/Logo';
-import { ThemeBtn } from '../features/theme';
 import { LoginIcon } from '@heroicons/react/outline';
+import { authOptions } from '@api/auth/[...nextauth]';
+
+import { Button } from '@frontstate-ui';
+import { signIn } from 'next-auth/react';
 
 const Home: NextPage = () => {
   return (
@@ -23,14 +28,10 @@ const Home: NextPage = () => {
         <Logo />
         <div className='flex items-center space-x-2'>
           <ThemeBtn />
-          <Link href='/api/auth/login'>
-            <a
-              className='flex items-center space-x-1 p-1 rounded 
-            bg-green-500 hover:bg-green-400 text-gray-100'>
-              <LoginIcon className='icon-xs' />
-              <span className='font-medium'>Log in</span>
-            </a>
-          </Link>
+          <Button onClick={() => signIn()} variant='primary-filled'>
+            <LoginIcon className='icon-xs' />
+            <span>Login</span>
+          </Button>
         </div>
       </div>
       <main className='space-y-4  dark:bg-gray-700'>
@@ -43,6 +44,7 @@ const Home: NextPage = () => {
             <p className='text-2xl font-medium text-gray-500 dark:text-gray-300'>
               Gardian let you store your items in collections
             </p>
+
             <Link href='/api/auth/login'>
               <a
                 className='w-full max-w-xs  font-medium text-center text-gray-100 p-1 rounded 
@@ -89,7 +91,7 @@ const Home: NextPage = () => {
 export default Home;
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const sesssion = getSession(ctx.req, ctx.res);
+  const sesssion = await getSession(ctx.req, ctx.res, authOptions);
 
   //Redirect user to collections page if user has a valid session
   if (sesssion) {

@@ -1,6 +1,11 @@
 import React from 'react';
-import { InferGetServerSidePropsType, NextPage } from 'next';
-import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from 'next';
+import { getSession } from '@lib/auth/session';
+
 import Sidebar from '../../components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
@@ -29,6 +34,7 @@ import { useSort, SortOptionsListbox } from '../../features/sort';
 import { ActionIcon, Button } from '../../components/frontstate-ui';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -183,33 +189,30 @@ const Collections: NextPage<
 
 export default Collections;
 
-export const getServerSideProps = withPageAuthRequired({
-  returnTo: '/collections',
-  async getServerSideProps(ctx) {
-    const session = getSession(ctx.req, ctx.res);
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getSession(ctx.req, ctx.res, authOptions);
 
-    if (session) {
-      const user = session.user;
+  //Redirect user to collections page if user has a valid session
+  if (session) {
+    const userId = session.user.id;
 
-      try {
-        // connect to db
-        await dbConnect();
+    try {
+      // connect to db
+      await dbConnect();
 
-        // fecth db for group
-        const groups = await Group.find({ userId: user.sub });
+      // fecth db for group
+      const groups = await Group.find({ userId });
 
-        //create group if there is no
-        if (groups.length === 0) {
-          await Group.create({
-            name: 'My Group',
-            userId: user.sub,
-          });
-        }
-      } catch (error) {
-        console.log(error);
+      //create group if there is no
+      if (groups.length === 0) {
+        await Group.create({
+          name: 'My Group',
+          userId,
+        });
       }
+    } catch (error) {
+      console.log(error);
     }
-
-    return { props: {} as never };
-  },
-});
+  }
+  return { props: {} as never };
+}

@@ -1,27 +1,28 @@
-import { useUser } from '@auth0/nextjs-auth0';
 import { Popover, Transition } from '@headlessui/react';
 import { LogoutIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import React, { Fragment } from 'react';
 import Image from 'next/image';
 import logoSrc from '../../../public/logo192.png';
+import { useSession } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 
 const SidebarUserPopoverMenu = () => {
-  const { user, isLoading } = useUser();
+  const { data: session, status } = useSession();
+  console.log(session);
 
   return (
     <Popover className='relative'>
       <Popover.Button
         className='p-1 rounded bg-gray-200 hover:bg-gray-300
        dark:bg-gray-700 dark:hover:bg-gray-600'>
-        {isLoading ? (
+        {status === 'loading' ? (
           <div
             className='h-6 w-6  animate-pulse rounded-full 
          bg-gray-400 dark:bg-gray-600'></div>
         ) : (
           <div className='relative w-6 h-6'>
             <Image
-              src={user?.picture || logoSrc}
+              src={session?.user?.image || logoSrc}
               layout='fill'
               objectFit='contain'
               className=' p-2 rounded-full border-2 border-white'
@@ -47,7 +48,7 @@ const SidebarUserPopoverMenu = () => {
               <div className='flex items-center space-x-2 px-1.5 py-2'>
                 <div className='relative w-8 h-8 '>
                   <Image
-                    src={user?.picture || logoSrc}
+                    src={session?.user?.image || logoSrc}
                     layout='fill'
                     objectFit='contain'
                     className='rounded-full'
@@ -55,17 +56,19 @@ const SidebarUserPopoverMenu = () => {
                   />
                 </div>
                 <div className='flex flex-col items-start font-medium '>
-                  <span>{user?.nickname}</span>
-                  <span className='text-xs'>{user?.email}</span>
+                  <span>{session?.user?.name || 'usename'}</span>
+                  <span className='text-xs'>
+                    {session?.user?.email || 'email@email.com'}
+                  </span>
                 </div>
               </div>
               <div className='p-1'>
-                <Link href='/api/auth/logout'>
-                  <a className='menu-item-btn'>
-                    <LogoutIcon className='icon-sm' />
-                    <span>Log out</span>
-                  </a>
-                </Link>
+                <button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className='menu-item-btn'>
+                  <LogoutIcon className='icon-sm' />
+                  <span>Sign Out</span>
+                </button>
               </div>
             </div>
           </Popover.Panel>
