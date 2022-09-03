@@ -1,4 +1,3 @@
-import { getSession } from '@lib/auth/session';
 import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -7,11 +6,10 @@ import collecting from '../public/undraw_collecting.svg';
 import template from '../public/undraw_wireframing.svg';
 import nextjsLogo from '../public/next-js-logo.png';
 import { ThemeBtn } from '@features/theme';
-
 import Logo from '../components/Logo';
 import { LoginIcon } from '@heroicons/react/outline';
 import { authOptions } from '@api/auth/[...nextauth]';
-
+import { getSession } from '@lib/auth/session';
 import { Button } from '@frontstate-ui';
 import { signIn } from 'next-auth/react';
 

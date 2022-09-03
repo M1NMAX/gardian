@@ -1,4 +1,5 @@
 import { SyntheticEvent, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -15,31 +16,31 @@ import { getSession } from '@lib/auth/session';
 import { authOptions } from '@api/auth/[...nextauth]';
 import Head from 'next/head';
 import { Button } from '@frontstate-ui';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 const MINIMUM_ACTIVITY_TIMEOUT = 850;
-const SignIn: NextPage<
+const SignUp: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ csrfToken, providers }) => {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-
   const [password, setPassword] = useState('');
 
-  const handleProviderSignIn = (provider: ClientSafeProvider) => {
-    signIn(provider.id);
+  const handleProviderSignIn = (providerId: string) => {
+    signIn(providerId);
   };
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const signInResponse = await signIn('app-login', {
+      const signInResponse = await signIn('app-sign-up', {
         redirect: false,
+        username: username,
         email: email,
         password: password,
       });
+
       setTimeout(() => {
         setIsSubmitting(false);
       }, MINIMUM_ACTIVITY_TIMEOUT);
@@ -53,7 +54,7 @@ const SignIn: NextPage<
   return (
     <div className='h-screen  flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
       <Head>
-        <title>Sign in</title>
+        <title>Sign Up</title>
       </Head>
       <div className='sm:mx-auto sm:w-full sm:max-w-md text-center py-2'>
         <a href='/'>
@@ -68,7 +69,7 @@ const SignIn: NextPage<
       <div className=' flex flex-col justify-center sm:px-6 lg:px-8'>
         <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
           <h1 className='text-xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
-            Sign In
+            Sign Up
           </h1>
         </div>
         <div className='mt-2 sm:mx-auto sm:w-full sm:max-w-md'>
@@ -84,6 +85,28 @@ const SignIn: NextPage<
                 <label
                   htmlFor='email'
                   className='block text-sm font-medium text-neutral-400'>
+                  Username
+                </label>
+                <div className='mt-1'>
+                  <input
+                    id='usename'
+                    name='usename'
+                    type='text'
+                    autoComplete='text'
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className='appearance-none w-full font-medium py-3 
+                    border-b border-t-0 border-l-0 border-r-0 border-dashed outline-none 
+                    text-xl text-center leading-6 bg-transparent placeholder-gray-500 
+                    focus:outline-none focus:placeholder-gray-400 transition duration-150 ease-in-out'
+                  />
+                </div>
+              </div>
+              <div className='mt-6'>
+                <label
+                  htmlFor='email'
+                  className='block text-sm font-medium text-neutral-400'>
                   Email address
                 </label>
                 <div className='mt-1'>
@@ -95,13 +118,16 @@ const SignIn: NextPage<
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className='appearance-none w-full font-medium py-3 border-b border-t-0 border-l-0 border-r-0 border-dashed outline-none text-xl text-center leading-6 bg-transparent placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 transition duration-150 ease-in-out'
+                    className='appearance-none w-full font-medium py-3 
+                    border-b border-t-0 border-l-0 border-r-0 border-dashed outline-none 
+                    text-xl text-center leading-6 bg-transparent placeholder-gray-500 
+                    focus:outline-none focus:placeholder-gray-400 transition duration-150 ease-in-out'
                   />
                 </div>
               </div>
 
               <div>
-                <div className='mt-8'>
+                <div className='mt-6'>
                   <label
                     htmlFor='password'
                     className='block text-sm font-medium text-neutral-400'>
@@ -126,7 +152,7 @@ const SignIn: NextPage<
               <div className='mt-6 space-y-2 flex justify-center'>
                 <Button type='submit' variant='primary-filled' full>
                   <span className='text-lg'>
-                    {isSubmitting ? 'Loading...' : 'Sign In'}
+                    {isSubmitting ? 'Loading...' : 'Sign Up'}
                   </span>
                 </Button>
               </div>
@@ -136,7 +162,7 @@ const SignIn: NextPage<
                 <hr className='h-0 border-t mt-1' />
                 <div className='-mt-3 text-sm text-center'>
                   <span className='px-2 bg-white text-secondary'>
-                    Or Sign in with
+                    Or Sign up with
                   </span>
                 </div>
               </div>
@@ -147,7 +173,7 @@ const SignIn: NextPage<
                     <Button
                       key={provider.id}
                       type='button'
-                      onClick={() => handleProviderSignIn(provider)}
+                      onClick={() => handleProviderSignIn(provider.id)}
                       variant='secondary-filled'>
                       <img
                         className='w-4 h-4'
@@ -161,17 +187,12 @@ const SignIn: NextPage<
             </section>
           </div>
         </div>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
-          <Link href='/account/signup'>
-            <a>Sign Up</a>
-          </Link>
-        </div>
       </div>
     </div>
   );
 };
 
-export default SignIn;
+export default SignUp;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context.req, context.res, authOptions);

@@ -7,8 +7,8 @@
       "@api/*": ["pages/api/*"],
       "@lib/*": ["lib/*"],
       "@features/*": ["features/*"],
-      "@components/*": ["components/*"],
       "@frontstate-ui": ["components/frontstate-ui/index"],
+      "@components/*": ["components/*"],
       "@db/*": ["db/*"],
       "@db": ["db/index"]
     },
