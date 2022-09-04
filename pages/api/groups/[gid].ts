@@ -4,9 +4,9 @@ import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  //cid: short for collectionId
+  // gid: short for groupId
   const {
-    query: { cid },
+    query: { gid },
     method,
   } = req;
 
@@ -14,46 +14,41 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!session) return res.status(401).json({ message: 'Unauthorized' });
 
-  if (Array.isArray(cid)) return res.status(400).json({ isSuccess: false });
+  if (Array.isArray(gid)) return res.status(400).json({ isSuccess: false });
 
   switch (method) {
     case 'GET':
       try {
-        const collection = await prisma.collection.findUnique({
-          where: { id: cid },
-        });
+        const group = await prisma.group.findUnique({ where: { id: gid } });
 
-        if (!collection) return res.status(400).json({ isSuccess: false });
-        return res.status(200).json({ isSuccess: true, data: collection });
+        if (!group) return res.status(400).json({ isSuccess: false });
+        return res.status(200).json({ isSuccess: true, data: group });
       } catch (error) {
-        console.log('[api] collections/[cid]', error);
+        console.log('[api] groups/[gid]', error);
         return res.status(400).json({ isSuccess: false });
       }
 
     case 'PUT':
       try {
-        const collection = await prisma.collection.update({
-          where: { id: cid },
+        const group = await prisma.group.update({
+          where: { id: gid },
           data: { ...req.body },
         });
 
-        if (!collection) return res.status(400).json({ isSuccess: false });
-        return res.status(200).json({ isSuccess: true, data: collection });
+        if (!group) return res.status(400).json({ isSuccess: false });
+        return res.status(200).json({ isSuccess: true, data: group });
       } catch (error) {
-        console.log('[api] collections/[cid]', error);
+        console.log('[api] groups/[gid]', error);
         return res.status(400).json({ isSuccess: false });
       }
 
     case 'DELETE':
       try {
-        const deletedCollection = await prisma.collection.delete({
-          where: { id: cid },
-        });
-        if (!deletedCollection)
-          return res.status(400).json({ isSuccess: false });
+        const deletedGroup = await prisma.group.delete({ where: { id: gid } });
+        if (!deletedGroup) return res.status(400).json({ isSuccess: false });
         return res.status(200).json({ isSuccess: true });
       } catch (error) {
-        console.log('[api] collections/[cid]', error);
+        console.log('[api] groups/[gid]', error);
         return res.status(400).json({ isSuccess: false });
       }
 

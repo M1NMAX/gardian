@@ -1,41 +1,43 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../backend/database/dbConnect';
-import Group from '../../../backend/models/Group';
-import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
-import { Response } from '../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
 
-dbConnect();
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getSession(req, res, authOptions);
 
-//TODO: input validation
-export default withApiAuthRequired(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Response>
-) {
-  const session = getSession(req, res);
-  const user = session?.user;
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  const userId = session.user.id;
+
   const { method } = req;
   switch (method) {
     case 'GET':
       try {
-        const groups = await Group.find({ userId: user?.sub }).sort({
-          name: 1,
+        const groups = await prisma.group.findMany({
+          where: { userId },
+          orderBy: { name: 'asc' },
         });
-        res.status(200).json({ isSuccess: true, data: groups });
+
+        return res.status(200).json({ isSuccess: true, data: groups });
       } catch (error) {
-        console.log(error);
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] groups/', error);
+        return res.status(500).json({ isSuccess: false, message: error });
       }
-      break;
+
     case 'POST':
       try {
-        const group = await Group.create({ ...req.body, userId: user?.sub });
-        res.status(201).json({ isSuccess: true, data: group });
+        const group = await prisma.group.create({
+          data: { ...req.body.group, userId },
+        });
+
+        return res.status(201).json({ isSuccess: true, data: group });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] groups/', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
     default:
-      res.status(400).json({ isSuccess: false });
-      break;
+      return res.status(400).json({ isSuccess: false });
   }
-});
+};

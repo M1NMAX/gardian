@@ -1,22 +1,21 @@
+import { getFetch } from '@lib/fetch';
 import { IGroup } from '../../../interfaces';
 import { getRequestOptions } from '../../../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/groups/';
-
-//Types
-
-export async function createGroup(name: string): Promise<IGroup> {
-  const res = await fetch(baseUrl, getRequestOptions('POST', { name }));
-  return res.json().then((response) => response.data);
-}
 
 export async function getGroups(): Promise<IGroup[]> {
   const res = await fetch(baseUrl);
   return res.json().then((response) => response.data);
 }
 export async function getGroup(id: string): Promise<IGroup> {
-  const res = await fetch(baseUrl + id);
-  return res.json().then((response) => response.data);
+  const response = await getFetch(baseUrl + id);
+  return response;
+}
+
+export async function createGroup(name: string): Promise<IGroup> {
+  const response = await getFetch(baseUrl, 'POST', { name });
+  return response;
 }
 
 export async function updateGroup(id: string, group: IGroup): Promise<boolean> {
@@ -34,6 +33,7 @@ export async function renameGroup(id: string, name: string): Promise<boolean> {
   return updateGroup(id, { ...group, name });
 }
 
+//REMOVE
 export async function addCollectionToGroup(
   groupId: string,
   collectionId: string

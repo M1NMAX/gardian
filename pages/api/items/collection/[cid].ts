@@ -4,8 +4,9 @@ import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
+  // gid: short for groupId
   const {
-    query: { id },
+    query: { cid },
     method,
   } = req;
 
@@ -13,23 +14,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!session) return res.status(401).json({ message: 'Unauthorized' });
 
-  if (Array.isArray(id)) return res.status(400).json({ isSuccess: false });
+  if (Array.isArray(cid)) return res.status(400).json({ isSuccess: false });
 
-  // add new property to item array
-  if (method === 'PUT') {
+  if (method === 'GET') {
     try {
-      const property = req.body.property;
-
-      const item = await prisma.item.update({
-        where: { id },
-        data: { properties: { push: [property] } },
+      const items = await prisma.item.findMany({
+        where: { collectionId: cid },
+        orderBy: { name: 'asc' },
       });
 
-      if (!item) return res.status(400).json({ isSuccess: false });
-
-      return res.status(200).json({ isSuccess: true, data: item });
+      if (!items) return res.status(400).json({ isSuccess: false });
+      return res.status(200).json({ isSuccess: true, data: items });
     } catch (error) {
-      console.log('[api] items/[id]/properties/', error);
+      console.log('[api] items/collection/[cid]', error);
       return res.status(400).json({ isSuccess: false });
     }
   } else {

@@ -1,33 +1,37 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../../../backend/database/dbConnect';
-import Collection from '../../../../../backend/models/Collection';
-import { Response } from '../../../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
 
-dbConnect();
-
-export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     query: { cid },
     method,
   } = req;
 
-  switch (method) {
-    case 'POST':
-      try {
-        const property = req.body.property;
-        const colleciton = await Collection.findByIdAndUpdate(
-          cid,
-          { $push: { properties: property } },
-          { new: true, runValidators: true }
-        );
-        if (!colleciton) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: colleciton });
-      } catch (error) {
-        res.status(400).json({ isSuccess: false });
-      }
-      break;
-    default:
-      res.status(400).json({ isSuccess: false });
-      break;
+  const session = await getSession(req, res, authOptions);
+
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  if (Array.isArray(cid)) return res.status(400).json({ isSuccess: false });
+
+  if (method === 'POST') {
+    try {
+      const property = req.body.property;
+
+      const colleciton = await prisma.collection.update({
+        where: { id: cid },
+        data: { properties: { push: [property] } },
+      });
+
+      if (!colleciton) return res.status(400).json({ isSuccess: false });
+
+      return res.status(200).json({ isSuccess: true, data: colleciton });
+    } catch (error) {
+      console.log('[api] collections/properties/', error);
+      return res.status(400).json({ isSuccess: false });
+    }
+  } else {
+    return res.status(400).json({ isSuccess: false });
   }
 };
