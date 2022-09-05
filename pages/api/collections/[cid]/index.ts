@@ -21,6 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const collection = await prisma.collection.findUnique({
           where: { id: cid },
+          include: { _count: { select: { items: true } } },
         });
 
         if (!collection) return res.status(400).json({ isSuccess: false });

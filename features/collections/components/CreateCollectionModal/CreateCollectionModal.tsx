@@ -28,14 +28,11 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
   const queryClient = useQueryClient();
 
   const { mutate: createCollectionMutateFun } = useMutation(createCollection, {
-    onSuccess: async ({ _id: collectionId }) => {
-      if (!collectionId) throw 'CollectionId is undefined';
-      if (!selectedGroup) throw 'SelectedGroupId is undefined';
-      await addCollectionToGroup(selectedGroup, collectionId);
+    onSuccess: async ({ id }) => {
       queryClient.invalidateQueries(['groups']);
       queryClient.invalidateQueries(['collections']);
       positiveFeedback('Collection created');
-      router.push('/collections/' + collectionId);
+      router.push('/collections/' + id);
     },
     onError: () => {
       negativeFeedback();
@@ -49,12 +46,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
     e.preventDefault();
     createCollectionMutateFun({
       name,
-      icon: '',
-      description: '',
-      isDescriptionHidden: true,
-      isFavourite: false,
-      properties: [],
-      items: [],
+      groupId: selectedGroup,
     });
   };
 

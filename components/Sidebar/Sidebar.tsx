@@ -17,16 +17,15 @@ import { toast, Toaster } from 'react-hot-toast';
 import {
   CreateCollectionModal,
   SidebarCollection,
-} from '../../features/collections';
+} from '@features/collections';
 import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
 import { IGroup } from '../../interfaces';
-import { getGroups } from '../../features/groups/services';
+import { getGroups } from '@features/groups/services';
 import { CreateGroupModal, SidebarGroup } from '../../features/groups';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 import { SCREEN_SIZE_MD } from '../../constants';
-import { getFetch } from '@lib/fetch';
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -112,17 +111,14 @@ const Sidebar: FC = () => {
             groups &&
             groups.map((group) => (
               <SidebarGroup key={group.id} group={group}>
-                {/* {group.collections.map(
-                  (collectionId) =>
-                    group._id && (
-                      <SidebarCollection
-                        key={collectionId}
-                        collectionId={collectionId}
-                        groupId={group._id}
-                        onClick={() => onClickSidebarCollection(collectionId)}
-                      />
-                    )
-                )} */}
+                {group.collections.map(({ id: cid }) => (
+                  <SidebarCollection
+                    key={cid}
+                    collectionId={cid}
+                    groupId={group.id}
+                    onClick={() => onClickSidebarCollection(cid)}
+                  />
+                ))}
               </SidebarGroup>
             ))}
         </div>

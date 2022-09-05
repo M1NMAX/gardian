@@ -1,9 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IProperty } from '../../../interfaces';
+import { IProperty } from '../../../interfaces';
 import {
-  addItemToCollection,
   addPropertyToCollection,
-  changeCollectionIcon,
   deleteCollection,
   getCollection,
   removePropertyFromCollection,
@@ -13,7 +11,7 @@ import {
   updateCollectionDescription,
   updateCollectionProperty,
 } from '../services';
-import { removeCollectionFromGroup } from '../../groups/services';
+
 import {
   addPropertyToItem,
   createItem,
@@ -37,12 +35,10 @@ const useCollection = (
     queryClient.invalidateQueries(['items', cid]);
   };
 
-  const query = useQuery<ICollection>([key, cid], () => getCollection(cid));
+  const query = useQuery([key, cid], () => getCollection(cid));
 
   const { mutate: createItemMutateFun } = useMutation(createItem, {
-    onSuccess: async ({ _id: itemId }) => {
-      if (!itemId) throw 'Item id is undefined';
-      await addItemToCollection(cid, itemId);
+    onSuccess: async () => {
       invalidateCollectionQueries();
       invalidateItemsQueries();
     },
@@ -62,12 +58,12 @@ const useCollection = (
     }
   );
 
-  const { mutate: changeCollectionIconMutateFun } = useMutation(
-    async (icon: string) => {
-      await changeCollectionIcon(cid, icon);
-    },
-    { onSuccess: () => invalidateCollectionQueries() }
-  );
+  // const { mutate: changeCollectionIconMutateFun } = useMutation(
+  //   async (icon: string) => {
+  //     await changeCollectionIcon(cid, icon);
+  //   },
+  //   { onSuccess: () => invalidateCollectionQueries() }
+  // );
 
   const { mutate: renameCollectionMutateFun } = useMutation(
     async (name: string) => {
@@ -85,11 +81,11 @@ const useCollection = (
 
   const { mutate: deleteCollectionMutateFun } = useMutation(deleteCollection, {
     onSuccess: async () => {
-      if (!query.data) throw 'Collection is undefined';
-      const { items } = query.data;
-      //Delete all collection items
-      items.map(async (itemId) => await deleteItem(itemId));
-      await removeCollectionFromGroup(gid, cid);
+      // if (!query.data) throw 'Collection is undefined';
+      // const { items } = query.data;
+      // //Delete all collection items
+      // items.map(async (itemId) => await deleteItem(itemId));
+      // await removeCollectionFromGroup(gid, cid);
 
       queryClient.removeQueries(['sidebarCollection', cid]);
       queryClient.removeQueries(['collection', cid]);
@@ -140,12 +136,12 @@ const useCollection = (
     removePropertyFromCollection,
     {
       onSuccess: ({ propertyId }) => {
-        if (!query.data) throw 'Collection is undefined';
-        const { items } = query.data;
-        //Remove property from collection items
-        items.map(async (itemId) => {
-          await removePropertyFromItem(itemId, propertyId);
-        });
+        // if (!query.data) throw 'Collection is undefined';
+        // const { items } = query.data;
+        // //Remove property from collection items
+        // items.map(async (itemId) => {
+        //   await removePropertyFromItem(itemId, propertyId);
+        // });
         invalidateCollectionQueries();
         invalidateItemsQueries();
       },
@@ -155,7 +151,7 @@ const useCollection = (
   const getCollectionPropertyById = (pid: string) => {
     if (!query.data) return {} as IProperty;
     const property = query.data.properties.find(
-      (property) => property._id === pid
+      (property) => property.id === pid
     );
 
     return property || ({} as IProperty);
@@ -167,7 +163,7 @@ const useCollection = (
     getCollectionPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
-    changeCollectionIconMutateFun,
+    // changeCollectionIconMutateFun,
     renameCollectionMutateFun,
     updCollectionDescrMutateFun,
     deleteCollectionMutateFun,

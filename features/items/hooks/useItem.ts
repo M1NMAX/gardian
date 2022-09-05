@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from 'react-query';
-import { removeItemFromCollection } from '../../collections';
 import { deleteItem, renameItem, updateItemProperty } from '../services';
 
 const useItem = (id: string, cid: string) => {
@@ -26,7 +25,6 @@ const useItem = (id: string, cid: string) => {
   );
   const { mutate: deleteItemMutateFun } = useMutation(deleteItem, {
     onSuccess: async () => {
-      await removeItemFromCollection(cid, id);
       invalidateCollectionQueries();
       invalidateItemsQueries();
     },

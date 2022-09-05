@@ -1,21 +1,21 @@
 import React, { FC } from 'react';
+import Link from 'next/link';
 import {
   CollectionIcon,
   HashtagIcon,
   ViewBoardsIcon,
 } from '@heroicons/react/outline';
-import Link from 'next/link';
-import { ICollection } from '../../../../interfaces';
+import { CollectionWItemCount } from '@features/collections/services';
 
 interface CollectionOverviewProps {
-  collection: ICollection;
-  groupName: string;
+  collection: CollectionWItemCount;
+  // groupName: string;
   isGridView: boolean;
 }
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
-  const { collection, groupName, isGridView } = props;
-  const { _id: id, name, properties, items, createdAt } = collection;
+  const { collection, isGridView } = props;
+  const { id, name, properties, _count, createdAt } = collection;
 
   return (
     <Link href={`/collections/${id}`}>
@@ -30,11 +30,11 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
           {/** Extra information */}
           <span className='flex space-x-1.5'>
             {/* number of item */}
-            {items.length !== 0 && ( //Show number of items a collections has if diff zero
+            {_count.items !== 0 && ( //Show number of items a collections has if diff zero
               <>
                 <span className='flex items-center space-x-0.5'>
                   <HashtagIcon className='icon-xs' />
-                  <span>{items.length}</span>
+                  <span>{_count.items}</span>
                 </span>
                 <span aria-hidden='true'>&middot;</span>
               </>
@@ -42,14 +42,14 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
 
             <span className='flex items-center space-x-0.5'>
               <ViewBoardsIcon className='icon-xs' />
-              <span>{groupName}</span>
+              {/* <span>{groupName}</span> */}
             </span>
             <span aria-hidden='true' className='hidden md:block'>
               &middot;
             </span>
 
             <span className='hidden md:block'>
-              {createdAt ? new Date(createdAt).toLocaleDateString() : 'Loading'}
+              {new Date(createdAt).toLocaleDateString()}
             </span>
           </span>
         </span>

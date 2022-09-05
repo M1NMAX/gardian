@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -24,7 +24,7 @@ import {
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import { ICollection, IGroup } from '../../interfaces';
-import { getGroups } from '../../features/groups/services';
+import { getGroup, getGroups } from '../../features/groups/services';
 import useModal from '../../hooks/useModal';
 import Group from '../../backend/models/Group';
 import dbConnect from '../../backend/database/dbConnect';
@@ -48,18 +48,15 @@ const Collections: NextPage<
 > = () => {
   const sidebar = useRecoilValue(sidebarState);
 
-  const { data: groups } = useQuery<IGroup[]>(['groups'], getGroups);
+  const { data: groups } = useQuery(['groups'], getGroups);
 
-  const { data: collections, isLoading } = useQuery<ICollection[], Error>(
+  const { data: collections, isLoading } = useQuery(
     ['collections'],
     getCollections
   );
 
-  const getCollectionGroupName = (id?: string) => {
-    if (!id) return '';
-    if (!groups || !collections) return '';
-    const group = groups.find((group) => group.collections.includes(id));
-    if (!group) return '';
+  const getCollectionGroupName = async (gid: string) => {
+    const group = await getGroup(gid);
     return group.name;
   };
 
@@ -159,11 +156,11 @@ const Collections: NextPage<
               }  `}>
               {/* Collections  */}
               {sortedCollections &&
-                sortedCollections.map((collection, idx) => (
+                sortedCollections.map((collection) => (
                   <CollectionOverview
-                    key={idx}
+                    key={collection.id}
                     collection={collection}
-                    groupName={getCollectionGroupName(collection._id)}
+                    // groupName={getCollectionGroupName(collection.groupId)}
                     isGridView={isGridView}
                   />
                 ))}

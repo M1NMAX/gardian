@@ -16,6 +16,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const collections = await prisma.collection.findMany({
           where: { userId },
+          include: { _count: { select: { items: true } } },
           orderBy: { name: 'asc' },
         });
 
@@ -27,6 +28,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'POST':
       try {
+        console.log(req.body.collection);
         const collection = await prisma.collection.create({
           data: { ...req.body.collection, userId },
         });

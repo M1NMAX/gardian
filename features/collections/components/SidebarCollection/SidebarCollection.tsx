@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
-import { addItemToCollection, createCollection } from '../../services';
+import { createCollection } from '../../services';
 import RenameModal from '../../../../components/RenameModal';
 import DeleteModal from '../../../../components/DeleteModal';
 import useModal from '../../../../hooks/useModal';
@@ -46,21 +46,21 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const collection = useCollection(collectionId, groupId, 'sidebarCollection');
   const collectionData = collection.query.data;
 
-  //handle change collection icon and its mutation
-  const handleChangeCollectionIcon = (icon: string) => {
-    console.log(icon);
-    collection.changeCollectionIconMutateFun(icon, {
-      onSuccess: () => {
-        positiveFeedback('Icon changed');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-      onSettled: () => {
-        changeCollectionIconModal.closeModal();
-      },
-    });
-  };
+  // //handle change collection icon and its mutation
+  // const handleChangeCollectionIcon = (icon: string) => {
+  //   console.log(icon);
+  //   collection.changeCollectionIconMutateFun(icon, {
+  //     onSuccess: () => {
+  //       positiveFeedback('Icon changed');
+  //     },
+  //     onError: () => {
+  //       negativeFeedback();
+  //     },
+  //     onSettled: () => {
+  //       changeCollectionIconModal.closeModal();
+  //     },
+  //   });
+  // };
 
   //handle rename collection and its mutation
   const handleRenameCollection = (name: string) => {
@@ -106,19 +106,15 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const { mutate: duplicateCollectionMutateFun } = useMutation(
     createCollection,
     {
-      onSuccess: async ({ _id: duplicatedCid }) => {
-        if (!duplicatedCid) throw 'Duplicated collection id is undefined';
+      onSuccess: async ({ id }) => {
         if (!collectionData) throw 'Collection is undefined';
-        await addCollectionToGroup(groupId, duplicatedCid);
-
+        //api call to get all item of collection x and duplicate the item
         //duplicate all collection item
-        collectionData.items.map(async (itemId) => {
-          const { name, properties } = await getItem(itemId);
-          const { _id: newItemId } = await createItem({ name, properties });
+        // collectionData.items.map(async (itemId) => {
+        //   const { name, properties } = await getItem(itemId);
+        //   await createItem({ collectionId, name, properties });
 
-          if (!newItemId) return 'New item id is undefined';
-          await addItemToCollection(duplicatedCid, newItemId);
-        });
+        // });
 
         queryClient.invalidateQueries(['groups']);
         queryClient.invalidateQueries(['collections']);
@@ -134,22 +130,22 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     if (!collectionData) return;
     const {
       name,
-      icon,
+      // icon,
       description,
       properties,
       isDescriptionHidden,
       isFavourite,
     } = collectionData;
 
-    duplicateCollectionMutateFun({
-      name: name + '(copy)',
-      icon,
-      description,
-      properties,
-      isDescriptionHidden,
-      isFavourite,
-      items: [],
-    });
+    // duplicateCollectionMutateFun({
+    //   name: name + '(copy)',
+    //   // icon,
+    //   description,
+    //   properties,
+    //   isDescriptionHidden,
+    //   isFavourite,
+    //   items: [],
+    // });
   };
 
   //handle move collection to another group and its mutation
@@ -173,6 +169,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const handleMoveCollection = (desGroupId: string) => {
     moveCollectionMutateFun(desGroupId);
   };
+  console.log(collectionData);
 
   if (!collectionData) return <></>;
   return (
@@ -188,7 +185,8 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <button
           className='grow flex items-center space-x-1.5'
           onClick={onClick}>
-          {collectionData.icon === '' ? (
+          <FolderIcon className='icon-xs' />
+          {/* {collectionData.icon === '' ? (
             <FolderIcon className='icon-xs' />
           ) : (
             <span className='relative icon-xs'>
@@ -200,14 +198,14 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
                 className='fill-red-500'
               />
             </span>
-          )}
+          )} */}
           <span className='truncate'>{collectionData.name}</span>
         </button>
 
-        {collectionData.items.length !== 0 && (
+        {collectionData._count.items !== 0 && (
           <span className='flex items-center  md:group-hover:hidden md:group-focus-within:hidden'>
             <span className='text-xs font-light italic'>
-              {collectionData.items.length}
+              {collectionData._count.items}
             </span>
           </span>
         )}
@@ -225,13 +223,13 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         </div>
       </div>
 
-      {changeCollectionIconModal.isOpen && (
+      {/* {changeCollectionIconModal.isOpen && (
         <IconPickerModal
           open={changeCollectionIconModal.isOpen}
           handleClose={changeCollectionIconModal.closeModal}
           onClickIcon={handleChangeCollectionIcon}
         />
-      )}
+      )} */}
 
       {renameCollectionModal.isOpen && (
         <RenameModal
