@@ -1,16 +1,15 @@
 import React, { FC, useState } from 'react';
-import { Button, Label, Modal } from '../../../../components/frontstate-ui';
+import { Button, Label, Modal } from '@frontstate-ui';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
-import { IGroup } from '../../../../interfaces';
-import { createCollection } from '../../../../features/collections';
+import { createCollection } from '@features/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { addCollectionToGroup } from '../../../groups';
+import { addCollectionToGroup, GroupWithCollectionsId } from '../../../groups';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 
 interface CreateCollectionModalProps {
-  groups: IGroup[];
+  groups: GroupWithCollectionsId[];
   open: boolean;
   handleClose: () => void;
   positiveFeedback: (value: string) => void;
@@ -24,7 +23,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
   const router = useRouter();
 
   const [name, setName] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState(groups[0]._id);
+  const [selectedGroup, setSelectedGroup] = useState(groups[0].id);
 
   const queryClient = useQueryClient();
 
@@ -88,7 +87,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
               {groups.map((group, idx) => (
                 <RadioGroup.Option
                   key={idx}
-                  value={group._id}
+                  value={group.id}
                   className={({ checked }) =>
                     `${
                       checked
@@ -120,7 +119,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
                               <span className='mt-0.5 flex items-center space-x-0.5'>
                                 <LightningBoltIcon className='w-4 h-4' />
                                 <span className='text-xs font-light italic'>
-                                  {group.collections.length}
+                                  0
                                 </span>
                               </span>
                             </RadioGroup.Description>

@@ -13,9 +13,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   switch (method) {
     case 'GET':
+      //include: { _count: { select: { collections: true } } }
       try {
         const groups = await prisma.group.findMany({
           where: { userId },
+          include: { collections: { select: { id: true } } },
           orderBy: { name: 'asc' },
         });
 
@@ -27,8 +29,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'POST':
       try {
+        const { name } = req.body;
+
+        if (!name) throw Error('group name is required');
+
         const group = await prisma.group.create({
-          data: { ...req.body.group, userId },
+          data: { name, userId },
         });
 
         return res.status(201).json({ isSuccess: true, data: group });

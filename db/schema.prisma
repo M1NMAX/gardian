@@ -107,7 +107,7 @@ model Item {
     name         String
     createdAt    DateTime       @default(now())
     updatedAt    DateTime       @updatedAt
-    Collection   Collection     @relation(fields: [collectionId], references: [id])
+    Collection   Collection     @relation(fields: [collectionId], references: [id], onDelete: Cascade)
     collectionId String         @db.ObjectId
     properties   ItemProperty[]
 }

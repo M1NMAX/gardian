@@ -8,7 +8,7 @@ export async function getFetch(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-
   const result = await res.json();
-  return result;
+
+  return result.data;
 }

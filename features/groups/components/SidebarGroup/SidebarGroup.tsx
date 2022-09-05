@@ -3,21 +3,20 @@ import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/outline';
 import toast from 'react-hot-toast';
 import useModal from '../../../../hooks/useModal';
-import { IGroup } from '../../../../interfaces';
 import DeleteModal from '../../../../components/DeleteModal';
 import RenameModal from '../../../../components/RenameModal';
 import SidebarGroupMenu from '../SidebarGroupMenu';
 import useGroup from '../../hooks/useGroup';
+import { GroupWithCollectionsId } from '@features/groups/services';
 
 interface SidebarGroupProps {
   children: ReactNode;
-  group: IGroup;
+  group: GroupWithCollectionsId;
 }
 
-const rand = 'random';
 const SidebarGroup: FC<SidebarGroupProps> = (props) => {
   const { children, group } = props;
-  const { _id: id, name } = group;
+  const { id, name } = group;
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -27,7 +26,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
   const renameGroupModal = useModal();
   const deleteGroupModal = useModal();
 
-  const groupMutations = useGroup(id || rand);
+  const groupMutations = useGroup(id);
 
   //handle rename Group and its mutation
   const handleRenameGroup = (name: string) => {
@@ -83,6 +82,7 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
                   onClickRename={renameGroupModal.openModal}
                   onClickDelete={deleteGroupModal.openModal}
                 />
+                h
               </span>
             </div>
             {/*Display group collections */}

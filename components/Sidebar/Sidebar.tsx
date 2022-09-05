@@ -26,14 +26,13 @@ import { CreateGroupModal, SidebarGroup } from '../../features/groups';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 import { SCREEN_SIZE_MD } from '../../constants';
+import { getFetch } from '@lib/fetch';
 
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const { data: groups, isLoading } = useQuery<IGroup[], Error>(
-    ['groups'],
-    getGroups
-  );
+  const { data: groups, isLoading } = useQuery(['groups'], getGroups);
+  console.log(groups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -111,10 +110,9 @@ const Sidebar: FC = () => {
           {/* Loading state is finished  */}
           {!isLoading &&
             groups &&
-            groups.map((group, idx) => (
-              <SidebarGroup key={idx} group={group}>
-                {/**Display group collections */}
-                {group.collections.map(
+            groups.map((group) => (
+              <SidebarGroup key={group.id} group={group}>
+                {/* {group.collections.map(
                   (collectionId) =>
                     group._id && (
                       <SidebarCollection
@@ -124,7 +122,7 @@ const Sidebar: FC = () => {
                         onClick={() => onClickSidebarCollection(collectionId)}
                       />
                     )
-                )}
+                )} */}
               </SidebarGroup>
             ))}
         </div>
@@ -136,8 +134,8 @@ const Sidebar: FC = () => {
             <Button
               onClick={createCollectionModal.openModal}
               variant='secondary-hover'
-              full
-              isDisabled={groups?.length === 0}>
+              isDisabled={groups && groups.length === 0}
+              full>
               <PlusIcon className='icon-sm' />
               <span>New Collection</span>
             </Button>
