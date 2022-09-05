@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   // gid: short for groupId
@@ -30,9 +31,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'PUT':
       try {
+        const groupData: Prisma.GroupUpdateInput = req.body.group;
         const group = await prisma.group.update({
           where: { id: gid },
-          data: { ...req.body },
+          data: groupData,
         });
 
         if (!group) return res.status(400).json({ isSuccess: false });

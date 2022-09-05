@@ -1,5 +1,5 @@
 import { getFetch } from '@lib/fetch';
-import { Collection, Prisma, Property, PropertyType } from '@prisma/client';
+import { Collection, Prisma, PropertyType } from '@prisma/client';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
@@ -11,13 +11,13 @@ export type CollectionWItemCount = Prisma.CollectionGetPayload<{
   include: typeof includeItemCount;
 }>;
 
-//Types~
+//Types
 
 type CreateCollectionArg = {
   name: string;
   groupId: string;
-  //properties: Property[]
 };
+
 type RemovePropertyFromCollectionArg = {
   cid: string;
   pid: string;
@@ -52,59 +52,48 @@ export async function createCollection(
 }
 
 export async function updateCollection(
-  collection: Collection
+  cid: string,
+  collection: Prisma.CollectionUpdateInput
 ): Promise<Collection> {
-  console.log(collection);
-  let { id: cid, createdAt, updatedAt, ...normalized } = collection;
-  const res = await getFetch(baseUrl + cid, 'PUT', { collection: normalized });
+  const res = await getFetch(baseUrl + cid, 'PUT', { collection });
   return res;
 }
 
 export async function changeCollectionIcon(
-  id: string,
+  cid: string,
   icon: string
 ): Promise<Collection> {
-  const collection = await getCollection(id);
-  return updateCollection({ ...collection, icon });
+  return updateCollection(cid, { icon });
 }
 
 export async function renameCollection(
-  id: string,
+  cid: string,
   name: string
 ): Promise<Collection> {
-  const collection = await getCollection(id);
-  //remove item count
-  let { _count, ...withoutCount } = collection;
-
-  return updateCollection({ ...withoutCount, name });
+  return updateCollection(cid, { name });
 }
 
 export async function toggleCollectionIsFavourite(
-  id: string
+  cid: string
 ): Promise<Collection> {
-  const collection = await getCollection(id);
-  return updateCollection({
-    ...collection,
-    isFavourite: !collection.isFavourite,
-  });
+  const collection = await getCollection(cid);
+  return updateCollection(cid, { isFavourite: !collection.isFavourite });
 }
 
 export async function toggleCollectionDescriptionState(
-  id: string
+  cid: string
 ): Promise<Collection> {
-  const collection = await getCollection(id);
-  return updateCollection({
-    ...collection,
+  const collection = await getCollection(cid);
+  return updateCollection(cid, {
     isDescriptionHidden: !collection.isDescriptionHidden,
   });
 }
 
 export async function updateCollectionDescription(
-  id: string,
+  cid: string,
   description: string
 ): Promise<Collection> {
-  const collection = await getCollection(id);
-  return updateCollection({ ...collection, description });
+  return updateCollection(cid, { description });
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {

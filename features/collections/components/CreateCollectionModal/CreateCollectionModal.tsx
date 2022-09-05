@@ -4,7 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/solid';
 import { RadioGroup } from '@headlessui/react';
 import { createCollection } from '@features/collections';
 import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { addCollectionToGroup, GroupWithCollectionsId } from '../../../groups';
+import { GroupWithCollectionsId } from '../../../groups';
 import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 

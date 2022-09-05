@@ -26,10 +26,11 @@ export async function createGroup(
   return res;
 }
 
-export async function updateGroup(id: string, group: Group): Promise<Group> {
-  let { id: _id, ...withoutId } = group;
-
-  const res = await getFetch(baseUrl + id, 'PUT', withoutId);
+export async function updateGroup(
+  id: string,
+  group: Prisma.GroupUpdateInput
+): Promise<Group> {
+  const res = await getFetch(baseUrl + id, 'PUT', { group });
   return res;
 }
 
@@ -39,8 +40,7 @@ export async function deleteGroup(id: string): Promise<boolean> {
 }
 
 export async function renameGroup(id: string, name: string): Promise<Group> {
-  const group = await getGroup(id);
-  return updateGroup(id, { ...group, name });
+  return updateGroup(id, { name });
 }
 
 //REMOVE

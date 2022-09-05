@@ -1,5 +1,5 @@
 import { getFetch } from '@lib/fetch';
-import { Item, ItemProperty } from '@prisma/client';
+import { Item, ItemProperty, Prisma } from '@prisma/client';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/items/';
 
@@ -30,16 +30,16 @@ export async function createItem(item: CreateItemArg): Promise<Item> {
   return res;
 }
 
-export async function updateItem(item: Item): Promise<Item> {
-  let { id, createdAt, updatedAt, ...normalized } = item;
-
-  const res = await getFetch(baseUrl + id, 'PUT', { item: normalized });
+export async function updateItem(
+  id: string,
+  item: Prisma.ItemUpdateInput
+): Promise<Item> {
+  const res = await getFetch(baseUrl + id, 'PUT', { item });
   return res;
 }
 
 export async function renameItem(id: string, name: string): Promise<Item> {
-  const item = await getItem(id);
-  return updateItem({ ...item, name });
+  return updateItem(id, { name });
 }
 
 export async function deleteItem(id: string): Promise<boolean> {
