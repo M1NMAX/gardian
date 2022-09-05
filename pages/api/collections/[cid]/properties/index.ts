@@ -15,18 +15,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (Array.isArray(cid)) return res.status(400).json({ isSuccess: false });
 
-  if (method === 'POST') {
+  if (method === 'PUT') {
     try {
       const property = req.body.property;
 
-      const colleciton = await prisma.collection.update({
+      const collection = await prisma.collection.update({
         where: { id: cid },
-        data: { properties: { push: [property] } },
+        data: {
+          properties: {
+            push: [property],
+          },
+        },
       });
 
-      if (!colleciton) return res.status(400).json({ isSuccess: false });
+      if (!collection) return res.status(400).json({ isSuccess: false });
 
-      return res.status(200).json({ isSuccess: true, data: colleciton });
+      return res.status(200).json({ isSuccess: true, data: collection });
     } catch (error) {
       console.log('[api] collections/properties/', error);
       return res.status(400).json({ isSuccess: false });

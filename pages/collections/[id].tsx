@@ -280,14 +280,15 @@ const Collections: NextPage<
     if (!collectionId) return;
     collection.addPropertyToCollectionMutateFun(
       {
-        collectionId,
+        cid: collectionId,
         property: { name: 'property', type: 'TEXT', values: [] },
       },
       {
         onSuccess: () => {
           selectedItem.refetch();
         },
-        onError: () => {
+        onError: (error) => {
+          console.log(error);
           negativeFeedback();
         },
       }
@@ -301,7 +302,7 @@ const Collections: NextPage<
   }) => {
     if (!collectionId) return;
     collection.addPropertyToCollectionMutateFun(
-      { collectionId, property },
+      { cid: collectionId, property },
       {
         onSuccess: () => {
           selectedItem.refetch();

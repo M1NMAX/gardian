@@ -1,7 +1,5 @@
 import { getFetch } from '@lib/fetch';
 import { Collection, Prisma, Property, PropertyType } from '@prisma/client';
-import { ICollection, IProperty } from '../../../interfaces';
-import { getRequestOptions } from '../../../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
@@ -31,7 +29,7 @@ type UpdateCollectionPropertyArg = {
 };
 
 type AddPropertyFromCollectionArg = {
-  collectionId: string;
+  cid: string;
   property: { name: string; type: PropertyType; values: string[] };
 };
 
@@ -49,17 +47,16 @@ export async function getCollection(id: string): Promise<CollectionWItemCount> {
 export async function createCollection(
   collection: CreateCollectionArg
 ): Promise<Collection> {
-  const res = await getFetch(baseUrl, 'POST', collection);
+  const res = await getFetch(baseUrl, 'POST', { collection });
   return res;
 }
 
 export async function updateCollection(
-  collectionId: string,
   collection: Collection
 ): Promise<Collection> {
   console.log(collection);
-  let { id, ...withoutId } = collection;
-  const res = await getFetch(baseUrl + collectionId, 'PUT', withoutId);
+  let { id: cid, createdAt, updatedAt, ...normalized } = collection;
+  const res = await getFetch(baseUrl + cid, 'PUT', { collection: normalized });
   return res;
 }
 
@@ -68,7 +65,7 @@ export async function changeCollectionIcon(
   icon: string
 ): Promise<Collection> {
   const collection = await getCollection(id);
-  return updateCollection(id, { ...collection, icon });
+  return updateCollection({ ...collection, icon });
 }
 
 export async function renameCollection(
@@ -76,16 +73,17 @@ export async function renameCollection(
   name: string
 ): Promise<Collection> {
   const collection = await getCollection(id);
+  //remove item count
   let { _count, ...withoutCount } = collection;
 
-  return updateCollection(id, { ...withoutCount, name });
+  return updateCollection({ ...withoutCount, name });
 }
 
 export async function toggleCollectionIsFavourite(
   id: string
 ): Promise<Collection> {
   const collection = await getCollection(id);
-  return updateCollection(id, {
+  return updateCollection({
     ...collection,
     isFavourite: !collection.isFavourite,
   });
@@ -95,7 +93,7 @@ export async function toggleCollectionDescriptionState(
   id: string
 ): Promise<Collection> {
   const collection = await getCollection(id);
-  return updateCollection(id, {
+  return updateCollection({
     ...collection,
     isDescriptionHidden: !collection.isDescriptionHidden,
   });
@@ -106,7 +104,7 @@ export async function updateCollectionDescription(
   description: string
 ): Promise<Collection> {
   const collection = await getCollection(id);
-  return updateCollection(id, { ...collection, description });
+  return updateCollection({ ...collection, description });
 }
 
 export async function deleteCollection(id: string): Promise<boolean> {
@@ -116,14 +114,12 @@ export async function deleteCollection(id: string): Promise<boolean> {
 
 // PROPERTY
 export async function addPropertyToCollection({
-  collectionId,
+  cid,
   property,
 }: AddPropertyFromCollectionArg): Promise<Collection> {
-  const res = await getFetch(
-    baseUrl + collectionId + '/properties/',
-    'POST',
-    property
-  );
+  const res = await getFetch(baseUrl + cid + '/properties/', 'PUT', {
+    property,
+  });
   return res;
 }
 
@@ -134,13 +130,11 @@ export async function updateCollectionProperty({
   status: boolean;
   propertyId: string;
 }> {
-  let { id: pid, ...withoutId } = property;
+  let { id: pid, ...normalizad } = property;
 
-  const res = await getFetch(
-    baseUrl + cid + '/properties/' + pid,
-    'PUT',
-    withoutId
-  );
+  const res = await getFetch(baseUrl + cid + '/properties/' + pid, 'PUT', {
+    property: normalizad,
+  });
 
   return res;
 }

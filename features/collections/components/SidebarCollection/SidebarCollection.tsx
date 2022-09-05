@@ -169,7 +169,6 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const handleMoveCollection = (desGroupId: string) => {
     moveCollectionMutateFun(desGroupId);
   };
-  console.log(collectionData);
 
   if (!collectionData) return <></>;
   return (

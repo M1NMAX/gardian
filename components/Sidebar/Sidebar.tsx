@@ -20,7 +20,6 @@ import {
 } from '@features/collections';
 import { useRouter } from 'next/router';
 import useModal from '../../hooks/useModal';
-import { IGroup } from '../../interfaces';
 import { getGroups } from '@features/groups/services';
 import { CreateGroupModal, SidebarGroup } from '../../features/groups';
 import SearchModal from '../SearchModal';
@@ -31,7 +30,6 @@ const Sidebar: FC = () => {
   const router = useRouter();
 
   const { data: groups, isLoading } = useQuery(['groups'], getGroups);
-  console.log(groups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);

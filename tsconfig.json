@@ -10,7 +10,9 @@
       "@frontstate-ui": ["components/frontstate-ui/index"],
       "@components/*": ["components/*"],
       "@db/*": ["db/*"],
-      "@db": ["db/index"]
+      "@db": ["db/index"],
+      "@constants": ["constants/index"],
+      "@hooks/*": ["hooks/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,

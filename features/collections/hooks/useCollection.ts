@@ -91,12 +91,12 @@ const useCollection = (cid: string, key: string = 'collection') => {
     {
       onSuccess: async (data) => {
         const { id, properties } = data;
+        console.log(data);
+        console.log(properties);
 
         //get the lastest Collection property base on creation date
         const lastestProperty = properties.reduce((a, b) => {
-          const aDate = a.createdAt ? new Date(a.createdAt) : Date.now;
-          const bDate = b.createdAt ? new Date(b.createdAt) : Date.now;
-          return aDate > bDate ? a : b;
+          return a.createdAt > b.createdAt ? a : b;
         });
 
         const items = await getItems(id);

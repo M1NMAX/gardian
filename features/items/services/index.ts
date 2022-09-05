@@ -33,9 +33,7 @@ export async function createItem(item: CreateItemArg): Promise<Item> {
 export async function updateItem(item: Item): Promise<Item> {
   let { id, createdAt, updatedAt, ...normalized } = item;
 
-  const res = await getFetch(baseUrl + id, 'PUT', {
-    item: { normalized },
-  });
+  const res = await getFetch(baseUrl + id, 'PUT', { item: normalized });
   return res;
 }
 

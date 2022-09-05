@@ -1,17 +1,25 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
-import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
-import { ActionIcon, Modal } from '../../frontstate-ui';
-import { Property } from '@prisma/client';
+import { ActionIcon, Modal } from '@frontstate-ui';
+import { Property, PropertyType } from '@prisma/client';
+import {
+  PROPERTY_CHECKBOX,
+  PROPERTY_DATE,
+  PROPERTY_NUMBER,
+  PROPERTY_SELECT,
+  PROPERTY_TEXT,
+  PROPERTY_TEXTAREA,
+  PROPERTY_URL,
+} from '@constants';
 
 const types = [
-  'text',
-  'textarea',
-  'select',
-  'checkbox',
-  'url',
-  'date',
-  'number',
+  PROPERTY_TEXT,
+  PROPERTY_TEXTAREA,
+  PROPERTY_SELECT,
+  PROPERTY_CHECKBOX,
+  PROPERTY_URL,
+  PROPERTY_DATE,
+  PROPERTY_NUMBER,
 ];
 
 interface EditPropertyModalProps {
@@ -24,14 +32,16 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const { open, handleClose, property, onUpdate } = props;
 
   const [name, setName] = useState(property.name);
-  const [selectedType, setSelectedType] = useState(property.type);
+  const [selectedType, setSelectedType] = useState<PropertyType>(property.type);
   const [values, setValues] = useState<string[]>(property.values);
   const [newValue, setNewValue] = useState('');
 
-  const isPropertyTypes = (t: string): t is PropertyTypes => types.includes(t);
+  const isPropertyTypes = (t: string): t is PropertyType => types.includes(t);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
+    console.log(types.includes(value));
+
     if (isPropertyTypes(value)) setSelectedType(value);
   };
 
@@ -76,7 +86,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           <select
             value={selectedType}
             onChange={handleSelect}
-            className='modal-input first-letter:uppercase'>
+            className='modal-input lowercase first-letter:uppercase'>
             {types.map((type, idx) => (
               <option key={idx} value={type}>
                 {type}
@@ -85,7 +95,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           </select>
         </label>
 
-        <div className={`mt-2 ${selectedType !== 'select' && 'hidden'}`}>
+        <div className={`mt-2 ${selectedType !== 'SELECT' && 'hidden'}`}>
           <p>Options</p>
           {values.map((value, idx) => (
             <span
