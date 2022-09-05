@@ -3,14 +3,6 @@ import { Group, Prisma } from '@prisma/client';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/groups/';
 
-// const groupInclude = Prisma.validator<Prisma.GroupInclude>()({
-//   _count: { select: { collections: true } },
-// });
-
-// export type GroupWithCollectionsCount = Prisma.GroupGetPayload<{
-//   include: typeof groupInclude;
-// }>;
-
 const selectCollectionsId = Prisma.validator<Prisma.GroupSelect>()({
   collections: { select: { id: true } },
 });

@@ -13,7 +13,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   switch (method) {
     case 'GET':
-      //include: { _count: { select: { collections: true } } }
       try {
         const groups = await prisma.group.findMany({
           where: { userId },
