@@ -5,11 +5,11 @@ import {
   CheckIcon,
   XIcon,
 } from '@heroicons/react/outline';
-import { IProperty } from '../../../../../interfaces';
+import { Property } from '@prisma/client';
 
 interface ItemOverviewPropertyProps {
-  property: IProperty;
-  getValue: (id?: string) => string;
+  property: Property;
+  getValue: (pid: string) => string;
 }
 const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
   const { property, getValue } = props;
@@ -17,7 +17,7 @@ const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
     case 'checkbox':
       return (
         <span className='flex items-center space-x-0.5'>
-          {getValue(property._id) === 'true' ? (
+          {getValue(property.id) === 'true' ? (
             <CheckIcon className='icon-xxs' />
           ) : (
             <XIcon className='icon-xxs' />
@@ -29,7 +29,7 @@ const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
       return (
         <span className='flex items-center space-x-0.5'>
           <CalendarIcon className='icon-xs' />
-          <span>{new Date(getValue(property._id)).toLocaleDateString()}</span>
+          <span>{new Date(getValue(property.id)).toLocaleDateString()}</span>
         </span>
       );
     case 'textarea':
@@ -40,7 +40,7 @@ const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
         </span>
       );
     default:
-      return <>{getValue(property._id)}</>;
+      return <>{getValue(property.id)}</>;
   }
 };
 

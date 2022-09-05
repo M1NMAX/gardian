@@ -1,30 +1,25 @@
 import React, { FC } from 'react';
-import { IItem, IProperty } from '../../../../interfaces';
+import { Item, Property } from '@prisma/client';
 import ItemOverviewProperty from './ItemOverviewProperty';
 
 interface ItemOverviewProps {
-  item: IItem;
+  item: Item;
   active: boolean;
-  collectionProperty: IProperty[];
+  collectionProperty: Property[];
   onItemClick: (id: string) => void;
 }
 const ItemOverview: FC<ItemOverviewProps> = (props) => {
   const { item, active, collectionProperty, onItemClick } = props;
-  const handleClick = () => {
-    if (!item._id) return;
-    onItemClick(item._id);
-  };
 
-  const getValueById = (id?: string): string => {
-    if (!id) return '';
-    const property = item.properties.find((property) => property._id === id);
+  const getValueById = (pid: string): string => {
+    const property = item.properties.find((property) => property.id === pid);
     if (!property) return '';
     return property.value;
   };
 
   return (
     <button
-      onClick={handleClick}
+      onClick={() => onItemClick(item.id)}
       className={`${
         active && 'border-r-2 border-green-500'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
@@ -34,10 +29,10 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
       </span>
       <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
-          (property, idx) =>
-            getValueById(property._id) != '' && (
+          (property) =>
+            getValueById(property.id) != '' && (
               <span
-                key={idx}
+                key={property.id}
                 className='px-0.5 rounded bg-white dark:bg-gray-600'>
                 <ItemOverviewProperty
                   property={property}

@@ -1,8 +1,8 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
-import { IProperty } from '../../../interfaces';
 import { PropertyTypes } from '../../../types';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
 import { ActionIcon, Modal } from '../../frontstate-ui';
+import { Property } from '@prisma/client';
 
 const types = [
   'text',
@@ -16,9 +16,9 @@ const types = [
 
 interface EditPropertyModalProps {
   open: boolean;
-  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
-  property: IProperty;
-  onUpdate: (property: IProperty) => void;
+  property: Property;
+  handleClose: () => void;
+  onUpdate: (property: Property) => void;
 }
 const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const { open, handleClose, property, onUpdate } = props;

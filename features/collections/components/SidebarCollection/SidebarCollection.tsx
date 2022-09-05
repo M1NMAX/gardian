@@ -43,7 +43,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const queryClient = useQueryClient();
 
   //Fetch collection
-  const collection = useCollection(collectionId, groupId, 'sidebarCollection');
+  const collection = useCollection(collectionId, 'sidebarCollection');
   const collectionData = collection.query.data;
 
   // //handle change collection icon and its mutation

@@ -1,16 +1,14 @@
 import { FC, ReactNode } from 'react';
-import { IProperty } from '../../../interfaces';
+import { Property } from '@prisma/client';
 
 interface PropertyInputProps {
-  property: IProperty;
+  property: Property;
   menu: ReactNode;
   getValue: (id: string) => string;
   setValue: (id: string, value: string) => void;
 }
 const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, menu, getValue, setValue } = props;
-
-  if (!property._id) return <></>;
 
   switch (property.type) {
     case 'checkbox':
@@ -20,11 +18,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
             <input
               type='checkbox'
               name={property.name}
-              checked={getValue(property._id) === 'true'}
-              onChange={(e) => {
-                if (!property._id) return;
-                setValue(property._id, e.target.checked ? 'true' : 'false');
-              }}
+              checked={getValue(property.id) === 'true'}
+              onChange={(e) =>
+                setValue(property.id, e.target.checked ? 'true' : 'false')
+              }
               className='modal-checkbox'
             />
             <span className='grow'>{property.name}</span>
@@ -41,11 +38,8 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           </span>
           <select
             name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => {
-              if (!property._id) return;
-              setValue(property._id, e.target.value);
-            }}
+            value={getValue(property.id)}
+            onChange={(e) => setValue(property.id, e.target.value)}
             className='modal-input'>
             <option value='' selected disabled hidden></option>
             {property.values.map((value, idx) => (
@@ -65,11 +59,8 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           </span>
           <textarea
             name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => {
-              if (!property._id) return;
-              setValue(property._id, e.target.value);
-            }}
+            value={getValue(property.id)}
+            onChange={(e) => setValue(property.id, e.target.value)}
             rows={4}
             maxLength={200}
             className='modal-text-area'
@@ -87,11 +78,8 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           <input
             type={property.type}
             name={property.name}
-            value={getValue(property._id)}
-            onChange={(e) => {
-              if (!property._id) return;
-              setValue(property._id, e.target.value);
-            }}
+            value={getValue(property.id)}
+            onChange={(e) => setValue(property.id, e.target.value)}
             className='modal-input '
           />
         </label>

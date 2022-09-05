@@ -1,27 +1,29 @@
+import { getFetch } from '@lib/fetch';
+import { Item, ItemProperty } from '@prisma/client';
 import { IItem, IItemProperty } from '../../../interfaces';
 import { getRequestOptions } from '../../../utils';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/items/';
 
-export async function getItem(id: string): Promise<IItem> {
-  const res = await fetch(baseUrl + id);
-  return res.json().then((response) => response.data);
+type CreateItemArg = {
+  name: string;
+  collectionId: string;
+  properties: ItemProperty[];
+};
+
+export async function getItem(id: string): Promise<Item> {
+  const res = await getFetch(baseUrl + id);
+  return res;
 }
 
-export async function getItems(ids: string[]): Promise<IItem[]> {
-  const itemsPromise = ids.map(async (id: string) => await getItem(id));
-  let items: IItem[] = [];
-  for (const ip of itemsPromise) {
-    const item = await ip;
-    items.push(item);
-  }
-
-  return Promise.resolve(items);
+export async function getItems(cid: string): Promise<Item[]> {
+  const res = await getFetch(baseUrl + 'collection/' + cid);
+  return res;
 }
 
-export async function createItem(item: IItem): Promise<IItem> {
-  const res = await fetch(baseUrl, getRequestOptions('POST', { item }));
-  return res.json().then((response) => response.data);
+export async function createItem(item: CreateItemArg): Promise<Item> {
+  const res = await getFetch(baseUrl, 'POST', item);
+  return res;
 }
 
 export async function updateItem(id: string, item: IItem): Promise<boolean> {
@@ -35,17 +37,19 @@ export async function renameItem(id: string, name: string): Promise<boolean> {
 }
 
 export async function deleteItem(id: string): Promise<boolean> {
-  const res = await fetch(baseUrl + id, { method: 'DELETE' });
-  return res.json().then((response) => response.isSuccess);
+  const res = await getFetch(baseUrl + id, 'DELETE');
+  return res;
 }
 
 // PROPERTY
-export async function addPropertyToItem(id: string, property: IItemProperty) {
-  const res = await fetch(
-    baseUrl + id + '/properties/',
-    getRequestOptions('POST', { property })
-  );
-  return res.json().then((response) => response.data);
+export async function addPropertyToItem(
+  id: string,
+  property: { id: string; value: string }
+) {
+  const res = await getFetch(baseUrl + id + '/properties/', 'POST', {
+    property,
+  });
+  return res;
 }
 
 type UpdateItemPropertyArg = {

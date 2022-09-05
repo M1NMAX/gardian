@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { InferGetServerSidePropsType, NextPage } from 'next';
+import {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage,
+} from 'next';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
@@ -10,7 +14,7 @@ import { sidebarState } from '../../atoms/sidebarAtom';
 import { useQuery } from 'react-query';
 import { IGroup, IItemProperty, IProperty } from '../../interfaces';
 import { CollectionMenu, useCollection } from '../../features/collections';
-import { ActionIcon, Button, Drawer } from '../../components/frontstate-ui';
+import { ActionIcon, Button, Drawer } from '@frontstate-ui';
 import {
   CreateItemModal,
   ItemOverview,
@@ -18,7 +22,7 @@ import {
   useGetItem,
   useItem,
   getItems,
-} from '../../features/items';
+} from '@features/items';
 import {
   FolderIcon,
   PencilIcon,
@@ -34,10 +38,17 @@ import { Editor } from '../../features/Editor';
 import useDrawer from '../../hooks/useDrawer';
 import Header from '../../components/Header';
 import RenameModal from '../../components/RenameModal';
-import { useSort, SortOptionsListbox } from '../../features/sort';
+import { useSort, SortOptionsListbox } from '@features/sort';
 import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
 import { SortOptionType } from '../../types';
-import { getGroupWithCid } from '../../features/groups';
+import { getGroup, GroupWithCollectionsId } from '@features/groups';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import {
+  ItemProperty,
+  Property as PropertyTyp,
+  PropertyType,
+} from '@prisma/client';
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
@@ -73,23 +84,20 @@ const Collections: NextPage<
 
   //Fetch
   //Fetch group information
-  const [groupInfo, setGroupInfo] = useState<IGroup>();
+  const [groupInfo, setGroupInfo] = useState<GroupWithCollectionsId>();
   useEffect(() => {
-    if (!id || Array.isArray(id)) return;
+    if (!collectionData) return;
 
-    const fetchGroupInfo = async (cid: string) => {
-      const result = await getGroupWithCid(cid);
+    const fetchGroupInfo = async (gid: string) => {
+      const result = await getGroup(gid);
       setGroupInfo(result);
     };
 
-    fetchGroupInfo(id);
+    fetchGroupInfo(collectionData.groupId);
   }, [id]);
 
   //Fetch collection
-  const collection = useCollection(
-    id && !Array.isArray(id) ? id : rand,
-    groupInfo && groupInfo._id ? groupInfo._id : rand
-  );
+  const collection = useCollection(id && !Array.isArray(id) ? id : rand);
   const collectionData = collection.query.data;
   const isLoading = collection.query.isLoading;
 
@@ -98,12 +106,12 @@ const Collections: NextPage<
     drawer.closeDrawer();
   }, [id]);
 
-  const collectionId = collectionData?._id;
+  const collectionId = collectionData?.id;
 
   //Fetch collection items
   const { data: items, isLoading: isItemsLoading } = useQuery(
     ['items', collectionId],
-    () => (collectionData ? getItems(collectionData.items) : []),
+    () => getItems(collectionId || rand),
     { enabled: !!collectionId }
   );
 
@@ -119,31 +127,28 @@ const Collections: NextPage<
     if (!collectionData) throw 'Collection is undefined';
 
     //create placeholder for all collection properties inside of item
-    const properties: IItemProperty[] = collectionData.properties.map(
+    const properties: ItemProperty[] = collectionData.properties.map(
       (property) => ({
-        _id: property._id,
+        id: property.id,
         value: '',
       })
     );
+    const item = { name, collectionId: collectionData.id, properties };
 
-    collection.createItemMutateFun(
-      { name, properties },
-      {
-        onSuccess: async ({ _id: itemId }) => {
-          if (!itemId) throw 'Item id is undefined';
-          positiveFeedback('Item added');
-          collection.query.refetch();
-          setSelectedItemId(itemId);
-          drawer.openDrawer();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-        onSettled: () => {
-          createItemModal.closeModal();
-        },
-      }
-    );
+    collection.createItemMutateFun(item, {
+      onSuccess: async ({ id: itemId }) => {
+        positiveFeedback('Item added');
+        collection.query.refetch();
+        setSelectedItemId(itemId);
+        drawer.openDrawer();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        createItemModal.closeModal();
+      },
+    });
   };
 
   //handle rename collection and its mutation
@@ -280,7 +285,7 @@ const Collections: NextPage<
     collection.addPropertyToCollectionMutateFun(
       {
         collectionId,
-        property: { name: 'property', type: 'text', values: [] },
+        property: { name: 'property', type: 'TEXT', values: [] },
       },
       {
         onSuccess: () => {
@@ -293,7 +298,11 @@ const Collections: NextPage<
     );
   };
 
-  const handleDuplicateProperty = async (property: IProperty) => {
+  const handleDuplicateProperty = async (property: {
+    name: string;
+    type: PropertyType;
+    values: string[];
+  }) => {
     if (!collectionId) return;
     collection.addPropertyToCollectionMutateFun(
       { collectionId, property },
@@ -308,11 +317,11 @@ const Collections: NextPage<
     );
   };
 
-  const handleUpdateProperty = async (property: IProperty) => {
-    if (!collectionId || !property._id) return;
+  const handleUpdateProperty = async (property: PropertyTyp) => {
+    if (!collectionId) return;
 
     collection.updateCollectionPropertyMutateFun(
-      { collectionId, propertyId: property._id, property },
+      { cid: collectionId, property },
       {
         onSuccess: () => {
           positiveFeedback('Property updated');
@@ -324,11 +333,11 @@ const Collections: NextPage<
     );
   };
 
-  const handleDeleteProperty = async (propertyId: string) => {
+  const handleDeleteProperty = async (pid: string) => {
     if (!collectionId) return;
 
     collection.deleteCollectionPropertyMutateFun(
-      { collectionId, propertyId },
+      { cid: collectionId, pid },
       {
         onSuccess: () => {
           positiveFeedback('Property removed');
@@ -431,18 +440,14 @@ const Collections: NextPage<
               </div>
             )}
 
-            {isItemsLoading &&
-              collectionData &&
-              collectionData.items.map((_, idx) => (
-                <div
-                  key={idx}
-                  className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
-                  <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                  <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
-                </div>
-              ))}
+            {isItemsLoading && collectionData && (
+              <div className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+                <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
+              </div>
+            )}
 
-            {!isLoading && collectionData && collectionData.items.length === 0 && (
+            {!isLoading && collectionData && collectionData._count.items === 0 && (
               <button
                 onClick={createItemModal.openModal}
                 className='w-full py-1 flex items-center justify-center 
@@ -466,9 +471,9 @@ const Collections: NextPage<
                   (item) =>
                     item && (
                       <ItemOverview
-                        key={item._id}
+                        key={item.id}
                         item={item}
-                        active={selectedItemId === item._id}
+                        active={selectedItemId === item.id}
                         collectionProperty={collectionData.properties}
                         onItemClick={handleOnClickItem}
                       />
@@ -500,21 +505,18 @@ const Collections: NextPage<
             <div
               className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
                       scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
-              {selectedItem.properties.map(
-                (property) =>
-                  property._id && (
-                    <Property
-                      collectionProperty={collection.getCollectionPropertyById(
-                        property._id
-                      )}
-                      getValue={selectedItem.getPropertyValue}
-                      setValue={handlePropertyValueChange}
-                      onPropertyUpdate={handleUpdateProperty}
-                      onPropertyDuplicate={handleDuplicateProperty}
-                      onPropertyDelete={handleDeleteProperty}
-                    />
-                  )
-              )}
+              {selectedItem.properties.map((property) => (
+                <Property
+                  collectionProperty={collection.getCollectionPropertyById(
+                    property.id
+                  )}
+                  getValue={selectedItem.getPropertyValue}
+                  setValue={handlePropertyValueChange}
+                  onPropertyUpdate={handleUpdateProperty}
+                  onPropertyDuplicate={handleDuplicateProperty}
+                  onPropertyDelete={handleDeleteProperty}
+                />
+              ))}
             </div>
             <div>
               <Button
@@ -589,4 +591,16 @@ const Collections: NextPage<
 
 export default Collections;
 
-export const getServerSideProps = withPageAuthRequired();
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const sesssion = await getSession(ctx.req, ctx.res, authOptions);
+
+  if (!sesssion) {
+    return {
+      redirect: {
+        destination: '/account/signin',
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} as never };
+}

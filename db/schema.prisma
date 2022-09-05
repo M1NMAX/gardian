@@ -96,11 +96,20 @@ model Collection {
 }
 
 type Property {
-    id        String   @default(uuid()) @map("_id")
+    id        String       @default(uuid()) @map("_id")
     name      String
-    type      String
+    type      PropertyType @default(TEXT)
     values    String[]
-    createdAt DateTime @default(now())
+    createdAt DateTime     @default(now())
+}
+
+enum PropertyType {
+    TEXT     @map("text")
+    TEXTAREA @map("textarea")
+    SELECT   @map("select")
+    URL      @map("url")
+    DATE     @map("date")
+    NUMBER   @map("number")
 }
 
 model Item {
@@ -115,5 +124,5 @@ model Item {
 
 type ItemProperty {
     id    String @map("_id")
-    value String
+    value String @default("")
 }

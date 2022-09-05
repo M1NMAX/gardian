@@ -12,7 +12,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   if (method === 'POST') {
     try {
-      const item = await prisma.item.create({ data: { ...req.body.item } });
+      console.log(req.body);
+      console.log(req.body.item);
+
+      const { name, collectionId, properties } = req.body;
+
+      const item = await prisma.item.create({
+        data: { name, collectionId, properties },
+      });
 
       return res.status(201).json({ isSuccess: true, data: item });
     } catch (error) {

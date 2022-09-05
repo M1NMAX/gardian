@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { IProperty } from '../../../interfaces';
 import {
   addPropertyToCollection,
+  changeCollectionIcon,
   deleteCollection,
   getCollection,
   removePropertyFromCollection,
@@ -11,19 +11,16 @@ import {
   updateCollectionDescription,
   updateCollectionProperty,
 } from '../services';
-
 import {
   addPropertyToItem,
   createItem,
-  deleteItem,
+  getItems,
   removePropertyFromItem,
 } from '../../items/services';
 
-const useCollection = (
-  cid: string,
-  gid: string,
-  key: string = 'collection'
-) => {
+import { Property } from '@prisma/client';
+
+const useCollection = (cid: string, key: string = 'collection') => {
   const queryClient = useQueryClient();
 
   const invalidateCollectionQueries = () => {
@@ -58,12 +55,12 @@ const useCollection = (
     }
   );
 
-  // const { mutate: changeCollectionIconMutateFun } = useMutation(
-  //   async (icon: string) => {
-  //     await changeCollectionIcon(cid, icon);
-  //   },
-  //   { onSuccess: () => invalidateCollectionQueries() }
-  // );
+  const { mutate: changeCollectionIconMutateFun } = useMutation(
+    async (icon: string) => {
+      await changeCollectionIcon(cid, icon);
+    },
+    { onSuccess: () => invalidateCollectionQueries() }
+  );
 
   const { mutate: renameCollectionMutateFun } = useMutation(
     async (name: string) => {
@@ -81,12 +78,6 @@ const useCollection = (
 
   const { mutate: deleteCollectionMutateFun } = useMutation(deleteCollection, {
     onSuccess: async () => {
-      // if (!query.data) throw 'Collection is undefined';
-      // const { items } = query.data;
-      // //Delete all collection items
-      // items.map(async (itemId) => await deleteItem(itemId));
-      // await removeCollectionFromGroup(gid, cid);
-
       queryClient.removeQueries(['sidebarCollection', cid]);
       queryClient.removeQueries(['collection', cid]);
       queryClient.invalidateQueries(['groups']);
@@ -99,7 +90,7 @@ const useCollection = (
     addPropertyToCollection,
     {
       onSuccess: async (data) => {
-        const { items, properties } = data;
+        const { id, properties } = data;
 
         //get the lastest Collection property base on creation date
         const lastestProperty = properties.reduce((a, b) => {
@@ -108,10 +99,12 @@ const useCollection = (
           return aDate > bDate ? a : b;
         });
 
+        const items = await getItems(id);
+
         // add placeholder for this property into collection items
-        items.map(async (itemId) => {
-          await addPropertyToItem(itemId, {
-            _id: lastestProperty._id,
+        items.map(async ({ id }) => {
+          await addPropertyToItem(id, {
+            id: lastestProperty.id,
             value: '',
           });
         });
@@ -135,13 +128,15 @@ const useCollection = (
   const { mutate: deleteCollectionPropertyMutateFun } = useMutation(
     removePropertyFromCollection,
     {
-      onSuccess: ({ propertyId }) => {
-        // if (!query.data) throw 'Collection is undefined';
-        // const { items } = query.data;
-        // //Remove property from collection items
-        // items.map(async (itemId) => {
-        //   await removePropertyFromItem(itemId, propertyId);
-        // });
+      onSuccess: async ({ pid }) => {
+        if (!query.data) throw 'Collection is undefined';
+
+        const items = await getItems(query.data.id);
+
+        //Remove property from collection items
+        items.map(async ({ id }) => {
+          await removePropertyFromItem(id, pid);
+        });
         invalidateCollectionQueries();
         invalidateItemsQueries();
       },
@@ -149,12 +144,12 @@ const useCollection = (
   );
 
   const getCollectionPropertyById = (pid: string) => {
-    if (!query.data) return {} as IProperty;
+    if (!query.data) return {} as Property;
     const property = query.data.properties.find(
       (property) => property.id === pid
     );
 
-    return property || ({} as IProperty);
+    return property || ({} as Property);
   };
 
   return {
@@ -163,7 +158,7 @@ const useCollection = (
     getCollectionPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
-    // changeCollectionIconMutateFun,
+    changeCollectionIconMutateFun,
     renameCollectionMutateFun,
     updCollectionDescrMutateFun,
     deleteCollectionMutateFun,

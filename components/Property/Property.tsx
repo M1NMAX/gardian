@@ -1,16 +1,20 @@
 import React, { FC } from 'react';
-import { IProperty } from '../../interfaces';
 import PropertyMenu from './PropertyMenu';
 import useModal from '../../hooks/useModal';
 import EditPropertyModal from './EditPropertyModal';
 import DeleteModal from '../DeleteModal';
 import PropertyInput from './PropertyInput';
+import { Property, PropertyType } from '@prisma/client';
 interface PropertyProps {
-  collectionProperty: IProperty;
+  collectionProperty: Property;
   getValue: (id: string) => string;
   setValue: (id: string, value: string) => void;
-  onPropertyUpdate: (property: IProperty) => void;
-  onPropertyDuplicate: (property: IProperty) => void;
+  onPropertyUpdate: (property: Property) => void;
+  onPropertyDuplicate: (property: {
+    name: string;
+    type: PropertyType;
+    values: string[];
+  }) => void;
   onPropertyDelete: (id: string) => void;
 }
 
@@ -28,9 +32,7 @@ const Property: FC<PropertyProps> = (props) => {
   const deletePropertyModal = useModal();
 
   const handleDelete = async () => {
-    if (!collectionProperty) return;
-    if (!collectionProperty._id) return;
-    onPropertyDelete(collectionProperty._id);
+    onPropertyDelete(collectionProperty.id);
     deletePropertyModal.closeModal();
   };
 
