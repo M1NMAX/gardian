@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   //id: item id
@@ -30,9 +31,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     case 'PUT':
       try {
+        const itemData: Prisma.ItemUpdateInput = req.body.item;
         const item = await prisma.item.update({
           where: { id },
-          data: { ...req.body.item },
+          data: itemData,
         });
 
         if (!item) return res.status(400).json({ isSuccess: false });

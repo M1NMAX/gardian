@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession(req, res, authOptions);
@@ -12,14 +13,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   if (method === 'POST') {
     try {
-      console.log(req.body);
-      console.log(req.body.item);
-
-      const { name, collectionId, properties } = req.body;
+      const itemData: Prisma.ItemCreateInput = req.body.item;
 
       const item = await prisma.item.create({
-        data: { name, collectionId, properties },
+        data: itemData,
       });
+      console.log(itemData);
 
       return res.status(201).json({ isSuccess: true, data: item });
     } catch (error) {

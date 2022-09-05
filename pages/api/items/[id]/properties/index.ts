@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {

@@ -249,11 +249,7 @@ const Collections: NextPage<
 
     selectedItem.setPropertyValue(id, value);
     selectedItemMutations.updateItemPropertyMutateFun(
-      {
-        itemId: selectedItemId,
-        propertyId: id,
-        property: { _id: id, value },
-      },
+      { id: selectedItemId, property: { id, value } },
       {
         onError: () => {
           negativeFeedback();

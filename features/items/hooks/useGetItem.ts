@@ -9,6 +9,7 @@ const useGetItem = (id: string) => {
   const fetchItem = async () => {
     try {
       const item = await getItem(id);
+      console.log(item);
       setName(item.name);
       setProperties(item.properties);
     } catch (error) {
