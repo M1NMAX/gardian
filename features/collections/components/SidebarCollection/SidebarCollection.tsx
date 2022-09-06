@@ -1,17 +1,10 @@
 import React, { FC } from 'react';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
-import { createCollection } from '../../services';
-import RenameModal from '../../../../components/RenameModal';
-import DeleteModal from '../../../../components/DeleteModal';
-import useModal from '../../../../hooks/useModal';
+import RenameModal from '@components/RenameModal';
+import DeleteModal from '@components/DeleteModal';
+import useModal from '@hooks/useModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
-import { useMutation, useQueryClient } from 'react-query';
-import {
-  addCollectionToGroup,
-  removeCollectionFromGroup,
-} from '../../../groups';
-import { createItem, getItem } from '../../../items/services';
 import MoveCollectionModal from '../MoveCollectionModal';
 import useCollection from '../../hooks/useCollection';
 import IconPickerModal from '../../../../components/IconPickerModal';
@@ -39,8 +32,6 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const renameCollectionModal = useModal();
   const moveCollectionModal = useModal();
   const changeCollectionIconModal = useModal();
-
-  const queryClient = useQueryClient();
 
   //Fetch collection
   const collection = useCollection(collectionId, 'sidebarCollection');
@@ -103,71 +94,49 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   };
 
   //handle collection duplication and its mutation
-  const { mutate: duplicateCollectionMutateFun } = useMutation(
-    createCollection,
-    {
-      onSuccess: async ({ id }) => {
-        if (!collectionData) throw 'Collection is undefined';
-        //api call to get all item of collection x and duplicate the item
-        //duplicate all collection item
-        // collectionData.items.map(async (itemId) => {
-        //   const { name, properties } = await getItem(itemId);
-        //   await createItem({ collectionId, name, properties });
-
-        // });
-
-        queryClient.invalidateQueries(['groups']);
-        queryClient.invalidateQueries(['collections']);
-        positiveFeedback('Success');
-      },
-      onError: () => {
-        negativeFeedback();
-      },
-    }
-  );
-
   const handleDuplicateCollection = () => {
     if (!collectionData) return;
     const {
       name,
-      // icon,
+      icon,
       description,
       properties,
       isDescriptionHidden,
       isFavourite,
+      groupId,
     } = collectionData;
 
-    // duplicateCollectionMutateFun({
-    //   name: name + '(copy)',
-    //   // icon,
-    //   description,
-    //   properties,
-    //   isDescriptionHidden,
-    //   isFavourite,
-    //   items: [],
-    // });
+    collection.duplicateCollectionMutateFun(
+      {
+        name: name + '(copy)',
+        icon,
+        description,
+        properties,
+        isDescriptionHidden,
+        isFavourite,
+        groupId,
+      },
+      {
+        onSuccess: () => {
+          positiveFeedback('Collection duplicated');
+        },
+        onError: () => {
+          negativeFeedback();
+        },
+      }
+    );
   };
 
   //handle move collection to another group and its mutation
-  const { mutate: moveCollectionMutateFun } = useMutation(
-    async (desGroupId: string) => {
-      await removeCollectionFromGroup(groupId, collectionId);
-      await addCollectionToGroup(desGroupId, collectionId);
-    },
-    {
+  const handleMoveCollection = (desGroupId: string) => {
+    collection.moveCollectionMutateFun(desGroupId, {
       onSuccess: () => {
-        queryClient.invalidateQueries(['groups']);
-        queryClient.invalidateQueries(['collections']);
         positiveFeedback('Success');
       },
       onError: () => {
         negativeFeedback();
       },
-    }
-  );
-
-  const handleMoveCollection = (desGroupId: string) => {
-    moveCollectionMutateFun(desGroupId);
+    });
   };
 
   if (!collectionData) return <></>;

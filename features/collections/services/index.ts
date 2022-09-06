@@ -45,7 +45,7 @@ export async function getCollection(id: string): Promise<CollectionWItemCount> {
 }
 
 export async function createCollection(
-  collection: CreateCollectionArg
+  collection: Prisma.CollectionUncheckedCreateWithoutUserInput
 ): Promise<Collection> {
   const res = await getFetch(baseUrl, 'POST', { collection });
   return res;
@@ -53,7 +53,7 @@ export async function createCollection(
 
 export async function updateCollection(
   cid: string,
-  collection: Prisma.CollectionUpdateInput
+  collection: Prisma.CollectionUncheckedUpdateInput
 ): Promise<Collection> {
   const res = await getFetch(baseUrl + cid, 'PUT', { collection });
   return res;
@@ -96,8 +96,15 @@ export async function updateCollectionDescription(
   return updateCollection(cid, { description });
 }
 
-export async function deleteCollection(id: string): Promise<boolean> {
-  const res = await getFetch(baseUrl + id, 'DELETE');
+export async function moveCollection(
+  cid: string,
+  gid: string
+): Promise<Collection> {
+  return updateCollection(cid, { groupId: gid });
+}
+
+export async function deleteCollection(cid: string): Promise<boolean> {
+  const res = await getFetch(baseUrl + cid, 'DELETE');
   return res;
 }
 

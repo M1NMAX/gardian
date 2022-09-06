@@ -2,8 +2,10 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   addPropertyToCollection,
   changeCollectionIcon,
+  createCollection,
   deleteCollection,
   getCollection,
+  moveCollection,
   removePropertyFromCollection,
   renameCollection,
   toggleCollectionDescriptionState,
@@ -76,6 +78,36 @@ const useCollection = (cid: string, key: string = 'collection') => {
     { onSuccess: () => invalidateCollectionQueries() }
   );
 
+  const { mutate: moveCollectionMutateFun } = useMutation(
+    async (desGroupId: string) => {
+      await moveCollection(cid, desGroupId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+        invalidateCollectionQueries();
+      },
+    }
+  );
+  const { mutate: duplicateCollectionMutateFun } = useMutation(
+    createCollection,
+    {
+      onSuccess: async ({ id: newCollectionId }) => {
+        //get all items of current collection
+        const items = await getItems(cid);
+
+        //duplicate  every item and add new collection as parent
+        items.map(async (item) => {
+          const { name, properties } = item;
+          await createItem({ name, properties, collectionId: newCollectionId });
+        });
+
+        queryClient.invalidateQueries(['groups']);
+        queryClient.invalidateQueries(['collections']);
+      },
+    }
+  );
+
   const { mutate: deleteCollectionMutateFun } = useMutation(deleteCollection, {
     onSuccess: async () => {
       queryClient.removeQueries(['sidebarCollection', cid]);
@@ -90,16 +122,14 @@ const useCollection = (cid: string, key: string = 'collection') => {
     addPropertyToCollection,
     {
       onSuccess: async (data) => {
-        const { id, properties } = data;
-        console.log(data);
-        console.log(properties);
+        const { id: cid, properties } = data;
 
         //get the lastest Collection property base on creation date
         const lastestProperty = properties.reduce((a, b) => {
           return a.createdAt > b.createdAt ? a : b;
         });
 
-        const items = await getItems(id);
+        const items = await getItems(cid);
 
         // add placeholder for this property into collection items
         items.map(async ({ id }) => {
@@ -161,6 +191,8 @@ const useCollection = (cid: string, key: string = 'collection') => {
     changeCollectionIconMutateFun,
     renameCollectionMutateFun,
     updCollectionDescrMutateFun,
+    moveCollectionMutateFun,
+    duplicateCollectionMutateFun,
     deleteCollectionMutateFun,
     addPropertyToCollectionMutateFun,
     updateCollectionPropertyMutateFun,
