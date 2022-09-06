@@ -1,52 +1,53 @@
-import React, { useEffect, useState } from 'react';
 import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
+    GetServerSidePropsContext,
+    InferGetServerSidePropsType,
+    NextPage
 } from 'next';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import Sidebar from '@components/Sidebar';
-import { useRecoilValue } from 'recoil';
-import { sidebarState } from '@atoms/sidebarAtom';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
+import { useRecoilValue } from 'recoil';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { sidebarState } from '@atoms/sidebarAtom';
+import DeleteModal from '@components/DeleteModal';
+import Header from '@components/Header';
+import Property from '@components/Property';
+import RenameModal from '@components/RenameModal';
+import Sidebar from '@components/Sidebar';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
 import { CollectionMenu, useCollection } from '@features/collections';
+import { Editor } from '@features/Editor';
+import { getGroup, GroupWithCollectionsId } from '@features/groups';
+import {
+    CreateItemModal,
+    getItems,
+    ItemMenu,
+    ItemOverview,
+    useGetItem,
+    useItem
+} from '@features/items';
+import { SortOptionsListbox, useSort } from '@features/sort';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
 import {
-  CreateItemModal,
-  ItemOverview,
-  ItemMenu,
-  useGetItem,
-  useItem,
-  getItems,
-} from '@features/items';
-import {
-  FolderIcon,
-  PencilIcon,
-  PlusIcon,
-  ViewBoardsIcon,
-  ViewGridIcon,
+    FolderIcon,
+    PencilIcon,
+    PlusIcon,
+    ViewBoardsIcon,
+    ViewGridIcon
 } from '@heroicons/react/outline';
-import useModal from '@hooks/useModal';
-import toast from 'react-hot-toast';
-import DeleteModal from '@components/DeleteModal';
-import Property from '@components/Property';
-import { Editor } from '@features/Editor';
 import useDrawer from '@hooks/useDrawer';
-import Header from '@components/Header';
-import RenameModal from '@components/RenameModal';
-import { useSort, SortOptionsListbox } from '@features/sort';
-import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
-import { SortOptionType } from '@types';
-import { getGroup, GroupWithCollectionsId } from '@features/groups';
-import { authOptions } from '@api/auth/[...nextauth]';
+import useModal from '@hooks/useModal';
 import { getSession } from '@lib/auth/session';
 import {
-  ItemProperty,
-  Property as PropertyTyp,
-  PropertyType,
+    ItemProperty,
+    Property as PropertyTyp,
+    PropertyType
 } from '@prisma/client';
+import { SortOptionType } from '@types';
+
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
@@ -321,7 +322,8 @@ const Collections: NextPage<
         onSuccess: () => {
           positiveFeedback('Property updated');
         },
-        onError: () => {
+        onError: (error) => {
+          console.log(error);
           negativeFeedback();
         },
       }

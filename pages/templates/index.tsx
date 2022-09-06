@@ -236,7 +236,7 @@ const TemplatesPage: NextPage<
                           <td
                             className='border-2 border-gray-300 dark:border-gray-600
                           first-letter:uppercase'>
-                            {property.type}
+                            {property.type.toLowerCase()}
                           </td>
                         </tr>
                       ))}

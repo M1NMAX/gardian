@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react';
-import { Property } from '@prisma/client';
+import { Property, PropertyType } from '@prisma/client';
+
 
 interface PropertyInputProps {
   property: Property;
@@ -11,7 +12,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
   const { property, menu, getValue, setValue } = props;
 
   switch (property.type) {
-    case 'checkbox':
+    case PropertyType.CHECKBOX:
       return (
         <label className='flex items-center  property-within-drawer'>
           <span className='w-full flex items-center space-x-1.5'>
@@ -29,7 +30,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           {menu}
         </label>
       );
-    case 'select':
+    case PropertyType.SELECT:
       return (
         <label className='property-within-drawer'>
           <span className='w-full flex items-center justify-between'>
@@ -50,7 +51,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           </select>
         </label>
       );
-    case 'textarea':
+    case PropertyType.TEXTAREA:
       return (
         <label className='property-within-drawer'>
           <span className='w-full flex items-center justify-between'>
@@ -80,7 +81,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
             name={property.name}
             value={getValue(property.id)}
             onChange={(e) => setValue(property.id, e.target.value)}
-            className='modal-input '
+            className='modal-input'
           />
         </label>
       );
