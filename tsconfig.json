@@ -15,7 +15,7 @@
       "@constants": ["constants/index"],
       "@hooks/*": ["hooks/*"], 
       "@types": ["types/index"], 
-      "@interface": ["interface/index"],
+      "@interfaces": ["interfaces/index"],
     },
     "allowJs": true,
     "skipLibCheck": true,

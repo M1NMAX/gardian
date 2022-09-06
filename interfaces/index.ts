@@ -1,5 +1,4 @@
-//SCHEMA
-export interface IBaseTemplate {
+export interface IBaseModel {
   //all models has this attributes
   id: string;
   name: string;

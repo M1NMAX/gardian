@@ -1,8 +1,9 @@
-import { SORT_ASCENDING } from '../../../constants';
-import { IBase } from '../../../interfaces';
-import { FieldType, OrderType } from '../../../types';
+import { SORT_ASCENDING } from '@constants';
+import { IBaseModel } from '@interfaces';
+import { FieldType, OrderType } from '@types';
 
-const sortDate = <T extends IBase>(a: T, b: T, field: 'createdAt') => {
+
+const sortDate = <T extends IBaseModel>(a: T, b: T, field: 'createdAt') => {
   const l = a[field];
   const r = b[field];
 
@@ -15,7 +16,7 @@ const sortDate = <T extends IBase>(a: T, b: T, field: 'createdAt') => {
   return lx < rx ? -1 : lx > rx ? 1 : 0;
 };
 
-const sortString = <T extends IBase>(a: T, b: T, field: 'name') => {
+const sortString = <T extends IBaseModel>(a: T, b: T, field: 'name') => {
   const l = field ? a[field] : a;
   const r = field ? b[field] : b;
 
@@ -26,7 +27,7 @@ const sortString = <T extends IBase>(a: T, b: T, field: 'name') => {
 };
 
 const sortFun = (field: FieldType, order: OrderType) => {
-  return <T extends IBase>(a: T, b: T) => {
+  return <T extends IBaseModel>(a: T, b: T) => {
     if (a[field] === b[field]) return 0;
 
     let result: number = 0;

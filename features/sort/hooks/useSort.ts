@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
-import { IBase } from '../../../interfaces';
-import { SortOptionType } from '../../../types';
+import { IBaseModel } from '@interfaces';
+import { SortOptionType } from '@types';
 import sortFun from '../utils';
 
-const useSort = <T extends IBase>(initialOption: SortOptionType, list: T[]) => {
+
+const useSort = <T extends IBaseModel>(
+  initialOption: SortOptionType,
+  list: T[]
+) => {
   const [selectedSortOption, setSelectedSortOption] =
     useState<SortOptionType>(initialOption);
 
