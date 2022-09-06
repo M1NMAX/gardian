@@ -1,24 +1,25 @@
-import { SyntheticEvent, useState } from 'react';
+import { filter } from 'lodash';
 import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
+    GetServerSidePropsContext,
+    InferGetServerSidePropsType,
+    NextPage
 } from 'next';
 import {
-  ClientSafeProvider,
-  getCsrfToken,
-  getProviders,
-  signIn,
+    ClientSafeProvider,
+    getCsrfToken,
+    getProviders,
+    signIn
 } from 'next-auth/react';
-import { filter } from 'lodash';
-import { getSession } from '@lib/auth/session';
-import { authOptions } from '@api/auth/[...nextauth]';
 import Head from 'next/head';
-import { Button } from '@frontstate-ui';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { SyntheticEvent, useState } from 'react';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { LOADING_MINIMUM_ACTIVITY_TIMEOUT } from '@constants';
+import { Button } from '@frontstate-ui';
+import { getSession } from '@lib/auth/session';
 
-const MINIMUM_ACTIVITY_TIMEOUT = 850;
+
 const SignIn: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ csrfToken, providers }) => {
@@ -42,7 +43,7 @@ const SignIn: NextPage<
       });
       setTimeout(() => {
         setIsSubmitting(false);
-      }, MINIMUM_ACTIVITY_TIMEOUT);
+      }, LOADING_MINIMUM_ACTIVITY_TIMEOUT);
 
       if (signInResponse?.ok) router.push('/collections');
     } catch (error) {
