@@ -1,14 +1,13 @@
-import { ChevronRightIcon, SearchIcon } from '@heroicons/react/outline';
-import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
+import { useRouter } from 'next/router';
+import { ChevronRightIcon, SearchIcon } from '@heroicons/react/outline';
 import { useQuery } from 'react-query';
-import { getCollections } from '../../features/collections';
-import { ICollection } from '../../interfaces';
-import { Modal } from '../frontstate-ui';
+import { getCollections } from '@features/collections';
+import { Modal } from '@frontstate-ui';
 
 interface SearchModalProps {
   open: boolean;
-  handleClose: (value?: boolean | React.MouseEvent<HTMLButtonElement>) => void;
+  handleClose: () => void;
   onEnter: () => void;
 }
 
@@ -19,10 +18,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
 
   const [query, setQuery] = useState<string>('');
 
-  const { data: collections } = useQuery<ICollection[]>(
-    'searchCollections',
-    getCollections
-  );
+  const { data: collections } = useQuery('searchCollections', getCollections);
 
   const filteredCollections =
     query === ''
@@ -65,7 +61,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
         ) : (
           filteredCollections &&
           filteredCollections.map(
-            ({ _id: id, name }) =>
+            ({ id, name }) =>
               id && (
                 <button
                   onClick={() => onClickCollection(id)}

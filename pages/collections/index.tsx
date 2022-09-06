@@ -1,21 +1,20 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
 import { getSession } from '@lib/auth/session';
-
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@components/Sidebar';
 import Head from 'next/head';
 import { useQuery } from 'react-query';
-import { getCollections } from '../../features/collections';
+import { getCollections } from '@features/collections';
 import {
   CreateCollectionModal,
   CollectionOverview,
-} from '../../features/collections';
+} from '@features/collections';
 import { useRecoilValue } from 'recoil';
-import { sidebarState } from '../../atoms/sidebarAtom';
+import { sidebarState } from '@atoms/sidebarAtom';
 import {
   CubeTransparentIcon,
   PlusIcon,
@@ -23,18 +22,16 @@ import {
   ViewGridIcon,
 } from '@heroicons/react/outline';
 import toast, { Toaster } from 'react-hot-toast';
-import { ICollection, IGroup } from '../../interfaces';
-import { getGroup, getGroups } from '../../features/groups/services';
-import useModal from '../../hooks/useModal';
-import Group from '../../backend/models/Group';
-import dbConnect from '../../backend/database/dbConnect';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import Header from '../../components/Header';
-import { useSort, SortOptionsListbox } from '../../features/sort';
-import { ActionIcon, Button } from '../../components/frontstate-ui';
-import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
-import { SortOptionType } from '../../types';
+import { getGroup, getGroups } from '@features/groups/services';
+import useModal from '@hooks/useModal';
+import useLocalStorage from '@hooks/useLocalStorage';
+import Header from '@components/Header';
+import { useSort, SortOptionsListbox } from '@features/sort';
+import { ActionIcon, Button } from '@frontstate-ui';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
+import { SortOptionType } from '@types';
 import { authOptions } from '@api/auth/[...nextauth]';
+import prisma from '@lib/prisma';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -64,8 +61,7 @@ const Collections: NextPage<
   const createCollectionModal = useModal();
 
   const positiveFeedback = (msg: string) => toast.success(msg);
-  const negativeFeedback = () =>
-    toast.success('Something went wrong, try later');
+  const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //views
   const [isGridView, setIsGridView] = useLocalStorage<boolean>(
@@ -194,21 +190,15 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     const userId = session.user.id;
 
     try {
-      // connect to db
-      await dbConnect();
+      const groups = await prisma.group.findFirst({ where: { userId } });
 
-      // fecth db for group
-      const groups = await Group.find({ userId });
-
-      //create group if there is no
-      if (groups.length === 0) {
-        await Group.create({
-          name: 'My Group',
-          userId,
+      if (groups == null) {
+        await prisma.group.create({
+          data: { name: 'My Group', userId },
         });
       }
     } catch (error) {
-      console.log(error);
+      console.log('[page] collections/', error);
     }
   }
   return { props: {} as never };

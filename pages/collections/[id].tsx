@@ -4,16 +4,14 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from 'next';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import Sidebar from '../../components/Sidebar';
+import Sidebar from '@components/Sidebar';
 import { useRecoilValue } from 'recoil';
-import { sidebarState } from '../../atoms/sidebarAtom';
+import { sidebarState } from '@atoms/sidebarAtom';
 import { useQuery } from 'react-query';
-import { IGroup, IItemProperty, IProperty } from '../../interfaces';
-import { CollectionMenu, useCollection } from '../../features/collections';
+import { CollectionMenu, useCollection } from '@features/collections';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
 import {
   CreateItemModal,
@@ -30,17 +28,17 @@ import {
   ViewBoardsIcon,
   ViewGridIcon,
 } from '@heroicons/react/outline';
-import useModal from '../../hooks/useModal';
+import useModal from '@hooks/useModal';
 import toast from 'react-hot-toast';
-import DeleteModal from '../../components/DeleteModal';
-import Property from '../../components/Property';
-import { Editor } from '../../features/Editor';
-import useDrawer from '../../hooks/useDrawer';
-import Header from '../../components/Header';
-import RenameModal from '../../components/RenameModal';
+import DeleteModal from '@components/DeleteModal';
+import Property from '@components/Property';
+import { Editor } from '@features/Editor';
+import useDrawer from '@hooks/useDrawer';
+import Header from '@components/Header';
+import RenameModal from '@components/RenameModal';
 import { useSort, SortOptionsListbox } from '@features/sort';
-import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
-import { SortOptionType } from '../../types';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
+import { SortOptionType } from '@types';
 import { getGroup, GroupWithCollectionsId } from '@features/groups';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';

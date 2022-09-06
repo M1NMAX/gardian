@@ -1,25 +1,20 @@
 import { TemplateIcon } from '@heroicons/react/outline';
+import { Template } from '@prisma/client';
 import React, { FC } from 'react';
-import { ITemplate } from '../../interfaces';
 
 interface TemplateOverviewProps {
-  template: ITemplate;
+  template: Template;
   active: boolean;
   isGridView: boolean;
   onClickTemplate: (id: string) => void;
 }
 const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
   const { template, active, isGridView, onClickTemplate } = props;
-  const { _id: id, name, description, properties } = template;
-
-  const handleClick = () => {
-    if (!id) return;
-    onClickTemplate(id);
-  };
+  const { id, name, description, properties } = template;
 
   return (
     <button
-      onClick={handleClick}
+      onClick={() => onClickTemplate(id)}
       className={`${
         active && 'border-r-2 border-green-500'
       }  flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800 
