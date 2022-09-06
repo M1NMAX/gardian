@@ -127,3 +127,20 @@ type ItemProperty {
     id    String @map("_id")
     value String @default("")
 }
+
+model Template {
+    id          String     @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    icon        String     @default("")
+    description String     @default("")
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    properties  Property[]
+    items       MockItem[]
+}
+
+type MockItem {
+    id         String         @default(uuid()) @map("_id")
+    name       String
+    properties ItemProperty[]
+}

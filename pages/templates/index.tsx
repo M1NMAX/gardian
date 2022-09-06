@@ -1,28 +1,32 @@
-import React, { useMemo, useState } from 'react';
-import { InferGetServerSidePropsType, NextPage } from 'next';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import Sidebar from '../../components/Sidebar';
-import Head from 'next/head';
-import { useRecoilValue } from 'recoil';
-import { sidebarState } from '../../atoms/sidebarAtom';
-import TemplateOverview from '../../components/TemplateOverview';
-import { createCollection } from '../../features/collections';
 import {
-  addCollectionToGroup,
-  GroupPickerPopover,
-} from '../../features/groups';
+    GetServerSidePropsContext,
+    InferGetServerSidePropsType,
+    NextPage
+} from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { IItem } from '../../interfaces';
-import { templates } from '../../data/templates';
-import useLocalStorage from '../../hooks/useLocalStorage';
-import { useSort, SortOptionsListbox } from '../../features/sort';
-import Header from '../../components/Header';
-import { ActionIcon, Drawer } from '../../components/frontstate-ui';
-import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
-import useDrawer from '../../hooks/useDrawer';
-import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
-import { SortOptionType } from '../../types';
+import React, { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useQuery } from 'react-query';
+import { useRecoilValue } from 'recoil';
+
+import { authOptions } from '@api/auth/[...nextauth]';
+import { sidebarState } from '@atoms/sidebarAtom';
+import Header from '@components/Header';
+import Sidebar from '@components/Sidebar';
+import TemplateOverview from '@components/TemplateOverview';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
+import { createCollection } from '@features/collections';
+import { GroupPickerPopover } from '@features/groups';
+import { SortOptionsListbox, useSort } from '@features/sort';
+import { getTemplates } from '@features/templates';
+import { ActionIcon, Drawer } from '@frontstate-ui';
+import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
+import useDrawer from '@hooks/useDrawer';
+import useLocalStorage from '@hooks/useLocalStorage';
+import { getSession } from '@lib/auth/session';
+import { MockItem } from '@prisma/client';
+import { SortOptionType } from '@types';
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -34,6 +38,9 @@ const TemplatesPage: NextPage<
 > = () => {
   const router = useRouter();
   const sidebar = useRecoilValue(sidebarState);
+
+  const { data: templates, isLoading } = useQuery(['templates'], getTemplates);
+  console.log(templates);
 
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -52,24 +59,26 @@ const TemplatesPage: NextPage<
     selectedSortOption,
     sortedList: sortedTemplates,
     onChangeSortOption,
-  } = useSort(sortOptions[0], templates);
+  } = useSort(sortOptions[0], templates || []);
 
   //Selected template
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null
   );
 
-  const selectedTemplate = useMemo(
-    () => templates.find((template) => template._id === selectedTemplateId),
-    [templates, selectedTemplateId]
-  );
+  const selectedTemplate = useMemo(() => {
+    if (!templates) return;
+
+    return templates.find((template) => template.id === selectedTemplateId);
+  }, [templates, selectedTemplateId]);
+
   const handleOnClickTemplateOverview = (id: string) => {
     setSelectedTemplateId(id);
     drawer.openDrawer();
   };
 
-  const getPropertyValue = (item: IItem, id: string): string => {
-    const property = item.properties.find((property) => property._id === id);
+  const getPropertyValue = (item: MockItem, id: string): string => {
+    const property = item.properties.find((property) => property.id === id);
     return property ? property.value : '';
   };
 
@@ -80,24 +89,11 @@ const TemplatesPage: NextPage<
 
     const collection = await createCollection({
       name,
-      icon: '',
-      description: '',
-      isDescriptionHidden: false,
-      isFavourite: false,
-      items: [],
-      properties: properties.map(({ name, type, values }) => ({
-        name,
-        type,
-        values,
-      })),
+      properties,
+      groupId,
     });
 
-    const { _id: cid } = collection;
-
-    if (!cid) throw 'Collection id undefined';
-    await addCollectionToGroup(groupId, cid);
-
-    router.push('/collections/' + cid);
+    router.push('/collections/' + collection.id);
   };
 
   const handleOnClickGroup = async (gid: string) => {
@@ -125,7 +121,9 @@ const TemplatesPage: NextPage<
           } h-full flex flex-col space-y-2`}>
           {/* Header  */}
           <Header>
-            <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
+            <h1
+              className='grow font-semibold text-xl md:text-2xl 
+            pl-1 border-l-4 border-primary-100'>
               Templates
             </h1>
 
@@ -161,10 +159,10 @@ const TemplatesPage: NextPage<
                   : 'flex flex-col space-y-2'
               } `}>
               {sortedTemplates &&
-                sortedTemplates.map((template, idx) => (
+                sortedTemplates.map((template) => (
                   <TemplateOverview
-                    key={idx}
-                    active={selectedTemplateId === template._id}
+                    key={template.id}
+                    active={selectedTemplateId === template.id}
                     template={template}
                     isGridView={isGridView}
                     onClickTemplate={handleOnClickTemplateOverview}
@@ -197,26 +195,19 @@ const TemplatesPage: NextPage<
                     {selectedTemplate.items.map((item, idx) => (
                       <span
                         key={idx}
-                        className='w-full px-2 flex flex-col border-l-2 border-green-500 '>
+                        className='w-full px-2 flex flex-col border-l-2 border-green-500'>
                         <span className='font-semibold text-lg'>
                           {item.name}
                         </span>
                         {selectedTemplate.properties.map(
-                          (templateProperty, idx) =>
-                            getPropertyValue(
-                              item,
-                              templateProperty._id || ''
-                            ) != '' && (
-                              <span key={idx} className='space-x-1'>
-                                <span>{templateProperty.name}</span>
-                                <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
-                                  {getPropertyValue(
-                                    item,
-                                    templateProperty._id || ''
-                                  )}
-                                </span>
+                          (templateProperty, idx) => (
+                            <span key={idx} className='space-x-1'>
+                              <span>{templateProperty.name}</span>
+                              <span className='px-1 font-light rounded  bg-gray-200 dark:bg-gray-700'>
+                                {getPropertyValue(item, templateProperty.id)}
                               </span>
-                            )
+                            </span>
+                          )
                         )}
                       </span>
                     ))}
@@ -277,4 +268,16 @@ const TemplatesPage: NextPage<
 
 export default TemplatesPage;
 
-export const getServerSideProps = withPageAuthRequired();
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const sesssion = await getSession(ctx.req, ctx.res, authOptions);
+
+  if (!sesssion) {
+    return {
+      redirect: {
+        destination: '/account/signin',
+        permanent: false,
+      },
+    };
+  }
+  return { props: {} as never };
+}
