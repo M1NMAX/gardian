@@ -1,6 +1,7 @@
+import React, { FC } from 'react';
 import { TemplateIcon } from '@heroicons/react/outline';
 import { Template } from '@prisma/client';
-import React, { FC } from 'react';
+
 
 interface TemplateOverviewProps {
   template: Template;

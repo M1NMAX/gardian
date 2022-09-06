@@ -9,17 +9,15 @@ import React, { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-
 import { authOptions } from '@api/auth/[...nextauth]';
 import { sidebarState } from '@atoms/sidebarAtom';
 import Header from '@components/Header';
 import Sidebar from '@components/Sidebar';
-import TemplateOverview from '@components/TemplateOverview';
 import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
 import { createCollection } from '@features/collections';
 import { GroupPickerPopover } from '@features/groups';
 import { SortOptionsListbox, useSort } from '@features/sort';
-import { getTemplates } from '@features/templates';
+import { getTemplates, TemplateOverview } from '@features/templates';
 import { ActionIcon, Drawer } from '@frontstate-ui';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 import useDrawer from '@hooks/useDrawer';
@@ -27,6 +25,7 @@ import useLocalStorage from '@hooks/useLocalStorage';
 import { getSession } from '@lib/auth/session';
 import { MockItem } from '@prisma/client';
 import { SortOptionType } from '@types';
+
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
