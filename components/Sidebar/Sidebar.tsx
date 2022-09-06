@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { ThemeBtn } from '../../features/theme';
+import { ThemeBtn } from '@features/theme';
 import {
   CollectionIcon,
   PlusIcon,
@@ -11,7 +11,7 @@ import SidebarBtn from './SidebarBtn';
 import { ActionIcon, Button } from '../frontstate-ui';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { useRecoilState } from 'recoil';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 import { useQuery } from 'react-query';
 import { toast, Toaster } from 'react-hot-toast';
 import {
@@ -19,12 +19,12 @@ import {
   SidebarCollection,
 } from '@features/collections';
 import { useRouter } from 'next/router';
-import useModal from '../../hooks/useModal';
+import useModal from '@hooks/useModal';
 import { getGroups } from '@features/groups/services';
-import { CreateGroupModal, SidebarGroup } from '../../features/groups';
+import { CreateGroupModal, SidebarGroup } from '@features/groups';
 import SearchModal from '../SearchModal';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
-import { SCREEN_SIZE_MD } from '../../constants';
+import { SCREEN_SIZE_MD } from '@constants';
 
 const Sidebar: FC = () => {
   const router = useRouter();

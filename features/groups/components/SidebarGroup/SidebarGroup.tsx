@@ -2,9 +2,9 @@ import React, { FC, ReactNode } from 'react';
 import { Disclosure } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/outline';
 import toast from 'react-hot-toast';
-import useModal from '../../../../hooks/useModal';
-import DeleteModal from '../../../../components/DeleteModal';
-import RenameModal from '../../../../components/RenameModal';
+import useModal from '@hooks/useModal';
+import DeleteModal from '@components/DeleteModal';
+import RenameModal from '@components/RenameModal';
 import SidebarGroupMenu from '../SidebarGroupMenu';
 import useGroup from '../../hooks/useGroup';
 import { GroupWithCollectionsId } from '@features/groups/services';
@@ -82,7 +82,6 @@ const SidebarGroup: FC<SidebarGroupProps> = (props) => {
                   onClickRename={renameGroupModal.openModal}
                   onClickDelete={deleteGroupModal.openModal}
                 />
-                h
               </span>
             </div>
             {/*Display group collections */}
