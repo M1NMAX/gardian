@@ -1,15 +1,10 @@
-import {
-    GetServerSidePropsContext,
-    InferGetServerSidePropsType,
-    NextPage
-} from 'next';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-import { authOptions } from '@api/auth/[...nextauth]';
 import { sidebarState } from '@atoms/sidebarAtom';
 import Header from '@components/Header';
 import Sidebar from '@components/Sidebar';
@@ -22,7 +17,6 @@ import { ActionIcon, Drawer } from '@frontstate-ui';
 import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
 import useDrawer from '@hooks/useDrawer';
 import useLocalStorage from '@hooks/useLocalStorage';
-import { getSession } from '@lib/auth/session';
 import { MockItem } from '@prisma/client';
 import { SortOptionType } from '@types';
 
@@ -32,9 +26,7 @@ const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_DESCENDING },
 ];
 
-const TemplatesPage: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = () => {
+const TemplatesPage: NextPage = () => {
   const router = useRouter();
   const sidebar = useRecoilValue(sidebarState);
 
@@ -266,17 +258,3 @@ const TemplatesPage: NextPage<
 };
 
 export default TemplatesPage;
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const sesssion = await getSession(ctx.req, ctx.res, authOptions);
-
-  if (!sesssion) {
-    return {
-      redirect: {
-        destination: '/account/signin',
-        permanent: false,
-      },
-    };
-  }
-  return { props: {} as never };
-}

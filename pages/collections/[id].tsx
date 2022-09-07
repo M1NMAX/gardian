@@ -1,8 +1,4 @@
-import {
-    GetServerSidePropsContext,
-    InferGetServerSidePropsType,
-    NextPage
-} from 'next';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -10,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
-import { authOptions } from '@api/auth/[...nextauth]';
 import { sidebarState } from '@atoms/sidebarAtom';
 import DeleteModal from '@components/DeleteModal';
 import Header from '@components/Header';
@@ -40,7 +35,6 @@ import {
 } from '@heroicons/react/outline';
 import useDrawer from '@hooks/useDrawer';
 import useModal from '@hooks/useModal';
-import { getSession } from '@lib/auth/session';
 import {
     ItemProperty,
     Property as PropertyTyp,
@@ -57,9 +51,7 @@ const sortOptions: SortOptionType[] = [
   { field: 'createdAt', order: SORT_DESCENDING },
 ];
 
-const Collections: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = () => {
+const Collections: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
@@ -587,17 +579,3 @@ const Collections: NextPage<
 };
 
 export default Collections;
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const sesssion = await getSession(ctx.req, ctx.res, authOptions);
-
-  if (!sesssion) {
-    return {
-      redirect: {
-        destination: '/account/signin',
-        permanent: false,
-      },
-    };
-  }
-  return { props: {} as never };
-}
