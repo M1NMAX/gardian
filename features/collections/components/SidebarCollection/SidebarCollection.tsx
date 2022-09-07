@@ -1,15 +1,16 @@
-import React, { FC } from 'react';
-import { useRouter } from 'next/router';
-import toast from 'react-hot-toast';
-import RenameModal from '@components/RenameModal';
-import DeleteModal from '@components/DeleteModal';
-import useModal from '@hooks/useModal';
-import SidebarCollectionMenu from '../SidebarCollectionMenu';
-import MoveCollectionModal from '../MoveCollectionModal';
-import useCollection from '../../hooks/useCollection';
-import IconPickerModal from '../../../../components/IconPickerModal';
-import { FolderIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import React, { FC } from 'react';
+import toast from 'react-hot-toast';
+import DeleteModal from '@components/DeleteModal';
+import RenameModal from '@components/RenameModal';
+import { FolderIcon } from '@heroicons/react/outline';
+import useModal from '@hooks/useModal';
+import IconPickerModal from '../../../../components/IconPickerModal';
+import useCollection from '../../hooks/useCollection';
+import MoveCollectionModal from '../MoveCollectionModal';
+import SidebarCollectionMenu from '../SidebarCollectionMenu';
+
 
 interface SidebarCollectionProps {
   collectionId: string;
@@ -36,6 +37,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   //Fetch collection
   const collection = useCollection(collectionId, 'sidebarCollection');
   const collectionData = collection.query.data;
+  const isLoading = collection.query.isLoading;
 
   // //handle change collection icon and its mutation
   // const handleChangeCollectionIcon = (icon: string) => {
@@ -139,6 +141,12 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
     });
   };
 
+  if (isLoading)
+    return (
+      <div className=' p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+        <div className='w-full h-6  rounded bg-gray-300 dark:bg-gray-600'></div>
+      </div>
+    );
   if (!collectionData) return <></>;
   return (
     <>

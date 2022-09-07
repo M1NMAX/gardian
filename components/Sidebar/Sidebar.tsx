@@ -1,30 +1,31 @@
-import React, { FC, useEffect } from 'react';
-import { ThemeBtn } from '@features/theme';
-import {
-  CollectionIcon,
-  PlusIcon,
-  SearchIcon,
-  TemplateIcon,
-  ViewGridAddIcon,
-} from '@heroicons/react/outline';
-import SidebarBtn from './SidebarBtn';
-import { ActionIcon, Button } from '../frontstate-ui';
-import { sidebarState } from '../../atoms/sidebarAtom';
-import { useRecoilState } from 'recoil';
-import useWindowDimensions from '@hooks/useWindowDimensions';
-import { useQuery } from 'react-query';
-import { toast, Toaster } from 'react-hot-toast';
-import {
-  CreateCollectionModal,
-  SidebarCollection,
-} from '@features/collections';
 import { useRouter } from 'next/router';
-import useModal from '@hooks/useModal';
-import { getGroups } from '@features/groups/services';
-import { CreateGroupModal, SidebarGroup } from '@features/groups';
-import SearchModal from '../SearchModal';
-import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
+import React, { FC, useEffect } from 'react';
+import { toast, Toaster } from 'react-hot-toast';
+import { useQuery } from 'react-query';
+import { useRecoilState } from 'recoil';
+import { sidebarState } from '@atoms/sidebarAtom';
 import { SCREEN_SIZE_MD } from '@constants';
+import {
+    CreateCollectionModal,
+    SidebarCollection
+} from '@features/collections';
+import { CreateGroupModal, SidebarGroup } from '@features/groups';
+import { getGroups } from '@features/groups/services';
+import { ThemeBtn } from '@features/theme';
+import { ActionIcon, Button } from '@frontstate-ui';
+import {
+    CollectionIcon,
+    PlusIcon,
+    SearchIcon,
+    TemplateIcon,
+    ViewGridAddIcon
+} from '@heroicons/react/outline';
+import useModal from '@hooks/useModal';
+import useWindowDimensions from '@hooks/useWindowDimensions';
+import SearchModal from '../SearchModal';
+import SidebarBtn from './SidebarBtn';
+import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
+
 
 const Sidebar: FC = () => {
   const router = useRouter();
@@ -100,7 +101,7 @@ const Sidebar: FC = () => {
               className='flex flex-col space-y-1 animate-pulse rounded
              bg-gray-100 dark:bg-gray-800'>
               <div className='w-full h-8  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+              <div className='w-full h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
             </div>
           )}
 
