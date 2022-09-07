@@ -1,26 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import {
-  addPropertyToCollection,
-  changeCollectionIcon,
-  createCollection,
-  deleteCollection,
-  getCollection,
-  moveCollection,
-  removePropertyFromCollection,
-  renameCollection,
-  toggleCollectionDescriptionState,
-  toggleCollectionIsFavourite,
-  updateCollectionDescription,
-  updateCollectionProperty,
-} from '../services';
-import {
-  addPropertyToItem,
-  createItem,
-  getItems,
-  removePropertyFromItem,
-} from '../../items/services';
-
 import { Property } from '@prisma/client';
+import {
+    addPropertyToItem,
+    createItem,
+    getItems,
+    removePropertyFromItem
+} from '../../items/services';
+import {
+    addPropertyToCollection,
+    changeCollectionIcon,
+    createCollection,
+    deleteCollection,
+    getCollection,
+    moveCollection,
+    removePropertyFromCollection,
+    renameCollection,
+    toggleCollectionDescriptionState,
+    toggleCollectionIsFavourite,
+    updateCollectionDescription,
+    updateCollectionProperty
+} from '../services';
+
 
 const useCollection = (cid: string, key: string = 'collection') => {
   const queryClient = useQueryClient();
@@ -173,7 +173,7 @@ const useCollection = (cid: string, key: string = 'collection') => {
     }
   );
 
-  const getCollectionPropertyById = (pid: string) => {
+  const getPropertyById = (pid: string) => {
     if (!query.data) return {} as Property;
     const property = query.data.properties.find(
       (property) => property.id === pid
@@ -185,7 +185,7 @@ const useCollection = (cid: string, key: string = 'collection') => {
   return {
     query,
     createItemMutateFun,
-    getCollectionPropertyById,
+    getPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
     changeCollectionIconMutateFun,

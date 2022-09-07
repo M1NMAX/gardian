@@ -1,6 +1,7 @@
-import { ItemProperty } from '@prisma/client';
 import { useEffect, useState } from 'react';
+import { ItemProperty } from '@prisma/client';
 import { getItem } from '../services';
+
 
 const useGetItem = (id: string) => {
   const [name, setName] = useState('');
@@ -9,7 +10,6 @@ const useGetItem = (id: string) => {
   const fetchItem = async () => {
     try {
       const item = await getItem(id);
-      console.log(item);
       setName(item.name);
       setProperties(item.properties);
     } catch (error) {
@@ -18,7 +18,6 @@ const useGetItem = (id: string) => {
   };
 
   const refetch = () => fetchItem();
-
   useEffect(() => {
     fetchItem();
   }, [id]);

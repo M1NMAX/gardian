@@ -25,14 +25,9 @@ import {
     useItem
 } from '@features/items';
 import { SortOptionsListbox, useSort } from '@features/sort';
+import { ViewButton } from '@features/view';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
-import {
-    FolderIcon,
-    PencilIcon,
-    PlusIcon,
-    ViewBoardsIcon,
-    ViewGridIcon
-} from '@heroicons/react/outline';
+import { FolderIcon, PencilIcon, PlusIcon } from '@heroicons/react/outline';
 import useDrawer from '@hooks/useDrawer';
 import useModal from '@hooks/useModal';
 import {
@@ -272,14 +267,13 @@ const Collections: NextPage = () => {
     collection.addPropertyToCollectionMutateFun(
       {
         cid: collectionId,
-        property: { name: 'property', type: 'TEXT', values: [] },
+        property: { name: 'property', type: PropertyType.TEXT, values: [] },
       },
       {
         onSuccess: () => {
           selectedItem.refetch();
         },
-        onError: (error) => {
-          console.log(error);
+        onError: () => {
           negativeFeedback();
         },
       }
@@ -395,15 +389,10 @@ const Collections: NextPage = () => {
                 onChangeOption={onChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon
-                variant='filled'
-                onClick={() => setIsGridView(!isGridView)}>
-                {isGridView ? (
-                  <ViewGridIcon className='icon-sm' />
-                ) : (
-                  <ViewBoardsIcon className='icon-sm rotate-90' />
-                )}
-              </ActionIcon>
+              <ViewButton
+                value={isGridView}
+                onClick={() => setIsGridView(!isGridView)}
+              />
 
               {collectionData && (
                 <CollectionMenu
@@ -499,18 +488,22 @@ const Collections: NextPage = () => {
             <div
               className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
                       scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
-              {selectedItem.properties.map((property) => (
-                <Property
-                  collectionProperty={collection.getCollectionPropertyById(
-                    property.id
-                  )}
-                  getValue={selectedItem.getPropertyValue}
-                  setValue={handlePropertyValueChange}
-                  onPropertyUpdate={handleUpdateProperty}
-                  onPropertyDuplicate={handleDuplicateProperty}
-                  onPropertyDelete={handleDeleteProperty}
-                />
-              ))}
+              {selectedItem.properties.map(
+                (property) =>
+                  property.id && (
+                    <Property
+                      key={property.id}
+                      collectionProperty={collection.getPropertyById(
+                        property.id
+                      )}
+                      getValue={selectedItem.getPropertyValue}
+                      setValue={handlePropertyValueChange}
+                      onPropertyUpdate={handleUpdateProperty}
+                      onPropertyDuplicate={handleDuplicateProperty}
+                      onPropertyDelete={handleDeleteProperty}
+                    />
+                  )
+              )}
             </div>
             <div>
               <Button
