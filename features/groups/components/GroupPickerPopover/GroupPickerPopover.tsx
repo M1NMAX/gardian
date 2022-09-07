@@ -1,7 +1,7 @@
 import React, { FC, Fragment } from 'react';
 import { useQuery } from 'react-query';
 import { Popover, Transition } from '@headlessui/react';
-import { HashtagIcon } from '@heroicons/react/outline';
+import { HashtagIcon } from '@heroicons/react/24/outline';
 import { getGroups } from '../../services';
 
 

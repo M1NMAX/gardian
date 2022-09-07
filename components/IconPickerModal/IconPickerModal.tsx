@@ -1,7 +1,8 @@
-import { SearchIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import React, { FC, useState } from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Modal } from '../frontstate-ui';
+
 
 interface IIcon {
   filename: string;
@@ -52,7 +53,7 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
       <div className='w-full flex flex-col space-y-2'>
         <div className='relative w-full my-2 '>
           <div className='absolute inset-y-0 pl-1 flex items-center pointer-events-none'>
-            <SearchIcon className='icon-sm text-gray-900 dark:text-white' />
+            <MagnifyingGlassIcon className='icon-sm text-gray-900 dark:text-white' />
           </div>
           <input
             value={query}

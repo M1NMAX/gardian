@@ -1,13 +1,14 @@
 import React, { FC, ReactNode } from 'react';
-import { Disclosure } from '@headlessui/react';
-import { ChevronRightIcon } from '@heroicons/react/outline';
 import toast from 'react-hot-toast';
-import useModal from '@hooks/useModal';
 import DeleteModal from '@components/DeleteModal';
 import RenameModal from '@components/RenameModal';
-import SidebarGroupMenu from '../SidebarGroupMenu';
-import useGroup from '../../hooks/useGroup';
 import { GroupWithCollectionsId } from '@features/groups/services';
+import { Disclosure } from '@headlessui/react';
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+import useModal from '@hooks/useModal';
+import useGroup from '../../hooks/useGroup';
+import SidebarGroupMenu from '../SidebarGroupMenu';
+
 
 interface SidebarGroupProps {
   children: ReactNode;

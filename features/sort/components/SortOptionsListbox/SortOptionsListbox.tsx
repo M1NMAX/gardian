@@ -1,12 +1,13 @@
 import React, { FC, Fragment } from 'react';
+import { SORT_ASCENDING } from '@constants';
 import { Listbox, Transition } from '@headlessui/react';
 import {
   ArrowDownIcon,
   ArrowUpIcon,
-  CheckIcon,
-} from '@heroicons/react/outline';
-import { OrderType, SortOptionType } from '../../../../types';
-import { SORT_ASCENDING } from '../../../../constants';
+  CheckIcon
+} from '@heroicons/react/24/outline';
+import { OrderType, SortOptionType } from '@types';
+
 
 interface SortOptionsListboxProps {
   sortOptions: SortOptionType[];

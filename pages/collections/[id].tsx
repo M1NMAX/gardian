@@ -17,23 +17,23 @@ import { CollectionMenu, useCollection } from '@features/collections';
 import { Editor } from '@features/Editor';
 import { getGroup, GroupWithCollectionsId } from '@features/groups';
 import {
-    CreateItemModal,
-    getItems,
-    ItemMenu,
-    ItemOverview,
-    useGetItem,
-    useItem
+  CreateItemModal,
+  getItems,
+  ItemMenu,
+  ItemOverview,
+  useGetItem,
+  useItem
 } from '@features/items';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { ViewButton } from '@features/view';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
-import { FolderIcon, PencilIcon, PlusIcon } from '@heroicons/react/outline';
+import { FolderIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useDrawer from '@hooks/useDrawer';
 import useModal from '@hooks/useModal';
 import {
-    ItemProperty,
-    Property as PropertyTyp,
-    PropertyType
+  ItemProperty,
+  Property as PropertyTyp,
+  PropertyType
 } from '@prisma/client';
 import { SortOptionType } from '@types';
 

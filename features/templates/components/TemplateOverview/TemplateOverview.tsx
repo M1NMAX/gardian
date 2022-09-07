@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { TemplateIcon } from '@heroicons/react/outline';
+import { RectangleGroupIcon } from '@heroicons/react/24/outline';
 import { Template } from '@prisma/client';
 
 
@@ -21,7 +21,7 @@ const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
       }  flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className='grow flex items-center space-x-1'>
-        <TemplateIcon className='icon-xs' />
+        <RectangleGroupIcon className='icon-xs' />
         <span className='grow font-semibold text-lg'>{name}</span>
       </span>
 

@@ -1,11 +1,12 @@
-import React, { FC } from 'react';
 import Link from 'next/link';
-import {
-  CollectionIcon,
-  HashtagIcon,
-  ViewBoardsIcon,
-} from '@heroicons/react/outline';
+import React, { FC } from 'react';
 import { CollectionWItemCount } from '@features/collections/services';
+import {
+  HashtagIcon,
+  RectangleStackIcon,
+  Squares2X2Icon
+} from '@heroicons/react/24/outline';
+
 
 interface CollectionOverviewProps {
   collection: CollectionWItemCount;
@@ -23,7 +24,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
         <span className={`${isGridView ? 'space-y-[1px]' : 'flex space-1'}`}>
           {/** Collection name */}
           <span className='grow flex items-center space-x-1'>
-            <CollectionIcon className='icon-xs' />
+            <RectangleStackIcon className='icon-xs' />
             <span className='grow font-semibold text-lg'>{name}</span>
           </span>
 
@@ -41,7 +42,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
             )}
 
             <span className='flex items-center space-x-0.5'>
-              <ViewBoardsIcon className='icon-xs' />
+              <Squares2X2Icon className='icon-xs' />
               {/* <span>{groupName}</span> */}
             </span>
             <span aria-hidden='true' className='hidden md:block'>

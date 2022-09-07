@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
 import { ActionIcon, Modal } from '@frontstate-ui';
-import { ArrowUpIcon, TrashIcon } from '@heroicons/react/outline';
+import { ArrowUpIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Property, PropertyType } from '@prisma/client';
 
 

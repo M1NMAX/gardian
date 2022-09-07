@@ -1,9 +1,13 @@
-import React, { FC, useState } from 'react';
 import { useRouter } from 'next/router';
-import { ChevronRightIcon, SearchIcon } from '@heroicons/react/outline';
+import React, { FC, useState } from 'react';
 import { useQuery } from 'react-query';
 import { getCollections } from '@features/collections';
 import { Modal } from '@frontstate-ui';
+import {
+    ChevronRightIcon,
+    MagnifyingGlassIcon
+} from '@heroicons/react/24/outline';
+
 
 interface SearchModalProps {
   open: boolean;
@@ -41,7 +45,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
       <div className='w-full flex flex-col space-y-2'>
         <div className='relative w-full my-2 '>
           <div className='absolute inset-y-0 pl-1 flex items-center pointer-events-none'>
-            <SearchIcon className='icon-sm text-gray-900 dark:text-white' />
+            <MagnifyingGlassIcon className='icon-sm text-gray-900 dark:text-white' />
           </div>
           <input
             value={query}

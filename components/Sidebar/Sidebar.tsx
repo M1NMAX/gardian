@@ -6,20 +6,20 @@ import { useRecoilState } from 'recoil';
 import { sidebarState } from '@atoms/sidebarAtom';
 import { SCREEN_SIZE_MD } from '@constants';
 import {
-    CreateCollectionModal,
-    SidebarCollection
+  CreateCollectionModal,
+  SidebarCollection
 } from '@features/collections';
 import { CreateGroupModal, SidebarGroup } from '@features/groups';
 import { getGroups } from '@features/groups/services';
 import { ThemeBtn } from '@features/theme';
 import { ActionIcon, Button } from '@frontstate-ui';
 import {
-    CollectionIcon,
-    PlusIcon,
-    SearchIcon,
-    TemplateIcon,
-    ViewGridAddIcon
-} from '@heroicons/react/outline';
+  MagnifyingGlassIcon,
+  PlusIcon,
+  RectangleGroupIcon,
+  RectangleStackIcon,
+  SquaresPlusIcon
+} from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import SearchModal from '../SearchModal';
@@ -72,21 +72,21 @@ const Sidebar: FC = () => {
             onClick={searchModal.openModal}
             className='w-full space-x-2 flex items-center rounded p-1
              bg-gray-300 dark:bg-gray-700'>
-            <SearchIcon className='icon-sm' />
+            <MagnifyingGlassIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
           <SidebarUserPopoverMenu />
         </div>
 
         <SidebarBtn
-          icon={<TemplateIcon />}
+          icon={<RectangleGroupIcon />}
           text='Templates'
           active={router.pathname === '/templates'}
           onClick={() => onClickSiderLink('/templates')}
         />
 
         <SidebarBtn
-          icon={<CollectionIcon />}
+          icon={<RectangleStackIcon />}
           text='My Collections'
           active={router.pathname === '/collections'}
           onClick={() => onClickSiderLink('/collections')}
@@ -135,7 +135,7 @@ const Sidebar: FC = () => {
               <span>New Collection</span>
             </Button>
             <ActionIcon onClick={() => createGroupModal.openModal()}>
-              <ViewGridAddIcon className='icon-sm' />
+              <SquaresPlusIcon className='icon-sm' />
             </ActionIcon>
           </div>
         </div>

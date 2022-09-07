@@ -1,11 +1,12 @@
+import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-  DotsVerticalIcon,
-  DuplicateIcon,
-  PencilAltIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import React, { FC, Fragment } from 'react';
+    EllipsisVerticalIcon,
+    PencilSquareIcon,
+    Square2StackIcon,
+    TrashIcon
+} from '@heroicons/react/24/outline';
+
 
 interface PropertyMenuProps {
   onClickEdit?: (ev: React.MouseEvent<HTMLButtonElement>) => void;
@@ -18,7 +19,7 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
   return (
     <Menu as='div' className='relative'>
       <Menu.Button className='menu-filled-variant'>
-        <DotsVerticalIcon className='icon-xs' />
+        <EllipsisVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -33,14 +34,14 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
           className='absolute right-0  z-10 w-52 p-1 rounded-l-lg rounded-br-lg rounded-tr dark:border dark:border-black  origin-top-right bg-gray-200  dark:bg-gray-800'>
           <Menu.Item as='li'>
             <button onClick={onClickEdit} className='menu-item-btn'>
-              <PencilAltIcon className='icon-sm' />
+              <PencilSquareIcon className='icon-sm' />
               <span>Edit property</span>
             </button>
           </Menu.Item>
 
           <Menu.Item as='li'>
             <button onClick={onClickDuplicate} className='menu-item-btn'>
-              <DuplicateIcon className='icon-sm' />
+              <Square2StackIcon className='icon-sm' />
               <span>Duplicate property</span>
             </button>
           </Menu.Item>

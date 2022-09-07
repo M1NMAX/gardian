@@ -1,17 +1,18 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import { signIn } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { authOptions } from '@api/auth/[...nextauth]';
+import Logo from '@components/Logo';
+import { ThemeBtn } from '@features/theme';
+import { Button } from '@frontstate-ui';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { getSession } from '@lib/auth/session';
+import nextjsLogo from '../public/next-js-logo.png';
 import collecting from '../public/undraw_collecting.svg';
 import template from '../public/undraw_wireframing.svg';
-import nextjsLogo from '../public/next-js-logo.png';
-import { ThemeBtn } from '@features/theme';
-import Logo from '@components/Logo';
-import { LoginIcon } from '@heroicons/react/outline';
-import { authOptions } from '@api/auth/[...nextauth]';
-import { getSession } from '@lib/auth/session';
-import { Button } from '@frontstate-ui';
-import { signIn } from 'next-auth/react';
+
 
 const Home: NextPage = () => {
   return (
@@ -27,7 +28,7 @@ const Home: NextPage = () => {
         <div className='flex items-center space-x-2'>
           <ThemeBtn />
           <Button onClick={() => signIn()} variant='primary-filled'>
-            <LoginIcon className='icon-xs' />
+            <ArrowLeftOnRectangleIcon className='icon-xs' />
             <span>Login</span>
           </Button>
         </div>

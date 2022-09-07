@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { ActionIcon } from '@frontstate-ui';
-import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
+import { Squares2X2Icon, ViewColumnsIcon } from '@heroicons/react/24/outline';
 
 
 interface ViewButtonProps {
@@ -13,9 +13,9 @@ const ViewButton: FC<ViewButtonProps> = (props) => {
   return (
     <ActionIcon variant='filled' onClick={onClick}>
       {value ? (
-        <ViewGridIcon className='icon-sm' />
+        <Squares2X2Icon className='icon-sm' />
       ) : (
-        <ViewBoardsIcon className='icon-sm rotate-90' />
+        <ViewColumnsIcon className='icon-sm rotate-90' />
       )}
     </ActionIcon>
   );

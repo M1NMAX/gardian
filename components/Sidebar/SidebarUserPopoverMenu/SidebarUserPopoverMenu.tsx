@@ -1,10 +1,10 @@
-import { Popover, Transition } from '@headlessui/react';
-import { LogoutIcon } from '@heroicons/react/outline';
-import React, { Fragment } from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import React, { Fragment } from 'react';
+import { Popover, Transition } from '@headlessui/react';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import logoSrc from '../../../public/logo192.png';
-import { useSession } from 'next-auth/react';
-import { signOut } from 'next-auth/react';
+
 
 const SidebarUserPopoverMenu = () => {
   const { data: session, status } = useSession();
@@ -65,7 +65,7 @@ const SidebarUserPopoverMenu = () => {
                 <button
                   onClick={() => signOut({ callbackUrl: '/' })}
                   className='menu-item-btn'>
-                  <LogoutIcon className='icon-sm' />
+                  <ArrowRightOnRectangleIcon className='icon-sm' />
                   <span>Sign Out</span>
                 </button>
               </div>

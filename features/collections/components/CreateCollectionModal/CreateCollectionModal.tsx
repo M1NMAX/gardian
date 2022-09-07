@@ -1,12 +1,13 @@
-import React, { FC, useState } from 'react';
-import { Button, Label, Modal } from '@frontstate-ui';
-import { CheckCircleIcon } from '@heroicons/react/solid';
-import { RadioGroup } from '@headlessui/react';
-import { createCollection } from '@features/collections';
-import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { GroupWithCollectionsId } from '../../../groups';
-import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
+import React, { FC, useState } from 'react';
+import { useMutation, useQueryClient } from 'react-query';
+import { createCollection } from '@features/collections';
+import { Button, Label, Modal } from '@frontstate-ui';
+import { RadioGroup } from '@headlessui/react';
+import { BoltIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
+import { GroupWithCollectionsId } from '../../../groups';
+
 
 interface CreateCollectionModalProps {
   groups: GroupWithCollectionsId[];
@@ -52,7 +53,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
 
   return (
     <Modal
-      title={<Label icon={<CollectionIcon />} text='New collection' />}
+      title={<Label icon={<RectangleStackIcon />} text='New collection' />}
       open={open}
       onHide={handleClose}>
       <form onSubmit={handleSubmit} className='modal-form'>
@@ -109,7 +110,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
                                   : 'text-gray-600 dark:text-gray-50'
                               }`}>
                               <span className='mt-0.5 flex items-center space-x-0.5'>
-                                <LightningBoltIcon className='w-4 h-4' />
+                                <BoltIcon className='w-4 h-4' />
                                 <span className='text-xs font-light italic'>
                                   0
                                 </span>

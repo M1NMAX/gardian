@@ -1,7 +1,7 @@
 import {
-    GetServerSidePropsContext,
-    InferGetServerSidePropsType,
-    NextPage
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+  NextPage
 } from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -14,15 +14,15 @@ import Header from '@components/Header';
 import Sidebar from '@components/Sidebar';
 import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
 import {
-    CollectionOverview,
-    CreateCollectionModal,
-    getCollections
+  CollectionOverview,
+  CreateCollectionModal,
+  getCollections
 } from '@features/collections';
 import { getGroup, getGroups } from '@features/groups/services';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { useView, ViewButton } from '@features/view';
 import { Button } from '@frontstate-ui';
-import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/outline';
+import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';

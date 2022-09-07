@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
 import {
-  AnnotationIcon,
   CalendarIcon,
+  ChatBubbleBottomCenterTextIcon,
   CheckIcon,
-  XIcon,
-} from '@heroicons/react/outline';
-import { Property } from '@prisma/client';
+  XMarkIcon
+} from '@heroicons/react/24/outline';
+import { Property, PropertyType } from '@prisma/client';
+
 
 interface ItemOverviewPropertyProps {
   property: Property;
@@ -14,28 +15,28 @@ interface ItemOverviewPropertyProps {
 const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
   const { property, getValue } = props;
   switch (property.type) {
-    case 'checkbox':
+    case PropertyType.CHECKBOX:
       return (
         <span className='flex items-center space-x-0.5'>
           {getValue(property.id) === 'true' ? (
             <CheckIcon className='icon-xxs' />
           ) : (
-            <XIcon className='icon-xxs' />
+            <XMarkIcon className='icon-xxs' />
           )}
           <span>{property.name}</span>
         </span>
       );
-    case 'date':
+    case PropertyType.DATE:
       return (
         <span className='flex items-center space-x-0.5'>
           <CalendarIcon className='icon-xs' />
           <span>{new Date(getValue(property.id)).toLocaleDateString()}</span>
         </span>
       );
-    case 'textarea':
+    case PropertyType.TEXTAREA:
       return (
         <span className='flex items-center space-x-0.5'>
-          <AnnotationIcon className='icon-xs' />
+          <ChatBubbleBottomCenterTextIcon className='icon-xs' />
           <span>{property.name}</span>
         </span>
       );

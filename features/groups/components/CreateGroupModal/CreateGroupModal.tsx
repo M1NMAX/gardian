@@ -1,8 +1,9 @@
-import { ViewGridAddIcon } from '@heroicons/react/outline';
 import React, { FC, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
+import { Label, Modal } from '@frontstate-ui';
+import { SquaresPlusIcon } from '@heroicons/react/24/outline';
 import { createGroup } from '../../services';
-import { Label, Modal } from '../../../../components/frontstate-ui';
+
 
 interface CreateGroupModalProps {
   open: boolean;
@@ -38,7 +39,7 @@ const CreateGroupModal: FC<CreateGroupModalProps> = (props) => {
 
   return (
     <Modal
-      title={<Label icon={<ViewGridAddIcon />} text='New Group' />}
+      title={<Label icon={<SquaresPlusIcon />} text='New Group' />}
       open={open}
       onHide={handleClose}>
       <form onSubmit={handleSubmit} className='modal-form'>

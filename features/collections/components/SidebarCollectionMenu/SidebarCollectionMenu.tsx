@@ -1,15 +1,16 @@
+import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-  CogIcon,
-  DotsVerticalIcon,
-  DuplicateIcon,
+  ArrowUturnLeftIcon,
+  Cog6ToothIcon,
+  EllipsisVerticalIcon,
   PencilIcon,
-  ReplyIcon,
+  Square2StackIcon,
   StarIcon as StarIconOutline,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
-import React, { FC, Fragment } from 'react';
+  TrashIcon
+} from '@heroicons/react/24/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/24/solid';
+
 
 interface CollectionMenuProps {
   isFavourite: boolean;
@@ -36,7 +37,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
       <Menu.Button
         className='flex items-center p-0.5 rounded 
       hover:bg-gray-300 dark:hover:bg-gray-600'>
-        <DotsVerticalIcon className='icon-xs' />
+        <EllipsisVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
         as={Fragment}
@@ -75,7 +76,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
 
             <Menu.Item as='li'>
               <button onClick={onClickDuplicate} className='menu-item-btn'>
-                <DuplicateIcon className='icon-sm' />
+                <Square2StackIcon className='icon-sm' />
                 <span>Duplicate</span>
               </button>
             </Menu.Item>
@@ -89,14 +90,14 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
 
             <Menu.Item as='li'>
               <button onClick={onClickChangeIcon} className='menu-item-btn'>
-                <CogIcon className='icon-sm' />
+                <Cog6ToothIcon className='icon-sm' />
                 <span>Change Icon</span>
               </button>
             </Menu.Item>
 
             <Menu.Item as='li'>
               <button onClick={onClickMove} className='menu-item-btn'>
-                <ReplyIcon className='icon-sm -scale-x-100' />
+                <ArrowUturnLeftIcon className='icon-sm -scale-x-100' />
                 <span>Move to</span>
               </button>
             </Menu.Item>
