@@ -13,10 +13,9 @@ import { createCollection } from '@features/collections';
 import { GroupPickerPopover } from '@features/groups';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { getTemplates, TemplateOverview } from '@features/templates';
-import { ActionIcon, Drawer } from '@frontstate-ui';
-import { ViewBoardsIcon, ViewGridIcon } from '@heroicons/react/outline';
+import { useView, ViewButton } from '@features/view';
+import { Drawer } from '@frontstate-ui';
 import useDrawer from '@hooks/useDrawer';
-import useLocalStorage from '@hooks/useLocalStorage';
 import { MockItem } from '@prisma/client';
 import { SortOptionType } from '@types';
 
@@ -40,10 +39,7 @@ const TemplatesPage: NextPage = () => {
   const drawer = useDrawer(() => setSelectedTemplateId(null));
 
   //View
-  const [isGridView, setIsGridView] = useLocalStorage<boolean>(
-    'templateView',
-    false
-  );
+  const [isGridView, setIsGridView] = useView('templateView');
 
   //Sort templates
   const {
@@ -126,15 +122,10 @@ const TemplatesPage: NextPage = () => {
                 onChangeOption={onChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon
-                variant='filled'
-                onClick={() => setIsGridView(!isGridView)}>
-                {isGridView ? (
-                  <ViewGridIcon className='icon-sm' />
-                ) : (
-                  <ViewBoardsIcon className='icon-sm rotate-90' />
-                )}
-              </ActionIcon>
+              <ViewButton
+                value={isGridView}
+                onClick={() => setIsGridView(!isGridView)}
+              />
             </div>
           </Header>
 

@@ -1,37 +1,33 @@
-import React from 'react';
 import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage,
+    GetServerSidePropsContext,
+    InferGetServerSidePropsType,
+    NextPage
 } from 'next';
-import { getSession } from '@lib/auth/session';
-import Sidebar from '@components/Sidebar';
 import Head from 'next/head';
-import { useQuery } from 'react-query';
-import { getCollections } from '@features/collections';
-import {
-  CreateCollectionModal,
-  CollectionOverview,
-} from '@features/collections';
-import { useRecoilValue } from 'recoil';
-import { sidebarState } from '@atoms/sidebarAtom';
-import {
-  CubeTransparentIcon,
-  PlusIcon,
-  ViewBoardsIcon,
-  ViewGridIcon,
-} from '@heroicons/react/outline';
+import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { getGroup, getGroups } from '@features/groups/services';
-import useModal from '@hooks/useModal';
-import useLocalStorage from '@hooks/useLocalStorage';
-import Header from '@components/Header';
-import { useSort, SortOptionsListbox } from '@features/sort';
-import { ActionIcon, Button } from '@frontstate-ui';
-import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
-import { SortOptionType } from '@types';
+import { useQuery } from 'react-query';
+import { useRecoilValue } from 'recoil';
 import { authOptions } from '@api/auth/[...nextauth]';
+import { sidebarState } from '@atoms/sidebarAtom';
+import Header from '@components/Header';
+import Sidebar from '@components/Sidebar';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
+import {
+    CollectionOverview,
+    CreateCollectionModal,
+    getCollections
+} from '@features/collections';
+import { getGroup, getGroups } from '@features/groups/services';
+import { SortOptionsListbox, useSort } from '@features/sort';
+import { useView, ViewButton } from '@features/view';
+import { Button } from '@frontstate-ui';
+import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/outline';
+import useModal from '@hooks/useModal';
+import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { SortOptionType } from '@types';
+
 
 const sortOptions: SortOptionType[] = [
   { field: 'name', order: SORT_ASCENDING },
@@ -64,10 +60,7 @@ const Collections: NextPage<
   const negativeFeedback = () => toast.error('Something went wrong, try later');
 
   //views
-  const [isGridView, setIsGridView] = useLocalStorage<boolean>(
-    'myCollectionView',
-    false
-  );
+  const [isGridView, setIsGridView] = useView('myCollectionView');
 
   //sort
   const {
@@ -108,15 +101,10 @@ const Collections: NextPage<
                 onChangeOption={onChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon
-                variant='filled'
-                onClick={() => setIsGridView(!isGridView)}>
-                {isGridView ? (
-                  <ViewGridIcon className='icon-sm' />
-                ) : (
-                  <ViewBoardsIcon className='icon-sm rotate-90' />
-                )}
-              </ActionIcon>
+              <ViewButton
+                value={isGridView}
+                onClick={() => setIsGridView(!isGridView)}
+              />
             </div>
           )}
         </Header>
