@@ -112,7 +112,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
                               <span className='mt-0.5 flex items-center space-x-0.5'>
                                 <BoltIcon className='w-4 h-4' />
                                 <span className='text-xs font-light italic'>
-                                  0
+                                  {group.collections.length}
                                 </span>
                               </span>
                             </RadioGroup.Description>

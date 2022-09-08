@@ -1,10 +1,10 @@
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import toast from 'react-hot-toast';
 import DeleteModal from '@components/DeleteModal';
 import IconPickerModal from '@components/IconPickerModal';
 import RenameModal from '@components/RenameModal';
+import { Icon } from '@features/Icons';
 import { FolderIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import useCollection from '../../hooks/useCollection';
@@ -39,21 +39,21 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const collectionData = collection.query.data;
   const isLoading = collection.query.isLoading;
 
-  // //handle change collection icon and its mutation
-  // const handleChangeCollectionIcon = (icon: string) => {
-  //   console.log(icon);
-  //   collection.changeCollectionIconMutateFun(icon, {
-  //     onSuccess: () => {
-  //       positiveFeedback('Icon changed');
-  //     },
-  //     onError: () => {
-  //       negativeFeedback();
-  //     },
-  //     onSettled: () => {
-  //       changeCollectionIconModal.closeModal();
-  //     },
-  //   });
-  // };
+  //handle change collection icon and its mutation
+  const handleChangeCollectionIcon = (icon: string) => {
+    console.log(icon);
+    collection.changeCollectionIconMutateFun(icon, {
+      onSuccess: () => {
+        positiveFeedback('Icon changed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        changeCollectionIconModal.closeModal();
+      },
+    });
+  };
 
   //handle rename collection and its mutation
   const handleRenameCollection = (name: string) => {
@@ -148,6 +148,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
       </div>
     );
   if (!collectionData) return <></>;
+
   return (
     <>
       <div
@@ -161,20 +162,11 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <button
           className='grow flex items-center space-x-1.5'
           onClick={onClick}>
-          <FolderIcon className='icon-xs' />
-          {/* {collectionData.icon === '' ? (
+          {collectionData.icon === '' ? (
             <FolderIcon className='icon-xs' />
           ) : (
-            <span className='relative icon-xs'>
-              <Image
-                src={`/icons/${collectionData.icon}.svg`}
-                alt={collectionData.icon}
-                layout='fill'
-                objectFit='contain'
-                className='fill-red-500'
-              />
-            </span>
-          )} */}
+            <Icon iconId={collectionData.icon} />
+          )}
           <span className='truncate'>{collectionData.name}</span>
         </button>
 
@@ -199,13 +191,13 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         </div>
       </div>
 
-      {/* {changeCollectionIconModal.isOpen && (
+      {changeCollectionIconModal.isOpen && (
         <IconPickerModal
           open={changeCollectionIconModal.isOpen}
           handleClose={changeCollectionIconModal.closeModal}
           onClickIcon={handleChangeCollectionIcon}
         />
-      )} */}
+      )}
 
       {renameCollectionModal.isOpen && (
         <RenameModal

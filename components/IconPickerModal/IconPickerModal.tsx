@@ -1,13 +1,8 @@
-import Image from 'next/image';
 import React, { FC, useState } from 'react';
+import icons from '@features/Icons/iconList';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Modal } from '../frontstate-ui';
 
-
-interface IIcon {
-  filename: string;
-  keywords: string[];
-}
 
 // weather-
 interface IconPickerModalProps {
@@ -16,34 +11,29 @@ interface IconPickerModalProps {
   onClickIcon: (iconFilename: string) => void;
 }
 
-const myIcons: IIcon[] = [
-  {
-    filename: 'weather-cloud-1',
-    keywords: ['weather', 'cloud', 'forecast', 'cloudy'],
-  },
-  {
-    filename: 'weather-anemometer-2',
-    keywords: ['weather', 'anemometer', 'forecast', 'gauce', 'wind'],
-  },
-  {
-    filename: 'weather-wind-3',
-    keywords: ['weather', 'wind', 'turbin', 'water', 'pump'],
-  },
-];
 const IconPickerModal: FC<IconPickerModalProps> = (props) => {
   const { open, handleClose, onClickIcon } = props;
 
   const [query, setQuery] = useState('');
+
+  // use  reduce() to reduce the array down into an object.
   const filteredIcons =
     query === ''
-      ? myIcons
-      : myIcons.filter((icon) =>
-          icon.keywords
-            .join(' ')
-            .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, ''))
-        );
+      ? icons
+      : Object.keys(icons)
+          .filter((key) =>
+            icons[key].keywords
+              .join(' ')
+              .toLowerCase()
+              .replace(/\s+/g, '')
+              .includes(query.toLowerCase().replace(/\s+/g, ''))
+          )
+          .reduce((obj, key) => {
+            return Object.assign(obj, {
+              [key]: icons[key],
+            });
+          }, {});
+
   return (
     <Modal
       title='Change icon'
@@ -64,23 +54,19 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
             placeholder='Search'
           />
         </div>
-        {filteredIcons.length === 0 && query !== '' ? (
+        {Object.keys(filteredIcons).length === 0 && query !== '' ? (
           <div className='relative cursor-default select-none py-2 px-4 text-gray-700'>
             Nothing found.
           </div>
         ) : (
           <div className='grid grid-cols-12 gap-2'>
-            {filteredIcons.map(({ filename }) => (
+            {Object.keys(filteredIcons).map((key) => (
               <button
-                key={filename}
-                onClick={() => onClickIcon(filename)}
+                key={key}
+                onClick={() => onClickIcon(key)}
                 className='relative icon-lg p-1 rounded bg-gray-200 dark:bg-gray-700 
                 hover:bg-green-400 dark:hover:bg-green-600'>
-                <Image
-                  src={`/icons/${filename}.svg`}
-                  layout='fill'
-                  objectFit='contain'
-                />
+                {icons[key].component}
               </button>
             ))}
           </div>
