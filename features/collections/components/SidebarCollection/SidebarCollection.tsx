@@ -2,12 +2,12 @@ import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import toast from 'react-hot-toast';
 import DeleteModal from '@components/DeleteModal';
-import IconPickerModal from '@components/IconPickerModal';
 import RenameModal from '@components/RenameModal';
 import { Icon } from '@features/Icons';
 import { FolderIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import useCollection from '../../hooks/useCollection';
+import IconPickerModal from '../IconPickerModal';
 import MoveCollectionModal from '../MoveCollectionModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
 

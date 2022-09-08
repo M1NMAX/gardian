@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import icons from '@features/Icons/iconList';
+import { Modal } from '@frontstate-ui';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { Modal } from '../frontstate-ui';
 
 
 // weather-
