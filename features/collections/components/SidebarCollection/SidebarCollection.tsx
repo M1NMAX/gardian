@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import DeleteModal from '@components/DeleteModal';
 import RenameModal from '@components/RenameModal';
 import { Icon } from '@features/Icons';
-import { FolderIcon } from '@heroicons/react/24/outline';
+import { FolderIcon } from '@heroicons/react/24/solid';
 import useModal from '@hooks/useModal';
 import useCollection from '../../hooks/useCollection';
 import IconPickerModal from '../IconPickerModal';

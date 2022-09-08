@@ -16,6 +16,7 @@ import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
 import { CollectionMenu, useCollection } from '@features/collections';
 import { Editor } from '@features/Editor';
 import { getGroup, GroupWithCollectionsId } from '@features/groups';
+import { Icon } from '@features/Icons';
 import {
   CreateItemModal,
   getItems,
@@ -350,19 +351,14 @@ const Collections: NextPage = () => {
           {/* Header  */}
           <Header>
             <div className='grow flex items-center space-x-1 font-semibold'>
-              {!collectionData ||
-                (collectionData.icon === '' && (
-                  <FolderIcon className='icon-sm' />
-                ))}
-              {collectionData && collectionData.icon !== '' && (
-                <span className='relative icon-sm'>
-                  <Image
-                    src={`/icons/${collectionData.icon}.svg`}
-                    alt={collectionData.icon}
-                    layout='fill'
-                    objectFit='contain'
-                  />
-                </span>
+              {collectionData && (
+                <>
+                  {collectionData.icon === '' ? (
+                    <FolderIcon className='icon-sm' />
+                  ) : (
+                    <Icon iconId={collectionData.icon} />
+                  )}
+                </>
               )}
 
               <h1 className='text-2xl'>

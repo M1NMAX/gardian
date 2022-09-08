@@ -1,11 +1,9 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
 import { CollectionWItemCount } from '@features/collections/services';
-import {
-  HashtagIcon,
-  RectangleStackIcon,
-  Squares2X2Icon
-} from '@heroicons/react/24/outline';
+import { Icon } from '@features/Icons';
+import { HashtagIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
+import { FolderIcon } from '@heroicons/react/24/solid';
 
 
 interface CollectionOverviewProps {
@@ -16,7 +14,7 @@ interface CollectionOverviewProps {
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
   const { collection, isGridView } = props;
-  const { id, name, properties, _count, createdAt } = collection;
+  const { id, icon, name, properties, _count, createdAt } = collection;
 
   return (
     <Link href={`/collections/${id}`}>
@@ -24,7 +22,11 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
         <span className={`${isGridView ? 'space-y-[1px]' : 'flex space-1'}`}>
           {/** Collection name */}
           <span className='grow flex items-center space-x-1'>
-            <RectangleStackIcon className='icon-xs' />
+            {icon === '' ? (
+              <FolderIcon className='icon-xs' />
+            ) : (
+              <Icon iconId={icon} />
+            )}
             <span className='grow font-semibold text-lg'>{name}</span>
           </span>
 
