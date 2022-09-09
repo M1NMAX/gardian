@@ -72,9 +72,10 @@ const TemplatesPage: NextPage = () => {
   const createCollectionBasedOnTemplate = async (groupId: string) => {
     if (!selectedTemplateId || !selectedTemplate) return;
 
-    const { name, properties } = selectedTemplate;
+    const { icon, name, properties } = selectedTemplate;
 
     const collection = await createCollection({
+      icon,
       name,
       properties,
       groupId,

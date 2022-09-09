@@ -22,11 +22,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
         <span className={`${isGridView ? 'space-y-[1px]' : 'flex space-1'}`}>
           {/** Collection name */}
           <span className='grow flex items-center space-x-1'>
-            {icon === '' ? (
-              <FolderIcon className='icon-xs' />
-            ) : (
-              <Icon iconId={icon} />
-            )}
+            <Icon icon={icon} defaultIcon={<FolderIcon />} />
             <span className='grow font-semibold text-lg'>{name}</span>
           </span>
 

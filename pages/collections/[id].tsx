@@ -28,12 +28,13 @@ import {
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { ViewButton } from '@features/view';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
-import { FolderIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { FolderIcon } from '@heroicons/react/24/solid';
 import useDrawer from '@hooks/useDrawer';
 import useModal from '@hooks/useModal';
 import {
   ItemProperty,
-  Property as PropertyTyp,
+  Property as PropertyModel,
   PropertyType
 } from '@prisma/client';
 import { SortOptionType } from '@types';
@@ -300,7 +301,7 @@ const Collections: NextPage = () => {
     );
   };
 
-  const handleUpdateProperty = async (property: PropertyTyp) => {
+  const handleUpdateProperty = async (property: PropertyModel) => {
     if (!collectionId) return;
 
     collection.updateCollectionPropertyMutateFun(
@@ -352,13 +353,7 @@ const Collections: NextPage = () => {
           <Header>
             <div className='grow flex items-center space-x-1 font-semibold'>
               {collectionData && (
-                <>
-                  {collectionData.icon === '' ? (
-                    <FolderIcon className='icon-sm' />
-                  ) : (
-                    <Icon iconId={collectionData.icon} />
-                  )}
-                </>
+                <Icon icon={collectionData.icon} defaultIcon={<FolderIcon />} />
               )}
 
               <h1 className='text-2xl'>

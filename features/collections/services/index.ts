@@ -1,5 +1,6 @@
 import { getFetch } from '@lib/fetch';
-import { Collection, Prisma, PropertyType } from '@prisma/client';
+import { Collection, Icon, Prisma, PropertyType } from '@prisma/client';
+
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
@@ -61,7 +62,7 @@ export async function updateCollection(
 
 export async function changeCollectionIcon(
   cid: string,
-  icon: string
+  icon: Icon
 ): Promise<Collection> {
   return updateCollection(cid, { icon });
 }

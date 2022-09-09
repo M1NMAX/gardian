@@ -46,6 +46,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     createCollectionMutateFun({
+      icon: {},
       name,
       groupId: selectedGroup,
     });

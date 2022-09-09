@@ -1,8 +1,9 @@
-import { Prisma, PrismaClient } from '@prisma/client';
 import { hash } from 'bcryptjs';
-const prisma = new PrismaClient();
+import { Prisma, PrismaClient } from '@prisma/client';
 import { templatesData } from '../data/templates';
 
+
+const prisma = new PrismaClient();
 async function main() {
   const encryptedPassword = await hash('password1234', 12);
 
@@ -42,7 +43,7 @@ async function main() {
     const template = await prisma.template.create({
       data: t,
     });
-    console.log(`Created user with id: ${template.id}`);
+    console.log(`Created template with id: ${template.id}`);
   }
   console.log(`Seeding finished template.`);
 }

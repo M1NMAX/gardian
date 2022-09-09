@@ -1,24 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Property } from '@prisma/client';
+import { Icon, Property } from '@prisma/client';
 import {
-    addPropertyToItem,
-    createItem,
-    getItems,
-    removePropertyFromItem
+  addPropertyToItem,
+  createItem,
+  getItems,
+  removePropertyFromItem
 } from '../../items/services';
 import {
-    addPropertyToCollection,
-    changeCollectionIcon,
-    createCollection,
-    deleteCollection,
-    getCollection,
-    moveCollection,
-    removePropertyFromCollection,
-    renameCollection,
-    toggleCollectionDescriptionState,
-    toggleCollectionIsFavourite,
-    updateCollectionDescription,
-    updateCollectionProperty
+  addPropertyToCollection,
+  changeCollectionIcon,
+  createCollection,
+  deleteCollection,
+  getCollection,
+  moveCollection,
+  removePropertyFromCollection,
+  renameCollection,
+  toggleCollectionDescriptionState,
+  toggleCollectionIsFavourite,
+  updateCollectionDescription,
+  updateCollectionProperty
 } from '../services';
 
 
@@ -58,7 +58,7 @@ const useCollection = (cid: string, key: string = 'collection') => {
   );
 
   const { mutate: changeCollectionIconMutateFun } = useMutation(
-    async (icon: string) => {
+    async (icon: Icon) => {
       await changeCollectionIcon(cid, icon);
     },
     { onSuccess: () => invalidateCollectionQueries() }

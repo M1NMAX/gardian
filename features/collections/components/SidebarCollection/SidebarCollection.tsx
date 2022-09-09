@@ -3,11 +3,11 @@ import React, { FC } from 'react';
 import toast from 'react-hot-toast';
 import DeleteModal from '@components/DeleteModal';
 import RenameModal from '@components/RenameModal';
-import { Icon } from '@features/Icons';
+import { Icon, IconPickerModal } from '@features/Icons';
 import { FolderIcon } from '@heroicons/react/24/solid';
 import useModal from '@hooks/useModal';
+import { Icon as IconModel } from '@prisma/client';
 import useCollection from '../../hooks/useCollection';
-import IconPickerModal from '../IconPickerModal';
 import MoveCollectionModal from '../MoveCollectionModal';
 import SidebarCollectionMenu from '../SidebarCollectionMenu';
 
@@ -40,7 +40,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
   const isLoading = collection.query.isLoading;
 
   //handle change collection icon and its mutation
-  const handleChangeCollectionIcon = (icon: string) => {
+  const handleChangeCollectionIcon = (icon: IconModel) => {
     console.log(icon);
     collection.changeCollectionIconMutateFun(icon, {
       onSuccess: () => {
@@ -162,11 +162,7 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
         <button
           className='grow flex items-center space-x-1.5'
           onClick={onClick}>
-          {collectionData.icon === '' ? (
-            <FolderIcon className='icon-xs' />
-          ) : (
-            <Icon iconId={collectionData.icon} />
-          )}
+          <Icon icon={collectionData.icon} defaultIcon={<FolderIcon />} />
           <span className='truncate'>{collectionData.name}</span>
         </button>
 

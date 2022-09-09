@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Icon } from '@features/Icons';
 import { RectangleGroupIcon } from '@heroicons/react/24/outline';
 import { Template } from '@prisma/client';
 
@@ -11,7 +12,7 @@ interface TemplateOverviewProps {
 }
 const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
   const { template, active, isGridView, onClickTemplate } = props;
-  const { id, name, description, properties } = template;
+  const { id, icon, name, description, properties } = template;
 
   return (
     <button
@@ -21,7 +22,7 @@ const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
       }  flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className='grow flex items-center space-x-1'>
-        <RectangleGroupIcon className='icon-xs' />
+        <Icon icon={icon} defaultIcon={<RectangleGroupIcon />} />
         <span className='grow font-semibold text-lg'>{name}</span>
       </span>
 

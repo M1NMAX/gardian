@@ -1,8 +1,10 @@
 import { Prisma, PropertyType } from '@prisma/client';
 
+
 export const templatesData: Prisma.TemplateCreateInput[] = [
   {
     name: 'Events',
+    icon: { name: 'CalendarDaysIcon', variant: 'red' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -41,6 +43,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
   },
   {
     name: 'Tasks',
+    icon: { name: 'CheckBadgeIcon', variant: 'blue' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -90,6 +93,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
   },
   {
     name: 'Links',
+    icon: { name: 'LinkIcon', variant: 'bw' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -125,6 +129,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
 
   {
     name: 'Movies',
+    icon: { name: 'FilmIcon', variant: 'bw' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [

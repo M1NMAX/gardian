@@ -81,7 +81,7 @@ model Group {
 model Collection {
     id                  String     @id @default(auto()) @map("_id") @db.ObjectId
     name                String
-    icon                String     @default("")
+    icon                Icon
     description         String     @default("")
     isFavourite         Boolean    @default(false)
     isDescriptionHidden Boolean    @default(true)
@@ -93,6 +93,11 @@ model Collection {
     userId              String     @db.ObjectId
     items               Item[]
     properties          Property[]
+}
+
+type Icon {
+    name    String @default("")
+    variant String @default("bw")
 }
 
 type Property {
@@ -131,7 +136,7 @@ type ItemProperty {
 model Template {
     id          String     @id @default(auto()) @map("_id") @db.ObjectId
     name        String
-    icon        String     @default("")
+    icon        Icon
     description String     @default("")
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt
