@@ -48,9 +48,12 @@ const Collections: NextPage<
     getCollections
   );
 
-  const getCollectionGroupName = async (gid: string) => {
-    const group = await getGroup(gid);
-    return group.name;
+  const getGroupName = (gid: string) => {
+    if (!groups) return '';
+
+    const group = groups.find((group) => group.id === gid);
+
+    return group ? group.name : '';
   };
 
   //Modal: create collection
@@ -144,7 +147,7 @@ const Collections: NextPage<
                   <CollectionOverview
                     key={collection.id}
                     collection={collection}
-                    // groupName={getCollectionGroupName(collection.groupId)}
+                    groupName={getGroupName(collection.groupId)}
                     isGridView={isGridView}
                   />
                 ))}
@@ -173,7 +176,6 @@ export default Collections;
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const session = await getSession(ctx.req, ctx.res, authOptions);
 
-  //Redirect user to collections page if user has a valid session
   if (session) {
     const userId = session.user.id;
 

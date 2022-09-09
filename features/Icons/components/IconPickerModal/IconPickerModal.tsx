@@ -65,7 +65,7 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
             Nothing found.
           </div>
         ) : (
-          <div className='grid grid-cols-12 gap-2'>
+          <div className='grid grid-cols-8 md:grid-cols-12 gap-1 md:gap-2'>
             {Object.keys(filteredIcons).map((key) => (
               <Popover className='relative'>
                 <Popover.Button

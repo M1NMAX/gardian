@@ -2,6 +2,7 @@ import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ArrowUturnLeftIcon,
+  ArrowUturnRightIcon,
   Cog6ToothIcon,
   EllipsisVerticalIcon,
   PencilIcon,
@@ -97,7 +98,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
 
             <Menu.Item as='li'>
               <button onClick={onClickMove} className='menu-item-btn'>
-                <ArrowUturnLeftIcon className='icon-sm -scale-x-100' />
+                <ArrowUturnRightIcon className='icon-sm' />
                 <span>Move to</span>
               </button>
             </Menu.Item>

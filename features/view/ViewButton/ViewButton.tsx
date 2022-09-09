@@ -13,9 +13,9 @@ const ViewButton: FC<ViewButtonProps> = (props) => {
   return (
     <ActionIcon variant='filled' onClick={onClick}>
       {value ? (
-        <Squares2X2Icon className='icon-sm' />
-      ) : (
         <ViewColumnsIcon className='icon-sm rotate-90' />
+      ) : (
+        <Squares2X2Icon className='icon-sm' />
       )}
     </ActionIcon>
   );

@@ -8,12 +8,12 @@ import { FolderIcon } from '@heroicons/react/24/solid';
 
 interface CollectionOverviewProps {
   collection: CollectionWItemCount;
-  // groupName: string;
+  groupName: string;
   isGridView: boolean;
 }
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
-  const { collection, isGridView } = props;
+  const { collection, groupName, isGridView } = props;
   const { id, icon, name, properties, _count, createdAt } = collection;
 
   return (
@@ -41,7 +41,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
 
             <span className='flex items-center space-x-0.5'>
               <Squares2X2Icon className='icon-xs' />
-              {/* <span>{groupName}</span> */}
+              <span>{groupName}</span>
             </span>
             <span aria-hidden='true' className='hidden md:block'>
               &middot;
