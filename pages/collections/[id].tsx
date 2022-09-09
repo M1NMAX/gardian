@@ -269,7 +269,7 @@ const Collections: NextPage = () => {
     collection.addPropertyToCollectionMutateFun(
       {
         cid: collectionId,
-        property: { name: 'property', type: PropertyType.TEXT, values: [] },
+        property: { name: 'Property', type: PropertyType.TEXT, values: [] },
       },
       {
         onSuccess: () => {

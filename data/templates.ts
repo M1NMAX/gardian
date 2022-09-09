@@ -17,7 +17,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
       {
         id: 'e93c1ae6-2dcb-11ed-a261-0242ac120002',
         name: 'Notes',
-        type: PropertyType.TEXTAREA,
+        type: PropertyType.TEXT,
         values: [],
       },
     ],

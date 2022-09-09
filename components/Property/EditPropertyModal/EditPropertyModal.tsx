@@ -6,7 +6,6 @@ import { Property, PropertyType } from '@prisma/client';
 
 const propertyTypes: PropertyType[] = [
   PropertyType.TEXT,
-  PropertyType.TEXTAREA,
   PropertyType.SELECT,
   PropertyType.CHECKBOX,
   PropertyType.URL,

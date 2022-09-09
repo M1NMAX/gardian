@@ -33,7 +33,7 @@ const ItemOverviewProperty: FC<ItemOverviewPropertyProps> = (props) => {
           <span>{new Date(getValue(property.id)).toLocaleDateString()}</span>
         </span>
       );
-    case PropertyType.TEXTAREA:
+    case PropertyType.TEXT:
       return (
         <span className='flex items-center space-x-0.5'>
           <ChatBubbleBottomCenterTextIcon className='icon-xs' />

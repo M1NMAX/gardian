@@ -110,7 +110,6 @@ type Property {
 
 enum PropertyType {
     TEXT     @map("text")
-    TEXTAREA @map("textarea")
     SELECT   @map("select")
     CHECKBOX @map("checkbox")
     URL      @map("url")

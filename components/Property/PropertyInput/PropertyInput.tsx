@@ -52,7 +52,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
           </select>
         </label>
       );
-    case PropertyType.TEXTAREA:
+    case PropertyType.TEXT:
       return (
         <Textarea
           label={property.name}
