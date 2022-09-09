@@ -1,4 +1,5 @@
 import { FC, ReactNode } from 'react';
+import { Textarea } from '@frontstate-ui';
 import { Property, PropertyType } from '@prisma/client';
 
 
@@ -53,20 +54,15 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
       );
     case PropertyType.TEXTAREA:
       return (
-        <label className='property-within-drawer'>
-          <span className='w-full flex items-center justify-between'>
-            <span className='grow'> {property.name} </span>
-            {menu}
-          </span>
-          <textarea
-            name={property.name}
-            value={getValue(property.id)}
-            onChange={(e) => setValue(property.id, e.target.value)}
-            rows={4}
-            maxLength={200}
-            className='modal-text-area'
-          />
-        </label>
+        <Textarea
+          label={property.name}
+          name={property.name}
+          value={getValue(property.id)}
+          onChange={(e) => setValue(property.id, e.target.value)}
+          menu={menu}
+          maxRows={4}
+          maxLength={200}
+        />
       );
 
     default:
