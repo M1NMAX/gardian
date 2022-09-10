@@ -3,17 +3,19 @@ import { Menu, Transition } from '@headlessui/react';
 import {
   EllipsisVerticalIcon,
   PlusIcon,
+  Square2StackIcon,
   TrashIcon
 } from '@heroicons/react/24/outline';
 
 
 interface ItemMenuProps {
   onClickAddProperty: () => void;
+  onClickDuplicate: () => void;
   onClickDelete: () => void;
 }
 
 const ItemMenu: FC<ItemMenuProps> = (props) => {
-  const { onClickAddProperty, onClickDelete } = props;
+  const { onClickAddProperty, onClickDuplicate, onClickDelete } = props;
 
   return (
     <Menu as='div' className='relative'>
@@ -35,6 +37,13 @@ const ItemMenu: FC<ItemMenuProps> = (props) => {
             <button onClick={onClickAddProperty} className='menu-item-btn'>
               <PlusIcon className='icon-sm' />
               <span>Add Property</span>
+            </button>
+          </Menu.Item>
+
+          <Menu.Item as='li'>
+            <button onClick={onClickDuplicate} className='menu-item-btn'>
+              <Square2StackIcon className='icon-sm' />
+              <span>Duplicate item</span>
             </button>
           </Menu.Item>
 

@@ -56,7 +56,6 @@ const Collections: NextPage = () => {
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
-  const loadingFeeback = () => toast.loading('Loading');
 
   //Modals
   const createItemModal = useModal();
@@ -233,6 +232,29 @@ const Collections: NextPage = () => {
         },
       }
     );
+  };
+
+  const handleDuplicateSelectedItem = () => {
+    if (!collectionId || !selectedItem) return;
+    const name = selectedItem.name;
+    const properties = selectedItem.properties;
+
+    const item = { name: name + '(copy)', collectionId, properties };
+
+    collection.createItemMutateFun(item, {
+      onSuccess: async ({ id: itemId }) => {
+        positiveFeedback('Item added');
+        collection.query.refetch();
+        setSelectedItemId(itemId);
+        drawer.openDrawer();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        createItemModal.closeModal();
+      },
+    });
   };
   //Handle delete item mutation
   const handleDeleteItem = () => {
@@ -463,11 +485,12 @@ const Collections: NextPage = () => {
             menu={
               <ItemMenu
                 onClickAddProperty={handleOnClickAddProperty}
+                onClickDuplicate={handleDuplicateSelectedItem}
                 onClickDelete={deleteItemModal.openModal}
               />
             }>
             <div
-              className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
+              className='grow space-y-1.5 px-2 pt-0.5 overflow-y-auto scrollbar-thin
                       scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
               {selectedItem.properties.map(
                 (property) =>
