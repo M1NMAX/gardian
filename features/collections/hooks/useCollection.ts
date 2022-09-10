@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { Icon, Property } from '@prisma/client';
 import {
   addPropertyToItem,
   createItem,
   getItems,
   removePropertyFromItem
-} from '../../items/services';
+} from '@features/items/services';
+import { Icon, Property } from '@prisma/client';
 import {
   addPropertyToCollection,
   changeCollectionIcon,
@@ -132,12 +132,12 @@ const useCollection = (cid: string, key: string = 'collection') => {
         const items = await getItems(cid);
 
         // add placeholder for this property into collection items
-        items.map(async ({ id }) => {
-          await addPropertyToItem(id, {
+        for (const item of items) {
+          await addPropertyToItem(item.id, {
             id: lastestProperty.id,
             value: '',
           });
-        });
+        }
 
         invalidateCollectionQueries();
         invalidateItemsQueries();
@@ -164,9 +164,10 @@ const useCollection = (cid: string, key: string = 'collection') => {
         const items = await getItems(query.data.id);
 
         //Remove property from collection items
-        items.map(async ({ id }) => {
-          await removePropertyFromItem(id, pid);
-        });
+        for (const item of items) {
+          await removePropertyFromItem(item.id, pid);
+        }
+
         invalidateCollectionQueries();
         invalidateItemsQueries();
       },

@@ -56,6 +56,7 @@ const Collections: NextPage = () => {
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+  const loadingFeeback = () => toast.loading('Loading');
 
   //Modals
   const createItemModal = useModal();
@@ -71,18 +72,6 @@ const Collections: NextPage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(false);
 
   //Fetch
-  //Fetch group information
-  const [groupInfo, setGroupInfo] = useState<GroupWithCollectionsId>();
-  useEffect(() => {
-    if (!collectionData) return;
-
-    const fetchGroupInfo = async (gid: string) => {
-      const result = await getGroup(gid);
-      setGroupInfo(result);
-    };
-
-    fetchGroupInfo(collectionData.groupId);
-  }, [id]);
 
   //Fetch collection
   const collection = useCollection(id && !Array.isArray(id) ? id : rand);
@@ -188,7 +177,7 @@ const Collections: NextPage = () => {
 
     collection.deleteCollectionMutateFun(collectionId, {
       onSuccess: () => {
-        positiveFeedback('DELETE');
+        positiveFeedback('Collection deleted');
         router.push('/collections');
       },
       onError: () => {
@@ -291,8 +280,8 @@ const Collections: NextPage = () => {
     collection.addPropertyToCollectionMutateFun(
       { cid: collectionId, property },
       {
-        onSuccess: () => {
-          selectedItem.refetch();
+        onSuccess: async () => {
+          await selectedItem.refetch();
         },
         onError: () => {
           negativeFeedback();
@@ -324,7 +313,8 @@ const Collections: NextPage = () => {
     collection.deleteCollectionPropertyMutateFun(
       { cid: collectionId, pid },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          await selectedItem.refetch();
           positiveFeedback('Property removed');
         },
         onError: () => {

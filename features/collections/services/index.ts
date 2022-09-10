@@ -123,15 +123,16 @@ export async function addPropertyToCollection({
 export async function updateCollectionProperty({
   cid,
   property,
-}: UpdateCollectionPropertyArg): Promise<{
-  status: boolean;
-  propertyId: string;
-}> {
+}: UpdateCollectionPropertyArg): Promise<Collection | null> {
   let { id: pid, ...normalizad } = property;
 
-  const res = await getFetch(baseUrl + cid + '/properties/' + pid, 'PUT', {
-    property: normalizad,
-  });
+  const res: Collection | null = await getFetch(
+    baseUrl + cid + '/properties/' + pid,
+    'PUT',
+    {
+      property: normalizad,
+    }
+  );
 
   return res;
 }
@@ -140,9 +141,12 @@ export async function removePropertyFromCollection({
   cid,
   pid,
 }: RemovePropertyFromCollectionArg): Promise<{
-  status: boolean;
+  collection: Collection;
   pid: string;
 }> {
-  const res = await getFetch(baseUrl + cid + '/properties/' + pid, 'DELETE');
-  return { status: true, pid };
+  const res: Collection = await getFetch(
+    baseUrl + cid + '/properties/' + pid,
+    'DELETE'
+  );
+  return { collection: res, pid };
 }
