@@ -5,7 +5,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 type SizeType = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 interface ModalProps {
-  title: ReactNode;
+  title?: ReactNode;
   open: boolean;
   onHide: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void;
   size?: SizeType;
