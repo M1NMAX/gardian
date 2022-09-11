@@ -1,7 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Button, Modal } from '../frontstate-ui';
 
+
 interface DeleteModalProps {
+  children: ReactNode;
   open: boolean;
   handleClose: () => void;
   onDelete: () => void;

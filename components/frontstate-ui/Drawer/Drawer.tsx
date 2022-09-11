@@ -4,6 +4,7 @@ import ActionIcon from '../ActionIcon';
 
 
 interface DrawerProps {
+  children: ReactNode;
   title?: ReactNode;
   menu?: ReactNode;
   opened: boolean;
