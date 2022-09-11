@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FC, SyntheticEvent, useState } from 'react';
-import { ActionIcon, Modal } from '@frontstate-ui';
+import { ActionIcon, Button, Modal, Select, TextInput } from '@frontstate-ui';
 import { ArrowUpIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Property, PropertyType } from '@prisma/client';
 
@@ -50,37 +50,25 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   };
 
   return (
-    <Modal
-      title=''
-      open={open}
-      onHide={handleClose}
-      withCloseBtn={false}
-      size='sm'>
+    <Modal open={open} onHide={handleClose} withCloseBtn={false} size='sm'>
       <form onSubmit={handleSubmit}>
-        <label>
-          <span className='modal-input-label'>Name</span>
-          <input
-            type='text'
-            name='name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder='Property name'
-            className='modal-input'
-          />
-        </label>
-        <label>
-          <span className='modal-input-label'>Property type</span>
-          <select
-            value={selectedType}
-            onChange={handleSelect}
-            className='modal-input'>
-            {propertyTypes.map((type, idx) => (
-              <option key={idx} value={type} className='first-letter:uppercase'>
-                {type}
-              </option>
-            ))}
-          </select>
-        </label>
+        <TextInput
+          label='Name'
+          name='name'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder='Property name'
+        />
+
+        <Select
+          label='Property type'
+          value={selectedType}
+          onChange={handleSelect}
+          data={propertyTypes.map((type) => ({
+            label: type.charAt(0) + type.slice(1).toLowerCase(),
+            value: type,
+          }))}
+        />
 
         <div
           className={`mt-2 ${
@@ -122,15 +110,12 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
           </div>
         </div>
         <div className='flex justify-end space-x-2 mt-2'>
-          <button
-            type='button'
-            onClick={handleClose}
-            className='modal-neutral-btn'>
-            Cancel
-          </button>
-          <button type='submit' className='modal-positive-btn'>
-            Save
-          </button>
+          <Button onClick={handleClose}>
+            <span className='text-lg mx-4'>Cancel</span>
+          </Button>
+          <Button variant='primary-filled' type='submit'>
+            <span className='text-lg mx-4'>Save</span>
+          </Button>
         </div>
       </form>
     </Modal>

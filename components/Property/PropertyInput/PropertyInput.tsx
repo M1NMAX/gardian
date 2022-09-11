@@ -1,5 +1,5 @@
 import { FC, ReactNode } from 'react';
-import { Textarea } from '@frontstate-ui';
+import { Checkbox, Select, Textarea, TextInput } from '@frontstate-ui';
 import { Property, PropertyType } from '@prisma/client';
 
 
@@ -15,71 +15,60 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
   switch (property.type) {
     case PropertyType.CHECKBOX:
       return (
-        <label className='flex items-center  property-within-drawer'>
-          <span className='w-full flex items-center space-x-1.5'>
-            <input
-              type='checkbox'
-              name={property.name}
-              checked={getValue(property.id) === 'true'}
-              onChange={(e) =>
-                setValue(property.id, e.target.checked ? 'true' : 'false')
-              }
-              className='modal-checkbox'
-            />
-            <span className='grow'>{property.name}</span>
-          </span>
-          {menu}
-        </label>
+        <div className='property-within-drawer'>
+          <Checkbox
+            label={property.name}
+            name={property.name}
+            checked={getValue(property.id) === 'true'}
+            onChange={(e) =>
+              setValue(property.id, e.target.checked ? 'true' : 'false')
+            }
+            menu={menu}
+          />
+        </div>
       );
     case PropertyType.SELECT:
       return (
-        <label className='property-within-drawer'>
-          <span className='w-full flex items-center justify-between'>
-            <span className='grow'> {property.name} </span>
-            {menu}
-          </span>
-          <select
+        <div className='property-within-drawer'>
+          <Select
+            label={property.name}
             name={property.name}
+            placeholder='Select your option'
             value={getValue(property.id)}
             onChange={(e) => setValue(property.id, e.target.value)}
-            className='modal-input'>
-            <option value='' selected disabled hidden></option>
-            {property.values.map((value, idx) => (
-              <option key={idx} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
+            data={property.values.map((value) => ({ label: value, value }))}
+            menu={menu}
+          />
+        </div>
       );
     case PropertyType.TEXT:
       return (
-        <Textarea
-          label={property.name}
-          name={property.name}
-          value={getValue(property.id)}
-          onChange={(e) => setValue(property.id, e.target.value)}
-          menu={menu}
-          maxRows={4}
-          maxLength={200}
-        />
-      );
-
-    default:
-      return (
-        <label className='property-within-drawer'>
-          <span className='w-full flex items-center justify-between'>
-            <span className='grow'> {property.name} </span>
-            {menu}
-          </span>
-          <input
-            type={property.type}
+        <div className='property-within-drawer'>
+          <Textarea
+            label={property.name}
             name={property.name}
             value={getValue(property.id)}
             onChange={(e) => setValue(property.id, e.target.value)}
-            className='modal-input'
+            menu={menu}
+            maxRows={4}
+            maxLength={200}
           />
-        </label>
+        </div>
+      );
+
+    default:
+      console.log(property.type);
+      return (
+        <div className='property-within-drawer'>
+          <TextInput
+            type={property.type}
+            label={property.name}
+            name={property.name}
+            value={getValue(property.id)}
+            onChange={(e) => setValue(property.id, e.target.value)}
+            menu={menu}
+          />
+        </div>
       );
   }
 };

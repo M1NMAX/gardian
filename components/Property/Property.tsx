@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
-import PropertyMenu from './PropertyMenu';
-import useModal from '../../hooks/useModal';
-import EditPropertyModal from './EditPropertyModal';
-import DeleteModal from '../DeleteModal';
-import PropertyInput from './PropertyInput';
+import useModal from '@hooks/useModal';
 import { Property, PropertyType } from '@prisma/client';
+import DeleteModal from '../DeleteModal';
+import EditPropertyModal from './EditPropertyModal';
+import PropertyInput from './PropertyInput';
+import PropertyMenu from './PropertyMenu';
+
+
 interface PropertyProps {
   collectionProperty: Property;
   getValue: (id: string) => string;
@@ -37,8 +39,6 @@ const Property: FC<PropertyProps> = (props) => {
   };
 
   const handleDuplicate = () => {
-    if (!collectionProperty) return;
-
     const { name, type, values } = collectionProperty;
     onPropertyDuplicate({ name, type, values });
   };
