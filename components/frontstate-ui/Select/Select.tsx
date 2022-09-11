@@ -1,8 +1,8 @@
-import React, { ChangeEventHandler, FC, ReactNode } from 'react';
+import React, { ChangeEventHandler, FC, ReactNode, useId } from 'react';
 
 
 interface SelectProps {
-  label: string;
+  label?: string;
   placeholder?: string;
   name?: string;
   data: { label: string; value: string }[];
@@ -13,13 +13,17 @@ interface SelectProps {
 
 const Select: FC<SelectProps> = (props) => {
   const { label, name, placeholder, data, value, onChange, menu } = props;
+  const id = useId();
   return (
-    <label>
+    <>
       <span className='w-full flex items-center justify-between'>
-        <span className='grow'>{label}</span>
+        <label htmlFor={id} className='grow'>
+          {label}
+        </label>
         {menu}
       </span>
       <select
+        id={id}
         name={name}
         value={value}
         onChange={onChange}
@@ -27,7 +31,9 @@ const Select: FC<SelectProps> = (props) => {
         bg-gray-300 dark:bg-gray-700  focus:outline-none focus-visible:ring-1
          focus-visible:ring-opacity-75 focus-visible:ring-primary-200'>
         {placeholder && (
-          <option value={placeholder} selected disabled hidden></option>
+          <option value='' selected disabled hidden>
+            {placeholder}
+          </option>
         )}
 
         {data.map(({ label, value }) => (
@@ -36,7 +42,7 @@ const Select: FC<SelectProps> = (props) => {
           </option>
         ))}
       </select>
-    </label>
+    </>
   );
 };
 
