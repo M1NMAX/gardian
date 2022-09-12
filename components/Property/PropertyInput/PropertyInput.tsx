@@ -43,7 +43,7 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
       );
     case PropertyType.TEXT:
       return (
-        <div className='property-within-drawer'>
+        <div className='property-within-drawer pb-0'>
           <Textarea
             label={property.name}
             name={property.name}
