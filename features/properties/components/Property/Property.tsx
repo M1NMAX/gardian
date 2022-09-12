@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
+import DeleteModal from '@components/DeleteModal';
 import useModal from '@hooks/useModal';
 import { Property, PropertyType } from '@prisma/client';
-import DeleteModal from '../DeleteModal';
-import EditPropertyModal from './EditPropertyModal';
-import PropertyInput from './PropertyInput';
-import PropertyMenu from './PropertyMenu';
+import EditPropertyModal from '../EditPropertyModal';
+import PropertyInput from '../PropertyInput';
+import PropertyMenu from '../PropertyMenu';
 
 
 interface PropertyProps {
