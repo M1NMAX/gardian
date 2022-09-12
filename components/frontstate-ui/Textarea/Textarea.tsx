@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  FC,
-  ReactNode,
-  useId
-} from 'react';
+import React, { ChangeEvent, ChangeEventHandler, FC, ReactNode, useId } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 
@@ -48,10 +42,12 @@ const Textarea: FC<TextareaProps> = (props) => {
         placeholder={placeholder}
         maxRows={maxRows}
         maxLength={maxLength}
-        className='resize-none w-full px-2 rounded border-0 bg-gray-300 dark:bg-gray-700 
+        className='resize-none w-full py-[5px] px-1.5 rounded-sm border-0 bg-gray-300 
+        dark:bg-gray-700 outline outline-1 outline-gray-300
+        dark:outline-gray-600 dark:focus:outline-none
         focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75
         focus-visible:ring-primary-100 scrollbar-thin scrollbar-thumb-gray-400
-        dark:scrollbar-thumb-gray-600'
+        dark:scrollbar-thumb-gray-600 '
       />
     </>
   );
