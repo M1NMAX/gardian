@@ -1,10 +1,10 @@
 import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-    EllipsisVerticalIcon,
-    PencilSquareIcon,
-    Square2StackIcon,
-    TrashIcon
+  EllipsisVerticalIcon,
+  PencilSquareIcon,
+  Square2StackIcon,
+  TrashIcon
 } from '@heroicons/react/24/outline';
 
 
@@ -18,7 +18,7 @@ const PropertyMenu: FC<PropertyMenuProps> = (props) => {
   const { onClickEdit, onClickDuplicate, onClickDelete } = props;
   return (
     <Menu as='div' className='relative'>
-      <Menu.Button className='menu-filled-variant'>
+      <Menu.Button className='menu-hover-variant'>
         <EllipsisVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
