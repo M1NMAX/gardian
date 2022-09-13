@@ -138,8 +138,12 @@ const TemplatesPage: NextPage = () => {
             <div
               className={`${
                 isGridView
-                  ? 'grid grid-cols-2 lg:grid-cols-3  gap-1 lg:gap-1.5 max-h-full '
+                  ? 'grid grid-cols-2 gap-1 lg:gap-1.5 max-h-full '
                   : 'flex flex-col space-y-2'
+              } ${
+                isGridView && drawer.isOpen
+                  ? 'lg:grid-cols-2'
+                  : 'lg:grid-cols-3'
               } `}>
               {sortedTemplates &&
                 sortedTemplates.map((template) => (
