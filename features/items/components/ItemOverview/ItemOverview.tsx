@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
+import { PropertyOverview } from '@features/properties';
 import { Item, Property } from '@prisma/client';
-import ItemOverviewProperty from './ItemOverviewProperty';
+
 
 interface ItemOverviewProps {
   item: Item;
@@ -27,18 +28,13 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
       <span className='w-full text-left font-semibold text-lg truncate '>
         {item.name}
       </span>
-      <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
+      <span
+        className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 
+      text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
           (property) =>
-            getValueById(property.id) != '' && (
-              <span
-                key={property.id}
-                className='px-0.5 rounded bg-white dark:bg-gray-600'>
-                <ItemOverviewProperty
-                  property={property}
-                  getValue={getValueById}
-                />
-              </span>
+            getValueById(property.id) !== '' && (
+              <PropertyOverview property={property} getValue={getValueById} />
             )
         )}
       </span>
