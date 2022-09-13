@@ -1,20 +1,19 @@
 import React, { FC, Fragment, useState } from 'react';
 import { iconList } from '@features/Icons';
-import { Modal } from '@frontstate-ui';
+import { Input, Modal } from '@frontstate-ui';
 import { Popover, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Icon } from '@prisma/client';
 import style from './IconPickerModal.module.css';
 
 
-// weather-
 interface IconPickerModalProps {
   open: boolean;
   handleClose: () => void;
   onClickIcon: (icon: Icon) => void;
 }
 
-//bw: black and white according to theme
+//bw: black and white, according to theme
 const variants: string[] = ['bw', 'red', 'green', 'blue', 'yellow'];
 
 const IconPickerModal: FC<IconPickerModalProps> = (props) => {
@@ -46,20 +45,15 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
       open={open}
       onHide={handleClose}
       withCloseBtn={false}>
-      <div className='w-full flex flex-col space-y-2'>
-        <div className='relative w-full my-2 '>
-          <div className='absolute inset-y-0 pl-1 flex items-center pointer-events-none'>
-            <MagnifyingGlassIcon className='icon-sm text-gray-900 dark:text-white' />
-          </div>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className='pl-8 w-full h-10 text-lg font-medium rounded border-0
-             bg-gray-100 dark:bg-gray-800
-            focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75 focus-visible:ring-primary-200 '
-            placeholder='Search'
-          />
-        </div>
+      <div className='w-full flex flex-col space-y-2 mt-2'>
+        <Input
+          name='search'
+          placeholder='Search'
+          srLabel='Search'
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          icon={<MagnifyingGlassIcon className='icon-sm' />}
+        />
         {Object.keys(filteredIcons).length === 0 && query !== '' ? (
           <div className='relative cursor-default select-none py-2 px-4 text-gray-700'>
             Nothing found.
