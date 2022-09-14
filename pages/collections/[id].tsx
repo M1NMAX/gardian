@@ -1,21 +1,17 @@
 import { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '@atoms/sidebarAtom';
 import DeleteModal from '@components/DeleteModal';
 import Header from '@components/Header';
-import Property from '@components/Property';
 import RenameModal from '@components/RenameModal';
 import Sidebar from '@components/Sidebar';
 import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
 import { CollectionMenu, useCollection } from '@features/collections';
 import { Editor } from '@features/Editor';
-import { getGroup, GroupWithCollectionsId } from '@features/groups';
 import { Icon } from '@features/Icons';
 import {
   CreateItemModal,
@@ -25,6 +21,7 @@ import {
   useGetItem,
   useItem
 } from '@features/items';
+import { Property } from '@features/properties';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { ViewButton } from '@features/view';
 import { ActionIcon, Button, Drawer } from '@frontstate-ui';
@@ -33,10 +30,12 @@ import { FolderIcon } from '@heroicons/react/24/solid';
 import useDrawer from '@hooks/useDrawer';
 import useModal from '@hooks/useModal';
 import {
+  Item,
   ItemProperty,
   Property as PropertyModel,
   PropertyType
 } from '@prisma/client';
+import { useQuery } from '@tanstack/react-query';
 import { SortOptionType } from '@types';
 
 
@@ -73,7 +72,7 @@ const Collections: NextPage = () => {
   //Fetch
 
   //Fetch collection
-  const collection = useCollection(id && !Array.isArray(id) ? id : rand);
+  const collection = useCollection(typeof id === 'string' ? id : rand);
   const collectionData = collection.query.data;
   const isLoading = collection.query.isLoading;
 
@@ -85,7 +84,7 @@ const Collections: NextPage = () => {
   const collectionId = collectionData?.id;
 
   //Fetch collection items
-  const { data: items, isLoading: isItemsLoading } = useQuery(
+  const items = useQuery(
     ['items', collectionId],
     () => getItems(collectionId || rand),
     { enabled: !!collectionId }
@@ -96,7 +95,7 @@ const Collections: NextPage = () => {
     selectedSortOption,
     sortedList: sortedItems,
     onChangeSortOption,
-  } = useSort(sortOptions[0], items || []);
+  } = useSort(sortOptions[0], items.data ?? [], items.isSuccess);
 
   //Collection mutation
   const handleCreateItem = (name: string) => {
@@ -349,10 +348,10 @@ const Collections: NextPage = () => {
   return (
     <>
       <Head>
-        <title> {collectionData ? collectionData.name : 'Loading...'}</title>
+        <title> hell</title>
       </Head>
       <Sidebar />
-      <main
+      <div
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content flex `}>
@@ -421,9 +420,9 @@ const Collections: NextPage = () => {
               </div>
             )}
 
-            {isItemsLoading &&
+            {items.isLoading &&
               collectionData &&
-              [...Array(collectionData._count.items)].map((i) => (
+              [...Array(collectionData._count.items)].map((i: string) => (
                 <div
                   key={i}
                   className='flex flex-col space-y-1 p-1  animate-pulse rounded
@@ -446,25 +445,26 @@ const Collections: NextPage = () => {
             )}
 
             {/*Dispay all collection's item */}
-            {!isItemsLoading && collectionData && sortedItems.length >= 0 && (
+            {!items.isLoading && collectionData && sortedItems.length >= 0 && (
               <div
-                className={`${
+                className={` py-2 ${
                   isGridView
-                    ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
+                    ? 'grid grid-cols-2 gap-1 lg:gap-1.5 max-h-full'
                     : 'flex flex-col space-y-2'
-                } py-2 `}>
-                {sortedItems.map(
-                  (item) =>
-                    item && (
-                      <ItemOverview
-                        key={item.id}
-                        item={item}
-                        active={selectedItemId === item.id}
-                        collectionProperty={collectionData.properties}
-                        onItemClick={handleOnClickItem}
-                      />
-                    )
-                )}
+                } ${
+                  isGridView && drawer.isOpen
+                    ? 'lg:grid-cols-2'
+                    : 'lg:grid-cols-3'
+                } `}>
+                {sortedItems.map((item) => (
+                  <ItemOverview
+                    key={item.id}
+                    item={item}
+                    active={selectedItemId === item.id}
+                    collectionProperty={collectionData.properties}
+                    onItemClick={handleOnClickItem}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -489,25 +489,18 @@ const Collections: NextPage = () => {
                 onClickDelete={deleteItemModal.openModal}
               />
             }>
-            <div
-              className='grow space-y-1.5 px-2 pt-0.5 overflow-y-auto scrollbar-thin
-                      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
-              {selectedItem.properties.map(
-                (property) =>
-                  property.id && (
-                    <Property
-                      key={property.id}
-                      collectionProperty={collection.getPropertyById(
-                        property.id
-                      )}
-                      getValue={selectedItem.getPropertyValue}
-                      setValue={handlePropertyValueChange}
-                      onPropertyUpdate={handleUpdateProperty}
-                      onPropertyDuplicate={handleDuplicateProperty}
-                      onPropertyDelete={handleDeleteProperty}
-                    />
-                  )
-              )}
+            <div className='grow space-y-1.5 pt-1.5 overflow-y-auto scrollbar-none'>
+              {selectedItem.properties.map((property) => (
+                <Property
+                  key={property.id}
+                  collectionProperty={collection.getPropertyById(property.id)}
+                  getValue={selectedItem.getPropertyValue}
+                  setValue={handlePropertyValueChange}
+                  onPropertyUpdate={handleUpdateProperty}
+                  onPropertyDuplicate={handleDuplicateProperty}
+                  onPropertyDelete={handleDeleteProperty}
+                />
+              ))}
             </div>
             <div>
               <Button
@@ -520,7 +513,7 @@ const Collections: NextPage = () => {
             </div>
           </Drawer>
         )}
-      </main>
+      </div>
       {/* create item modal  */}
       {collectionData && createItemModal.isOpen && (
         <CreateItemModal

@@ -1,12 +1,7 @@
-import {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-  NextPage
-} from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { sidebarState } from '@atoms/sidebarAtom';
@@ -18,7 +13,7 @@ import {
   CreateCollectionModal,
   getCollections
 } from '@features/collections';
-import { getGroup, getGroups } from '@features/groups/services';
+import { getGroups } from '@features/groups/services';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { useView, ViewButton } from '@features/view';
 import { Button } from '@frontstate-ui';
@@ -26,6 +21,7 @@ import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
+import { useQuery } from '@tanstack/react-query';
 import { SortOptionType } from '@types';
 
 
@@ -70,7 +66,7 @@ const Collections: NextPage<
     selectedSortOption,
     sortedList: sortedCollections,
     onChangeSortOption,
-  } = useSort(sortOptions[0], collections || []);
+  } = useSort(sortOptions[0], collections ?? [], isLoading);
 
   return (
     <>

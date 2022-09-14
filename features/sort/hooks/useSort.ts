@@ -4,9 +4,10 @@ import { SortOptionType } from '@types';
 import sortFun from '../utils';
 
 
-const useSort = <T extends IBaseModel>(
+const useSort = <T extends IBaseModel, P>(
   initialOption: SortOptionType,
-  list: T[]
+  list: T[],
+  deps: P
 ) => {
   const [selectedSortOption, setSelectedSortOption] =
     useState<SortOptionType>(initialOption);
@@ -19,7 +20,7 @@ const useSort = <T extends IBaseModel>(
         .slice()
         .sort(sortFun(selectedSortOption.field, selectedSortOption.order))
     );
-  }, [list]);
+  }, [deps]);
 
   const onChangeSortOption = (option: SortOptionType) => {
     const data = sortedList.slice().sort(sortFun(option.field, option.order));

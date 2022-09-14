@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { sidebarState } from '@atoms/sidebarAtom';
 import Header from '@components/Header';
@@ -17,6 +16,7 @@ import { useView, ViewButton } from '@features/view';
 import { Drawer } from '@frontstate-ui';
 import useDrawer from '@hooks/useDrawer';
 import { MockItem } from '@prisma/client';
+import { useQuery } from '@tanstack/react-query';
 import { SortOptionType } from '@types';
 
 
@@ -29,7 +29,7 @@ const TemplatesPage: NextPage = () => {
   const router = useRouter();
   const sidebar = useRecoilValue(sidebarState);
 
-  const { data: templates, isLoading } = useQuery(['templates'], getTemplates);
+  const templates = useQuery(['templates'], getTemplates);
   console.log(templates);
 
   //Feedback
@@ -46,7 +46,7 @@ const TemplatesPage: NextPage = () => {
     selectedSortOption,
     sortedList: sortedTemplates,
     onChangeSortOption,
-  } = useSort(sortOptions[0], templates || []);
+  } = useSort(sortOptions[0], templates.data ?? [], templates.isSuccess);
 
   //Selected template
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
@@ -54,10 +54,12 @@ const TemplatesPage: NextPage = () => {
   );
 
   const selectedTemplate = useMemo(() => {
-    if (!templates) return;
+    if (!templates.data) return;
 
-    return templates.find((template) => template.id === selectedTemplateId);
-  }, [templates, selectedTemplateId]);
+    return templates.data.find(
+      (template) => template.id === selectedTemplateId
+    );
+  }, [templates.data, selectedTemplateId]);
 
   const handleOnClickTemplateOverview = (id: string) => {
     setSelectedTemplateId(id);
