@@ -34,7 +34,11 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
         {collectionProperty.map(
           (property) =>
             getValueById(property.id) !== '' && (
-              <PropertyOverview property={property} getValue={getValueById} />
+              <PropertyOverview
+                key={property.id}
+                property={property}
+                getValue={getValueById}
+              />
             )
         )}
       </span>

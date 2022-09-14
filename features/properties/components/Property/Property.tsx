@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import DeleteModal from '@components/DeleteModal';
 import useModal from '@hooks/useModal';
-import { Property, PropertyType } from '@prisma/client';
+import { Property as PropertyModel, PropertyType } from '@prisma/client';
 import EditPropertyModal from '../EditPropertyModal';
 import PropertyInput from '../PropertyInput';
 import PropertyMenu from '../PropertyMenu';
 
 
 interface PropertyProps {
-  collectionProperty: Property;
+  collectionProperty: PropertyModel;
   getValue: (id: string) => string;
   setValue: (id: string, value: string) => void;
-  onPropertyUpdate: (property: Property) => void;
+  onPropertyUpdate: (property: PropertyModel) => void;
   onPropertyDuplicate: (property: {
     name: string;
     type: PropertyType;

@@ -1,5 +1,5 @@
 import React, { FC, Fragment, ReactNode } from 'react';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Popover, Transition } from '@headlessui/react';
 import { HashtagIcon } from '@heroicons/react/24/outline';
 import { getGroups } from '../../services';

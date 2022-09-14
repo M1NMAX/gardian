@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteItem, renameItem, updateItemProperty } from '../services';
 
 const useItem = (id: string, cid: string) => {

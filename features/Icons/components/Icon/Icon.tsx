@@ -1,11 +1,11 @@
 import React, { FC, ReactNode } from 'react';
-import { Icon } from '@prisma/client';
+import { Icon as IconModel } from '@prisma/client';
 import iconList from '../../iconList';
 import style from './Icon.module.css';
 
 
 interface IconProps {
-  icon: Icon;
+  icon: IconModel;
   defaultIcon: ReactNode;
   big?: boolean;
 }

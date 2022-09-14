@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
-import { useQuery } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '@atoms/sidebarAtom';
 import { SCREEN_SIZE_MD } from '@constants';

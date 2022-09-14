@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Label, Modal } from '@frontstate-ui';
 import { SquaresPlusIcon } from '@heroicons/react/24/outline';
 import { createGroup } from '../../services';

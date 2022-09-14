@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCollection } from '@features/collections';
 import { Button, Label, Modal } from '@frontstate-ui';
 import { RadioGroup } from '@headlessui/react';

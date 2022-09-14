@@ -1,4 +1,3 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 import {
   addPropertyToItem,
   createItem,
@@ -6,6 +5,7 @@ import {
   removePropertyFromItem
 } from '@features/items/services';
 import { Icon, Property } from '@prisma/client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   addPropertyToCollection,
   changeCollectionIcon,

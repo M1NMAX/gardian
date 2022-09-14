@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createCollection } from '../../../features/collections';
 import { addCollectionToGroup, deleteGroup, renameGroup } from '../services';
 

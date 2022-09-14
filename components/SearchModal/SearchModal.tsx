@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
-import { useQuery } from 'react-query';
 import { getCollections } from '@features/collections';
 import { Input, Modal } from '@frontstate-ui';
 import { ChevronRightIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
 
 
 interface SearchModalProps {
@@ -19,7 +19,7 @@ const SearchModal: FC<SearchModalProps> = (props) => {
 
   const [query, setQuery] = useState<string>('');
 
-  const { data: collections } = useQuery('searchCollections', getCollections);
+  const { data: collections } = useQuery(['searchCollections'], getCollections);
 
   const filteredCollections =
     query === ''
