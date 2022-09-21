@@ -1,10 +1,11 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import { PrismaClient } from '@prisma/client';
+import GoogleProvider from 'next-auth/providers/google';
 import { hashPassword, verifyPassword } from '@lib/auth/passwords';
 import { Session } from '@lib/auth/session';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
+
 
 const prisma = new PrismaClient();
 
@@ -42,7 +43,7 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials.password) {
-            throw new Error('Invalid Credentials 1');
+            throw new Error('Invalid Credentials');
           }
 
           let maybeUser = await prisma.user.findFirst({
