@@ -3,7 +3,7 @@ import { iconList } from '@features/Icons';
 import { Input, Modal } from '@frontstate-ui';
 import { Popover, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { Icon } from '@prisma/client';
+import { Color, Icon } from '@prisma/client';
 import style from './IconPickerModal.module.css';
 
 
@@ -14,7 +14,13 @@ interface IconPickerModalProps {
 }
 
 //bw: black and white, according to theme
-const variants: string[] = ['bw', 'red', 'green', 'blue', 'yellow'];
+const colors: Color[] = [
+  Color.BW,
+  Color.RED,
+  Color.BLUE,
+  Color.GREEN,
+  Color.YELLOW,
+];
 
 const IconPickerModal: FC<IconPickerModalProps> = (props) => {
   const { open, handleClose, onClickIcon } = props;
@@ -81,11 +87,13 @@ const IconPickerModal: FC<IconPickerModalProps> = (props) => {
                     <div
                       className='flex items-center justify-between space-x-1.5
               rounded-md bg-gray-200 dark:bg-gray-700 overflow-hidden'>
-                      {variants.map((variant) => (
+                      {colors.map((color) => (
                         <button
-                          key={variant}
-                          onClick={() => onClickIcon({ name: key, variant })}
-                          className={`${style[variant]} icon-md p-0.5 rounded 
+                          key={color}
+                          onClick={() => onClickIcon({ name: key, color })}
+                          className={`${
+                            style[color.toLowerCase()]
+                          } icon-md p-0.5 rounded 
                           hover:bg-gray-300 dark:hover:bg-gray-800`}>
                           {iconList[key].component}
                         </button>

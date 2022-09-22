@@ -11,14 +11,18 @@ interface IconProps {
 }
 const Icon: FC<IconProps> = (props) => {
   const { icon, defaultIcon, big = false } = props;
-  const { name, variant } = icon;
+  const { name, color } = icon;
+  console.table(icon);
 
   return (
     <>
       {name === '' || typeof iconList[name] == undefined ? (
         <span className={`${big ? 'icon-lg' : 'icon-sm'}`}> {defaultIcon}</span>
       ) : (
-        <span className={`${style[variant]} ${big ? 'icon-lg' : 'icon-sm'}`}>
+        <span
+          className={`${style[color.toLowerCase()]} ${
+            big ? 'icon-lg' : 'icon-sm'
+          }`}>
           {iconList[name].component}
         </span>
       )}
