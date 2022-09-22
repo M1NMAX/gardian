@@ -1,5 +1,5 @@
 import { getFetch } from '@lib/fetch';
-import { Collection, Icon, Prisma, PropertyType } from '@prisma/client';
+import { Collection, Icon, Option, Prisma, PropertyType } from '@prisma/client';
 
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
@@ -14,11 +14,6 @@ export type CollectionWItemCount = Prisma.CollectionGetPayload<{
 
 //Types
 
-type CreateCollectionArg = {
-  name: string;
-  groupId: string;
-};
-
 type RemovePropertyFromCollectionArg = {
   cid: string;
   pid: string;
@@ -26,12 +21,12 @@ type RemovePropertyFromCollectionArg = {
 
 type UpdateCollectionPropertyArg = {
   cid: string;
-  property: { id: string; name: string; type: PropertyType; values: string[] };
+  property: { id: string; name: string; type: PropertyType; options: Option[] };
 };
 
 type AddPropertyFromCollectionArg = {
   cid: string;
-  property: { name: string; type: PropertyType; values: string[] };
+  property: { name: string; type: PropertyType; options: Option[] };
 };
 
 //Collection
