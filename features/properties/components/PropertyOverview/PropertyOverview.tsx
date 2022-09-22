@@ -5,7 +5,8 @@ import {
   CheckIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
-import { Property, PropertyType } from '@prisma/client';
+import { Color, Property, PropertyType } from '@prisma/client';
+import style from './PropertyOverview.module.css';
 
 
 interface PropertyOverviewProps {
@@ -15,11 +16,22 @@ interface PropertyOverviewProps {
 const PropertyOverview: FC<PropertyOverviewProps> = (props) => {
   const { property, getValue } = props;
 
-  let pro: JSX.Element;
+  const getOptionDetails = (id: string) => {
+    const option = property.options.find((opt) => opt.id === id);
+
+    if (option) {
+      const { value, color } = option;
+      return { value, color };
+    }
+
+    return { value: '', color: Color.BW };
+  };
+
+  let result: JSX.Element;
   switch (property.type) {
     case PropertyType.CHECKBOX:
-      pro = (
-        <span className='flex items-center space-x-0.5'>
+      return (
+        <span className={style.basic}>
           {getValue(property.id) === 'true' ? (
             <CheckIcon className='icon-xxs' />
           ) : (
@@ -28,30 +40,34 @@ const PropertyOverview: FC<PropertyOverviewProps> = (props) => {
           <span>{property.name}</span>
         </span>
       );
-      break;
+
     case PropertyType.DATE:
-      pro = (
-        <span className='flex items-center space-x-0.5'>
+      return (
+        <span className={style.basic}>
           <CalendarIcon className='icon-xs' />
           <span>{new Date(getValue(property.id)).toLocaleDateString()}</span>
         </span>
       );
     case PropertyType.TEXT:
-      pro = (
-        <span className='flex items-center space-x-0.5'>
+      return (
+        <span className={style.basic}>
           <ChatBubbleBottomCenterTextIcon className='icon-xs' />
           <span>{property.name}</span>
         </span>
       );
-      break;
-    default:
-      pro = <>{getValue(property.id)}</>;
-      break;
-  }
 
-  return (
-    <span className='px-0.5 rounded bg-white dark:bg-gray-600'>{pro}</span>
-  );
+    case PropertyType.SELECT:
+      const { value, color } = getOptionDetails(getValue(property.id));
+
+      return (
+        <span className={`${style.basic} ${style[color.toLowerCase()]}`}>
+          {value}
+        </span>
+      );
+
+    default:
+      return <span className={style.basic}>{getValue(property.id)}</span>;
+  }
 };
 
 export default PropertyOverview;

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import DeleteModal from '@components/DeleteModal';
 import useModal from '@hooks/useModal';
-import { Property as PropertyModel, PropertyType } from '@prisma/client';
+import { Option, Property as PropertyModel, PropertyType } from '@prisma/client';
 import EditPropertyModal from '../EditPropertyModal';
 import PropertyInput from '../PropertyInput';
 import PropertyMenu from '../PropertyMenu';
@@ -15,7 +15,7 @@ interface PropertyProps {
   onPropertyDuplicate: (property: {
     name: string;
     type: PropertyType;
-    values: string[];
+    options: Option[];
   }) => void;
   onPropertyDelete: (id: string) => void;
 }
@@ -39,8 +39,8 @@ const Property: FC<PropertyProps> = (props) => {
   };
 
   const handleDuplicate = () => {
-    const { name, type, values } = collectionProperty;
-    onPropertyDuplicate({ name, type, values });
+    const { name, type, options } = collectionProperty;
+    onPropertyDuplicate({ name, type, options });
   };
 
   return (

@@ -36,7 +36,10 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
             placeholder='Select your option'
             value={getValue(property.id)}
             onChange={(e) => setValue(property.id, e.target.value)}
-            data={property.values.map((value) => ({ label: value, value }))}
+            data={property.options.map(({ id, value }) => ({
+              label: value,
+              value: id,
+            }))}
             menu={menu}
           />
         </div>

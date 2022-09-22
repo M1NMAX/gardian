@@ -1,0 +1,25 @@
+.basic {
+  @apply flex items-center space-x-0.5 px-1 rounded font-medium text-sm;
+}
+
+/* color  */
+.bw {
+  @apply bg-white;
+}
+
+:global(.dark) .bw {
+  @apply bg-gray-500;
+}
+
+.red {
+  @apply bg-red-500;
+}
+.blue {
+  @apply bg-blue-500;
+}
+.green {
+  @apply bg-green-500;
+}
+.yellow {
+  @apply bg-yellow-500;
+}
