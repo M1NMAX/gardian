@@ -18,7 +18,7 @@ const TemplateOverview: FC<TemplateOverviewProps> = (props) => {
     <button
       onClick={() => onClickTemplate(id)}
       className={`${
-        active && 'border-r-2 border-green-500'
+        active && 'outline outline-1 outline-primary-200'
       }  flex flex-col p-1 space-y-[1px] rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className='grow flex items-center space-x-1'>

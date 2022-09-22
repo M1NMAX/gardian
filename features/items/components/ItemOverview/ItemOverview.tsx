@@ -22,7 +22,7 @@ const ItemOverview: FC<ItemOverviewProps> = (props) => {
     <button
       onClick={() => onItemClick(item.id)}
       className={`${
-        active && 'border-r-2 border-green-500'
+        active && 'outline outline-1 outline-primary-200'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className='w-full text-left font-semibold text-lg truncate '>
