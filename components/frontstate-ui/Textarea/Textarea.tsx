@@ -42,7 +42,7 @@ const Textarea: FC<TextareaProps> = (props) => {
         placeholder={placeholder}
         maxRows={maxRows}
         maxLength={maxLength}
-        className='resize-none w-full py-[5px] px-1.5 rounded-sm border-0 bg-gray-300 
+        className='resize-none w-full py-[5px] px-1.5 rounded-sm border-0 bg-gray-200 
         dark:bg-gray-700 outline outline-1 outline-gray-300
         dark:outline-gray-600 dark:focus:outline-none
         focus:outline-none focus-visible:ring-1 focus-visible:ring-opacity-75

@@ -27,7 +27,7 @@ const Select: FC<SelectProps> = (props) => {
         name={name}
         value={value}
         onChange={onChange}
-        className='w-full h-8 py-0 px-1.5 cursor-default rounded-sm  border-0 bg-gray-300
+        className='w-full h-8 py-0 px-1.5 cursor-default rounded-sm  border-0 bg-gray-200
          dark:bg-gray-700 outline outline-1 outline-gray-300 dark:outline-gray-600
           dark:focus:outline-none focus:outline-none focus-visible:ring-1 
           focus-visible:ring-opacity-75 focus-visible:ring-primary-200'>
