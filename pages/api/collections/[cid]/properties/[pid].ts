@@ -3,6 +3,7 @@ import { authOptions } from '@api/auth/[...nextauth]';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
 
+
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   //cid: short for collectionId
   //pid: short for propertyId
@@ -22,13 +23,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case 'PUT':
       try {
-        const { name, type, values } = req.body.property;
+        const { name, type, options } = req.body.property;
 
         const collection = await prisma.collection.update({
           where: { id: cid },
           data: {
             properties: {
-              updateMany: { where: { id: pid }, data: { name, type, values } },
+              updateMany: { where: { id: pid }, data: { name, type, options } },
             },
           },
         });

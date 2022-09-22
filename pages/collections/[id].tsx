@@ -32,6 +32,7 @@ import useModal from '@hooks/useModal';
 import {
   Item,
   ItemProperty,
+  Option,
   Property as PropertyModel,
   PropertyType
 } from '@prisma/client';
@@ -94,8 +95,9 @@ const Collections: NextPage = () => {
   const {
     selectedSortOption,
     sortedList: sortedItems,
+    reorder,
     onChangeSortOption,
-  } = useSort(sortOptions[0], items.data ?? [], items.isSuccess);
+  } = useSort(sortOptions[0], items.data ?? [], items.isFetched);
 
   //Collection mutation
   const handleCreateItem = (name: string) => {
@@ -111,10 +113,13 @@ const Collections: NextPage = () => {
     const item = { name, collectionId: collectionData.id, properties };
 
     collection.createItemMutateFun(item, {
-      onSuccess: async ({ id: itemId }) => {
+      onSuccess: async (data) => {
+        if (!items.data) return;
+
         positiveFeedback('Item added');
         collection.query.refetch();
-        setSelectedItemId(itemId);
+        setSelectedItemId(data.id);
+        reorder([...items.data, data]);
         drawer.openDrawer();
       },
       onError: () => {
@@ -241,10 +246,12 @@ const Collections: NextPage = () => {
     const item = { name: name + '(copy)', collectionId, properties };
 
     collection.createItemMutateFun(item, {
-      onSuccess: async ({ id: itemId }) => {
+      onSuccess: async (data) => {
+        if (!items.data) return;
         positiveFeedback('Item added');
         collection.query.refetch();
-        setSelectedItemId(itemId);
+        setSelectedItemId(data.id);
+        reorder([...items.data, data]);
         drawer.openDrawer();
       },
       onError: () => {
@@ -261,7 +268,10 @@ const Collections: NextPage = () => {
 
     selectedItemMutations.deleteItemMutateFun(selectedItemId, {
       onSuccess: async () => {
+        if (!items.data) return;
+
         positiveFeedback('Item deleted');
+        reorder(items.data);
         drawer.closeDrawer();
       },
       onError: () => {
@@ -279,7 +289,7 @@ const Collections: NextPage = () => {
     collection.addPropertyToCollectionMutateFun(
       {
         cid: collectionId,
-        property: { name: 'Property', type: PropertyType.TEXT, values: [] },
+        property: { name: 'Property', type: PropertyType.TEXT, options: [] },
       },
       {
         onSuccess: () => {
@@ -295,7 +305,7 @@ const Collections: NextPage = () => {
   const handleDuplicateProperty = async (property: {
     name: string;
     type: PropertyType;
-    values: string[];
+    options: Option[];
   }) => {
     if (!collectionId) return;
     collection.addPropertyToCollectionMutateFun(
