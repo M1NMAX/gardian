@@ -134,7 +134,7 @@ const TemplatesPage: NextPage = () => {
 
           {/* body  */}
           <div
-            className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+            className='space-y-1.5 grow px-4 py-2 overflow-y-scroll scrollbar-thin
              scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
             {/* Templates  */}
             <div
