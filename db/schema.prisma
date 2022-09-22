@@ -95,16 +95,30 @@ model Collection {
     properties          Property[]
 }
 
+enum Color {
+    BW     @map("bw") // BLACK AND WHITE, More like tons of gray
+    RED    @map("red")
+    BLUE   @map("blue")
+    GREEN  @map("green")
+    YELLOW @map("yellow")
+}
+
 type Icon {
-    name    String @default("")
-    variant String @default("bw")
+    name  String @default("")
+    color Color  @default(BW)
+}
+
+type Option {
+    id    String @default(uuid()) @map("_id")
+    value String
+    color Color  @default(BW)
 }
 
 type Property {
     id        String       @default(uuid()) @map("_id")
     name      String
     type      PropertyType @default(TEXT)
-    values    String[]
+    options   Option[]
     createdAt DateTime     @default(now())
 }
 

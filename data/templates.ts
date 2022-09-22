@@ -1,10 +1,10 @@
-import { Prisma, PropertyType } from '@prisma/client';
+import { Color, Prisma, PropertyType } from '@prisma/client';
 
 
 export const templatesData: Prisma.TemplateCreateInput[] = [
   {
     name: 'Events',
-    icon: { name: 'CalendarDaysIcon', variant: 'red' },
+    icon: { name: 'CalendarDaysIcon', color: Color.RED },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -12,13 +12,13 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
         id: 'b61c1e22-2dcb-11ed-a261-0242ac120002',
         name: 'Date',
         type: PropertyType.DATE,
-        values: [],
+        options: [],
       },
       {
         id: 'e93c1ae6-2dcb-11ed-a261-0242ac120002',
         name: 'Notes',
         type: PropertyType.TEXT,
-        values: [],
+        options: [],
       },
     ],
     items: [
@@ -43,7 +43,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
   },
   {
     name: 'Tasks',
-    icon: { name: 'CheckBadgeIcon', variant: 'blue' },
+    icon: { name: 'CheckBadgeIcon', color: Color.BLUE },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -51,19 +51,19 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
         id: '22462764-2dcc-11ed-a261-0242ac120002',
         name: 'Done',
         type: PropertyType.CHECKBOX,
-        values: [],
+        options: [],
       },
       {
         id: '22462944-2dcc-11ed-a261-0242ac120002',
         name: 'Conclusion date',
         type: PropertyType.DATE,
-        values: [],
+        options: [],
       },
       {
         id: '22462a3e-2dcc-11ed-a261-0242ac120002',
         name: 'Notes',
         type: PropertyType.DATE,
-        values: [],
+        options: [],
       },
     ],
     items: [
@@ -93,7 +93,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
   },
   {
     name: 'Links',
-    icon: { name: 'LinkIcon', variant: 'bw' },
+    icon: { name: 'LinkIcon', color: Color.YELLOW },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -101,7 +101,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
         id: '6c01497e-2dcc-11ed-a261-0242ac120002',
         name: 'url',
         type: PropertyType.URL,
-        values: [''],
+        options: [],
       },
     ],
     items: [
@@ -129,7 +129,7 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
 
   {
     name: 'Movies',
-    icon: { name: 'FilmIcon', variant: 'bw' },
+    icon: { name: 'FilmIcon' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
@@ -137,30 +137,38 @@ export const templatesData: Prisma.TemplateCreateInput[] = [
         id: '801badd2-2dcc-11ed-a261-0242ac120002',
         name: 'Status',
         type: PropertyType.SELECT,
-        values: ['Plan to watch', 'Watching', 'Watched'],
+        options: [
+          { value: 'Plan to watch' },
+          { value: 'Watching' },
+          { value: 'Watched' },
+        ],
       },
       {
         id: '801bafbc-2dcc-11ed-a261-0242ac120002',
         name: 'Score',
         type: PropertyType.SELECT,
-        values: [
-          '1-Appaling',
-          '2-Horrible',
-          '3-Very Bad',
-          '4-Bad',
-          '5-Average',
-          '6-Fine',
-          '7-Good',
-          '8-Very Good',
-          '9-Great',
-          '10-Masterpiece',
+        options: [
+          { value: '1-Appaling' },
+          { value: '2-Horrible' },
+          { value: '3-Very Bad' },
+          { value: '4-Bad' },
+          { value: '5-Average' },
+          { value: '6-Fine' },
+          { value: '7-Good' },
+          { value: '8-Very Good' },
+          { value: '9-Great' },
+          { value: '10-Masterpiece' },
         ],
       },
       {
         id: '801bb0b6-2dcc-11ed-a261-0242ac120002',
         name: 'Plataform',
         type: PropertyType.SELECT,
-        values: ['Netflix', 'Vizer.tv', 'Stremio'],
+        options: [
+          { value: 'Netflix' },
+          { value: 'Vizer.tv' },
+          { value: 'Stremio' },
+        ],
       },
     ],
     items: [
