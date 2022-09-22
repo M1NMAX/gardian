@@ -41,7 +41,6 @@ const SidebarCollection: FC<SidebarCollectionProps> = (props) => {
 
   //handle change collection icon and its mutation
   const handleChangeCollectionIcon = (icon: IconModel) => {
-    console.log(icon);
     collection.changeCollectionIconMutateFun(icon, {
       onSuccess: () => {
         positiveFeedback('Icon changed');
