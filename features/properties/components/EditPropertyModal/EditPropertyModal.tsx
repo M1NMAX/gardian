@@ -1,25 +1,33 @@
 import React, {
   ChangeEvent,
+  Dispatch,
   FC,
   Fragment,
   SyntheticEvent,
   useEffect,
+  useReducer,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { ActionIcon, Button, Input, Modal, Select, TextInput } from '@frontstate-ui';
+import {
+  ActionIcon,
+  Button,
+  Input,
+  Modal,
+  Select,
+  TextInput,
+} from '@frontstate-ui';
 import { Popover, Transition } from '@headlessui/react';
 import {
   ArrowLongRightIcon,
   PencilSquareIcon,
   PlusIcon,
-  TrashIcon
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 import { StopIcon } from '@heroicons/react/24/solid';
 import { Color, Option, Property, PropertyType } from '@prisma/client';
 import style from './EditPropertyModal.module.css';
-
 
 const propertyTypes: PropertyType[] = [
   PropertyType.TEXT,
@@ -44,45 +52,56 @@ interface EditPropertyModalProps {
   handleClose: () => void;
   onUpdate: (property: Property) => void;
 }
+
+const ACTIONS_ADD = 'add';
+const ACTIONS_REMOVE = 'remove';
+const ACTIONS_RENAME = 'rename';
+const ACTIONS_UPD_COLOR = 'updColor';
+
+type Actions =
+  | { type: 'add'; payload: { value: string } }
+  | { type: 'remove'; payload: { id: string } }
+  | { type: 'rename'; payload: { id: string; name: string } }
+  | { type: 'updColor'; payload: { id: string; color: Color } };
+
+const OptionReducer = (state: Option[], action: Actions) => {
+  const { type, payload } = action;
+
+  switch (type) {
+    case ACTIONS_ADD:
+      const id = uuidv4();
+      return [...state, { id, value: payload.value, color: Color.BW }];
+
+    case ACTIONS_REMOVE:
+      return state.filter((option) => option.id !== payload.id);
+
+    case ACTIONS_RENAME:
+      return state.map((option) =>
+        option.id === payload.id ? { ...option, value: payload.name } : option
+      );
+    case ACTIONS_UPD_COLOR:
+      return state.map((option) =>
+        option.id === payload.id ? { ...option, color: payload.color } : option
+      );
+
+    default:
+      return state;
+  }
+};
+
 const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const { open, handleClose, property, onUpdate } = props;
 
   const [name, setName] = useState(property.name);
   const [selectedType, setSelectedType] = useState(property.type);
-  const [options, setOptions] = useState(property.options);
   const [newOption, setNewOption] = useState('');
   const [showNewOptionInput, setShowNewOptionInput] = useState(false);
+
+  const [options, dispatch] = useReducer(OptionReducer, property.options);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as PropertyType;
     setSelectedType(value);
-  };
-
-  const handleRemoveOption = (optionId: string) => {
-    if (!optionId) return;
-    setOptions(options.filter((option) => option.id !== optionId));
-  };
-
-  const handleAddOption = (value: string) => {
-    if (!value || value === '') return;
-    const id = uuidv4();
-    setOptions([...options, { id, value, color: Color.BW }]);
-  };
-
-  const handleRenameOption = (id: string, name: string) => {
-    setOptions(
-      options.map((option) =>
-        option.id === id ? { ...option, value: name } : option
-      )
-    );
-  };
-
-  const handleUpdOptionColor = (id: string, color: Color) => {
-    setOptions(
-      options.map((option) =>
-        option.id === id ? { ...option, color } : option
-      )
-    );
   };
 
   const handleSubmit = (e: SyntheticEvent) => {
@@ -132,7 +151,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
             onChange={(e) => setNewOption(e.target.value)}
             onKeyUp={(e) => {
               if (e.key === 'Enter') {
-                handleAddOption(newOption);
+                dispatch({ type: ACTIONS_ADD, payload: { value: newOption } });
                 e.stopPropagation();
               }
             }}
@@ -140,20 +159,17 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
             radious='sm'
             size='sm'
             rightSection={
-              <ActionIcon onClick={() => handleAddOption(newOption)}>
+              <ActionIcon
+                onClick={() =>
+                  dispatch({ type: ACTIONS_ADD, payload: { value: newOption } })
+                }>
                 <ArrowLongRightIcon className='icon-xs' />
               </ActionIcon>
             }
           />
         )}
         {options.map((option) => (
-          <PropertyOption
-            key={option.id}
-            option={option}
-            onRemoveOption={handleRemoveOption}
-            onRenameOption={handleRenameOption}
-            onColorUpd={handleUpdOptionColor}
-          />
+          <PropertyOption key={option.id} option={option} dispatch={dispatch} />
         ))}
       </div>
       <div className='flex justify-end space-x-2 mt-2'>
@@ -170,12 +186,10 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
 
 interface PropertyOptionProps {
   option: Option;
-  onRemoveOption: (optionId: string) => void;
-  onRenameOption: (optionId: string, name: string) => void;
-  onColorUpd: (optionId: string, color: Color) => void;
+  dispatch: Dispatch<Actions>;
 }
 const PropertyOption: FC<PropertyOptionProps> = (props) => {
-  const { option, onRemoveOption, onRenameOption, onColorUpd } = props;
+  const { option, dispatch } = props;
 
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(option.value);
@@ -184,6 +198,7 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
 
   useEffect(() => {
     inputRef.current?.focus();
+    console.log(inputRef.current);
   }, [edit]);
 
   return (
@@ -200,7 +215,11 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
           onChange={(e) => setName(e.target.value)}
           onKeyUp={(e) => {
             if (e.key === 'Enter') {
-              onRenameOption(option.id, name);
+              dispatch({
+                type: ACTIONS_RENAME,
+                payload: { id: option.id, name },
+              });
+
               setEdit(false);
               e.stopPropagation();
             }
@@ -209,7 +228,13 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
           radious='sm'
           size='sm'
           rightSection={
-            <ActionIcon onClick={() => onRenameOption(option.id, name)}>
+            <ActionIcon
+              onClick={() =>
+                dispatch({
+                  type: ACTIONS_RENAME,
+                  payload: { id: option.id, name },
+                })
+              }>
               <ArrowLongRightIcon className='icon-xs' />
             </ActionIcon>
           }
@@ -230,18 +255,20 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
               leave='transition ease-in duration-150'
               leaveFrom='opacity-100 translate-y-0'
               leaveTo='opacity-0 translate-y-1'>
-              <Popover.Panel
-                className='absolute left-0 bottom-full z-10 mb-0 px-4 sm:px-0
-           max-w-fit  '>
+              <Popover.Panel className='absolute left-0 bottom-full z-10 mb-0 px-4 sm:px-0 max-w-fit'>
                 {({ close }) => (
                   <div
-                    className='flex items-center justify-between space-x-0.5
-              rounded-md bg-gray-200 dark:bg-gray-700 overflow-hidden'>
+                    className='flex items-center justify-between space-x-0.5 rounded-md
+                     bg-gray-200 dark:bg-gray-700 overflow-hidden'>
                     {colors.map((color) => (
                       <button
                         key={color}
                         onClick={() => {
-                          onColorUpd(option.id, color);
+                          dispatch({
+                            type: ACTIONS_UPD_COLOR,
+                            payload: { id: option.id, color },
+                          });
+
                           close();
                         }}
                         className={`${
@@ -265,7 +292,10 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
           </span>
 
           <span className='md:hidden md:group-hover:block'>
-            <ActionIcon onClick={() => onRemoveOption(option.id)}>
+            <ActionIcon
+              onClick={() =>
+                dispatch({ type: ACTIONS_REMOVE, payload: { id: option.id } })
+              }>
               <TrashIcon className='icon-xs' />
             </ActionIcon>
           </span>

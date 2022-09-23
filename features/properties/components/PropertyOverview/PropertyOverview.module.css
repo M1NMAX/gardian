@@ -8,7 +8,7 @@
 }
 
 :global(.dark) .bw {
-  @apply bg-gray-500;
+  @apply bg-gray-700;
 }
 
 .red {

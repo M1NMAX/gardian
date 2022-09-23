@@ -3,11 +3,10 @@ import {
   CalendarIcon,
   ChatBubbleBottomCenterTextIcon,
   CheckIcon,
-  XMarkIcon
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import { Color, Property, PropertyType } from '@prisma/client';
 import style from './PropertyOverview.module.css';
-
 
 interface PropertyOverviewProps {
   property: Property;
@@ -27,11 +26,10 @@ const PropertyOverview: FC<PropertyOverviewProps> = (props) => {
     return { value: '', color: Color.BW };
   };
 
-  let result: JSX.Element;
   switch (property.type) {
     case PropertyType.CHECKBOX:
       return (
-        <span className={style.basic}>
+        <span className={`${style.basic} ${style.bw}`}>
           {getValue(property.id) === 'true' ? (
             <CheckIcon className='icon-xxs' />
           ) : (
@@ -43,14 +41,14 @@ const PropertyOverview: FC<PropertyOverviewProps> = (props) => {
 
     case PropertyType.DATE:
       return (
-        <span className={style.basic}>
+        <span className={`${style.basic} ${style.bw}`}>
           <CalendarIcon className='icon-xs' />
           <span>{new Date(getValue(property.id)).toLocaleDateString()}</span>
         </span>
       );
     case PropertyType.TEXT:
       return (
-        <span className={style.basic}>
+        <span className={`${style.basic} ${style.bw}`}>
           <ChatBubbleBottomCenterTextIcon className='icon-xs' />
           <span>{property.name}</span>
         </span>
@@ -66,7 +64,11 @@ const PropertyOverview: FC<PropertyOverviewProps> = (props) => {
       );
 
     default:
-      return <span className={style.basic}>{getValue(property.id)}</span>;
+      return (
+        <span className={`${style.basic} ${style.bw}`}>
+          {getValue(property.id)}
+        </span>
+      );
   }
 };
 
