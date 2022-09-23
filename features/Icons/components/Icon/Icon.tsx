@@ -3,7 +3,6 @@ import { Icon as IconModel } from '@prisma/client';
 import iconList from '../../iconList';
 import style from './Icon.module.css';
 
-
 interface IconProps {
   icon: IconModel;
   defaultIcon: ReactNode;
@@ -12,7 +11,6 @@ interface IconProps {
 const Icon: FC<IconProps> = (props) => {
   const { icon, defaultIcon, big = false } = props;
   const { name, color } = icon;
-  console.table(icon);
 
   return (
     <>

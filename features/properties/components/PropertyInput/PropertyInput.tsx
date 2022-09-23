@@ -2,7 +2,6 @@ import { FC, ReactNode } from 'react';
 import { Checkbox, Select, Textarea, TextInput } from '@frontstate-ui';
 import { Property, PropertyType } from '@prisma/client';
 
-
 interface PropertyInputProps {
   property: Property;
   menu: ReactNode;
@@ -60,7 +59,6 @@ const PropertyInput: FC<PropertyInputProps> = (props) => {
       );
 
     default:
-      console.log(property.type);
       return (
         <div className='property-within-drawer'>
           <TextInput
