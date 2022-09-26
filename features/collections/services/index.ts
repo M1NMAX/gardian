@@ -13,7 +13,6 @@ export type CollectionWItemCount = Prisma.CollectionGetPayload<{
 }>;
 
 //Types
-
 type RemovePropertyFromCollectionArg = {
   cid: string;
   pid: string;
@@ -21,12 +20,12 @@ type RemovePropertyFromCollectionArg = {
 
 type UpdateCollectionPropertyArg = {
   cid: string;
-  property: { id: string; name: string; type: PropertyType; options: Option[] };
+  property: Prisma.PropertyUpdateInput;
 };
 
-type AddPropertyFromCollectionArg = {
+type AddPropertyToCollectionArg = {
   cid: string;
-  property: { name: string; type: PropertyType; options: Option[] };
+  property: Prisma.PropertyUpdateInput;
 };
 
 //Collection
@@ -108,7 +107,7 @@ export async function deleteCollection(cid: string): Promise<boolean> {
 export async function addPropertyToCollection({
   cid,
   property,
-}: AddPropertyFromCollectionArg): Promise<Collection> {
+}: AddPropertyToCollectionArg): Promise<Collection> {
   const res = await getFetch(baseUrl + cid + '/properties/', 'PUT', {
     property,
   });

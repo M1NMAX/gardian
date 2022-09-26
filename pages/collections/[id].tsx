@@ -33,10 +33,11 @@ import {
   Item,
   ItemProperty,
   Option,
+  Prisma,
   Property as PropertyModel,
   PropertyType
 } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { SortOptionType } from '@types';
 
 
@@ -56,6 +57,7 @@ const Collections: NextPage = () => {
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+  const loadingFeedback = (msg: string) => toast.loading(msg);
 
   //Modals
   const createItemModal = useModal();
@@ -71,7 +73,7 @@ const Collections: NextPage = () => {
   const [isGridView, setIsGridView] = useState<boolean>(false);
 
   //Fetch
-
+  const queryClient = useQueryClient();
   //Fetch collection
   const collection = useCollection(typeof id === 'string' ? id : rand);
   const collectionData = collection.query.data;
@@ -231,6 +233,18 @@ const Collections: NextPage = () => {
     selectedItemMutations.updateItemPropertyMutateFun(
       { id: selectedItemId, property: { id, value } },
       {
+        onSuccess: async () => {
+          if (!collectionId) return;
+          await items.refetch();
+
+          const itemsQueryData = queryClient.getQueriesData<Item[]>([
+            'items',
+            collectionId,
+          ]);
+          const onlyItems = itemsQueryData[0][1];
+
+          reorder(onlyItems);
+        },
         onError: () => {
           negativeFeedback();
         },
@@ -262,16 +276,24 @@ const Collections: NextPage = () => {
       },
     });
   };
+
   //Handle delete item mutation
   const handleDeleteItem = () => {
-    if (!collectionId || !selectedItemId) return;
+    if (!selectedItemId) return;
 
     selectedItemMutations.deleteItemMutateFun(selectedItemId, {
       onSuccess: async () => {
-        if (!items.data) return;
+        if (!collectionId) return;
+        await items.refetch();
 
+        const itemsQueryData = queryClient.getQueriesData<Item[]>([
+          'items',
+          collectionId,
+        ]);
+        const onlyItems = itemsQueryData[0][1];
+
+        reorder(onlyItems);
         positiveFeedback('Item deleted');
-        reorder(items.data);
         drawer.closeDrawer();
       },
       onError: () => {
@@ -285,74 +307,68 @@ const Collections: NextPage = () => {
 
   //handle user interation with property menu
   const handleOnClickAddProperty = async () => {
-    if (!collectionId) return;
-    collection.addPropertyToCollectionMutateFun(
-      {
-        cid: collectionId,
-        property: { name: 'Property', type: PropertyType.TEXT, options: [] },
+    const property = { name: 'Property', type: PropertyType.TEXT, options: [] };
+
+    const toastId = loadingFeedback('Adding property to all items ...');
+
+    collection.addPropertyToCollectionMutateFun(property, {
+      onSuccess: () => {
+        selectedItem.refetch();
+        positiveFeedback('Property added');
       },
-      {
-        onSuccess: () => {
-          selectedItem.refetch();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
-  const handleDuplicateProperty = async (property: {
-    name: string;
-    type: PropertyType;
-    options: Option[];
-  }) => {
-    if (!collectionId) return;
-    collection.addPropertyToCollectionMutateFun(
-      { cid: collectionId, property },
-      {
-        onSuccess: async () => {
-          await selectedItem.refetch();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+  const handleDuplicateProperty = async (
+    property: Prisma.PropertyUpdateInput
+  ) => {
+    const toastId = loadingFeedback('Adding property to all items ...');
+
+    collection.addPropertyToCollectionMutateFun(property, {
+      onSuccess: async () => {
+        await selectedItem.refetch();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
   const handleUpdateProperty = async (property: PropertyModel) => {
-    if (!collectionId) return;
-
-    collection.updateCollectionPropertyMutateFun(
-      { cid: collectionId, property },
-      {
-        onSuccess: () => {
-          positiveFeedback('Property updated');
-        },
-        onError: (error) => {
-          console.log(error);
-          negativeFeedback();
-        },
-      }
-    );
+    collection.updateCollectionPropertyMutateFun(property, {
+      onSuccess: () => {
+        positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    });
   };
 
   const handleDeleteProperty = async (pid: string) => {
-    if (!collectionId) return;
+    const toastId = loadingFeedback('Removing property from all items...');
 
-    collection.deleteCollectionPropertyMutateFun(
-      { cid: collectionId, pid },
-      {
-        onSuccess: async () => {
-          await selectedItem.refetch();
-          positiveFeedback('Property removed');
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+    collection.deleteCollectionPropertyMutateFun(pid, {
+      onSuccess: async () => {
+        await selectedItem.refetch();
+        positiveFeedback('Property removed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
   return (

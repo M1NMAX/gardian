@@ -4,7 +4,7 @@ import {
   getItems,
   removePropertyFromItem
 } from '@features/items/services';
-import { Icon, Property } from '@prisma/client';
+import { Icon, Prisma, Property } from '@prisma/client';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   addPropertyToCollection,
@@ -119,7 +119,9 @@ const useCollection = (cid: string, key: string = 'collection') => {
 
   //Property
   const { mutate: addPropertyToCollectionMutateFun } = useMutation(
-    addPropertyToCollection,
+    async (property: Prisma.PropertyUpdateInput) => {
+      return addPropertyToCollection({ cid, property });
+    },
     {
       onSuccess: async (data) => {
         const { id: cid, properties } = data;
@@ -146,7 +148,9 @@ const useCollection = (cid: string, key: string = 'collection') => {
   );
 
   const { mutate: updateCollectionPropertyMutateFun } = useMutation(
-    updateCollectionProperty,
+    async (property: Prisma.PropertyUpdateInput) => {
+      return updateCollectionProperty({ cid, property });
+    },
     {
       onSuccess: () => {
         invalidateCollectionQueries();
@@ -156,7 +160,9 @@ const useCollection = (cid: string, key: string = 'collection') => {
   );
 
   const { mutate: deleteCollectionPropertyMutateFun } = useMutation(
-    removePropertyFromCollection,
+    async (pid: string) => {
+      return removePropertyFromCollection({ cid, pid });
+    },
     {
       onSuccess: async ({ pid }) => {
         if (!query.data) throw 'Collection is undefined';

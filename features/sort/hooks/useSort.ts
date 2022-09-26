@@ -22,12 +22,19 @@ const useSort = <T extends IBaseModel, P>(
     );
   }, [deps]);
 
+  const reorder = (list?: T[]) => {
+    const { field, order } = selectedSortOption;
+    const listToSort = list ?? sortedList;
+    const data = listToSort.slice().sort(sortFun(field, order));
+    setSortedList(data);
+  };
+
   const onChangeSortOption = (option: SortOptionType) => {
     const data = sortedList.slice().sort(sortFun(option.field, option.order));
     setSortedList(data);
     setSelectedSortOption(option);
   };
 
-  return { selectedSortOption, sortedList, onChangeSortOption };
+  return { selectedSortOption, sortedList, reorder, onChangeSortOption };
 };
 export default useSort;
