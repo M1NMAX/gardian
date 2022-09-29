@@ -7,27 +7,21 @@ import React, {
   useEffect,
   useReducer,
   useRef,
-  useState,
+  useState
 } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  ActionIcon,
-  Button,
-  Input,
-  Modal,
-  Select,
-  TextInput,
-} from '@frontstate-ui';
+import { ActionIcon, Button, Input, Modal, Select, TextInput } from '@frontstate-ui';
 import { Popover, Transition } from '@headlessui/react';
 import {
   ArrowLongRightIcon,
   PencilSquareIcon,
   PlusIcon,
-  TrashIcon,
+  TrashIcon
 } from '@heroicons/react/24/outline';
 import { StopIcon } from '@heroicons/react/24/solid';
 import { Color, Option, Property, PropertyType } from '@prisma/client';
 import style from './EditPropertyModal.module.css';
+
 
 const propertyTypes: PropertyType[] = [
   PropertyType.TEXT,
