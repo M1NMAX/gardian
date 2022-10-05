@@ -1,14 +1,10 @@
 import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
 import { useRecoilState } from 'recoil';
 import { sidebarState } from '@atoms/sidebarAtom';
 import { SCREEN_SIZE_MD } from '@constants';
-import {
-  CreateCollectionModal,
-  SidebarCollection
-} from '@features/collections';
+import { CreateCollectionModal, SidebarCollection } from '@features/collections';
 import { CreateGroupModal, SidebarGroup } from '@features/groups';
 import { getGroups } from '@features/groups/services';
 import { ThemeBtn } from '@features/theme';
@@ -22,6 +18,7 @@ import {
 } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { useQuery } from '@tanstack/react-query';
 import SearchModal from '../SearchModal';
 import SidebarBtn from './SidebarBtn';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
@@ -110,7 +107,7 @@ const Sidebar: FC = () => {
             groups &&
             groups.map((group) => (
               <SidebarGroup key={group.id} group={group}>
-                {group.collections.map(({ id: cid }) => (
+                {group.collections.map(({ id: cid }: { id: string }) => (
                   <SidebarCollection
                     key={cid}
                     collectionId={cid}
