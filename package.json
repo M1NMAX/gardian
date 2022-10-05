@@ -32,7 +32,8 @@
     "yup": "^0.32.11"
   },
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} db/seed.ts"
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} db/seed.ts",
+    "schema": "db/schema.prisma"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.0",
