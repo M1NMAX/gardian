@@ -1,49 +1,44 @@
 import React, { FC } from 'react';
-import { IItem, IProperty } from '../../../../interfaces';
-import ItemOverviewProperty from './ItemOverviewProperty';
+import { PropertyOverview } from '@features/properties';
+import { Item, Property } from '@prisma/client';
+
 
 interface ItemOverviewProps {
-  item: IItem;
+  item: Item;
   active: boolean;
-  collectionProperty: IProperty[];
+  collectionProperty: Property[];
   onItemClick: (id: string) => void;
 }
 const ItemOverview: FC<ItemOverviewProps> = (props) => {
   const { item, active, collectionProperty, onItemClick } = props;
-  const handleClick = () => {
-    if (!item._id) return;
-    onItemClick(item._id);
-  };
 
-  const getValueById = (id?: string): string => {
-    if (!id) return '';
-    const property = item.properties.find((property) => property._id === id);
+  const getValueById = (pid: string): string => {
+    const property = item.properties.find((property) => property.id === pid);
     if (!property) return '';
     return property.value;
   };
 
   return (
     <button
-      onClick={handleClick}
+      onClick={() => onItemClick(item.id)}
       className={`${
-        active && 'border-r-2 border-green-500'
+        active && 'outline outline-1 outline-primary-200'
       }  flex flex-col p-1 rounded shadow-md bg-gray-100 dark:bg-gray-800 
       `}>
       <span className='w-full text-left font-semibold text-lg truncate '>
         {item.name}
       </span>
-      <span className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 text-sm  overflow-x-auto scrollbar-none'>
+      <span
+        className='w-full grid grid-flow-col auto-cols-max gap-0.5 md:gap-1 
+      text-sm  overflow-x-auto scrollbar-none'>
         {collectionProperty.map(
-          (property, idx) =>
-            getValueById(property._id) != '' && (
-              <span
-                key={idx}
-                className='px-0.5 rounded bg-white dark:bg-gray-600'>
-                <ItemOverviewProperty
-                  property={property}
-                  getValue={getValueById}
-                />
-              </span>
+          (property) =>
+            getValueById(property.id) !== '' && (
+              <PropertyOverview
+                key={property.id}
+                property={property}
+                getValue={getValueById}
+              />
             )
         )}
       </span>

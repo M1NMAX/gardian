@@ -2,6 +2,21 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".","paths": {
+      "*": ["node_modules/*"],
+      "@atoms/*":["atoms/*"],
+      "@api/*": ["pages/api/*"],
+      "@lib/*": ["lib/*"],
+      "@features/*": ["features/*"],
+      "@frontstate-ui": ["components/frontstate-ui/index"],
+      "@components/*": ["components/*"],
+      "@db/*": ["db/*"],
+      "@db": ["db/index"],
+      "@constants": ["constants/index"],
+      "@hooks/*": ["hooks/*"], 
+      "@types": ["types/index"], 
+      "@interfaces": ["interfaces/index"],
+    },
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -15,6 +30,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["process.d.ts","next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

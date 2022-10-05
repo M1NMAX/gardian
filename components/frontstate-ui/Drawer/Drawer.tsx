@@ -1,8 +1,10 @@
 import React, { FC, ReactNode } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import ActionIcon from '../ActionIcon';
-import { XIcon } from '@heroicons/react/outline';
+
 
 interface DrawerProps {
+  children: ReactNode;
   title?: ReactNode;
   menu?: ReactNode;
   opened: boolean;
@@ -21,7 +23,7 @@ const Drawer: FC<DrawerProps> = (props) => {
         className='flex justify-between pb-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
         <ActionIcon variant='filled' onClick={onClose}>
-          <XIcon className='icon-sm' />
+          <XMarkIcon className='icon-sm' />
         </ActionIcon>
         <span className='grow px-1.5'>{title}</span>
         {menu}

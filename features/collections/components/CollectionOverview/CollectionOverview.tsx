@@ -1,21 +1,20 @@
-import React, { FC } from 'react';
-import {
-  CollectionIcon,
-  HashtagIcon,
-  ViewBoardsIcon,
-} from '@heroicons/react/outline';
 import Link from 'next/link';
-import { ICollection } from '../../../../interfaces';
+import React, { FC } from 'react';
+import { CollectionWItemCount } from '@features/collections/services';
+import { Icon } from '@features/Icons';
+import { HashtagIcon, Squares2X2Icon } from '@heroicons/react/24/outline';
+import { FolderIcon } from '@heroicons/react/24/solid';
+
 
 interface CollectionOverviewProps {
-  collection: ICollection;
+  collection: CollectionWItemCount;
   groupName: string;
   isGridView: boolean;
 }
 
 const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
   const { collection, groupName, isGridView } = props;
-  const { _id: id, name, properties, items, createdAt } = collection;
+  const { id, icon, name, properties, _count, createdAt } = collection;
 
   return (
     <Link href={`/collections/${id}`}>
@@ -23,25 +22,25 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
         <span className={`${isGridView ? 'space-y-[1px]' : 'flex space-1'}`}>
           {/** Collection name */}
           <span className='grow flex items-center space-x-1'>
-            <CollectionIcon className='icon-xs' />
+            <Icon icon={icon} defaultIcon={<FolderIcon />} />
             <span className='grow font-semibold text-lg'>{name}</span>
           </span>
 
           {/** Extra information */}
           <span className='flex space-x-1.5'>
             {/* number of item */}
-            {items.length !== 0 && ( //Show number of items a collections has if diff zero
+            {_count.items !== 0 && ( //Show number of items a collections has if diff zero
               <>
                 <span className='flex items-center space-x-0.5'>
                   <HashtagIcon className='icon-xs' />
-                  <span>{items.length}</span>
+                  <span>{_count.items}</span>
                 </span>
                 <span aria-hidden='true'>&middot;</span>
               </>
             )}
 
             <span className='flex items-center space-x-0.5'>
-              <ViewBoardsIcon className='icon-xs' />
+              <Squares2X2Icon className='icon-xs' />
               <span>{groupName}</span>
             </span>
             <span aria-hidden='true' className='hidden md:block'>
@@ -49,7 +48,7 @@ const CollectionOverview: FC<CollectionOverviewProps> = (props) => {
             </span>
 
             <span className='hidden md:block'>
-              {createdAt ? new Date(createdAt).toLocaleDateString() : 'Loading'}
+              {new Date(createdAt).toLocaleDateString()}
             </span>
           </span>
         </span>

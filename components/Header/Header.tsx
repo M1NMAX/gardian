@@ -1,8 +1,9 @@
 import React, { FC, ReactNode } from 'react';
-import { MenuAlt2Icon } from '@heroicons/react/outline';
 import { useRecoilState } from 'recoil';
+import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline';
 import { sidebarState } from '../../atoms/sidebarAtom';
 import { ActionIcon } from '../frontstate-ui';
+
 
 interface HeaderProps {
   children: ReactNode;
@@ -20,7 +21,7 @@ const Header: FC<HeaderProps> = (props) => {
         {/* Menu btn  */}
         {!sidebar && (
           <ActionIcon onClick={openSidebar}>
-            <MenuAlt2Icon className='icon-sm' />
+            <Bars3BottomLeftIcon className='icon-sm' />
           </ActionIcon>
         )}
 

@@ -1,33 +1,39 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../../../backend/database/dbConnect';
-import Item from '../../../../../backend/models/Item';
-import { Response } from '../../../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
-dbConnect();
-
-export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {
-    query: { id, pid },
+    query: { id },
     method,
   } = req;
 
-  switch (method) {
-    case 'POST':
-      try {
-        const property = req.body.property;
-        const item = await Item.findByIdAndUpdate(
-          id,
-          { $push: { properties: property } },
-          { new: true, runValidators: true }
-        );
-        if (!item) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: item });
-      } catch (error) {
-        res.status(400).json({ isSuccess: false });
-      }
-      break;
-    default:
-      res.status(400).json({ isSuccess: false });
-      break;
+  const session = await getSession(req, res, authOptions);
+
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  if (Array.isArray(id)) return res.status(400).json({ isSuccess: false });
+
+  // add new property to item array
+  if (method === 'PUT') {
+    try {
+      const property = req.body.property;
+
+      const item = await prisma.item.update({
+        where: { id },
+        data: { properties: { push: [property] } },
+      });
+
+      if (!item) return res.status(400).json({ isSuccess: false });
+
+      return res.status(200).json({ isSuccess: true, data: item });
+    } catch (error) {
+      console.log('[api] items/[id]/properties/', error);
+      return res.status(400).json({ isSuccess: false });
+    }
+  } else {
+    return res.status(400).json({ isSuccess: false });
   }
 };

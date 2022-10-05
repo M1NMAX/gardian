@@ -1,31 +1,28 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { ICollection, IProperty } from '../../../interfaces';
 import {
-  addItemToCollection,
+  addPropertyToItem,
+  createItem,
+  getItems,
+  removePropertyFromItem
+} from '@features/items/services';
+import { Icon, Prisma, Property } from '@prisma/client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
   addPropertyToCollection,
   changeCollectionIcon,
+  createCollection,
   deleteCollection,
   getCollection,
+  moveCollection,
   removePropertyFromCollection,
   renameCollection,
   toggleCollectionDescriptionState,
   toggleCollectionIsFavourite,
   updateCollectionDescription,
-  updateCollectionProperty,
+  updateCollectionProperty
 } from '../services';
-import { removeCollectionFromGroup } from '../../groups/services';
-import {
-  addPropertyToItem,
-  createItem,
-  deleteItem,
-  removePropertyFromItem,
-} from '../../items/services';
 
-const useCollection = (
-  cid: string,
-  gid: string,
-  key: string = 'collection'
-) => {
+
+const useCollection = (cid: string, key: string = 'collection') => {
   const queryClient = useQueryClient();
 
   const invalidateCollectionQueries = () => {
@@ -37,12 +34,10 @@ const useCollection = (
     queryClient.invalidateQueries(['items', cid]);
   };
 
-  const query = useQuery<ICollection>([key, cid], () => getCollection(cid));
+  const query = useQuery([key, cid], () => getCollection(cid));
 
   const { mutate: createItemMutateFun } = useMutation(createItem, {
-    onSuccess: async ({ _id: itemId }) => {
-      if (!itemId) throw 'Item id is undefined';
-      await addItemToCollection(cid, itemId);
+    onSuccess: async () => {
       invalidateCollectionQueries();
       invalidateItemsQueries();
     },
@@ -63,7 +58,7 @@ const useCollection = (
   );
 
   const { mutate: changeCollectionIconMutateFun } = useMutation(
-    async (icon: string) => {
+    async (icon: Icon) => {
       await changeCollectionIcon(cid, icon);
     },
     { onSuccess: () => invalidateCollectionQueries() }
@@ -83,14 +78,38 @@ const useCollection = (
     { onSuccess: () => invalidateCollectionQueries() }
   );
 
+  const { mutate: moveCollectionMutateFun } = useMutation(
+    async (desGroupId: string) => {
+      await moveCollection(cid, desGroupId);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['groups']);
+        invalidateCollectionQueries();
+      },
+    }
+  );
+  const { mutate: duplicateCollectionMutateFun } = useMutation(
+    createCollection,
+    {
+      onSuccess: async ({ id: newCollectionId }) => {
+        //get all items of current collection
+        const items = await getItems(cid);
+
+        //duplicate  every item and add new collection as parent
+        items.map(async (item) => {
+          const { name, properties } = item;
+          await createItem({ name, properties, collectionId: newCollectionId });
+        });
+
+        queryClient.invalidateQueries(['groups']);
+        queryClient.invalidateQueries(['collections']);
+      },
+    }
+  );
+
   const { mutate: deleteCollectionMutateFun } = useMutation(deleteCollection, {
     onSuccess: async () => {
-      if (!query.data) throw 'Collection is undefined';
-      const { items } = query.data;
-      //Delete all collection items
-      items.map(async (itemId) => await deleteItem(itemId));
-      await removeCollectionFromGroup(gid, cid);
-
       queryClient.removeQueries(['sidebarCollection', cid]);
       queryClient.removeQueries(['collection', cid]);
       queryClient.invalidateQueries(['groups']);
@@ -100,25 +119,27 @@ const useCollection = (
 
   //Property
   const { mutate: addPropertyToCollectionMutateFun } = useMutation(
-    addPropertyToCollection,
+    async (property: Prisma.PropertyUpdateInput) => {
+      return addPropertyToCollection({ cid, property });
+    },
     {
       onSuccess: async (data) => {
-        const { items, properties } = data;
+        const { id: cid, properties } = data;
 
         //get the lastest Collection property base on creation date
         const lastestProperty = properties.reduce((a, b) => {
-          const aDate = a.createdAt ? new Date(a.createdAt) : Date.now;
-          const bDate = b.createdAt ? new Date(b.createdAt) : Date.now;
-          return aDate > bDate ? a : b;
+          return a.createdAt > b.createdAt ? a : b;
         });
 
+        const items = await getItems(cid);
+
         // add placeholder for this property into collection items
-        items.map(async (itemId) => {
-          await addPropertyToItem(itemId, {
-            _id: lastestProperty._id,
+        for (const item of items) {
+          await addPropertyToItem(item.id, {
+            id: lastestProperty.id,
             value: '',
           });
-        });
+        }
 
         invalidateCollectionQueries();
         invalidateItemsQueries();
@@ -127,7 +148,9 @@ const useCollection = (
   );
 
   const { mutate: updateCollectionPropertyMutateFun } = useMutation(
-    updateCollectionProperty,
+    async (property: Prisma.PropertyUpdateInput) => {
+      return updateCollectionProperty({ cid, property });
+    },
     {
       onSuccess: () => {
         invalidateCollectionQueries();
@@ -137,39 +160,46 @@ const useCollection = (
   );
 
   const { mutate: deleteCollectionPropertyMutateFun } = useMutation(
-    removePropertyFromCollection,
+    async (pid: string) => {
+      return removePropertyFromCollection({ cid, pid });
+    },
     {
-      onSuccess: ({ propertyId }) => {
+      onSuccess: async ({ pid }) => {
         if (!query.data) throw 'Collection is undefined';
-        const { items } = query.data;
+
+        const items = await getItems(query.data.id);
+
         //Remove property from collection items
-        items.map(async (itemId) => {
-          await removePropertyFromItem(itemId, propertyId);
-        });
+        for (const item of items) {
+          await removePropertyFromItem(item.id, pid);
+        }
+
         invalidateCollectionQueries();
         invalidateItemsQueries();
       },
     }
   );
 
-  const getCollectionPropertyById = (pid: string) => {
-    if (!query.data) return {} as IProperty;
+  const getPropertyById = (pid: string) => {
+    if (!query.data) return {} as Property;
     const property = query.data.properties.find(
-      (property) => property._id === pid
+      (property) => property.id === pid
     );
 
-    return property || ({} as IProperty);
+    return property || ({} as Property);
   };
 
   return {
     query,
     createItemMutateFun,
-    getCollectionPropertyById,
+    getPropertyById,
     toggleIsFavStateMutateFun,
     toggleDescrStateMutateFun,
     changeCollectionIconMutateFun,
     renameCollectionMutateFun,
     updCollectionDescrMutateFun,
+    moveCollectionMutateFun,
+    duplicateCollectionMutateFun,
     deleteCollectionMutateFun,
     addPropertyToCollectionMutateFun,
     updateCollectionPropertyMutateFun,

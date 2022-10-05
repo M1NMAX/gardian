@@ -1,43 +1,45 @@
-import React, { useEffect, useState } from 'react';
-import { InferGetServerSidePropsType, NextPage } from 'next';
-import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { useRouter } from 'next/router';
+import { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
-import Sidebar from '../../components/Sidebar';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useRecoilValue } from 'recoil';
-import { sidebarState } from '../../atoms/sidebarAtom';
-import { useQuery } from 'react-query';
-import { IGroup, IItemProperty, IProperty } from '../../interfaces';
-import { CollectionMenu, useCollection } from '../../features/collections';
-import { ActionIcon, Button, Drawer } from '../../components/frontstate-ui';
+import { sidebarState } from '@atoms/sidebarAtom';
+import DeleteModal from '@components/DeleteModal';
+import Header from '@components/Header';
+import RenameModal from '@components/RenameModal';
+import Sidebar from '@components/Sidebar';
+import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
+import { CollectionMenu, useCollection } from '@features/collections';
+import { Editor } from '@features/Editor';
+import { Icon } from '@features/Icons';
 import {
   CreateItemModal,
-  ItemOverview,
-  ItemMenu,
-  useGetItem,
-  useItem,
   getItems,
-} from '../../features/items';
+  ItemMenu,
+  ItemOverview,
+  useGetItem,
+  useItem
+} from '@features/items';
+import { Property } from '@features/properties';
+import { SortOptionsListbox, useSort } from '@features/sort';
+import { ViewButton } from '@features/view';
+import { ActionIcon, Button, Drawer } from '@frontstate-ui';
+import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { FolderIcon } from '@heroicons/react/24/solid';
+import useDrawer from '@hooks/useDrawer';
+import useModal from '@hooks/useModal';
 import {
-  FolderIcon,
-  PencilIcon,
-  PlusIcon,
-  ViewBoardsIcon,
-  ViewGridIcon,
-} from '@heroicons/react/outline';
-import useModal from '../../hooks/useModal';
-import toast from 'react-hot-toast';
-import DeleteModal from '../../components/DeleteModal';
-import Property from '../../components/Property';
-import { Editor } from '../../features/Editor';
-import useDrawer from '../../hooks/useDrawer';
-import Header from '../../components/Header';
-import RenameModal from '../../components/RenameModal';
-import { useSort, SortOptionsListbox } from '../../features/sort';
-import { SORT_ASCENDING, SORT_DESCENDING } from '../../constants';
-import { SortOptionType } from '../../types';
-import { getGroupWithCid } from '../../features/groups';
+  Item,
+  ItemProperty,
+  Option,
+  Prisma,
+  Property as PropertyModel,
+  PropertyType
+} from '@prisma/client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { SortOptionType } from '@types';
+
 
 const rand = 'randomId';
 const sortOptions: SortOptionType[] = [
@@ -47,9 +49,7 @@ const sortOptions: SortOptionType[] = [
   { field: 'createdAt', order: SORT_DESCENDING },
 ];
 
-const Collections: NextPage<
-  InferGetServerSidePropsType<typeof getServerSideProps>
-> = () => {
+const Collections: NextPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const sidebar = useRecoilValue(sidebarState);
@@ -57,6 +57,7 @@ const Collections: NextPage<
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
   const negativeFeedback = () => toast.error('Something went wrong, try later');
+  const loadingFeedback = (msg: string) => toast.loading(msg);
 
   //Modals
   const createItemModal = useModal();
@@ -72,24 +73,9 @@ const Collections: NextPage<
   const [isGridView, setIsGridView] = useState<boolean>(false);
 
   //Fetch
-  //Fetch group information
-  const [groupInfo, setGroupInfo] = useState<IGroup>();
-  useEffect(() => {
-    if (!id || Array.isArray(id)) return;
-
-    const fetchGroupInfo = async (cid: string) => {
-      const result = await getGroupWithCid(cid);
-      setGroupInfo(result);
-    };
-
-    fetchGroupInfo(id);
-  }, [id]);
-
+  const queryClient = useQueryClient();
   //Fetch collection
-  const collection = useCollection(
-    id && !Array.isArray(id) ? id : rand,
-    groupInfo && groupInfo._id ? groupInfo._id : rand
-  );
+  const collection = useCollection(typeof id === 'string' ? id : rand);
   const collectionData = collection.query.data;
   const isLoading = collection.query.isLoading;
 
@@ -98,12 +84,12 @@ const Collections: NextPage<
     drawer.closeDrawer();
   }, [id]);
 
-  const collectionId = collectionData?._id;
+  const collectionId = collectionData?.id;
 
   //Fetch collection items
-  const { data: items, isLoading: isItemsLoading } = useQuery(
+  const items = useQuery(
     ['items', collectionId],
-    () => (collectionData ? getItems(collectionData.items) : []),
+    () => getItems(collectionId || rand),
     { enabled: !!collectionId }
   );
 
@@ -111,39 +97,40 @@ const Collections: NextPage<
   const {
     selectedSortOption,
     sortedList: sortedItems,
+    reorder,
     onChangeSortOption,
-  } = useSort(sortOptions[0], items || []);
+  } = useSort(sortOptions[0], items.data ?? [], items.isFetched);
 
   //Collection mutation
   const handleCreateItem = (name: string) => {
     if (!collectionData) throw 'Collection is undefined';
 
     //create placeholder for all collection properties inside of item
-    const properties: IItemProperty[] = collectionData.properties.map(
+    const properties: ItemProperty[] = collectionData.properties.map(
       (property) => ({
-        _id: property._id,
+        id: property.id,
         value: '',
       })
     );
+    const item = { name, collectionId: collectionData.id, properties };
 
-    collection.createItemMutateFun(
-      { name, properties },
-      {
-        onSuccess: async ({ _id: itemId }) => {
-          if (!itemId) throw 'Item id is undefined';
-          positiveFeedback('Item added');
-          collection.query.refetch();
-          setSelectedItemId(itemId);
-          drawer.openDrawer();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-        onSettled: () => {
-          createItemModal.closeModal();
-        },
-      }
-    );
+    collection.createItemMutateFun(item, {
+      onSuccess: async (data) => {
+        if (!items.data) return;
+
+        positiveFeedback('Item added');
+        collection.query.refetch();
+        setSelectedItemId(data.id);
+        reorder([...items.data, data]);
+        drawer.openDrawer();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        createItemModal.closeModal();
+      },
+    });
   };
 
   //handle rename collection and its mutation
@@ -195,7 +182,7 @@ const Collections: NextPage<
 
     collection.deleteCollectionMutateFun(collectionId, {
       onSuccess: () => {
-        positiveFeedback('DELETE');
+        positiveFeedback('Collection deleted');
         router.push('/collections');
       },
       onError: () => {
@@ -244,24 +231,68 @@ const Collections: NextPage<
 
     selectedItem.setPropertyValue(id, value);
     selectedItemMutations.updateItemPropertyMutateFun(
+      { id: selectedItemId, property: { id, value } },
       {
-        itemId: selectedItemId,
-        propertyId: id,
-        property: { _id: id, value },
-      },
-      {
+        onSuccess: async () => {
+          if (!collectionId) return;
+          await items.refetch();
+
+          const itemsQueryData = queryClient.getQueriesData<Item[]>([
+            'items',
+            collectionId,
+          ]);
+          const onlyItems = itemsQueryData[0][1];
+
+          reorder(onlyItems);
+        },
         onError: () => {
           negativeFeedback();
         },
       }
     );
   };
+
+  const handleDuplicateSelectedItem = () => {
+    if (!collectionId || !selectedItem) return;
+    const name = selectedItem.name;
+    const properties = selectedItem.properties;
+
+    const item = { name: name + '(copy)', collectionId, properties };
+
+    collection.createItemMutateFun(item, {
+      onSuccess: async (data) => {
+        if (!items.data) return;
+        positiveFeedback('Item added');
+        collection.query.refetch();
+        setSelectedItemId(data.id);
+        reorder([...items.data, data]);
+        drawer.openDrawer();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        createItemModal.closeModal();
+      },
+    });
+  };
+
   //Handle delete item mutation
   const handleDeleteItem = () => {
-    if (!collectionId || !selectedItemId) return;
+    if (!selectedItemId) return;
 
     selectedItemMutations.deleteItemMutateFun(selectedItemId, {
       onSuccess: async () => {
+        if (!collectionId) return;
+        await items.refetch();
+
+        const itemsQueryData = queryClient.getQueriesData<Item[]>([
+          'items',
+          collectionId,
+        ]);
+        const onlyItems = itemsQueryData[0][1];
+
+        reorder(onlyItems);
         positiveFeedback('Item deleted');
         drawer.closeDrawer();
       },
@@ -276,77 +307,77 @@ const Collections: NextPage<
 
   //handle user interation with property menu
   const handleOnClickAddProperty = async () => {
-    if (!collectionId) return;
-    collection.addPropertyToCollectionMutateFun(
-      {
-        collectionId,
-        property: { name: 'property', type: 'text', values: [] },
+    const property = { name: 'Property', type: PropertyType.TEXT, options: [] };
+
+    const toastId = loadingFeedback('Adding property to all items ...');
+
+    collection.addPropertyToCollectionMutateFun(property, {
+      onSuccess: () => {
+        selectedItem.refetch();
+        positiveFeedback('Property added');
       },
-      {
-        onSuccess: () => {
-          selectedItem.refetch();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
-  const handleDuplicateProperty = async (property: IProperty) => {
-    if (!collectionId) return;
-    collection.addPropertyToCollectionMutateFun(
-      { collectionId, property },
-      {
-        onSuccess: () => {
-          selectedItem.refetch();
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+  const handleDuplicateProperty = async (
+    property: Prisma.PropertyUpdateInput
+  ) => {
+    const toastId = loadingFeedback('Adding property to all items ...');
+
+    collection.addPropertyToCollectionMutateFun(property, {
+      onSuccess: async () => {
+        await selectedItem.refetch();
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
-  const handleUpdateProperty = async (property: IProperty) => {
-    if (!collectionId || !property._id) return;
-
-    collection.updateCollectionPropertyMutateFun(
-      { collectionId, propertyId: property._id, property },
-      {
-        onSuccess: () => {
-          positiveFeedback('Property updated');
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+  const handleUpdateProperty = async (property: PropertyModel) => {
+    collection.updateCollectionPropertyMutateFun(property, {
+      onSuccess: () => {
+        positiveFeedback('Property updated');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+    });
   };
 
-  const handleDeleteProperty = async (propertyId: string) => {
-    if (!collectionId) return;
+  const handleDeleteProperty = async (pid: string) => {
+    const toastId = loadingFeedback('Removing property from all items...');
 
-    collection.deleteCollectionPropertyMutateFun(
-      { collectionId, propertyId },
-      {
-        onSuccess: () => {
-          positiveFeedback('Property removed');
-        },
-        onError: () => {
-          negativeFeedback();
-        },
-      }
-    );
+    collection.deleteCollectionPropertyMutateFun(pid, {
+      onSuccess: async () => {
+        await selectedItem.refetch();
+        positiveFeedback('Property removed');
+      },
+      onError: () => {
+        negativeFeedback();
+      },
+      onSettled: () => {
+        toast.dismiss(toastId);
+      },
+    });
   };
 
   return (
     <>
       <Head>
-        <title> {collectionData ? collectionData.name : 'Loading...'}</title>
+        <title> hell</title>
       </Head>
       <Sidebar />
-      <main
+      <div
         className={`${
           sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
         } main-content flex `}>
@@ -358,19 +389,8 @@ const Collections: NextPage<
           {/* Header  */}
           <Header>
             <div className='grow flex items-center space-x-1 font-semibold'>
-              {!collectionData ||
-                (collectionData.icon === '' && (
-                  <FolderIcon className='icon-sm' />
-                ))}
-              {collectionData && collectionData.icon !== '' && (
-                <span className='relative icon-sm'>
-                  <Image
-                    src={`/icons/${collectionData.icon}.svg`}
-                    alt={collectionData.icon}
-                    layout='fill'
-                    objectFit='contain'
-                  />
-                </span>
+              {collectionData && (
+                <Icon icon={collectionData.icon} defaultIcon={<FolderIcon />} />
               )}
 
               <h1 className='text-2xl'>
@@ -397,15 +417,10 @@ const Collections: NextPage<
                 onChangeOption={onChangeSortOption}
               />
               {/* views  */}
-              <ActionIcon
-                variant='filled'
-                onClick={() => setIsGridView(!isGridView)}>
-                {isGridView ? (
-                  <ViewGridIcon className='icon-sm' />
-                ) : (
-                  <ViewBoardsIcon className='icon-sm rotate-90' />
-                )}
-              </ActionIcon>
+              <ViewButton
+                value={isGridView}
+                onClick={() => setIsGridView(!isGridView)}
+              />
 
               {collectionData && (
                 <CollectionMenu
@@ -431,18 +446,19 @@ const Collections: NextPage<
               </div>
             )}
 
-            {isItemsLoading &&
+            {items.isLoading &&
               collectionData &&
-              collectionData.items.map((_, idx) => (
+              [...Array(collectionData._count.items)].map((i: string) => (
                 <div
-                  key={idx}
-                  className='flex flex-collection space-y-1 p-1  animate-pulse rounded bg-gray-100 dark:bg-gray-800'>
+                  key={i}
+                  className='flex flex-col space-y-1 p-1  animate-pulse rounded
+                   bg-gray-100 dark:bg-gray-800'>
                   <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
                   <div className='w-1/5 h-5 rounded-md bg-gray-300 dark:bg-gray-600'></div>
                 </div>
               ))}
 
-            {!isLoading && collectionData && collectionData.items.length === 0 && (
+            {!isLoading && collectionData && collectionData._count.items === 0 && (
               <button
                 onClick={createItemModal.openModal}
                 className='w-full py-1 flex items-center justify-center 
@@ -455,25 +471,26 @@ const Collections: NextPage<
             )}
 
             {/*Dispay all collection's item */}
-            {!isItemsLoading && collectionData && sortedItems.length >= 0 && (
+            {!items.isLoading && collectionData && sortedItems.length >= 0 && (
               <div
-                className={`${
+                className={` py-2 ${
                   isGridView
-                    ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full'
+                    ? 'grid grid-cols-2 gap-1 lg:gap-1.5 max-h-full'
                     : 'flex flex-col space-y-2'
-                } py-2 `}>
-                {sortedItems.map(
-                  (item) =>
-                    item && (
-                      <ItemOverview
-                        key={item._id}
-                        item={item}
-                        active={selectedItemId === item._id}
-                        collectionProperty={collectionData.properties}
-                        onItemClick={handleOnClickItem}
-                      />
-                    )
-                )}
+                } ${
+                  isGridView && drawer.isOpen
+                    ? 'lg:grid-cols-2'
+                    : 'lg:grid-cols-3'
+                } `}>
+                {sortedItems.map((item) => (
+                  <ItemOverview
+                    key={item.id}
+                    item={item}
+                    active={selectedItemId === item.id}
+                    collectionProperty={collectionData.properties}
+                    onItemClick={handleOnClickItem}
+                  />
+                ))}
               </div>
             )}
           </div>
@@ -494,27 +511,22 @@ const Collections: NextPage<
             menu={
               <ItemMenu
                 onClickAddProperty={handleOnClickAddProperty}
+                onClickDuplicate={handleDuplicateSelectedItem}
                 onClickDelete={deleteItemModal.openModal}
               />
             }>
-            <div
-              className='grow space-y-1.5 pr-2.5 pt-0.5 overflow-y-auto scrollbar-thin
-                      scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600'>
-              {selectedItem.properties.map(
-                (property) =>
-                  property._id && (
-                    <Property
-                      collectionProperty={collection.getCollectionPropertyById(
-                        property._id
-                      )}
-                      getValue={selectedItem.getPropertyValue}
-                      setValue={handlePropertyValueChange}
-                      onPropertyUpdate={handleUpdateProperty}
-                      onPropertyDuplicate={handleDuplicateProperty}
-                      onPropertyDelete={handleDeleteProperty}
-                    />
-                  )
-              )}
+            <div className='grow space-y-1.5 pt-1.5 overflow-y-auto scrollbar-none'>
+              {selectedItem.properties.map((property) => (
+                <Property
+                  key={property.id}
+                  collectionProperty={collection.getPropertyById(property.id)}
+                  getValue={selectedItem.getPropertyValue}
+                  setValue={handlePropertyValueChange}
+                  onPropertyUpdate={handleUpdateProperty}
+                  onPropertyDuplicate={handleDuplicateProperty}
+                  onPropertyDelete={handleDeleteProperty}
+                />
+              ))}
             </div>
             <div>
               <Button
@@ -527,7 +539,7 @@ const Collections: NextPage<
             </div>
           </Drawer>
         )}
-      </main>
+      </div>
       {/* create item modal  */}
       {collectionData && createItemModal.isOpen && (
         <CreateItemModal
@@ -588,5 +600,3 @@ const Collections: NextPage<
 };
 
 export default Collections;
-
-export const getServerSideProps = withPageAuthRequired();

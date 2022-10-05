@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react';
-import { Button, Modal } from '../frontstate-ui';
+import { Button, Input, Modal } from '@frontstate-ui';
+
 
 interface RenameModalProps {
   name: string;
@@ -13,11 +14,10 @@ const RenameModal: FC<RenameModalProps> = (props) => {
   const [newName, setNewName] = useState(name);
   return (
     <Modal title='Rename' open={open} onHide={handleClose}>
-      <input
+      <Input
         value={newName}
         onChange={(e) => setNewName(e.target.value)}
         placeholder='New name'
-        className='modal-input'
       />
       <div className='flex justify-end space-x-2 mt-2'>
         <Button onClick={handleClose}>

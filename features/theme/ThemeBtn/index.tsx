@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
+import { ActionIcon } from '@frontstate-ui';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import useDarkMode from '../hooks/useDarkMode';
-import { MoonIcon } from '@heroicons/react/solid';
-import { SunIcon } from '@heroicons/react/outline';
-import { ActionIcon } from '../../../components/frontstate-ui';
+
 
 const ThemeBtn: FC = () => {
   const [darkTheme, setDarkTheme] = useDarkMode();

@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react';
-import { IItem, IItemProperty, IProperty } from '../../../../interfaces';
-import { Button, Modal } from '../../../../components/frontstate-ui';
+import { Button, Modal } from '@frontstate-ui';
 
 interface CreateItemModalProps {
   open: boolean;
@@ -27,9 +26,7 @@ const CreateItemModal: FC<CreateItemModalProps> = (props) => {
             type='text'
             name='name'
             value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
+            onChange={(e) => setName(e.target.value)}
             placeholder='Item name'
             className='modal-input'
           />

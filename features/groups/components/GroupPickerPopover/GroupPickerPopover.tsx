@@ -1,11 +1,13 @@
-import React, { FC, Fragment } from 'react';
+import React, { FC, Fragment, ReactNode } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Popover, Transition } from '@headlessui/react';
-import { useQuery } from 'react-query';
+import { HashtagIcon } from '@heroicons/react/24/outline';
 import { getGroups } from '../../services';
-import { HashtagIcon } from '@heroicons/react/outline';
+
 
 interface GroupPickerPopoverProps {
-  onClickGroup: (grid: string) => void;
+  children: ReactNode;
+  onClickGroup: (gid: string) => void;
 }
 const GroupPickerPopover: FC<GroupPickerPopoverProps> = (props) => {
   const { children, onClickGroup } = props;
@@ -31,11 +33,10 @@ const GroupPickerPopover: FC<GroupPickerPopoverProps> = (props) => {
               rounded-md bg-gray-200 dark:bg-gray-700 overflow-hidden'>
               <span className='text-center text-lg'>Location</span>
               {groups &&
-                groups.map(({ _id: id, name, collections }) => (
+                groups.map(({ id, name, collections }) => (
                   <button
                     key={id}
                     onClick={() => {
-                      if (!id) return;
                       onClickGroup(id);
                       close();
                     }}

@@ -1,44 +1,50 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../backend/database/dbConnect';
-import Collection from '../../../backend/models/Collection';
-import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
-import { Response } from '../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
-dbConnect();
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getSession(req, res, authOptions);
 
-export default withApiAuthRequired(async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Response>
-) {
-  const session = getSession(req, res);
-  const user = session?.user;
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  const userId = session.user.id;
+
   const { method } = req;
   switch (method) {
     case 'GET':
       try {
-        const collections = await Collection.find({ userId: user?.sub }).sort({
-          name: 1,
-        });
-        res.status(200).json({ isSuccess: true, data: collections });
-      } catch (error) {
-        res.status(400).json({ isSuccess: false });
-      }
-      break;
-    case 'POST':
-      try {
-        const collection = await Collection.create({
-          ...req.body.collection,
-          userId: user?.sub,
+        const collections = await prisma.collection.findMany({
+          where: { userId },
+          include: { _count: { select: { items: true } } },
+          orderBy: { name: 'asc' },
         });
 
-        res.status(201).json({ isSuccess: true, data: collection });
+        return res.status(200).json({ isSuccess: true, data: collections });
       } catch (error) {
-        console.log(error);
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] collections/', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
+    case 'POST':
+      try {
+        const collectionData: Prisma.CollectionCreateInput = {
+          ...req.body.collection,
+          userId,
+        };
+
+        const collection = await prisma.collection.create({
+          data: collectionData,
+        });
+
+        return res.status(201).json({ isSuccess: true, data: collection });
+      } catch (error) {
+        console.log('[api] collections/', error);
+        return res.status(500).json({ isSuccess: false, message: error });
+      }
+
     default:
-      res.status(400).json({ isSuccess: false });
-      break;
+      return res.status(400).json({ isSuccess: false });
   }
-});
+};

@@ -1,10 +1,11 @@
+import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-  DotsVerticalIcon,
-  PencilIcon,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import React, { FC, Fragment } from 'react';
+    EllipsisVerticalIcon,
+    PencilIcon,
+    TrashIcon
+} from '@heroicons/react/24/outline';
+
 
 interface SidebarGroupMenuProps {
   showDelete: boolean;
@@ -18,7 +19,7 @@ const SidebarGroupMenu: FC<SidebarGroupMenuProps> = (props) => {
     <Menu as='div' className='relative'>
       <Menu.Button
         className={`flex items-center p-0.5 rounded hover:bg-gray-300 dark:hover:bg-gray-600`}>
-        <DotsVerticalIcon className='icon-xs' />
+        <EllipsisVerticalIcon className='icon-xs' />
       </Menu.Button>
       <Transition
         as={Fragment}

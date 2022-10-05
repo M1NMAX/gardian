@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from 'react-query';
-import { removeItemFromCollection } from '../../collections';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteItem, renameItem, updateItemProperty } from '../services';
+
 
 const useItem = (id: string, cid: string) => {
   const queryClient = useQueryClient();
@@ -26,7 +26,6 @@ const useItem = (id: string, cid: string) => {
   );
   const { mutate: deleteItemMutateFun } = useMutation(deleteItem, {
     onSuccess: async () => {
-      await removeItemFromCollection(cid, id);
       invalidateCollectionQueries();
       invalidateItemsQueries();
     },

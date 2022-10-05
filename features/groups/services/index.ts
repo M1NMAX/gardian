@@ -1,39 +1,49 @@
-import { IGroup } from '../../../interfaces';
-import { getRequestOptions } from '../../../utils';
+import { getFetch } from '@lib/fetch';
+import { Group, Prisma } from '@prisma/client';
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/groups/';
 
-//Types
+const selectCollectionsId = Prisma.validator<Prisma.GroupSelect>()({
+  collections: { select: { id: true } },
+});
 
-export async function createGroup(name: string): Promise<IGroup> {
-  const res = await fetch(baseUrl, getRequestOptions('POST', { name }));
-  return res.json().then((response) => response.data);
+export type GroupWithCollectionsId = Prisma.GroupGetPayload<{
+  include: typeof selectCollectionsId;
+}>;
+export async function getGroups(): Promise<GroupWithCollectionsId[]> {
+  const res = await getFetch(baseUrl);
+  return res;
+}
+export async function getGroup(id: string): Promise<GroupWithCollectionsId> {
+  const res = await getFetch(baseUrl + id);
+  return res;
 }
 
-export async function getGroups(): Promise<IGroup[]> {
-  const res = await fetch(baseUrl);
-  return res.json().then((response) => response.data);
-}
-export async function getGroup(id: string): Promise<IGroup> {
-  const res = await fetch(baseUrl + id);
-  return res.json().then((response) => response.data);
+export async function createGroup(
+  name: string
+): Promise<GroupWithCollectionsId> {
+  const res = await getFetch(baseUrl, 'POST', { name });
+  return res;
 }
 
-export async function updateGroup(id: string, group: IGroup): Promise<boolean> {
-  const res = await fetch(baseUrl + id, getRequestOptions('PUT', group));
-  return res.json().then((response) => response.isSuccess);
+export async function updateGroup(
+  id: string,
+  group: Prisma.GroupUpdateInput
+): Promise<Group> {
+  const res = await getFetch(baseUrl + id, 'PUT', { group });
+  return res;
 }
 
 export async function deleteGroup(id: string): Promise<boolean> {
-  const res = await fetch(baseUrl + id, { method: 'DELETE' });
-  return res.json().then((response) => response.isSuccess);
+  const res = await getFetch(baseUrl + id, 'DELETE');
+  return res;
 }
 
-export async function renameGroup(id: string, name: string): Promise<boolean> {
-  const group = await getGroup(id);
-  return updateGroup(id, { ...group, name });
+export async function renameGroup(id: string, name: string): Promise<Group> {
+  return updateGroup(id, { name });
 }
 
+//REMOVE
 export async function addCollectionToGroup(
   groupId: string,
   collectionId: string
@@ -52,16 +62,4 @@ export async function removeCollectionFromGroup(
     method: 'DELETE',
   });
   return res.json().then((response) => response.isSuccess);
-}
-
-export async function getGroupWithCid(cid: string) {
-  try {
-    const groups = await getGroups();
-
-    const group = groups.find((group) => group.collections.includes(cid));
-    return group ? group : ({} as IGroup);
-  } catch (error) {
-    console.log(error);
-    return {} as IGroup;
-  }
 }

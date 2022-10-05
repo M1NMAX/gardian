@@ -1,5 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import style from './Button.module.css';
+
 
 type ButtonVariantsType =
   | 'primary-filled'
@@ -9,6 +10,7 @@ type ButtonVariantsType =
   | 'danger-filled';
 
 interface ButtonProps {
+  children: ReactNode;
   variant?: ButtonVariantsType;
   type?: 'button' | 'submit' | 'reset';
   full?: boolean;

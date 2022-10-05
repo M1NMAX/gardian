@@ -1,16 +1,16 @@
-import React, { FC, useState } from 'react';
-import { Button, Label, Modal } from '../../../../components/frontstate-ui';
-import { CheckCircleIcon } from '@heroicons/react/solid';
-import { RadioGroup } from '@headlessui/react';
-import { IGroup } from '../../../../interfaces';
-import { createCollection } from '../../../../features/collections';
-import { CollectionIcon, LightningBoltIcon } from '@heroicons/react/outline';
-import { addCollectionToGroup } from '../../../groups';
-import { useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
+import React, { FC, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createCollection } from '@features/collections';
+import { Button, Label, Modal } from '@frontstate-ui';
+import { RadioGroup } from '@headlessui/react';
+import { BoltIcon, RectangleStackIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
+import { GroupWithCollectionsId } from '../../../groups';
+
 
 interface CreateCollectionModalProps {
-  groups: IGroup[];
+  groups: GroupWithCollectionsId[];
   open: boolean;
   handleClose: () => void;
   positiveFeedback: (value: string) => void;
@@ -24,19 +24,16 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
   const router = useRouter();
 
   const [name, setName] = useState('');
-  const [selectedGroup, setSelectedGroup] = useState(groups[0]._id);
+  const [selectedGroup, setSelectedGroup] = useState(groups[0].id);
 
   const queryClient = useQueryClient();
 
   const { mutate: createCollectionMutateFun } = useMutation(createCollection, {
-    onSuccess: async ({ _id: collectionId }) => {
-      if (!collectionId) throw 'CollectionId is undefined';
-      if (!selectedGroup) throw 'SelectedGroupId is undefined';
-      await addCollectionToGroup(selectedGroup, collectionId);
+    onSuccess: async ({ id }) => {
       queryClient.invalidateQueries(['groups']);
       queryClient.invalidateQueries(['collections']);
       positiveFeedback('Collection created');
-      router.push('/collections/' + collectionId);
+      router.push('/collections/' + id);
     },
     onError: () => {
       negativeFeedback();
@@ -49,19 +46,15 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     createCollectionMutateFun({
+      icon: {},
       name,
-      icon: '',
-      description: '',
-      isDescriptionHidden: true,
-      isFavourite: false,
-      properties: [],
-      items: [],
+      groupId: selectedGroup,
     });
   };
 
   return (
     <Modal
-      title={<Label icon={<CollectionIcon />} text='New collection' />}
+      title={<Label icon={<RectangleStackIcon />} text='New collection' />}
       open={open}
       onHide={handleClose}>
       <form onSubmit={handleSubmit} className='modal-form'>
@@ -88,7 +81,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
               {groups.map((group, idx) => (
                 <RadioGroup.Option
                   key={idx}
-                  value={group._id}
+                  value={group.id}
                   className={({ checked }) =>
                     `${
                       checked
@@ -118,7 +111,7 @@ const CreateCollectionModal: FC<CreateCollectionModalProps> = (props) => {
                                   : 'text-gray-600 dark:text-gray-50'
                               }`}>
                               <span className='mt-0.5 flex items-center space-x-0.5'>
-                                <LightningBoltIcon className='w-4 h-4' />
+                                <BoltIcon className='w-4 h-4' />
                                 <span className='text-xs font-light italic'>
                                   {group.collections.length}
                                 </span>

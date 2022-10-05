@@ -1,15 +1,15 @@
+import React, { FC, Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import {
-  DotsVerticalIcon,
+  EllipsisVerticalIcon,
   InformationCircleIcon,
   PencilIcon,
   PlusIcon,
   StarIcon as StarIconOutline,
-  TrashIcon,
-} from '@heroicons/react/outline';
-import { StarIcon as StarIconFilled } from '@heroicons/react/solid';
-import React, { FC, Fragment } from 'react';
-import { Button } from '../../../../components/frontstate-ui';
+  TrashIcon
+} from '@heroicons/react/24/outline';
+import { StarIcon as StarIconFilled } from '@heroicons/react/24/solid';
+
 
 interface CollectionMenuProps {
   isFavourite: boolean;
@@ -35,7 +35,7 @@ const CollectionMenu: FC<CollectionMenuProps> = (props) => {
   return (
     <Menu as='div' className='relative'>
       <Menu.Button className='menu-filled-variant'>
-        <DotsVerticalIcon className='icon-sm' />
+        <EllipsisVerticalIcon className='icon-sm' />
       </Menu.Button>
       <Transition
         as={Fragment}

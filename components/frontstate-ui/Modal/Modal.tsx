@@ -1,10 +1,12 @@
 import React, { FC, Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+
 
 type SizeType = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 interface ModalProps {
-  title: ReactNode;
+  children: ReactNode;
+  title?: ReactNode;
   open: boolean;
   onHide: (value: boolean | React.MouseEvent<HTMLButtonElement>) => void;
   size?: SizeType;
@@ -77,7 +79,7 @@ const Modal: FC<ModalProps> = (props) => {
                   <button
                     onClick={onHide}
                     className='p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-white '>
-                    <XIcon className='icon-lg' />
+                    <XMarkIcon className='icon-lg' />
                   </button>
                 )}
               </div>

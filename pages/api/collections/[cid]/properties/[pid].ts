@@ -1,44 +1,63 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../../../backend/database/dbConnect';
-import Collection from '../../../../../backend/models/Collection';
-import { Response } from '../../../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
 
-dbConnect();
 
-export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  //cid: short for collectionId
+  //pid: short for propertyId
   const {
     query: { cid, pid },
     method,
   } = req;
 
+  const session = await getSession(req, res, authOptions);
+
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  if (Array.isArray(cid) || Array.isArray(pid)) {
+    return res.status(400).json({ isSuccess: false });
+  }
+
   switch (method) {
     case 'PUT':
       try {
-        const property = req.body.property;
-        const colleciton = await Collection.findByIdAndUpdate(
-          cid,
-          { $set: { 'properties.$[element]': property } },
-          { arrayFilters: [{ 'element._id': pid }] }
-        );
-        if (!colleciton) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: colleciton });
+        const { name, type, options } = req.body.property;
+
+        const collection = await prisma.collection.update({
+          where: { id: cid },
+          data: {
+            properties: {
+              updateMany: { where: { id: pid }, data: { name, type, options } },
+            },
+          },
+        });
+
+        if (!collection) return res.status(400).json({ isSuccess: false });
+        return res.status(200).json({ isSuccess: true, data: collection });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] collections/properties/[pid]', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
     case 'DELETE':
       try {
-        const colleciton = await Collection.findByIdAndUpdate(cid, {
-          $pull: { properties: { _id: pid } },
+        const collection = await prisma.collection.update({
+          where: { id: cid },
+          data: {
+            properties: { deleteMany: { where: { id: pid } } },
+          },
         });
-        if (!colleciton) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true });
+
+        if (!collection) return res.status(400).json({ isSuccess: false });
+        return res.status(200).json({ isSuccess: true });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] collections/properties/[pid]', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
     default:
-      res.status(400).json({ isSuccess: false });
-      break;
+      return res.status(400).json({ isSuccess: false });
   }
 };

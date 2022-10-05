@@ -1,54 +1,61 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import dbConnect from '../../../../backend/database/dbConnect';
-import Item from '../../../../backend/models/Item';
-import { Response } from '../../../../types';
+import { authOptions } from '@api/auth/[...nextauth]';
+import { getSession } from '@lib/auth/session';
+import prisma from '@lib/prisma';
+import { Prisma } from '@prisma/client';
 
-dbConnect();
-
-//TODO:input validation
-export default async (req: NextApiRequest, res: NextApiResponse<Response>) => {
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  //id: item id
   const {
     query: { id },
     method,
   } = req;
 
+  const session = await getSession(req, res, authOptions);
+
+  if (!session) return res.status(401).json({ message: 'Unauthorized' });
+
+  if (Array.isArray(id)) return res.status(400).json({ isSuccess: false });
+
   switch (method) {
     case 'GET':
       try {
-        const item = await Item.findById(id);
+        const item = await prisma.item.findUnique({ where: { id } });
+
         if (!item) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: item });
+        return res.status(200).json({ isSuccess: true, data: item });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] items/[id]/', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
     case 'PUT':
       try {
-        const item = await Item.findByIdAndUpdate(
-          id,
-          { ...req.body, updatedAt: Date.now() },
-          {
-            new: true,
-            runValidators: true,
-          }
-        );
+        const itemData: Prisma.ItemUpdateInput = req.body.item;
+        const item = await prisma.item.update({
+          where: { id },
+          data: itemData,
+        });
+
         if (!item) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true, data: item });
+        return res.status(200).json({ isSuccess: true, data: item });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] items/[id]/', error);
+        return res.status(400).json({ isSuccess: false });
       }
-      break;
+
     case 'DELETE':
       try {
-        const deletedItem = await Item.deleteOne({ _id: id });
+        const deletedItem = await prisma.item.delete({ where: { id } });
+
         if (!deletedItem) return res.status(400).json({ isSuccess: false });
-        res.status(200).json({ isSuccess: true });
+        return res.status(200).json({ isSuccess: true });
       } catch (error) {
-        res.status(400).json({ isSuccess: false });
+        console.log('[api] items/[id]/', error);
+        return res.status(400).json({ isSuccess: false });
       }
       break;
     default:
-      res.status(400).json({ isSuccess: false });
-      break;
+      return res.status(400).json({ isSuccess: false });
   }
 };

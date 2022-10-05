@@ -1,167 +1,146 @@
-import { ICollection, IProperty } from '../../../interfaces';
-import { getRequestOptions } from '../../../utils';
+import { getFetch } from '@lib/fetch';
+import { Collection, Icon, Option, Prisma, PropertyType } from '@prisma/client';
+
 
 const baseUrl = process.env.NEXT_PUBLIC_API_URL + '/collections/';
 
+const includeItemCount = Prisma.validator<Prisma.CollectionInclude>()({
+  _count: { select: { items: true } },
+});
+
+export type CollectionWItemCount = Prisma.CollectionGetPayload<{
+  include: typeof includeItemCount;
+}>;
+
 //Types
 type RemovePropertyFromCollectionArg = {
-  collectionId: string;
-  propertyId: string;
+  cid: string;
+  pid: string;
 };
 
 type UpdateCollectionPropertyArg = {
-  collectionId: string;
-  propertyId: string;
-  property: IProperty;
+  cid: string;
+  property: Prisma.PropertyUpdateInput;
 };
 
-type AddPropertyFromCollectionArg = {
-  collectionId: string;
-  property: IProperty;
+type AddPropertyToCollectionArg = {
+  cid: string;
+  property: Prisma.PropertyUpdateInput;
 };
 
 //Collection
-export async function getCollections(): Promise<ICollection[]> {
-  const res = await fetch(baseUrl);
-  return res.json().then((response) => response.data);
+export async function getCollections(): Promise<CollectionWItemCount[]> {
+  const res = await getFetch(baseUrl);
+  return res;
 }
 
-export async function getCollection(id: string): Promise<ICollection> {
-  const res = await fetch(baseUrl + id);
-  return res.json().then((response) => response.data);
+export async function getCollection(id: string): Promise<CollectionWItemCount> {
+  const res = await getFetch(baseUrl + id);
+  return res;
 }
 
 export async function createCollection(
-  collection: ICollection
-): Promise<ICollection> {
-  const res = await fetch(baseUrl, getRequestOptions('POST', { collection }));
-  return res.json().then((response) => response.data);
+  collection: Prisma.CollectionUncheckedCreateWithoutUserInput
+): Promise<Collection> {
+  const res = await getFetch(baseUrl, 'POST', { collection });
+  return res;
 }
 
 export async function updateCollection(
-  collectionId: string,
-  collection: ICollection
-): Promise<boolean> {
-  const res = await fetch(
-    baseUrl + collectionId,
-    getRequestOptions('PUT', collection)
-  );
-  return res.json().then((response) => response.isSuccess);
+  cid: string,
+  collection: Prisma.CollectionUncheckedUpdateInput
+): Promise<Collection> {
+  const res = await getFetch(baseUrl + cid, 'PUT', { collection });
+  return res;
 }
 
 export async function changeCollectionIcon(
-  id: string,
-  icon: string
-): Promise<boolean> {
-  const collection = await getCollection(id);
-  return updateCollection(id, { ...collection, icon });
+  cid: string,
+  icon: Icon
+): Promise<Collection> {
+  return updateCollection(cid, { icon });
 }
 
 export async function renameCollection(
-  id: string,
+  cid: string,
   name: string
-): Promise<boolean> {
-  const collection = await getCollection(id);
-  return updateCollection(id, { ...collection, name });
+): Promise<Collection> {
+  return updateCollection(cid, { name });
 }
 
 export async function toggleCollectionIsFavourite(
-  id: string
-): Promise<boolean> {
-  const collection = await getCollection(id);
-  return updateCollection(id, {
-    ...collection,
-    isFavourite: !collection.isFavourite,
-  });
+  cid: string
+): Promise<Collection> {
+  const collection = await getCollection(cid);
+  return updateCollection(cid, { isFavourite: !collection.isFavourite });
 }
 
 export async function toggleCollectionDescriptionState(
-  id: string
-): Promise<boolean> {
-  const collection = await getCollection(id);
-  return updateCollection(id, {
-    ...collection,
+  cid: string
+): Promise<Collection> {
+  const collection = await getCollection(cid);
+  return updateCollection(cid, {
     isDescriptionHidden: !collection.isDescriptionHidden,
   });
 }
 
 export async function updateCollectionDescription(
-  id: string,
+  cid: string,
   description: string
-): Promise<boolean> {
-  const collection = await getCollection(id);
-  return updateCollection(id, { ...collection, description });
+): Promise<Collection> {
+  return updateCollection(cid, { description });
 }
 
-export async function deleteCollection(id: string): Promise<boolean> {
-  const res = await fetch(baseUrl + id, { method: 'DELETE' });
-  return res.json().then((response) => response.isSuccess);
+export async function moveCollection(
+  cid: string,
+  gid: string
+): Promise<Collection> {
+  return updateCollection(cid, { groupId: gid });
 }
 
-//ITEM
-export async function addItemToCollection(
-  collectionId: string,
-  itemId: string
-) {
-  const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
-    method: 'PATCH',
-  });
-  return res.json().then((response) => response.isSuccess);
-}
-
-export async function removeItemFromCollection(
-  collectionId: string,
-  itemId: string
-): Promise<boolean> {
-  const res = await fetch(baseUrl + collectionId + '/items/' + itemId, {
-    method: 'DELETE',
-  });
-  return res.json().then((response) => response.isSuccess);
+export async function deleteCollection(cid: string): Promise<boolean> {
+  const res = await getFetch(baseUrl + cid, 'DELETE');
+  return res;
 }
 
 // PROPERTY
 export async function addPropertyToCollection({
-  collectionId,
+  cid,
   property,
-}: AddPropertyFromCollectionArg): Promise<ICollection> {
-  const res = await fetch(
-    baseUrl + collectionId + '/properties/',
-    getRequestOptions('POST', { property })
-  );
-  return res.json().then((response) => response.data);
+}: AddPropertyToCollectionArg): Promise<Collection> {
+  const res = await getFetch(baseUrl + cid + '/properties/', 'PUT', {
+    property,
+  });
+  return res;
 }
 
 export async function updateCollectionProperty({
-  collectionId,
-  propertyId,
+  cid,
   property,
-}: UpdateCollectionPropertyArg): Promise<{
-  status: boolean;
-  propertyId: string;
-}> {
-  const res = await fetch(
-    baseUrl + collectionId + '/properties/' + propertyId,
-    getRequestOptions('PUT', { property })
+}: UpdateCollectionPropertyArg): Promise<Collection | null> {
+  let { id: pid, ...normalizad } = property;
+
+  const res: Collection | null = await getFetch(
+    baseUrl + cid + '/properties/' + pid,
+    'PUT',
+    {
+      property: normalizad,
+    }
   );
-  return res.json().then((response) => ({
-    status: response.isSuccess,
-    propertyId,
-  }));
+
+  return res;
 }
 
 export async function removePropertyFromCollection({
-  collectionId,
-  propertyId,
+  cid,
+  pid,
 }: RemovePropertyFromCollectionArg): Promise<{
-  status: boolean;
-  propertyId: string;
+  collection: Collection;
+  pid: string;
 }> {
-  const res = await fetch(
-    baseUrl + collectionId + '/properties/' + propertyId,
-    { method: 'DELETE' }
+  const res: Collection = await getFetch(
+    baseUrl + cid + '/properties/' + pid,
+    'DELETE'
   );
-  return res.json().then((response) => ({
-    status: response.isSuccess,
-    propertyId,
-  }));
+  return { collection: res, pid };
 }

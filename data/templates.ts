@@ -1,100 +1,115 @@
-import {
-  PROPERTY_CHECKBOX,
-  PROPERTY_DATE,
-  PROPERTY_SELECT,
-  PROPERTY_TEXTAREA,
-  PROPERTY_URL,
-} from '../constants';
-import { ITemplate } from '../interfaces';
+import { Color, Prisma, PropertyType } from '@prisma/client';
 
-export const templates: ITemplate[] = [
+
+export const templatesData: Prisma.TemplateCreateInput[] = [
   {
-    _id: '1',
     name: 'Events',
+    icon: { name: 'CalendarDaysIcon', color: Color.RED },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
-      { _id: '1', name: 'Date', type: PROPERTY_DATE, values: [] },
       {
-        _id: '2',
+        id: 'b61c1e22-2dcb-11ed-a261-0242ac120002',
+        name: 'Date',
+        type: PropertyType.DATE,
+        options: [],
+      },
+      {
+        id: 'e93c1ae6-2dcb-11ed-a261-0242ac120002',
         name: 'Notes',
-        type: PROPERTY_TEXTAREA,
-        values: [],
+        type: PropertyType.TEXT,
+        options: [],
       },
     ],
     items: [
       {
         name: 'Apple WWDC',
         properties: [
-          { _id: '1', value: '2022-06-24' },
-          { _id: '2', value: '06:00 PM' },
+          { id: 'b61c1e22-2dcb-11ed-a261-0242ac120002', value: '2022-06-24' },
+          { id: 'e93c1ae6-2dcb-11ed-a261-0242ac120002', value: '06:00 PM' },
         ],
       },
       {
         name: 'S birthdate',
         properties: [
-          { _id: '1', value: '2022-08-25' },
-          { _id: '2', value: 'I need to buy a chocolate cake' },
+          { id: 'b61c1e22-2dcb-11ed-a261-0242ac120002', value: '2022-08-25' },
+          {
+            id: 'e93c1ae6-2dcb-11ed-a261-0242ac120002',
+            value: 'I need to buy a chocolate cake',
+          },
         ],
       },
     ],
   },
   {
-    _id: '2',
     name: 'Tasks',
+    icon: { name: 'CheckBadgeIcon', color: Color.BLUE },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
       {
-        _id: '1',
+        id: '22462764-2dcc-11ed-a261-0242ac120002',
         name: 'Done',
-        type: PROPERTY_CHECKBOX,
-        values: [],
+        type: PropertyType.CHECKBOX,
+        options: [],
       },
       {
-        _id: '2',
+        id: '22462944-2dcc-11ed-a261-0242ac120002',
         name: 'Conclusion date',
-        type: PROPERTY_DATE,
-        values: [],
+        type: PropertyType.DATE,
+        options: [],
       },
       {
-        _id: '3',
+        id: '22462a3e-2dcc-11ed-a261-0242ac120002',
         name: 'Notes',
-        type: PROPERTY_TEXTAREA,
-        values: [],
+        type: PropertyType.DATE,
+        options: [],
       },
     ],
     items: [
       {
         name: 'Organize the agenda',
         properties: [
-          { _id: '1', value: 'true' },
-          { _id: '2', value: '2022-06-24' },
-          { _id: '3', value: 'Start from september' },
+          { id: '22462764-2dcc-11ed-a261-0242ac120002', value: 'true' },
+          { id: '22462944-2dcc-11ed-a261-0242ac120002', value: '2022-06-24' },
+          {
+            id: '22462a3e-2dcc-11ed-a261-0242ac120002',
+            value: 'Start from september',
+          },
         ],
       },
       {
         name: 'Change battery of smoke detecter',
         properties: [
-          { _id: '1', value: '' },
-          { _id: '2', value: '2022-08-25' },
-          { _id: '3', value: 'I John for help' },
+          { id: '22462764-2dcc-11ed-a261-0242ac120002', value: '' },
+          { id: '22462944-2dcc-11ed-a261-0242ac120002', value: '2022-08-25' },
+          {
+            id: '22462a3e-2dcc-11ed-a261-0242ac120002',
+            value: 'I John for help',
+          },
         ],
       },
     ],
   },
   {
-    _id: '3',
     name: 'Links',
+    icon: { name: 'LinkIcon', color: Color.YELLOW },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-    properties: [{ _id: '1', name: PROPERTY_URL, type: 'url', values: [''] }],
+    properties: [
+      {
+        id: '6c01497e-2dcc-11ed-a261-0242ac120002',
+        name: 'url',
+        type: PropertyType.URL,
+        options: [],
+      },
+    ],
     items: [
       {
         name: 'Static data forum',
         properties: [
           {
-            _id: '1',
+            id: '6c01497e-2dcc-11ed-a261-0242ac120002',
             value:
               'https://laracasts.com/discuss/channels/general-discussion/is-it-best-to-use-json-or-db-for-static-data?page=1',
           },
@@ -104,7 +119,7 @@ export const templates: ITemplate[] = [
         name: 'Headless ui',
         properties: [
           {
-            _id: '1',
+            id: '6c01497e-2dcc-11ed-a261-0242ac120002',
             value: 'https://headlessui.dev',
           },
         ],
@@ -113,56 +128,67 @@ export const templates: ITemplate[] = [
   },
 
   {
-    _id: '5',
     name: 'Movies',
+    icon: { name: 'FilmIcon' },
     description:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     properties: [
       {
-        _id: '1',
+        id: '801badd2-2dcc-11ed-a261-0242ac120002',
         name: 'Status',
-        type: PROPERTY_SELECT,
-        values: ['Plan to watch', 'Watching', 'Watched'],
-      },
-      {
-        _id: '2',
-        name: 'Score',
-        type: PROPERTY_SELECT,
-        values: [
-          '1-Appaling',
-          '2-Horrible',
-          '3-Very Bad',
-          '4-Bad',
-          '5-Average',
-          '6-Fine',
-          '7-Good',
-          '8-Very Good',
-          '9-Great',
-          '10-Masterpiece',
+        type: PropertyType.SELECT,
+        options: [
+          { value: 'Plan to watch' },
+          { value: 'Watching' },
+          { value: 'Watched' },
         ],
       },
       {
-        _id: '3',
+        id: '801bafbc-2dcc-11ed-a261-0242ac120002',
+        name: 'Score',
+        type: PropertyType.SELECT,
+        options: [
+          { value: '1-Appaling' },
+          { value: '2-Horrible' },
+          { value: '3-Very Bad' },
+          { value: '4-Bad' },
+          { value: '5-Average' },
+          { value: '6-Fine' },
+          { value: '7-Good' },
+          { value: '8-Very Good' },
+          { value: '9-Great' },
+          { value: '10-Masterpiece' },
+        ],
+      },
+      {
+        id: '801bb0b6-2dcc-11ed-a261-0242ac120002',
         name: 'Plataform',
-        type: PROPERTY_SELECT,
-        values: ['Netflix', 'Vizer.tv', 'Stremio'],
+        type: PropertyType.SELECT,
+        options: [
+          { value: 'Netflix' },
+          { value: 'Vizer.tv' },
+          { value: 'Stremio' },
+        ],
       },
     ],
     items: [
       {
         name: 'Taken',
         properties: [
-          { _id: '1', value: 'Plan to watch' },
-          { _id: '2', value: '' },
-          { _id: '3', value: 'Vizer.tv' },
+          {
+            id: '801badd2-2dcc-11ed-a261-0242ac120002',
+            value: 'Plan to watch',
+          },
+          { id: '801bafbc-2dcc-11ed-a261-0242ac120002', value: '' },
+          { id: '801bb0b6-2dcc-11ed-a261-0242ac120002', value: 'Vizer.tv' },
         ],
       },
       {
         name: 'The accountant',
         properties: [
-          { _id: '1', value: 'Watched' },
-          { _id: '2', value: '7-Good' },
-          { _id: '3', value: 'Stremio' },
+          { id: '801badd2-2dcc-11ed-a261-0242ac120002', value: 'Watched' },
+          { id: '801bafbc-2dcc-11ed-a261-0242ac120002', value: '7-Good' },
+          { id: '801bb0b6-2dcc-11ed-a261-0242ac120002', value: 'Stremio' },
         ],
       },
     ],

@@ -1,39 +1,33 @@
-import React, { FC, useEffect } from 'react';
-import { ThemeBtn } from '../../features/theme';
-import {
-  CollectionIcon,
-  PlusIcon,
-  SearchIcon,
-  TemplateIcon,
-  ViewGridAddIcon,
-} from '@heroicons/react/outline';
-import SidebarBtn from './SidebarBtn';
-import { ActionIcon, Button } from '../frontstate-ui';
-import { sidebarState } from '../../atoms/sidebarAtom';
-import { useRecoilState } from 'recoil';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import { useQuery } from 'react-query';
-import { toast, Toaster } from 'react-hot-toast';
-import {
-  CreateCollectionModal,
-  SidebarCollection,
-} from '../../features/collections';
 import { useRouter } from 'next/router';
-import useModal from '../../hooks/useModal';
-import { IGroup } from '../../interfaces';
-import { getGroups } from '../../features/groups/services';
-import { CreateGroupModal, SidebarGroup } from '../../features/groups';
+import React, { FC, useEffect } from 'react';
+import { toast, Toaster } from 'react-hot-toast';
+import { useRecoilState } from 'recoil';
+import { sidebarState } from '@atoms/sidebarAtom';
+import { SCREEN_SIZE_MD } from '@constants';
+import { CreateCollectionModal, SidebarCollection } from '@features/collections';
+import { CreateGroupModal, SidebarGroup } from '@features/groups';
+import { getGroups } from '@features/groups/services';
+import { ThemeBtn } from '@features/theme';
+import { ActionIcon, Button } from '@frontstate-ui';
+import {
+  MagnifyingGlassIcon,
+  PlusIcon,
+  RectangleGroupIcon,
+  RectangleStackIcon,
+  SquaresPlusIcon
+} from '@heroicons/react/24/outline';
+import useModal from '@hooks/useModal';
+import useWindowDimensions from '@hooks/useWindowDimensions';
+import { useQuery } from '@tanstack/react-query';
 import SearchModal from '../SearchModal';
+import SidebarBtn from './SidebarBtn';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
-import { SCREEN_SIZE_MD } from '../../constants';
+
 
 const Sidebar: FC = () => {
   const router = useRouter();
 
-  const { data: groups, isLoading } = useQuery<IGroup[], Error>(
-    ['groups'],
-    getGroups
-  );
+  const { data: groups, isLoading } = useQuery(['groups'], getGroups);
 
   const { width } = useWindowDimensions();
   const [sidebar, setSidebar] = useRecoilState(sidebarState);
@@ -75,21 +69,21 @@ const Sidebar: FC = () => {
             onClick={searchModal.openModal}
             className='w-full space-x-2 flex items-center rounded p-1
              bg-gray-300 dark:bg-gray-700'>
-            <SearchIcon className='icon-sm' />
+            <MagnifyingGlassIcon className='icon-sm' />
             <span>Find, explore</span>
           </button>
           <SidebarUserPopoverMenu />
         </div>
 
         <SidebarBtn
-          icon={<TemplateIcon />}
+          icon={<RectangleGroupIcon />}
           text='Templates'
           active={router.pathname === '/templates'}
           onClick={() => onClickSiderLink('/templates')}
         />
 
         <SidebarBtn
-          icon={<CollectionIcon />}
+          icon={<RectangleStackIcon />}
           text='My Collections'
           active={router.pathname === '/collections'}
           onClick={() => onClickSiderLink('/collections')}
@@ -104,27 +98,23 @@ const Sidebar: FC = () => {
               className='flex flex-col space-y-1 animate-pulse rounded
              bg-gray-100 dark:bg-gray-800'>
               <div className='w-full h-8  rounded-md bg-gray-300 dark:bg-gray-600'></div>
-              <div className='w-1/3 h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
+              <div className='w-full h-4  rounded-md bg-gray-300 dark:bg-gray-600'></div>
             </div>
           )}
 
           {/* Loading state is finished  */}
           {!isLoading &&
             groups &&
-            groups.map((group, idx) => (
-              <SidebarGroup key={idx} group={group}>
-                {/**Display group collections */}
-                {group.collections.map(
-                  (collectionId) =>
-                    group._id && (
-                      <SidebarCollection
-                        key={collectionId}
-                        collectionId={collectionId}
-                        groupId={group._id}
-                        onClick={() => onClickSidebarCollection(collectionId)}
-                      />
-                    )
-                )}
+            groups.map((group) => (
+              <SidebarGroup key={group.id} group={group}>
+                {group.collections.map(({ id: cid }: { id: string }) => (
+                  <SidebarCollection
+                    key={cid}
+                    collectionId={cid}
+                    groupId={group.id}
+                    onClick={() => onClickSidebarCollection(cid)}
+                  />
+                ))}
               </SidebarGroup>
             ))}
         </div>
@@ -136,13 +126,13 @@ const Sidebar: FC = () => {
             <Button
               onClick={createCollectionModal.openModal}
               variant='secondary-hover'
-              full
-              isDisabled={groups?.length === 0}>
+              isDisabled={groups && groups.length === 0}
+              full>
               <PlusIcon className='icon-sm' />
               <span>New Collection</span>
             </Button>
             <ActionIcon onClick={() => createGroupModal.openModal()}>
-              <ViewGridAddIcon className='icon-sm' />
+              <SquaresPlusIcon className='icon-sm' />
             </ActionIcon>
           </div>
         </div>
