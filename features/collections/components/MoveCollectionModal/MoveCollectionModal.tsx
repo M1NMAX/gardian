@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { getGroups } from '@features/groups/services';
 import { Modal } from '@frontstate-ui';
 import { RadioGroup } from '@headlessui/react';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
-import { getGroups } from '../../../groups/services';
+import { useQuery } from '@tanstack/react-query';
 
 
 interface MoveCollectionModalProps {
@@ -16,7 +16,7 @@ interface MoveCollectionModalProps {
 const MoveCollectionModal: FC<MoveCollectionModalProps> = (props) => {
   const { currentGroupId, open, handleClose, onMove } = props;
 
-  const { data: groups } = useQuery('groups', getGroups);
+  const { data: groups } = useQuery(['groups'], getGroups);
   const [selectedGroupId, setSelectedGroupId] = useState(currentGroupId);
 
   return (
