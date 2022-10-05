@@ -90,13 +90,15 @@ const SignUp: NextPage<
         <title>Sign up</title>
       </Head>
       <div className='sm:mx-auto sm:w-full sm:max-w-md text-center pt-4'>
-        <a href='/'>
-          <img
-            className='h-16 mx-auto'
-            src='/assets/gardian.png'
-            alt='Gardian Logo'
-          />
-        </a>
+        <Link href='/'>
+          <a>
+            <img
+              className='h-16 mx-auto'
+              src='/assets/gardian.png'
+              alt='Gardian Logo'
+            />
+          </a>
+        </Link>
         <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
           <h1 className='text-xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
             Recollective

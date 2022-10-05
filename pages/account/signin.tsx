@@ -78,13 +78,15 @@ const SignIn: NextPage<
         <title>Sign in</title>
       </Head>
       <div className='sm:mx-auto sm:w-full sm:max-w-md text-center pt-4'>
-        <a href='/'>
-          <img
-            className='h-16 mx-auto'
-            src='/assets/gardian.png'
-            alt='Gardian Logo'
-          />
-        </a>
+        <Link href='/'>
+          <a>
+            <img
+              className='h-16 mx-auto'
+              src='/assets/gardian.png'
+              alt='Gardian Logo'
+            />
+          </a>
+        </Link>
         <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
           <h1 className='text-xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
             Recollective
@@ -195,7 +197,7 @@ const SignIn: NextPage<
         </div>
         <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
           <p className='font-medium'>
-            Don't have an account?
+            Don&apos;t have an account?
             <Link href='/account/signup'>
               <a
                 className='text-primary-200 px-1.5 hover:underline
