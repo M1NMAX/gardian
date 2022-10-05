@@ -418,7 +418,7 @@ const Collections: NextPage = () => {
               />
               {/* views  */}
               <ViewButton
-                value={isGridView}
+                isGrid={isGridView}
                 onClick={() => setIsGridView(!isGridView)}
               />
 

@@ -30,7 +30,6 @@ const TemplatesPage: NextPage = () => {
   const sidebar = useRecoilValue(sidebarState);
 
   const templates = useQuery(['templates'], getTemplates);
-  console.log(templates);
 
   //Feedback
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -126,7 +125,7 @@ const TemplatesPage: NextPage = () => {
               />
               {/* views  */}
               <ViewButton
-                value={isGridView}
+                isGrid={isGridView}
                 onClick={() => setIsGridView(!isGridView)}
               />
             </div>

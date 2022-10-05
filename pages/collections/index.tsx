@@ -1,3 +1,4 @@
+import { Button, DarkThemeToggle } from 'flowbite-react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
@@ -16,7 +17,6 @@ import {
 import { getGroups } from '@features/groups/services';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { useView, ViewButton } from '@features/view';
-import { Button } from '@frontstate-ui';
 import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import { getSession } from '@lib/auth/session';
@@ -86,9 +86,7 @@ const Collections: NextPage<
 
           {!isLoading && sortedCollections.length > 0 && (
             <div className='flex items-center space-x-2'>
-              <Button
-                onClick={createCollectionModal.openModal}
-                variant='primary-hover'>
+              <Button onClick={createCollectionModal.openModal} color='success'>
                 <PlusIcon className='icon-md md:icon-sm ' />
                 <span className='hidden md:block'>New Collection</span>
               </Button>
@@ -101,7 +99,7 @@ const Collections: NextPage<
               />
               {/* views  */}
               <ViewButton
-                value={isGridView}
+                isGrid={isGridView}
                 onClick={() => setIsGridView(!isGridView)}
               />
             </div>
@@ -120,10 +118,7 @@ const Collections: NextPage<
 
           {/* loading state is finish and there are no collection  */}
           {!isLoading && sortedCollections.length === 0 && (
-            <Button
-              onClick={createCollectionModal.openModal}
-              variant='primary-filled'
-              full>
+            <Button onClick={createCollectionModal.openModal}>
               <PlusIcon className='icon-sm' />
               <span>New Collection</span>
             </Button>
