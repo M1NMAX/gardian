@@ -1,3 +1,4 @@
+import { Button, DarkThemeToggle, Tooltip } from 'flowbite-react';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
@@ -7,8 +8,6 @@ import { SCREEN_SIZE_MD } from '@constants';
 import { CreateCollectionModal, SidebarCollection } from '@features/collections';
 import { CreateGroupModal, SidebarGroup } from '@features/groups';
 import { getGroups } from '@features/groups/services';
-import { ThemeBtn } from '@features/theme';
-import { ActionIcon, Button } from '@frontstate-ui';
 import {
   MagnifyingGlassIcon,
   PlusIcon,
@@ -64,15 +63,11 @@ const Sidebar: FC = () => {
         duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white flex flex-col py-1.5  space-y-1 `}>
         {/* Top section aka search  */}
-        <div className=' flex justify-between items-center space-x-1 px-2'>
-          <button
-            onClick={searchModal.openModal}
-            className='w-full space-x-2 flex items-center rounded p-1
-             bg-gray-300 dark:bg-gray-700'>
-            <MagnifyingGlassIcon className='icon-sm' />
-            <span>Find, explore</span>
-          </button>
+        <div className='flex justify-between items-center space-x-1 px-1'>
           <SidebarUserPopoverMenu />
+          <Tooltip content='Theme'>
+            <DarkThemeToggle />
+          </Tooltip>
         </div>
 
         <SidebarBtn
@@ -120,21 +115,20 @@ const Sidebar: FC = () => {
         </div>
 
         {/* Bottom section  */}
-        <div className='w-full flex items-center px-1 space-x-2'>
-          <ThemeBtn />
-          <div className='grow flex border-l-2 pl-2 border-gray-200 dark:border-gray-700'>
-            <Button
-              onClick={createCollectionModal.openModal}
-              variant='secondary-hover'
-              isDisabled={groups && groups.length === 0}
-              full>
-              <PlusIcon className='icon-sm' />
-              <span>New Collection</span>
-            </Button>
-            <ActionIcon onClick={() => createGroupModal.openModal()}>
+        <div className='w-full flex justify-between items-center space-x-1 px-1'>
+          <Button
+            color='gray'
+            onClick={createCollectionModal.openModal}
+            disabled={groups && groups.length === 0}>
+            <PlusIcon className='icon-sm' />
+            <span>New Collection</span>
+          </Button>
+
+          <Tooltip content='Create Group'>
+            <Button color='gray' onClick={() => createGroupModal.openModal()}>
               <SquaresPlusIcon className='icon-sm' />
-            </ActionIcon>
-          </div>
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <Toaster position='bottom-center' />
