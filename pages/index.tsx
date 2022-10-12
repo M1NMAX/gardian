@@ -1,11 +1,11 @@
 import type { GetServerSidePropsContext, NextPage } from 'next';
+import { DarkThemeToggle } from 'flowbite-react';
 import { signIn } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { authOptions } from '@api/auth/[...nextauth]';
 import Logo from '@components/Logo';
-import { ThemeBtn } from '@features/theme';
 import { Button } from '@frontstate-ui';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { getSession } from '@lib/auth/session';
@@ -26,7 +26,7 @@ const Home: NextPage = () => {
     bg-gray-100 dark:bg-gray-800 dark:text-white px-4'>
         <Logo />
         <div className='flex items-center space-x-2'>
-          <ThemeBtn />
+          <DarkThemeToggle />
           <Button onClick={() => signIn()} variant='primary-filled'>
             <ArrowLeftOnRectangleIcon className='icon-xs' />
             <span>Login</span>

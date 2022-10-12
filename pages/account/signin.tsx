@@ -1,3 +1,4 @@
+import { Label, TextInput } from 'flowbite-react';
 import { Formik, FormikHelpers } from 'formik';
 import { filter } from 'lodash';
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
@@ -5,12 +6,12 @@ import { ClientSafeProvider, getCsrfToken, getProviders, signIn } from 'next-aut
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { SyntheticEvent, useState } from 'react';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import * as Yup from 'yup';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { BASIC_ERROR_MSG, MINIMUM_ACTIVITY_TIMEOUT } from '@constants';
-import { Button, PasswordInput, TextInput } from '@frontstate-ui';
+import { Button, PasswordInput } from '@frontstate-ui';
 import { getSession } from '@lib/auth/session';
 
 
@@ -125,33 +126,60 @@ const SignIn: NextPage<
                     hidden
                   />
 
-                  <div>
-                    <TextInput
-                      type='email'
-                      label='Email Address'
-                      name='email'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      error={
-                        touched.email && errors.email ? errors.email : undefined
-                      }
-                    />
+                  <div className='mt-2'>
+                    <div className='relative z-0'>
+                      <input
+                        id='email'
+                        type='email'
+                        name='email'
+                        className='block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                        placeholder=' '
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.email}
+                        required
+                      />
+                      <label
+                        htmlFor='email'
+                        className='absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'>
+                        Email Address
+                      </label>
+                    </div>
+                    {touched.email && errors.email && (
+                      <p
+                        id='standard_error_help'
+                        className='mt-2 text-xs text-center font-medium text-danger-200'>
+                        {errors.email}
+                      </p>
+                    )}
                   </div>
 
                   <div className='mt-2'>
-                    <PasswordInput
-                      label='Password'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      name='password'
-                      error={
-                        touched.password && errors.password
-                          ? errors.password
-                          : undefined
-                      }
-                    />
+                    <div className='relative z-0'>
+                      <input
+                        id='password'
+                        type='password'
+                        name='password'
+                        className='block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
+                        placeholder=' '
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                        required
+                      />
+                      <label
+                        htmlFor='password'
+                        className='absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'>
+                        Password
+                      </label>
+                    </div>
+                    {touched.password && errors.password && (
+                      <p
+                        id='standard_error_help'
+                        className='mt-2 text-xs text-center font-medium text-danger-200'>
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <div className='mt-4 space-y-2 flex justify-center'>

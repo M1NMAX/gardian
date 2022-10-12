@@ -17,7 +17,7 @@ function App({ Component, pageProps }: AppProps) {
           <Flowbite theme={{ theme }}>
             <Component {...pageProps} />
           </Flowbite>
-          <ReactQueryDevtools position='top-left' />
+          {/* <ReactQueryDevtools position='bottom-left' /> */}
         </QueryClientProvider>
       </RecoilRoot>
     </SessionProvider>
