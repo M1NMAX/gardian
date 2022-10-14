@@ -7,8 +7,8 @@ export const flowbiteTheme: CustomFlowbiteTheme = {
     disabled: 'cursor-no-drop opacity-50',
     color: {
       success:
-        'bg-primary-200  hover:bg-primary-300  disabled:hover:bg-primary-200',
-      gray: 'w-full hover:bg-gray-200 dark:bg-gray-700',
+        'w-full bg-primary-200  hover:bg-primary-300  disabled:hover:bg-primary-200',
+      gray: 'w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600',
     },
     size: {
       md: 'p-0.5',

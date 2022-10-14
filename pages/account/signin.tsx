@@ -1,4 +1,4 @@
-import { Label, TextInput } from 'flowbite-react';
+import { Button } from 'flowbite-react';
 import { Formik, FormikHelpers } from 'formik';
 import { filter } from 'lodash';
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
@@ -11,7 +11,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import * as Yup from 'yup';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { BASIC_ERROR_MSG, MINIMUM_ACTIVITY_TIMEOUT } from '@constants';
-import { Button, PasswordInput } from '@frontstate-ui';
+import { Divider, FloatingLabel, Header, Providers, Title } from '@features/account';
 import { getSession } from '@lib/auth/session';
 
 
@@ -37,6 +37,7 @@ const SignIn: NextPage<
   const handleProviderSignIn = (provider: ClientSafeProvider) => {
     signIn(provider.id);
   };
+
   const handleSubmit = async (
     values: ISigninUser,
     actions: FormikHelpers<ISigninUser>
@@ -74,35 +75,16 @@ const SignIn: NextPage<
     }
   };
   return (
-    <div className='h-screen flex flex-col justify-center py-4 sm:px-6 lg:px-8'>
+    <div className='h-screen flex flex-col justify-center py-4 sm:px-6 lg:px-8 dark:bg-gray-900 dark:text-white'>
       <Head>
         <title>Sign in</title>
       </Head>
-      <div className='sm:mx-auto sm:w-full sm:max-w-md text-center pt-4'>
-        <Link href='/'>
-          <a>
-            <img
-              className='h-16 mx-auto'
-              src='/assets/gardian.png'
-              alt='Gardian Logo'
-            />
-          </a>
-        </Link>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
-          <h1 className='text-xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
-            Recollective
-          </h1>
-        </div>
-      </div>
+      <Header />
+      <Title main='Welcome!' secondary='Login into your account.' />
 
-      <div className='flex flex-col justify-center sm:px-6 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
-          <h3 className='text-lg font-semibold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
-            Wellcome!
-          </h3>
-        </div>
+      <div className='flex flex-col justify-center px-1 sm:px-6 lg:px-8'>
         <div className='mt-2 sm:mx-auto sm:w-full sm:max-w-md'>
-          <div className='py-2 px-4 mx-2 rounded-sm sm:px-10'>
+          <div className='py-2 px-4 rounded-sm border'>
             <Formik
               initialValues={{
                 email: '',
@@ -126,64 +108,31 @@ const SignIn: NextPage<
                     hidden
                   />
 
-                  <div className='mt-2'>
-                    <div className='relative z-0'>
-                      <input
-                        id='email'
-                        type='email'
-                        name='email'
-                        className='block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                        placeholder=' '
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.email}
-                        required
-                      />
-                      <label
-                        htmlFor='email'
-                        className='absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'>
-                        Email Address
-                      </label>
-                    </div>
-                    {touched.email && errors.email && (
-                      <p
-                        id='standard_error_help'
-                        className='mt-2 text-xs text-center font-medium text-danger-200'>
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className='mt-2'>
-                    <div className='relative z-0'>
-                      <input
-                        id='password'
-                        type='password'
-                        name='password'
-                        className='block py-2 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer'
-                        placeholder=' '
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.password}
-                        required
-                      />
-                      <label
-                        htmlFor='password'
-                        className='absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6'>
-                        Password
-                      </label>
-                    </div>
-                    {touched.password && errors.password && (
-                      <p
-                        id='standard_error_help'
-                        className='mt-2 text-xs text-center font-medium text-danger-200'>
-                        {errors.password}
-                      </p>
-                    )}
-                  </div>
+                  <FloatingLabel
+                    type='email'
+                    required
+                    label='Email Address'
+                    name='email'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    isError={touched.email && !!errors.email}
+                    errorMsg={errors.email}
+                  />
+                  <FloatingLabel
+                    type='password'
+                    required
+                    label='Password'
+                    name='password'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    isError={touched.password && !!errors.password}
+                    errorMsg={errors.password}
+                  />
 
                   <div className='mt-4 space-y-2 flex justify-center'>
-                    <Button type='submit' variant='primary-filled' full>
+                    <Button type='submit' color='success'>
                       <span className='text-lg'>
                         {isSubmitting ? 'Loading...' : 'Sign In'}
                       </span>
@@ -194,32 +143,11 @@ const SignIn: NextPage<
             </Formik>
 
             <section className='mt-4 text-center'>
-              <div className='flex flex-col mb-3'>
-                <hr className='h-0 border-t mt-1' />
-                <div className='-mt-3 text-sm text-center'>
-                  <span className='px-2 bg-white text-secondary'>
-                    Or Sign in with
-                  </span>
-                </div>
-              </div>
-
-              <div className='flex flex-col'>
-                {providers.map((provider: ClientSafeProvider) => {
-                  return (
-                    <Button
-                      key={provider.id}
-                      type='button'
-                      onClick={() => handleProviderSignIn(provider)}
-                      variant='secondary-filled'>
-                      <img
-                        className='w-5 h-5'
-                        src={`/assets/${provider.id}.png`}
-                      />
-                      <span className='text-lg mx-auto'>{provider.name}</span>
-                    </Button>
-                  );
-                })}
-              </div>
+              <Divider msg='Or Sign In with' />
+              <Providers
+                providers={providers}
+                handleProviderSignIn={handleProviderSignIn}
+              />
             </section>
           </div>
         </div>
