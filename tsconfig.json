@@ -14,8 +14,9 @@
       "@db": ["db/index"],
       "@constants": ["constants/index"],
       "@hooks/*": ["hooks/*"], 
-      "@types": ["types/index"], 
       "@interfaces": ["interfaces/index"],
+      "@types": ["types/index"], 
+      "@public/*": ["public/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,
