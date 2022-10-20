@@ -1,5 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import { SCREEN_SIZE_MD } from '@constants';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 
 interface SidebarContextProps {
@@ -13,14 +14,13 @@ const SidebarContext = createContext<SidebarContextProps>(undefined!);
 export function SidebarProvider({
   children,
 }: PropsWithChildren<Record<string, unknown>>) {
-  const location = isBrowser() ? window.location : '/';
   const [isOpen, setOpen] = useState(false);
 
+  const { width } = useWindowDimensions();
+
   useEffect(() => {
-    if (isSmallScreen()) {
-      setOpen(false);
-    }
-  }, [location]);
+    setOpen(width >= SCREEN_SIZE_MD);
+  }, [width]);
 
   return (
     <SidebarContext.Provider
@@ -32,14 +32,6 @@ export function SidebarProvider({
       {children}
     </SidebarContext.Provider>
   );
-}
-
-function isBrowser() {
-  return typeof window !== 'undefined';
-}
-
-function isSmallScreen(): boolean {
-  return isBrowser() && window.innerWidth < SCREEN_SIZE_MD;
 }
 
 export function useSidebarContext() {

@@ -1,6 +1,6 @@
+import { Button } from 'flowbite-react';
 import React, { FC, ReactNode } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import ActionIcon from '../ActionIcon';
 
 
 interface DrawerProps {
@@ -16,15 +16,15 @@ const Drawer: FC<DrawerProps> = (props) => {
   return (
     <div
       className={`${
-        opened ? 'h-screen w-full z-10 md:w-2/5 py-2 px-1.5' : 'w-0'
+        opened ? 'h-full w-full z-10 md:w-2/5 py-2 px-1.5' : 'w-0'
       } transition-all duration-200 ease-in-out flex flex-col
-  rounded bg-gray-100 dark:bg-gray-800 overflow-hidden`}>
+   bg-gray-100 dark:bg-gray-800 dark:text-white overflow-hidden`}>
       <div
         className='flex justify-between pb-1 border-dotted 
                       border-b-2 border-gray-200 dark:border-gray-700'>
-        <ActionIcon variant='filled' onClick={onClose}>
+        <Button color='gray' onClick={onClose}>
           <XMarkIcon className='icon-sm' />
-        </ActionIcon>
+        </Button>
         <span className='grow px-1.5'>{title}</span>
         {menu}
       </div>

@@ -6,11 +6,14 @@ export const flowbiteTheme: CustomFlowbiteTheme = {
     base: 'flex items-center justify-center p-0.5 rounded font-semibold',
     disabled: 'cursor-no-drop opacity-50',
     color: {
+      secondary:
+        'w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600',
       success:
         'w-full bg-primary-200  hover:bg-primary-300  disabled:hover:bg-primary-200',
-      gray: 'w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600',
+      gray: 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600',
     },
     size: {
+      wfull: 'px-10',
       md: 'p-0.5',
     },
   },
@@ -21,11 +24,11 @@ export const flowbiteTheme: CustomFlowbiteTheme = {
   dropdown: {
     floating: {
       target:
-        'p-1 w-full rounded hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600',
+        'cursor-pointer p-1 w-full rounded bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600',
       base: 'z-10 w-fit rounded bg-red-500',
       content: 'p-1',
       item: {
-        base: 'w-full p-1 flex items-center space-x-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600',
+        base: 'cursor-pointer w-full p-1 flex items-center space-x-2 rounded hover:bg-gray-200 dark:hover:bg-gray-600',
         icon: 'icon-sm mr-2',
       },
     },

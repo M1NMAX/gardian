@@ -1,24 +1,18 @@
 import { Button, DarkThemeToggle, Tooltip } from 'flowbite-react';
 import { useRouter } from 'next/router';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
-import { useRecoilState } from 'recoil';
-import { sidebarState } from '@atoms/sidebarAtom';
-import { SCREEN_SIZE_MD } from '@constants';
+import { useSidebarContext } from '@context/SidebarContext';
 import { CreateCollectionModal, SidebarCollection } from '@features/collections';
-import { CreateGroupModal, SidebarGroup } from '@features/groups';
-import { getGroups } from '@features/groups/services';
+import { CreateGroupModal, getGroups, SidebarGroup } from '@features/groups';
 import {
-  MagnifyingGlassIcon,
   PlusIcon,
   RectangleGroupIcon,
   RectangleStackIcon,
   SquaresPlusIcon
 } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import { useQuery } from '@tanstack/react-query';
-import SearchModal from '../SearchModal';
 import SidebarBtn from './SidebarBtn';
 import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 
@@ -26,31 +20,24 @@ import SidebarUserPopoverMenu from './SidebarUserPopoverMenu';
 const Sidebar: FC = () => {
   const router = useRouter();
 
+  const sidebar = useSidebarContext();
+
   const { data: groups, isLoading } = useQuery(['groups'], getGroups);
-
-  const { width } = useWindowDimensions();
-  const [sidebar, setSidebar] = useRecoilState(sidebarState);
-
-  //Sidebar is open if window width > 768px, tailwind ´md´
-  useEffect(() => {
-    if (width > SCREEN_SIZE_MD) setSidebar(true);
-  }, [width]);
 
   // Click handle for sidebar elements
   const onClickSidebarCollection = (id: string) => {
-    if (sidebar && width <= SCREEN_SIZE_MD) setSidebar(false);
+    if (sidebar.isOpenOnSmallScreens) sidebar.setOpenOnSmallScreens(false);
     router.push('/collections/' + id);
   };
 
   const onClickSiderLink = (url: string) => {
-    if (sidebar && width <= SCREEN_SIZE_MD) setSidebar(false);
+    // if (sidebar.isOpenOnSmallScreens) sidebar.setOpenOnSmallScreens(false);
     router.push(url);
   };
 
   //Modals
   const createCollectionModal = useModal();
   const createGroupModal = useModal();
-  const searchModal = useModal();
 
   //Feedbacks
   const positiveFeedback = (msg: string) => toast.success(msg);
@@ -58,9 +45,10 @@ const Sidebar: FC = () => {
 
   return (
     <>
-      <div
-        className={`${sidebar ? 'w-full sm:w-60' : 'w-0'} transition-all 
-        duration-200 ease-linear fixed top-0 left-0 z-10  h-screen  overflow-hidden
+      <aside
+        className={`${
+          sidebar.isOpenOnSmallScreens ? 'w-full sm:w-72' : 'w-0'
+        } transition-all duration-200 ease-linear  h-full  overflow-hidden
         bg-gray-100 dark:bg-gray-800 dark:text-white flex flex-col py-1.5  space-y-1 `}>
         {/* Top section aka search  */}
         <div className='flex justify-between items-center space-x-1 px-1'>
@@ -117,7 +105,7 @@ const Sidebar: FC = () => {
         {/* Bottom section  */}
         <div className='w-full flex justify-between items-center space-x-1 px-1'>
           <Button
-            color='gray'
+            color='secondary'
             onClick={createCollectionModal.openModal}
             disabled={groups && groups.length === 0}>
             <PlusIcon className='icon-sm' />
@@ -130,8 +118,8 @@ const Sidebar: FC = () => {
             </Button>
           </Tooltip>
         </div>
-      </div>
-      <Toaster position='bottom-center' />
+        <Toaster position='bottom-center' />
+      </aside>
       {groups && createCollectionModal.isOpen && (
         <CreateCollectionModal
           open={createCollectionModal.isOpen}
@@ -148,13 +136,6 @@ const Sidebar: FC = () => {
           handleClose={createGroupModal.closeModal}
           positiveFeedback={positiveFeedback}
           negativeFeedback={negativeFeedback}
-        />
-      )}
-      {searchModal.isOpen && (
-        <SearchModal
-          open={searchModal.isOpen}
-          handleClose={searchModal.closeModal}
-          onEnter={() => console.log('fn')}
         />
       )}
     </>

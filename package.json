@@ -29,7 +29,6 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.2.0",
     "react-textarea-autosize": "^8.3.4",
-    "recoil": "^0.7.5",
     "uuid": "^9.0.0",
     "yup": "^0.32.11"
   },
