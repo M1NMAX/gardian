@@ -1,6 +1,7 @@
 import { Dropdown } from 'flowbite-react';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { ArrowRightOnRectangleIcon, Cog6ToothIcon } from '@heroicons/react/24/outline';
 import logoSrc from '../../../public/logo192.png';
@@ -8,6 +9,7 @@ import logoSrc from '../../../public/logo192.png';
 
 const SidebarUserPopoverMenu = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   return (
     <Dropdown
@@ -49,7 +51,11 @@ const SidebarUserPopoverMenu = () => {
         </div>
       </Dropdown.Header>
 
-      <Dropdown.Item icon={Cog6ToothIcon}>Settings</Dropdown.Item>
+      <Dropdown.Item
+        icon={Cog6ToothIcon}
+        onClick={() => router.push('/settings')}>
+        Settings
+      </Dropdown.Item>
       <Dropdown.Item
         icon={ArrowRightOnRectangleIcon}
         onClick={() => signOut({ callbackUrl: '/' })}>
