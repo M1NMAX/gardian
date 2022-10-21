@@ -1,45 +1,22 @@
-import React, {
-  ChangeEventHandler,
-  FC,
-  FocusEventHandler,
-  HTMLInputTypeAttribute,
-  KeyboardEventHandler,
-  LegacyRef,
-  ReactNode,
-  useId
-} from 'react';
+import React, { FC, forwardRef, InputHTMLAttributes, ReactNode, useId } from 'react';
 
 
-interface InputProps {
-  type?: HTMLInputTypeAttribute;
-  size?: 'sm' | 'md';
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+  sizing?: 'sm' | 'md';
   radious?: 'sm' | 'md';
-  name?: string;
   srLabel?: string;
-  placeholder?: string;
-  value?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onKeyUp?: KeyboardEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  ref?: LegacyRef<HTMLInputElement>;
   icon?: ReactNode;
   rightSection?: ReactNode;
 }
-const Input: FC<InputProps> = (props) => {
+const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
   const {
-    type = 'text',
-    size = 'md',
+    sizing = 'md',
     radious = 'md',
     name,
     srLabel,
-    placeholder,
-    value,
-    onChange,
-    onKeyUp,
-    onBlur,
-    ref,
     icon,
     rightSection,
+    ...theirProps
   } = props;
 
   const id = useId();
@@ -56,17 +33,11 @@ const Input: FC<InputProps> = (props) => {
       )}
       <input
         id={id}
-        type={type}
         ref={ref}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onKeyUp={onKeyUp}
-        onBlur={onBlur}
-        placeholder={placeholder}
+        {...theirProps}
         className={`${icon ? 'pl-9' : 'pl-1.5'} ${
           rightSection ? 'pr-8' : 'pr-1.5'
-        } ${size === 'sm' ? 'h-8' : 'h-10'} ${
+        } ${sizing === 'sm' ? 'h-8' : 'h-10'} ${
           radious === 'sm' ? 'rounded-sm' : 'rounded'
         }
         block w-full  px-1.5 font-medium  border-0 bg-gray-200
@@ -82,6 +53,6 @@ const Input: FC<InputProps> = (props) => {
       )}
     </label>
   );
-};
+});
 
 export default Input;
