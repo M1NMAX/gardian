@@ -26,6 +26,11 @@
     @apply w-14 h-14;
   }
 
+  .main-content {
+    @apply h-full grow flex flex-col space-y-2 dark:bg-gray-900 dark:text-white
+    transition-all duration-200 ease-linear;
+  }
+
   .btn {
     @apply flex items-center rounded;
   }
@@ -48,19 +53,6 @@
 
   .menu-item-btn {
     @apply w-full p-1 flex items-center space-x-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600;
-  }
-
-  .has-sidebar-width {
-    width: calc(100vw - theme('spacing.60'));
-  }
-
-  .main-content {
-    @apply transition-all duration-200 ease-linear
-     h-screen dark:bg-gray-900 dark:text-white;
-  }
-
-  .sidebarCollections-height {
-    height: calc(100vh - theme('spacing.40'));
   }
 
   .property-within-drawer {

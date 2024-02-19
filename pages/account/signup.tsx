@@ -1,3 +1,4 @@
+import { Button } from 'flowbite-react';
 import { Formik, FormikHelpers } from 'formik';
 import { filter } from 'lodash';
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
@@ -5,12 +6,12 @@ import { ClientSafeProvider, getCsrfToken, getProviders, signIn } from 'next-aut
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { SyntheticEvent, useState } from 'react';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import * as Yup from 'yup';
 import { authOptions } from '@api/auth/[...nextauth]';
 import { BASIC_ERROR_MSG, MINIMUM_ACTIVITY_TIMEOUT } from '@constants';
-import { Button, PasswordInput, TextInput } from '@frontstate-ui';
+import { Divider, FloatingLabel, Header, Providers, Title } from '@features/account';
 import { getSession } from '@lib/auth/session';
 
 
@@ -85,35 +86,18 @@ const SignUp: NextPage<
     }
   };
   return (
-    <div className='h-screen flex flex-col justify-center py-4 sm:px-6 lg:px-8'>
+    <div
+      className='h-screen flex flex-col justify-center py-4 sm:px-6 lg:px-8 
+    dark:bg-gray-900 dark:text-white'>
       <Head>
         <title>Sign up</title>
       </Head>
-      <div className='sm:mx-auto sm:w-full sm:max-w-md text-center pt-4'>
-        <Link href='/'>
-          <a>
-            <img
-              className='h-16 mx-auto'
-              src='/assets/gardian.png'
-              alt='Gardian Logo'
-            />
-          </a>
-        </Link>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
-          <h1 className='text-xl font-bold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
-            Recollective
-          </h1>
-        </div>
-      </div>
+      <Header />
+      <Title main='Hello, there!' secondary='Sign up and get started.' />
 
-      <div className='flex flex-col justify-center sm:px-6 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-md text-center'>
-          <h3 className='text-lg font-semibold leading-7 text-gray-900 sm:leading-9 sm:truncate'>
-            Hello, there!
-          </h3>
-        </div>
+      <div className='flex flex-col justify-center px-1 sm:px-6 lg:px-8'>
         <div className='mt-2 sm:mx-auto sm:w-full sm:max-w-md'>
-          <div className='py-2 px-4 mx-2 rounded-sm sm:px-10'>
+          <div className='py-2 px-4 rounded-md border '>
             <Formik
               initialValues={{
                 username: '',
@@ -137,54 +121,44 @@ const SignUp: NextPage<
                     defaultValue={csrfToken}
                     hidden
                   />
+                  <FloatingLabel
+                    required
+                    type='text'
+                    label='Username'
+                    name='username'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.username}
+                    isError={touched.username && !!errors.username}
+                    errorMsg={errors.username}
+                  />
 
-                  <div>
-                    <TextInput
-                      type='text'
-                      label='Username'
-                      name='username'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.username}
-                      error={
-                        touched.username && errors.username
-                          ? errors.username
-                          : undefined
-                      }
-                    />
-                  </div>
+                  <FloatingLabel
+                    required
+                    type='email'
+                    label='email'
+                    name='email'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    isError={touched.email && !!errors.email}
+                    errorMsg={errors.email}
+                  />
 
-                  <div className='mt-2'>
-                    <TextInput
-                      type='email'
-                      label='Email Address'
-                      name='email'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      error={
-                        touched.email && errors.email ? errors.email : undefined
-                      }
-                    />
-                  </div>
-
-                  <div className='mt-2'>
-                    <PasswordInput
-                      label='Password'
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      name='password'
-                      error={
-                        touched.password && errors.password
-                          ? errors.password
-                          : undefined
-                      }
-                    />
-                  </div>
+                  <FloatingLabel
+                    required
+                    type='password'
+                    label='password'
+                    name='password'
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    isError={touched.password && !!errors.password}
+                    errorMsg={errors.password}
+                  />
 
                   <div className='mt-4 space-y-2 flex justify-center'>
-                    <Button type='submit' variant='primary-filled' full>
+                    <Button type='submit' color='success'>
                       <span className='text-lg'>
                         {isSubmitting ? 'Loading...' : 'Sign Up'}
                       </span>
@@ -195,32 +169,11 @@ const SignUp: NextPage<
             </Formik>
 
             <section className='mt-4 text-center'>
-              <div className='flex flex-col mb-3'>
-                <hr className='h-0 border-t mt-1' />
-                <div className='-mt-3 text-sm text-center'>
-                  <span className='px-2 bg-white text-secondary'>
-                    Or Sign up with
-                  </span>
-                </div>
-              </div>
-
-              <div className='flex flex-col'>
-                {providers.map((provider: ClientSafeProvider) => {
-                  return (
-                    <Button
-                      key={provider.id}
-                      type='button'
-                      onClick={() => handleProviderSignIn(provider)}
-                      variant='secondary-filled'>
-                      <img
-                        className='w-5 h-5'
-                        src={`/assets/${provider.id}.png`}
-                      />
-                      <span className='text-lg mx-auto'>{provider.name}</span>
-                    </Button>
-                  );
-                })}
-              </div>
+              <Divider msg='Or Sign up with' />
+              <Providers
+                providers={providers}
+                handleProviderSignIn={handleProviderSignIn}
+              />
             </section>
           </div>
         </div>

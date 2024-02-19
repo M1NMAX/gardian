@@ -10,3 +10,4 @@ export { default as PasswordInput } from './PasswordInput';
 export { default as Select } from './Select';
 export { default as Textarea } from './Textarea';
 export { default as TextInput } from './TextInput';
+export { default as Tooltip } from './Tooltip';

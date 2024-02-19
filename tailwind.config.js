@@ -1,9 +1,11 @@
 module.exports = {
   mode: 'jit',
   content: [
+    "./node_modules/flowbite/**/*.js",
+    "./node_modules/flowbite-react/**/*.js",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
-    "./features/**/*.{js,ts,jsx,tsx}"
+    "./features/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
   theme: {
@@ -20,6 +22,6 @@ module.exports = {
   },
   plugins:
     [
-      require('tailwind-scrollbar'), require('@tailwindcss/forms')
+      require('tailwind-scrollbar'), require('@tailwindcss/forms'), require("flowbite/plugin")
     ]
 }

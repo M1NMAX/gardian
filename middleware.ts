@@ -15,5 +15,5 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ['/admin/:path*', '/templates', '/collections/:path*'],
+  matcher: ['/admin/:path*', '/templates', '/collections/:path*', '/settings'],
 };

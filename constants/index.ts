@@ -1,3 +1,5 @@
+export const APP_NAME = 'Recollective';
+
 // tailwind ´md´ screen
 export const SCREEN_SIZE_MD = 768;
 

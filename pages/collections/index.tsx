@@ -1,10 +1,9 @@
+import { Button } from 'flowbite-react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType, NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useRecoilValue } from 'recoil';
 import { authOptions } from '@api/auth/[...nextauth]';
-import { sidebarState } from '@atoms/sidebarAtom';
 import Header from '@components/Header';
 import Sidebar from '@components/Sidebar';
 import { SORT_ASCENDING, SORT_DESCENDING } from '@constants';
@@ -16,13 +15,13 @@ import {
 import { getGroups } from '@features/groups/services';
 import { SortOptionsListbox, useSort } from '@features/sort';
 import { useView, ViewButton } from '@features/view';
-import { Button } from '@frontstate-ui';
 import { CubeTransparentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import useModal from '@hooks/useModal';
 import { getSession } from '@lib/auth/session';
 import prisma from '@lib/prisma';
 import { useQuery } from '@tanstack/react-query';
 import { SortOptionType } from '@types';
+import { SidebarProvider } from '../../context/SidebarContext';
 
 
 const sortOptions: SortOptionType[] = [
@@ -35,8 +34,6 @@ const sortOptions: SortOptionType[] = [
 const Collections: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = () => {
-  const sidebar = useRecoilValue(sidebarState);
-
   const { data: groups } = useQuery(['groups'], getGroups);
 
   const { data: collections, isLoading } = useQuery(
@@ -73,84 +70,85 @@ const Collections: NextPage<
       <Head>
         <title>Collections</title>
       </Head>
-      <Sidebar />
-      <main
-        className={`${
-          sidebar ? 'w-full md:has-sidebar-width md:ml-60' : 'w-full'
-        } main-content  flex flex-col space-y-2 -z-10`}>
-        {/* Header  */}
-        <Header>
-          <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
-            My Collections
-          </h1>
+      <SidebarProvider>
+        <div className='flex h-screen overflow-hidden'>
+          <Sidebar />
 
-          {!isLoading && sortedCollections.length > 0 && (
-            <div className='flex items-center space-x-2'>
-              <Button
-                onClick={createCollectionModal.openModal}
-                variant='primary-hover'>
-                <PlusIcon className='icon-md md:icon-sm ' />
-                <span className='hidden md:block'>New Collection</span>
-              </Button>
+          <main className='main-content h-full'>
+            {/* Header  */}
+            <Header>
+              <h1 className='grow font-semibold text-xl md:text-2xl pl-1 border-l-4 border-primary-100'>
+                My Collections
+              </h1>
 
-              {/*SORT */}
-              <SortOptionsListbox
-                sortOptions={sortOptions}
-                selectedOption={selectedSortOption}
-                onChangeOption={onChangeSortOption}
-              />
-              {/* views  */}
-              <ViewButton
-                value={isGridView}
-                onClick={() => setIsGridView(!isGridView)}
-              />
-            </div>
-          )}
-        </Header>
-        <div
-          className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
-             scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
-          {/* Is loading  */}
-          {isLoading && (
-            <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
-              <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
-              <span className='font-medium'> Loading ...</span>
-            </div>
-          )}
+              {!isLoading && sortedCollections.length > 0 && (
+                <div className='flex items-center space-x-2'>
+                  <Button
+                    onClick={createCollectionModal.openModal}
+                    color='success'>
+                    <PlusIcon className='icon-md md:icon-sm ' />
+                    <span className='hidden md:block'>New Collection</span>
+                  </Button>
 
-          {/* loading state is finish and there are no collection  */}
-          {!isLoading && sortedCollections.length === 0 && (
-            <Button
-              onClick={createCollectionModal.openModal}
-              variant='primary-filled'
-              full>
-              <PlusIcon className='icon-sm' />
-              <span>New Collection</span>
-            </Button>
-          )}
-
-          {/* loading state is finished and there are collection */}
-          {!isLoading && sortedCollections.length > 0 && (
-            <div
-              className={`${
-                isGridView
-                  ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
-                  : 'flex flex-col space-y-2'
-              }  `}>
-              {/* Collections  */}
-              {sortedCollections &&
-                sortedCollections.map((collection) => (
-                  <CollectionOverview
-                    key={collection.id}
-                    collection={collection}
-                    groupName={getGroupName(collection.groupId)}
-                    isGridView={isGridView}
+                  {/*SORT */}
+                  <SortOptionsListbox
+                    sortOptions={sortOptions}
+                    selectedOption={selectedSortOption}
+                    onChangeOption={onChangeSortOption}
                   />
-                ))}
+                  {/* views  */}
+                  <ViewButton
+                    isGrid={isGridView}
+                    onClick={() => setIsGridView(!isGridView)}
+                  />
+                </div>
+              )}
+            </Header>
+            <div
+              className='space-y-1.5 grow px-4 pb-2 overflow-y-scroll scrollbar-thin
+             scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scroll-smooth'>
+              {/* Is loading  */}
+              {isLoading && (
+                <div className='col-span-full flex flex-col justify-center items-center space-y-4 px-4 h-32'>
+                  <CubeTransparentIcon className='animate-ping icon-md lg:icon-xl text-primary-200' />
+                  <span className='font-medium'> Loading ...</span>
+                </div>
+              )}
+
+              {/* loading state is finish and there are no collection  */}
+              {!isLoading && sortedCollections.length === 0 && (
+                <Button
+                  onClick={createCollectionModal.openModal}
+                  color='success'>
+                  <PlusIcon className='icon-sm' />
+                  <span>New Collection</span>
+                </Button>
+              )}
+
+              {/* loading state is finished and there are collection */}
+              {!isLoading && sortedCollections.length > 0 && (
+                <div
+                  className={`${
+                    isGridView
+                      ? 'grid grid-cols-2 lg:grid-cols-3 gap-1 lg:gap-1.5 max-h-full '
+                      : 'flex flex-col space-y-2'
+                  }  `}>
+                  {/* Collections  */}
+                  {sortedCollections &&
+                    sortedCollections.map((collection) => (
+                      <CollectionOverview
+                        key={collection.id}
+                        collection={collection}
+                        groupName={getGroupName(collection.groupId)}
+                        isGridView={isGridView}
+                      />
+                    ))}
+                </div>
+              )}
             </div>
-          )}
+          </main>
         </div>
-      </main>
+      </SidebarProvider>
       <Toaster />
 
       {/* New collection modal  */}

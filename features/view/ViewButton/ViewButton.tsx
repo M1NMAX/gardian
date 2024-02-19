@@ -1,23 +1,25 @@
+import { Button, Tooltip } from 'flowbite-react';
 import React, { FC } from 'react';
-import { ActionIcon } from '@frontstate-ui';
 import { Squares2X2Icon, ViewColumnsIcon } from '@heroicons/react/24/outline';
 
 
 interface ViewButtonProps {
-  value: boolean;
+  isGrid: boolean;
   onClick: () => void;
 }
 
 const ViewButton: FC<ViewButtonProps> = (props) => {
-  const { value, onClick } = props;
+  const { isGrid, onClick } = props;
   return (
-    <ActionIcon variant='filled' onClick={onClick}>
-      {value ? (
-        <ViewColumnsIcon className='icon-sm rotate-90' />
-      ) : (
-        <Squares2X2Icon className='icon-sm' />
-      )}
-    </ActionIcon>
+    <Tooltip content={isGrid ? 'List view' : 'Grid view'}>
+      <Button color='gray' onClick={onClick}>
+        {isGrid ? (
+          <ViewColumnsIcon className='icon-sm rotate-90' />
+        ) : (
+          <Squares2X2Icon className='icon-sm' />
+        )}
+      </Button>
+    </Tooltip>
   );
 };
 

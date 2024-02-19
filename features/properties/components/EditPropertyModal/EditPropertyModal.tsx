@@ -1,3 +1,4 @@
+import { Tooltip } from 'flowbite-react';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -89,9 +90,15 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   const [name, setName] = useState(property.name);
   const [selectedType, setSelectedType] = useState(property.type);
   const [newOption, setNewOption] = useState('');
-  const [showNewOptionInput, setShowNewOptionInput] = useState(false);
+  const [showAddOptionInput, setShowAddOptionInput] = useState(false);
 
   const [options, dispatch] = useReducer(OptionReducer, property.options);
+
+  const addOptionInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    addOptionInputRef.current?.focus();
+  }, [showAddOptionInput]);
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value as PropertyType;
@@ -107,6 +114,7 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
   return (
     <Modal open={open} onHide={handleClose} withCloseBtn={false} size='sm'>
       <TextInput
+        autoFocus
         label='Name'
         name='name'
         value={name}
@@ -127,17 +135,20 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
       </div>
 
       <div
-        className={` mt-1.5 space-y-0.5 ${
+        className={`mt-1.5 space-y-0.5 ${
           selectedType !== PropertyType.SELECT && 'hidden'
         }`}>
         <div className='flex justify-between items-center mb-0.5'>
           <p>Options</p>
-          <ActionIcon onClick={() => setShowNewOptionInput(true)}>
-            <PlusIcon className='icon-xs' />
-          </ActionIcon>
+          <Tooltip content='Add Option'>
+            <ActionIcon onClick={() => setShowAddOptionInput(true)}>
+              <PlusIcon className='icon-xs' />
+            </ActionIcon>
+          </Tooltip>
         </div>
-        {showNewOptionInput && (
+        {showAddOptionInput && (
           <Input
+            ref={addOptionInputRef}
             name='newOption'
             srLabel='Type new option'
             placeholder='New option'
@@ -149,16 +160,21 @@ const EditPropertyModal: FC<EditPropertyModalProps> = (props) => {
                 e.stopPropagation();
               }
             }}
-            onBlur={() => setShowNewOptionInput(false)}
+            onBlur={() => setShowAddOptionInput(false)}
             radious='sm'
-            size='sm'
+            sizing='sm'
             rightSection={
-              <ActionIcon
-                onClick={() =>
-                  dispatch({ type: ACTIONS_ADD, payload: { value: newOption } })
-                }>
-                <ArrowLongRightIcon className='icon-xs' />
-              </ActionIcon>
+              <Tooltip content='Add'>
+                <ActionIcon
+                  onClick={() =>
+                    dispatch({
+                      type: ACTIONS_ADD,
+                      payload: { value: newOption },
+                    })
+                  }>
+                  <ArrowLongRightIcon className='icon-xs' />
+                </ActionIcon>
+              </Tooltip>
             }
           />
         )}
@@ -192,7 +208,6 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
 
   useEffect(() => {
     inputRef.current?.focus();
-    console.log(inputRef.current);
   }, [edit]);
 
   return (
@@ -220,17 +235,19 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
           }}
           onBlur={() => setEdit(false)}
           radious='sm'
-          size='sm'
+          sizing='sm'
           rightSection={
-            <ActionIcon
-              onClick={() =>
-                dispatch({
-                  type: ACTIONS_RENAME,
-                  payload: { id: option.id, name },
-                })
-              }>
-              <ArrowLongRightIcon className='icon-xs' />
-            </ActionIcon>
+            <Tooltip content='Save'>
+              <ActionIcon
+                onClick={() =>
+                  dispatch({
+                    type: ACTIONS_RENAME,
+                    payload: { id: option.id, name },
+                  })
+                }>
+                <ArrowLongRightIcon className='icon-xs' />
+              </ActionIcon>
+            </Tooltip>
           }
         />
       ) : (
@@ -279,19 +296,23 @@ const PropertyOption: FC<PropertyOptionProps> = (props) => {
             </Transition>
           </Popover>
           <span className='grow px-1'>{option.value}</span>
-          <span className='md:hidden md:group-hover:block'>
-            <ActionIcon onClick={() => setEdit(true)}>
-              <PencilSquareIcon className='icon-xs' />
-            </ActionIcon>
-          </span>
+          <Tooltip content='Edit'>
+            <span className='md:hidden md:group-hover:block'>
+              <ActionIcon onClick={() => setEdit(true)}>
+                <PencilSquareIcon className='icon-xs' />
+              </ActionIcon>
+            </span>
+          </Tooltip>
 
           <span className='md:hidden md:group-hover:block'>
-            <ActionIcon
-              onClick={() =>
-                dispatch({ type: ACTIONS_REMOVE, payload: { id: option.id } })
-              }>
-              <TrashIcon className='icon-xs' />
-            </ActionIcon>
+            <Tooltip content='Delete'>
+              <ActionIcon
+                onClick={() =>
+                  dispatch({ type: ACTIONS_REMOVE, payload: { id: option.id } })
+                }>
+                <TrashIcon className='icon-xs' />
+              </ActionIcon>
+            </Tooltip>
           </span>
         </>
       )}
